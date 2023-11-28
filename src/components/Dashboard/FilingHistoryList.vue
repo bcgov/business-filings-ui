@@ -145,6 +145,7 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
       case filing.availableOnPaperOnly: return 'paper-filing' // must come first
       case EnumUtilities.isTypeAgmExtension(filing): return 'agm-extension'
       case EnumUtilities.isTypeAlteration(filing): return 'alteration-filing'
+      case EnumUtilities.isTypeAmalgamation(filing): return 'amalgamation-filing'
       case EnumUtilities.isTypeChangeOfAddress(filing): return 'change-of-address'
       case EnumUtilities.isTypeConsentContinuationOut(filing): return 'consent-continuation-out'
       case EnumUtilities.isTypeContinuationOut(filing): return 'continuation-out'

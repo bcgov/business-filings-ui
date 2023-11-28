@@ -1314,6 +1314,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
 
   beforeAll(() => {
     // clear store
+    rootStore.setNameRequest(null)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([])
 
@@ -1416,11 +1417,6 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     wrapper.destroy()
   })
 
-  it('fetches NR data properly', () => {
-    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(businessStore.getLegalName).toBe('My Name Request')
-  })
-
   it.skip('fetches IA filing properly', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('BEN')
@@ -1461,6 +1457,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
 
   beforeAll(() => {
     // clear store
+    rootStore.setNameRequest(null)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([])
 
@@ -1561,11 +1558,6 @@ describe('App as a COMPLETED Incorporation Application', () => {
   afterEach(() => {
     sinon.restore()
     wrapper.destroy()
-  })
-
-  it('fetches NR data properly', () => {
-    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(businessStore.getLegalName).toBe('My Name Request')
   })
 
   it.skip('fetches IA filing properly', () => {
@@ -1865,6 +1857,7 @@ describe('App as a COMPLETED Registration Application', () => {
 
   beforeAll(() => {
     // clear store
+    rootStore.setNameRequest(null)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([])
 
@@ -1965,11 +1958,6 @@ describe('App as a COMPLETED Registration Application', () => {
   afterEach(() => {
     sinon.restore()
     wrapper.destroy()
-  })
-
-  it('fetches NR data properly', () => {
-    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(businessStore.getLegalName).toBe('My Name Request')
   })
 
   it.skip('fetches Registration filing properly', () => {

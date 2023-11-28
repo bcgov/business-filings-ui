@@ -35,7 +35,7 @@ describe('Entity Header - data', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('#entity-legal-name').exists()).toBe(false)
-    expect(wrapper.find('#ia-reg-description').exists()).toBe(false)
+    expect(wrapper.find('#app-description').exists()).toBe(false)
   })
 
   it('displays Business entity info properly', async () => {
@@ -54,13 +54,13 @@ describe('Entity Header - data', () => {
 
     // verify displayed text
     expect(wrapper.find('#entity-legal-name').text()).toBe('My Business')
-    expect(wrapper.find('#ia-reg-description').exists()).toBe(false)
+    expect(wrapper.find('#app-description').exists()).toBe(false)
   })
 
   it('displays Draft Incorp App entity info properly - Named Company', async () => {
     // set store properties
     businessStore.setLegalName('My Named Company')
-    rootStore.entityStatus = EntityStatus.DRAFT_APP
+    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     const wrapper = shallowMount(EntityHeader, {
@@ -70,14 +70,14 @@ describe('Entity Header - data', () => {
     })
     await Vue.nextTick()
 
-    expect(wrapper.find('#ia-reg-name').text()).toBe('My Named Company')
-    expect(wrapper.find('#ia-reg-description').text()).toBe('BC Benefit Company Incorporation Application')
+    expect(wrapper.find('#app-name').text()).toBe('My Named Company')
+    expect(wrapper.find('#app-description').text()).toBe('BC Benefit Company Incorporation Application')
   })
 
   it('displays Draft Incorp App entity info properly - Numbered Company', async () => {
     // set store properties
     businessStore.setLegalName(null)
-    rootStore.entityStatus = EntityStatus.DRAFT_APP
+    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     const wrapper = shallowMount(EntityHeader, {
@@ -87,14 +87,14 @@ describe('Entity Header - data', () => {
     })
     await Vue.nextTick()
 
-    expect(wrapper.find('#ia-reg-name').text()).toBe('Numbered Benefit Company')
-    expect(wrapper.find('#ia-reg-description').text()).toBe('BC Benefit Company Incorporation Application')
+    expect(wrapper.find('#app-name').text()).toBe('Numbered Benefit Company')
+    expect(wrapper.find('#app-description').text()).toBe('BC Benefit Company Incorporation Application')
   })
 
   it('displays Paid (Named) Incorp App entity info properly', async () => {
     // set store properties
     businessStore.setLegalName('My Future Company')
-    rootStore.entityStatus = EntityStatus.FILED_APP
+    rootStore.entityStatus = EntityStatus.FILED_INCORP_APP
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     const wrapper = shallowMount(EntityHeader, {
@@ -104,8 +104,8 @@ describe('Entity Header - data', () => {
     })
     await Vue.nextTick()
 
-    expect(wrapper.find('#ia-reg-name').text()).toBe('My Future Company')
-    expect(wrapper.find('#ia-reg-description').text()).toBe('BC Benefit Company Incorporation Application')
+    expect(wrapper.find('#app-name').text()).toBe('My Future Company')
+    expect(wrapper.find('#app-description').text()).toBe('BC Benefit Company Incorporation Application')
   })
 })
 

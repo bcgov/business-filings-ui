@@ -165,6 +165,14 @@
                   <ContactInfo class="mt-4 contact-info-warning" />
                 </div>
 
+                <!-- draft amalgamation -->
+                <div
+                  v-else-if="isStatusDraft(item) && isTypeAmalgamation(item)"
+                  class="todo-subtitle"
+                >
+                  <span>{{ item.subtitle }}</span>
+                </div>
+
                 <!-- draft incorporation -->
                 <div
                   v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)"
@@ -254,6 +262,7 @@
                 <span>Do not authorize</span>
               </v-btn>
             </div>
+
             <div
               v-else
               class="list-item__actions"
@@ -317,7 +326,10 @@
                     :disabled="!item.enabled"
                     @click.native.stop="doResumeFiling(item)"
                   >
-                    <template v-if="isTypeIncorporationApplication(item) && item.isEmptyFiling">
+                    <template v-if="isTypeAmalgamation(item) && item.isEmptyFiling">
+                      <span>Fill out Amalgamation Application</span>
+                    </template>
+                    <template v-else-if="isTypeIncorporationApplication(item) && item.isEmptyFiling">
                       <span v-if="getNameRequest">Incorporate using this NR</span>
                       <span v-else>Incorporate a Numbered Company</span>
                     </template>
@@ -518,8 +530,8 @@
 
           <!-- is this a draft IA or Registration? -->
           <template
-            v-else-if="isStatusDraft(item) &&
-              (isTypeIncorporationApplication(item) || isTypeRegistration(item))"
+            v-else-if="isStatusDraft(item) && (isTypeAmalgamation(item) || isTypeIncorporationApplication(item) ||
+              isTypeRegistration(item))"
           >
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
@@ -668,7 +680,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   @Action(useRootStore) setArMinDate!: (x: string) => void
   @Action(useRootStore) setArMaxDate!: (x: string) => void
   @Action(useRootStore) setNextARDate!: (x: string) => void
-  @Action(useRootStore) setCurrentFilingStatus!: (x: FilingStatus) => void
 
   // for template
   readonly EnumUtilities = EnumUtilities
@@ -739,6 +750,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   showDetailsBtnBlue (item: TodoItemIF): boolean {
     if (this.isStatusNew(item) && this.isTypeConversion(item)) return true
     if (this.isStatusDraft(item) && this.isTypeConversion(item)) return true
+    if (this.isStatusDraft(item) && this.isTypeAmalgamation(item) &&
+      item.nameRequest) return true
     if (this.isStatusDraft(item) && this.isTypeIncorporationApplication(item) &&
       item.nameRequest) return true
     if (this.isStatusDraft(item) && this.isTypeRegistration(item) &&
@@ -910,6 +923,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       // eslint-disable-line no-console
       console.log('failed the call for authorization of affiliation invitation', err)
       this.authorizeAffiliationInvitationErrorDialog = true
+      return null
     })
 
     const index = this.todoItems.indexOf(affiliationInvitationTodo)
@@ -1001,20 +1015,32 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
     if (header) {
       switch (header.name) {
+        case FilingTypes.ADMIN_FREEZE:
+          // do nothing for admin_freeze
+          break
         case FilingTypes.AGM_EXTENSION:
           await this.loadAgmExtension(task)
           break
         case FilingTypes.AGM_LOCATION_CHANGE:
           await this.loadAgmLocationChange(task)
           break
+        case FilingTypes.ALTERATION:
+          await this.loadAlteration(task)
+          break
+        case FilingTypes.AMALGAMATION:
+          await this.loadAmalgamation(task)
+          break
         case FilingTypes.ANNUAL_REPORT:
           await this.loadAnnualReport(task)
+          break
+        case FilingTypes.CHANGE_OF_ADDRESS:
+          await this.loadChangeOfAddress(task)
           break
         case FilingTypes.CHANGE_OF_DIRECTORS:
           await this.loadChangeOfDirectors(task)
           break
-        case FilingTypes.CHANGE_OF_ADDRESS:
-          await this.loadChangeOfAddress(task)
+        case FilingTypes.CHANGE_OF_REGISTRATION:
+          await this.loadChangeOfRegistration(task)
           break
         case FilingTypes.CONSENT_CONTINUATION_OUT:
           await this.loadConsentContinuationOut(task)
@@ -1022,35 +1048,26 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         case FilingTypes.CONTINUATION_OUT:
           await this.loadContinuationOut(task)
           break
+        case FilingTypes.CONVERSION:
+          await this.loadConversion(task)
+          break
         case FilingTypes.CORRECTION:
           await this.loadCorrection(task)
-          break
-        case FilingTypes.INCORPORATION_APPLICATION:
-          await this.loadIncorporationApplication(task)
-          break
-        case FilingTypes.ALTERATION:
-          await this.loadAlteration(task)
           break
         case FilingTypes.DISSOLUTION:
           await this.loadDissolution(task)
           break
+        case FilingTypes.INCORPORATION_APPLICATION:
+          await this.loadIncorporationApplication(task)
+          break
         case FilingTypes.REGISTRATION:
           await this.loadRegistration(task)
-          break
-        case FilingTypes.CHANGE_OF_REGISTRATION:
-          await this.loadChangeOfRegistration(task)
-          break
-        case FilingTypes.CONVERSION:
-          await this.loadConversion(task)
-          break
-        case FilingTypes.SPECIAL_RESOLUTION:
-          await this.loadSpecialResolution(task)
           break
         case FilingTypes.RESTORATION:
           await this.loadRestoration(task)
           break
-        case FilingTypes.ADMIN_FREEZE:
-          // Do nothing for admin_freeze.
+        case FilingTypes.SPECIAL_RESOLUTION:
+          await this.loadSpecialResolution(task)
           break
         default:
           // eslint-disable-next-line no-console
@@ -1205,8 +1222,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_DIRECTORS,
         filingId: header.filingId,
-        title: `File Director Change`,
-        draftTitle: `Director Change`,
+        title: 'File Director Change',
+        draftTitle: 'Director Change',
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
@@ -1234,8 +1251,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_ADDRESS,
         filingId: header.filingId,
-        title: `File Address Change`,
-        draftTitle: `Address Change`,
+        title: 'File Address Change',
+        draftTitle: 'Address Change',
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
@@ -1286,15 +1303,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     }
   }
 
-  async loadIncorporationApplication (task: ApiTaskIF): Promise<void> {
+  async loadAmalgamation (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
-    const incorporationApplication = filing.incorporationApplication
+    const amalgamation = filing.amalgamation
 
-    // NB: don't check "incorporationApplication" as it may be empty
-    if (header) {
-      const title = `${GetCorpFullDescription(this.getLegalType)} Incorporation Application`
-
+    if (header && amalgamation) {
       // set subtitle only if DRAFT IA
       let subtitle: string = null
       if (this.isStatusDraft(header)) {
@@ -1310,6 +1324,56 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
       // NB: incorporationApplicationmay be undefined
       const haveData = Boolean(
+        amalgamation?.offices ||
+        amalgamation?.contactPoint ||
+        amalgamation?.parties ||
+        amalgamation?.shareClasses
+      )
+
+      const item: TodoItemIF = {
+        name: FilingTypes.AMALGAMATION,
+        filingId: header.filingId,
+        title: filing.displayName,
+        subtitle,
+        draftTitle: FilingNames.AMALGAMATION,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        isEmptyFiling: !haveData,
+        nameRequest: this.getNameRequest
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or amalgamation in filing =', filing)
+    }
+  }
+
+  async loadIncorporationApplication (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const incorporationApplication = filing.incorporationApplication
+
+    // NB: don't check "incorporationApplication" as it may be empty
+    if (header) {
+      // set subtitle only if DRAFT IA
+      let subtitle: string = null
+      if (this.isStatusDraft(header)) {
+        if (this.getNameRequest) {
+          subtitle = `NR APPROVED - ${this.expiresText(this.getNameRequest)}`
+        } else {
+          subtitle = 'DRAFT'
+        }
+      }
+
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
+
+      // NB: incorporationApplication may be undefined
+      const haveData = Boolean(
         incorporationApplication?.offices ||
         incorporationApplication?.contactPoint ||
         incorporationApplication?.parties ||
@@ -1319,7 +1383,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const item: TodoItemIF = {
         name: FilingTypes.INCORPORATION_APPLICATION,
         filingId: header.filingId,
-        title,
+        title: filing.displayName,
         subtitle,
         draftTitle: FilingNames.INCORPORATION_APPLICATION,
         status: header.status,
@@ -1345,11 +1409,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
     // NB: don't check "registration" as it may be empty
     if (header) {
-      const corpFullDescription = GetCorpFullDescription(this.getLegalType)
-      const title = this.isSoleProp
-        ? `${corpFullDescription} / Doing Business As (DBA) ${FilingNames.REGISTRATION}`
-        : `${corpFullDescription} ${FilingNames.REGISTRATION}`
-
       // set subtitle only if DRAFT
       let subtitle: string = null
       if (this.isStatusDraft(header)) {
@@ -1374,7 +1433,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const item: TodoItemIF = {
         name: FilingTypes.REGISTRATION,
         filingId: header.filingId,
-        title,
+        title: filing.displayName,
         subtitle,
         draftTitle: FilingNames.REGISTRATION,
         status: header.status,
@@ -1551,7 +1610,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
-      console.log('ERROR - invalid header or business in filing =', filing)
+      console.log('ERROR - invalid header or agmLocationChange in filing =', filing)
     }
   }
 
@@ -1686,7 +1745,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         this.setArMinDate(item.arMinDate) // COOP only
         this.setArMaxDate(item.arMaxDate) // COOP only
         this.setNextARDate(item.nextArDate) // BEN/BC/CCC/ULC only
-        this.setCurrentFilingStatus(FilingStatus.NEW)
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: '0' } }) // 0 means "new AR"
         break
       case FilingTypes.CONVERSION: {
@@ -1705,37 +1763,39 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   /** Resumes a draft filing. */
   doResumeFiling (item: TodoItemIF): void {
     switch (item.name) {
+      case FilingTypes.AMALGAMATION: {
+        // navigate to Create UI to resume this Amalgamation
+        const amalgamationUrl = `${this.getCreateUrl}?id=${this.tempRegNumber}`
+        navigate(amalgamationUrl)
+        break
+      }
+
       case FilingTypes.ANNUAL_REPORT:
         // resume this Annual Report locally
         this.setARFilingYear(item.ARFilingYear)
         this.setArMinDate(item.arMinDate) // COOP only
         this.setArMaxDate(item.arMaxDate) // COOP only
         this.setNextARDate(item.nextArDate) // BEN/BC/CCC/ULC only
-        this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CHANGE_OF_DIRECTORS:
         // resume this Change Of Directors locally
-        this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CHANGE_OF_ADDRESS:
         // resume this Change Of Address locally
-        this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CONSENT_CONTINUATION_OUT:
         // resume this Consent to Continuation Out locally
-        this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CONTINUATION_OUT:
         // resume this Continuation Out locally
-        this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
         break
 
@@ -1757,7 +1817,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
               navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
               break
             } else {
-              this.setCurrentFilingStatus(FilingStatus.DRAFT)
               routeToLocalCorrection(this.$router)
               break
             }
@@ -1765,7 +1824,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
           case FilingTypes.ANNUAL_REPORT:
           case FilingTypes.CONVERSION:
           default:
-            this.setCurrentFilingStatus(FilingStatus.DRAFT)
             routeToLocalCorrection(this.$router)
             break
         }

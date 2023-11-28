@@ -14,7 +14,7 @@ import { Certify, OfficeAddresses } from '@/components/common'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { ConfigJson } from '@/resources/business-config'
-import { CorpTypeCd, FilingStatus } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -1816,7 +1816,6 @@ describe('Standalone Office Address Filing - payment required error', () => {
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setLegalName('Legal Name - CP0001191')
     rootStore.ARFilingYear = 2017
-    rootStore.currentFilingStatus = FilingStatus.NEW
 
     // mock "file post" endpoint, with a pay error response
     const p1 = Promise.reject({

@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { CorpTypeCd, EntityState } from '@/enums'
 import { DateUtilities, LegalServices } from '@/services/'
 import { GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
+import { useRootStore } from './rootStore'
 
 export const useBusinessStore = defineStore('business', {
   state: (): BusinessStateIF => ({
@@ -101,9 +102,13 @@ export const useBusinessStore = defineStore('business', {
 
     /** The entity name, or numbered description, or empty string. */
     getEntityName (): string {
-      return (
-        this.getLegalName || GetCorpNumberedDescription(this.getLegalType)
-      )
+      const rootStore = useRootStore()
+
+      if (rootStore.isDraftAmalgamation || rootStore.isFiledAmalgamation) {
+        return this.getLegalName || 'Numbered Amalgamated Company'
+      } else {
+        return (this.getLegalName || GetCorpNumberedDescription(this.getLegalType))
+      }
     },
 
     /** The state filing URL (may be null). */
@@ -174,7 +179,7 @@ export const useBusinessStore = defineStore('business', {
 
     /** Is True if entity is a BC Corporation. */
     isCorp (state: BusinessStateIF): boolean {
-      return (state.businessInfo.legalType === CorpTypeCd.BC_CORPORATION)
+      return (state.businessInfo.legalType === CorpTypeCd.CORPORATION)
     },
 
     /** Is True if entity is a Sole Proprietorship or General Partnership. */

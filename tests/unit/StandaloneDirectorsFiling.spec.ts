@@ -17,7 +17,7 @@ import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { ConfigJson } from '@/resources/business-config'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { FilingCodes, FilingStatus } from '@/enums'
+import { FilingCodes } from '@/enums'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -1545,7 +1545,6 @@ describe('Standalone Directors Filing - payment required error', () => {
     rootStore.currentDate = '2019-07-15'
 
     rootStore.ARFilingYear = 2017
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
 
     // mock "file post" endpoint, with a pay error response
     const p1 = Promise.reject({

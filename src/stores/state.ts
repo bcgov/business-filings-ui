@@ -21,7 +21,6 @@ export const state: RootStateIF = {
 
   businessAddress: null,
   configObject: null,
-  currentFilingStatus: null,
   fetchingDataSpinner: false,
   filingData: [],
   nameRequest: null,
