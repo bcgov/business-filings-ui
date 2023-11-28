@@ -95,6 +95,7 @@
                 nudge-right="40"
                 :minDate="incorporationDateText"
                 :maxDate="data.currentDate"
+                :inputRules="dateRules"
                 @emitDate="data.prevAgmDate = $event"
                 @emitCancel="data.prevAgmDate = ''"
               />
@@ -132,6 +133,7 @@
                   :showCurrent="prevExpiryDateMin"
                   :minDate="prevExpiryDateMin"
                   :maxDate="prevExpiryDateMax"
+                  :inputRules="dateRules"
                   @emitDate="data.prevExpiryDate = $event"
                   @emitCancel="data.prevExpiryDate = ''"
                 />
@@ -169,6 +171,7 @@
               title="Intended date this AGM will be held"
               nudge-right="40"
               :minDate="data.currentDate"
+              :inputRules="dateRules"
               @emitDate="data.intendedAgmDate = $event"
               @emitCancel="data.intendedAgmDate = ''"
             />
@@ -231,6 +234,13 @@ export default class ExtensionRequest extends Vue {
       v => parseInt(v) >= this.data.incorporationDate?.getFullYear() ||
         'Year cannot be before incorporation date.',
       v => !DateUtilities.isDateFuture(v) || 'Year cannot be in the future.'
+    ]
+  }
+
+  /** The array of validations rule(s) for the  date fields. */
+  get dateRules (): Array<(v) => boolean | string> {
+    return [
+      v => !!v || 'A date is required.'
     ]
   }
 
