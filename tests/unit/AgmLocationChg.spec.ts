@@ -12,7 +12,6 @@ import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
-import { FilingStatus } from '@/enums'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -59,7 +58,6 @@ describe('AGM Location Chg view', () => {
     businessStore.setLegalName('My Test Entity')
     businessStore.setIdentifier('BC0007291')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
     rootStore.filingData = []
     rootStore.keycloakRoles = ['user']
 

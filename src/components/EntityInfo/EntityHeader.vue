@@ -72,18 +72,18 @@
     <template v-if="!!tempRegNumber">
       <!-- Title -->
       <div
-        id="ia-reg-name"
-        aria-label="Incorporation Application or Registration Entity Name"
+        id="app-name"
+        aria-label="Application Name or Future Entity Name"
       >
         {{ getEntityName || 'Unknown Name' }}
       </div>
 
       <!-- Subtitle -->
       <div
-        id="ia-reg-description"
-        aria-label="Incorporation Application or Registration Description"
+        id="app-description"
+        aria-label="Amalgamation, Incorporation or Registration Description"
       >
-        {{ iaRegDescription }}
+        {{ appDescription }}
       </div>
     </template>
   </header>
@@ -95,6 +95,7 @@ import { Getter } from 'pinia-class'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { FilingNames } from '@/enums'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { ApiFilingIF, ApiTaskIF } from '@/interfaces'
 
 @Component({})
 export default class EntityHeader extends Vue {
@@ -102,10 +103,14 @@ export default class EntityHeader extends Vue {
   @Prop({ required: true }) readonly tempRegNumber!: string // may be null
 
   @Getter(useBusinessStore) getEntityName!: string
+  @Getter(useFilingHistoryListStore) getFilings!: ApiFilingIF[]
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
   @Getter(useRootStore) getReasonText!: string
+  @Getter(useRootStore) getTasks!: ApiTaskIF[]
   @Getter(useFilingHistoryListStore) isAuthorizedToContinueOut!: boolean
+  @Getter(useRootStore) isDraftAmalgamation!: boolean
+  @Getter(useRootStore) isFiledAmalgamation!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isInLimitedRestoration!: boolean
   @Getter(useBusinessStore) isSoleProp!: boolean
@@ -120,8 +125,15 @@ export default class EntityHeader extends Vue {
     }
   }
 
-  /** The incorporation application or registration description. */
-  get iaRegDescription (): string {
+  /** The incorporation/registration/amalgamation application description. */
+  get appDescription (): string {
+    if (this.isDraftAmalgamation) {
+      return this.getTasks[0]?.task.filing.displayName
+    }
+    if (this.isFiledAmalgamation) {
+      return this.getFilings[0]?.displayName
+    }
+
     const filingName = [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP].includes(this.getLegalType)
       ? FilingNames.REGISTRATION
       : FilingNames.INCORPORATION_APPLICATION
@@ -136,7 +148,7 @@ export default class EntityHeader extends Vue {
 @import '@/assets/styles/theme.scss';
 
 #entity-legal-name,
-#ia-reg-name {
+#app-name {
   display: inline-block;
   color: $gray9;
   letter-spacing: -0.01rem;
@@ -148,7 +160,7 @@ export default class EntityHeader extends Vue {
 #business-description,
 #limited-restoration,
 #active-util,
-#ia-reg-description {
+#app-description {
   font-size: $px-14;
   color: $gray7;
 }

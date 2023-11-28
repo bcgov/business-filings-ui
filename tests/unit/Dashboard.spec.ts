@@ -6,8 +6,8 @@ import VueRouter from 'vue-router'
 import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils'
 import mockRouter from './mockRouter'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores'
-import { AllowableActions, CorpTypeCd } from '@/enums'
+import { useBusinessStore, useRootStore } from '@/stores'
+import { AllowableActions, CorpTypeCd, EntityStatus } from '@/enums'
 
 // Components
 import Dashboard from '@/views/Dashboard.vue'
@@ -23,6 +23,7 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 describe('Dashboard - UI', () => {
   const $route = { query: {} }
@@ -62,6 +63,23 @@ describe('Dashboard - UI', () => {
     expect(wrapper.findComponent(FilingHistoryList).exists()).toBe(true)
     expect(wrapper.findComponent(AddressListSm).exists()).toBe(true)
     expect(wrapper.findComponent(DirectorListSm).exists()).toBe(true)
+  })
+
+  it('identifies app tasks vs app filings', () => {
+    const tests = [
+      { entityStatus: EntityStatus.DRAFT_AMALGAMATION, isAppTask: true },
+      { entityStatus: EntityStatus.DRAFT_INCORP_APP, isAppTask: true },
+      { entityStatus: EntityStatus.DRAFT_REGISTRATION, isAppTask: true },
+      { entityStatus: EntityStatus.FILED_AMALGAMATION, isAppFiling: true },
+      { entityStatus: EntityStatus.FILED_INCORP_APP, isAppFiling: true },
+      { entityStatus: EntityStatus.FILED_REGISTRATION, isAppFiling: true }
+    ]
+
+    tests.forEach((test) => {
+      rootStore.entityStatus = test.entityStatus
+      expect(vm.isAppTask).toBe(!!test.isAppTask)
+      expect(vm.isAppFiling).toBe(!!test.isAppFiling)
+    })
   })
 
   it('updates its counts from sub-component events', () => {

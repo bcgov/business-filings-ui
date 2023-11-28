@@ -39,6 +39,7 @@ export interface TaskTodoIF {
   agmExtension?: any
   agmLocationChange?: any
   alteration?: AlterationIF
+  amalgamation?: any
   annualReport?: any
   business: ApiBusinessIF
   changeOfAddress?: any
@@ -49,6 +50,7 @@ export interface TaskTodoIF {
   conversion?: any
   correction?: any
   courtOrder?: any
+  displayName?: string // for app tasks only
   dissolution?: any
   documents?: Array<any>
   header: ApiHeaderIF

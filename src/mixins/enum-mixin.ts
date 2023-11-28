@@ -45,6 +45,11 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.ALTERATION)
   }
 
+  /** DEPRECATED Returns True if filing is an Amalgamation. */
+  isTypeAmalgamation (item: any): boolean {
+    return (item.name === FilingTypes.AMALGAMATION)
+  }
+
   /** DEPRECATED Returns True if filing is an Annual Report. */
   isTypeAnnualReport (item: any): boolean {
     return (item.name === FilingTypes.ANNUAL_REPORT)

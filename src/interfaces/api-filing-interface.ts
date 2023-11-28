@@ -65,6 +65,8 @@ export interface ApiFilingIF {
       toLegalType?: CorpTypeCd
     }
 
+    amalgamation?: any // some object
+
     // AR filings only
     annualReport?: {
       annualGeneralMeetingDate: IsoDatePacific

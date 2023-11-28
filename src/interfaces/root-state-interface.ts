@@ -1,4 +1,4 @@
-import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
+import { CorpTypeCd, EntityStatus } from '@/enums'
 import { ApiHeaderIF, ApiTaskIF, FilingDataIF, OfficeAddressIF, PartyIF } from '@/interfaces'
 
 /** Interface for the state filing object. */
@@ -17,7 +17,7 @@ export interface RootStateIF {
   authRoles: Array<string>
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
   currentJsDate: Date // 'now' as of dashboard loading in UTC
-  entityStatus: EntityStatus // for draft app only
+  entityStatus: EntityStatus // for amalgamations/applications/registrations only
   keycloakRoles: Array<string>
   stateFiling: StateFilingIF
   userKeycloakGuid: string
@@ -37,7 +37,6 @@ export interface RootStateIF {
   // other global data
   businessAddress: OfficeAddressIF
   configObject: any
-  currentFilingStatus: FilingStatus
   fetchingDataSpinner: boolean
   filingData: Array<FilingDataIF>
   nameRequest: any

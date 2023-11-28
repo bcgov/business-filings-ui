@@ -162,7 +162,6 @@ import {
   TaskTodoIF
 } from '@/interfaces'
 import {
-  CorpTypeCd,
   EntityStatus,
   FilingStatus,
   FilingTypes,
@@ -170,6 +169,7 @@ import {
   NigsMessage,
   Routes
 } from '@/enums'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from './stores'
 
@@ -239,12 +239,15 @@ export default {
       [
         'getEntityName',
         'getLegalType',
-        'getIdentifier'
+        'getIdentifier',
+        'isSoleProp'
       ]),
 
     ...mapState(useRootStore,
       [
         'getKeycloakRoles',
+        'isAppFiling',
+        'isAppTask',
         'isRoleStaff',
         'showFetchingDataSpinner'
       ]),
@@ -463,7 +466,7 @@ export default {
         }
       }
 
-      // is this a draft app entity?
+      // is this a draft app entity (incorporation/registration/amalgamation)?
       if (this.tempRegNumber) {
         try {
           await this.fetchDraftAppData() // throws on error
@@ -523,15 +526,15 @@ export default {
     async fetchDraftAppData (): Promise<void> {
       this.nameRequestInvalidType = null // reset for new fetches
 
-      const draft = await LegalServices.fetchDraftApp(this.tempRegNumber)
+      const application = await LegalServices.fetchDraftApp(this.tempRegNumber)
 
-      // Handle Draft filings
-      this.storeDraftApp(draft)
+      // handle draft application
+      this.storeDraftApp(application)
 
-      // if the draft has a NR, load it
-      if (this.localNrNumber) {
+      // if this app is a task (not a filing), and it has a NR, load it
+      if (this.isAppTask && this.localNrNumber) {
         const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
-        this.storeNrData(nr, draft)
+        this.storeNrData(nr, application)
       }
     },
 
@@ -610,21 +613,51 @@ export default {
       }
     },
 
-    /** Verifies and stores a draft applications data. */
+    /** Verifies and stores a draft application's data. */
     storeDraftApp (application: any): void {
       const filing = application?.filing
       const filingName = filing.header?.name as FilingTypes
+
       if (!filing || !filing.header || !filingName) {
         throw new Error(`Invalid ${filingName} filing`)
-      }
-
-      if (![FilingTypes.INCORPORATION_APPLICATION, FilingTypes.REGISTRATION].includes(filingName)) {
-        throw new Error(`Invalid ${filingName} filing - filing name`)
       }
 
       const status = filing.header.status as FilingStatus
       if (!status) {
         throw new Error(`Invalid ${filingName} filing - filing status`)
+      }
+
+      const isAmalgamation = (filingName === FilingTypes.AMALGAMATION)
+      const isIncorporationApplication = (filingName === FilingTypes.INCORPORATION_APPLICATION)
+      const isRegistration = (filingName === FilingTypes.REGISTRATION)
+
+      let entityStatus: EntityStatus
+      switch (status) {
+        case FilingStatus.DRAFT:
+        case FilingStatus.PENDING:
+          // this is a draft application
+          if (isAmalgamation) entityStatus = EntityStatus.DRAFT_AMALGAMATION
+          else if (isIncorporationApplication) entityStatus = EntityStatus.DRAFT_INCORP_APP
+          else if (isRegistration) entityStatus = EntityStatus.DRAFT_REGISTRATION
+          else throw new Error(`Invalid ${filingName} filing - filing name`)
+          break
+
+        case FilingStatus.COMPLETED:
+        case FilingStatus.PAID:
+          // this is a filed application
+          if (isAmalgamation) entityStatus = EntityStatus.FILED_AMALGAMATION
+          else if (isIncorporationApplication) entityStatus = EntityStatus.FILED_INCORP_APP
+          else if (isRegistration) entityStatus = EntityStatus.FILED_REGISTRATION
+          else throw new Error(`Invalid ${filingName} filing - filing name`)
+          break
+
+        default:
+          throw new Error(`Invalid ${filingName} filing - filing status`)
+      }
+
+      // special check for amalgamation application
+      if (isAmalgamation && !filing.amalgamation.type) {
+        throw new Error('Missing amalgamation type')
       }
 
       // NB: different object from actual NR
@@ -644,11 +677,10 @@ export default {
       }
 
       // store business info
+      this.setEntityStatus(entityStatus)
       this.setIdentifier(this.tempRegNumber)
       this.setLegalType(legalType)
-
-      // Draft Applications are always in good standing
-      this.setGoodStanding(true)
+      this.setGoodStanding(true) // draft apps are always in good standing
 
       // save local NR Number if present
       this.localNrNumber = nameRequest.nrNumber || null
@@ -656,29 +688,27 @@ export default {
       // store Legal Name if present
       if (nameRequest.legalName) this.setLegalName(nameRequest.legalName)
 
-      switch (status) {
-        case FilingStatus.DRAFT:
-        case FilingStatus.PENDING:
-          // this is a draft application
-          this.setEntityStatus(EntityStatus.DRAFT_APP)
-          this.storeDraftAppTask(application)
-          break
-
-        case FilingStatus.COMPLETED:
-        case FilingStatus.PAID:
-          // this is a filed application
-          this.setEntityStatus(EntityStatus.FILED_APP)
-          this.storeFiledApp(application)
-          break
-
-        default:
-          throw new Error(`Invalid ${filingName} filing - filing status`)
-      }
+      // store the application in the right list
+      if (this.isAppTask) this.storeDraftAppTask(application)
+      else if (this.isAppFiling) this.storeDraftAppFiling(application)
+      else throw new Error(`Invalid ${filingName} filing - filing status`)
     },
 
     /** Stores draft application as a task in the Todo List. */
     storeDraftAppTask (application: any): void {
       const filing = application.filing as TaskTodoIF
+      // NB: these were already validated in storeDraftApp()
+      const header = filing.header
+      const data = filing[header.name]
+
+      const description = GetCorpFullDescription(data.nameRequest.legalType)
+      const dba = this.isSoleProp ? ' / Doing Business As (DBA) ' : ' '
+      const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
+
+      // save display name for later
+      filing.displayName = `${description}${dba}${filingName}`
+
+      // add this as a task item
       const taskItem: ApiTaskIF = {
         enabled: true,
         order: 1,
@@ -688,29 +718,32 @@ export default {
     },
 
     /** Stores filed application as a filing in the Filing History List. */
-    storeFiledApp (filedApplication: any): void {
-      const filing = filedApplication.filing as TaskTodoIF
+    storeDraftAppFiling (application: any): void {
+      const filing = application.filing as TaskTodoIF
       // NB: these were already validated in storeDraftApp()
       const header = filing.header
-      const application = filing[header.name]
+      const data = filing[header.name]
 
       // set addresses
-      this.storeAddresses({ data: application.offices || [] })
+      this.storeAddresses({ data: data.offices || [] })
 
-      // Set parties
-      this.storeParties({ data: { parties: application.parties || [] } })
+      // set parties
+      this.storeParties({ data: { parties: data.parties || [] } })
 
-      // add this as a filing (for Filing History List)
+      const description = GetCorpFullDescription(data.nameRequest.legalType)
+      const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
+
+      // add this as a filing item
       const filingItem = {
         availableOnPaperOnly: header.availableOnPaperOnly,
         businessIdentifier: this.getIdentifier,
-        commentsCount: filedApplication.commentsCount,
-        commentsLink: filedApplication.commentsLink,
-        displayName: EnumUtilities.filingTypeToName(header.name),
-        documentsLink: filedApplication.documentsLink,
+        commentsCount: application.commentsCount,
+        commentsLink: application.commentsLink,
+        displayName: `${description} ${filingName}`,
+        documentsLink: application.documentsLink,
         effectiveDate: this.apiToUtcString(header.effectiveDate),
         filingId: header.filingId,
-        filingLink: filedApplication.filingLink,
+        filingLink: application.filingLink,
         isFutureEffective: header.isFutureEffective,
         name: header.name,
         status: header.status,
