@@ -168,17 +168,21 @@
                 content-class="right-tooltip"
               >
                 <template #activator="{ on }">
-                  <v-list-item
+                  <div
                     v-if="enableAgmExtension"
-                    id="agm-ext-list-item"
-                    :disabled="!isAllowed(AllowableActions.AGM_EXTENSION)"
                     v-on="on"
-                    @click="goToAgmExtensionFiling()"
                   >
-                    <v-list-item-title>
-                      <span class="app-blue">Request AGM Extension</span>
-                    </v-list-item-title>
-                  </v-list-item>
+                    <v-list-item
+                      id="agm-ext-list-item"
+                      :disabled="!isAllowed(AllowableActions.AGM_EXTENSION)"
+                      v-on="on"
+                      @click="goToAgmExtensionFiling()"
+                    >
+                      <v-list-item-title>
+                        <span class="app-blue">Request AGM Extension</span>
+                      </v-list-item-title>
+                    </v-list-item>
+                  </div>
                 </template>
                 <span>{{ agmExtensionToolTipText }}</span>
               </v-tooltip>
@@ -191,7 +195,6 @@
                 <template #activator="{ on }">
                   <div
                     v-if="enableAgmLocationChg"
-                    class="d-inline-block"
                     v-on="on"
                   >
                     <v-list-item

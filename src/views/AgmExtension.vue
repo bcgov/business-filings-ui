@@ -65,9 +65,6 @@
               :evaluateResult="extensionRequestValid"
             />
 
-            <!-- delete this debugging code -->
-            <pre class="mt-8">data: {{ data }}</pre>
-
             <!-- Certify -->
             <section class="mt-8">
               <header>
@@ -431,12 +428,15 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
         // convert local properties into API/schema properties
         year: this.data.agmYear,
         isFirstAgm: this.data.isFirstAgm,
-        prevAgmRefDate: this.data.prevAgmDate,
         extReqForAgmYear: this.data.isPrevExtension,
-        expireDateCurrExt: this.data.prevExpiryDate,
         intendedAgmDate: this.data.intendedAgmDate,
         totalApprovedExt: this.data.extensionDuration,
         expireDateApprovedExt: this.data.agmDueDate,
+        // conditionally add properties if not null
+        ...(this.data.prevAgmDate && { prevAgmRefDate: this.data.prevAgmDate }),
+        ...(this.data.prevExpiryDate && {
+          expireDateCurrExt: this.data.prevExpiryDate
+        }),
         // add in remaining local properties for future auditing
         ...this.data
       }

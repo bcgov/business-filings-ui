@@ -19,7 +19,7 @@
     "@bcrs-shared-components/confirm-dialog": "1.2.1",
     "@bcrs-shared-components/corp-type-module": "1.0.14",
     "@bcrs-shared-components/court-order-poa": "2.1.4",
-    "@bcrs-shared-components/date-picker": "1.2.38",
+    "@bcrs-shared-components/date-picker": "1.2.39",
     "@bcrs-shared-components/document-delivery": "1.2.1",
     "@bcrs-shared-components/enums": "1.1.2",
     "@bcrs-shared-components/expandable-help": "1.0.1",
