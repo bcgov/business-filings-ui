@@ -58,7 +58,6 @@ describe('AGM Location Chg view', () => {
     businessStore.setLegalName('My Test Entity')
     businessStore.setIdentifier('BC0007291')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
     rootStore.filingData = []
     rootStore.keycloakRoles = ['user']
 
