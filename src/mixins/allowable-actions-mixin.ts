@@ -98,9 +98,8 @@ export default class AllowableActionsMixin extends Vue {
       case AllowableActions.DIGITAL_CREDENTIALS: {
         // NB: this feature is targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('enable-digital-credentials')
-        const { loginSource } = this.getUserInfo
-        const isLoginSourceBCSC = loginSource === LoginSource.BCSC
-        return (ff && isLoginSourceBCSC && this.isSoleProp && !this.isRoleStaff)
+        const isDigitalBusinessCardAllowed = this.getAllowedActions?.digitalBusinessCard
+        return ff && isDigitalBusinessCardAllowed
       }
 
       case AllowableActions.DIRECTOR_CHANGE: {
