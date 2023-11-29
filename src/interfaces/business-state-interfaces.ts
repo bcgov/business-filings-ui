@@ -9,6 +9,7 @@ export interface FilingTypeIF {
 }
 
 export interface AllowedActionsIF {
+  digitalBusinessCard: boolean
   filing: {
     filingSubmissionLink: string
     filingTypes: Array<FilingTypeIF>
