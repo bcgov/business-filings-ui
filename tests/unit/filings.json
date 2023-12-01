@@ -554,6 +554,31 @@
       "status": "COMPLETED",
       "submittedDate": "Fri, 03 Feb 2023 18:52:00 GMT",
       "submitter": "Registry Staff"
+    },
+    {
+      "availableOnPaperOnly": false,
+      "businessIdentifier": "BC1234567",
+      "commentsCount": 0,
+      "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/comments",
+      "data": {
+        "amalgamation": {
+          "type": "regular"
+        },
+        "legalFilings": [
+          "amalgamation"
+        ]
+      },
+      "displayName": "Amalgamation Application - Regular",
+      "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/documents",
+      "effectiveDate": "Fri, 03 Feb 2023 18:52:00 GMT",
+      "filingId": 112751,
+      "filingLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751",
+      "isFutureEffective": false,
+      "name": "amalgamation",
+      "paymentStatusCode": null,
+      "status": "COMPLETED",
+      "submittedDate": "Fri, 03 Feb 2023 18:52:00 GMT",
+      "submitter": "Registry Staff"
     }
   ]
 }

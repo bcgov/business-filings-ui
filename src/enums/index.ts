@@ -21,4 +21,5 @@ export * from './affiliationInvitation'
 
 // external enums
 export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'
-export { AccountTypes, FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
+export { AccountTypes, AmalgamationTypes, FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions }
+  from '@bcrs-shared-components/enums'

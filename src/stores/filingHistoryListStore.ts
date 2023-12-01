@@ -192,7 +192,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
 
         // check if we're opening a new panel
         if (!isCurrentPanel) {
-        // get a reference to the filing so we can update it right in the main list
+          // get a reference to the filing so we can update it right in the main list
           const filing = this.getFilings[index]
 
           // check if we're missing comments or documents

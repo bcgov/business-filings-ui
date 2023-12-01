@@ -7,7 +7,7 @@ import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/sto
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
 import mockRouter from './mockRouter'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { EntityStatus } from '@/enums'
+import { EntityStatus, FilingStatus, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
@@ -106,6 +106,168 @@ describe('Entity Header - data', () => {
 
     expect(wrapper.find('#app-name').text()).toBe('My Future Company')
     expect(wrapper.find('#app-description').text()).toBe('BC Benefit Company Incorporation Application')
+  })
+
+  it('displays draft numbered amalgamation application', async () => {
+    // set store properties
+    businessStore.setLegalName(null)
+    rootStore.entityStatus = EntityStatus.DRAFT_AMALGAMATION
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    filingHistoryListStore.setFilings([])
+    rootStore.setTasks([
+      {
+        task: {
+          filing: {
+            displayName: 'BC Limited Company Amalgamation Application - Regular'
+          }
+        }
+      } as any
+    ])
+
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: null, tempRegNumber: 'T1234567' }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#app-name').text()).toBe('Numbered Amalgamated Company')
+    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Amalgamation Application - Regular')
+  })
+
+  it('displays draft named amalgamation application', async () => {
+    // set store properties
+    businessStore.setLegalName('My Amalgamated Company')
+    rootStore.entityStatus = EntityStatus.DRAFT_AMALGAMATION
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    filingHistoryListStore.setFilings([])
+    rootStore.setTasks([
+      {
+        task: {
+          filing: {
+            displayName: 'BC Limited Company Amalgamation Application - Regular'
+          }
+        }
+      } as any
+    ])
+
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: null, tempRegNumber: 'T1234567' }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#app-name').text()).toBe('My Amalgamated Company')
+    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Amalgamation Application - Regular')
+  })
+
+  it('displays filed numbered amalgamated company', async () => {
+    // set store properties
+    businessStore.setLegalName(null)
+    rootStore.entityStatus = EntityStatus.FILED_AMALGAMATION
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([
+      {
+        displayName: 'BC Limited Company Amalgamation Application - Regular',
+        effectiveDate: '2019-06-02 19:22:59 GMT',
+        name: FilingTypes.AMALGAMATION,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
+      } as any
+    ])
+
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: null, tempRegNumber: 'T1234567' }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#app-name').text()).toBe('Numbered Amalgamated Company')
+    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Amalgamation Application - Regular')
+  })
+
+  it('displays filed named amalgamated company', async () => {
+    // set store properties
+    businessStore.setLegalName('My Amalgamated Company')
+    rootStore.entityStatus = EntityStatus.FILED_AMALGAMATION
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([
+      {
+        displayName: 'BC Limited Company Amalgamation Application - Regular',
+        effectiveDate: '2019-06-02 19:22:59 GMT',
+        name: FilingTypes.AMALGAMATION,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
+      } as any
+    ])
+
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: null, tempRegNumber: 'T1234567' }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#app-name').text()).toBe('My Amalgamated Company')
+    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Amalgamation Application - Regular')
+  })
+
+  it('displays numbered amalgamated company', async () => {
+    // set store properties
+    businessStore.setLegalName(null)
+    rootStore.entityStatus = null
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([
+      {
+        displayName: 'BC Limited Company Amalgamation Application - Regular',
+        effectiveDate: '2019-06-02 19:22:59 GMT',
+        name: FilingTypes.AMALGAMATION,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
+      } as any
+    ])
+
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'BC1234567', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Numbered Limited Company')
+    expect(wrapper.find('#business-description').text()).toBe('BC Limited Company')
+  })
+
+  it('displays named amalgamated company', async () => {
+    // set store properties
+    businessStore.setLegalName('My Amalgamated Company')
+    rootStore.entityStatus = null
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([
+      {
+        displayName: 'BC Limited Company Amalgamation Application - Regular',
+        effectiveDate: '2019-06-02 19:22:59 GMT',
+        name: FilingTypes.AMALGAMATION,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
+      } as any
+    ])
+
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'BC1234567', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#entity-legal-name').text()).toBe('My Amalgamated Company')
+    expect(wrapper.find('#business-description').text()).toBe('BC Limited Company')
   })
 })
 

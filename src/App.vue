@@ -744,6 +744,7 @@ export default {
         effectiveDate: this.apiToUtcString(header.effectiveDate),
         filingId: header.filingId,
         filingLink: application.filingLink,
+        filingSubType: data.type,
         isFutureEffective: header.isFutureEffective,
         name: header.name,
         status: header.status,
@@ -757,7 +758,7 @@ export default {
       this.setFilings([filingItem])
     },
 
-    storeNrData (nr: NameRequestIF, ia: any): void {
+    storeNrData (nr: NameRequestIF, app: any): void {
       // verify that NR is valid
       const error = this.isNrInvalid(nr)
       if (error) {
@@ -773,7 +774,7 @@ export default {
 
       // if IA is not yet completed, check if NR is consumable
       // (once IA is completed, NR state will be CONSUMED)
-      if (ia.filing.header.status !== FilingStatus.COMPLETED) {
+      if (app.filing.header.status !== FilingStatus.COMPLETED) {
         const nrState = this.getNrState(nr) as NameRequestStates
         if (nrState !== NameRequestStates.APPROVED && nrState !== NameRequestStates.CONDITIONAL) {
           this.nameRequestInvalidDialog = true

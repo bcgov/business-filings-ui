@@ -19,8 +19,7 @@ import PaymentPending from '@/components/Dashboard/TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from '@/components/Dashboard/TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from '@/components/Dashboard/TodoList/PaymentUnsuccessful.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { FilingTypes } from '@bcrs-shared-components/enums'
-import { EntityState, EntityStatus, FilingStatus } from '@/enums'
+import { AmalgamationTypes, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -1600,6 +1599,93 @@ describe('TodoList - UI - Incorp Apps', () => {
   })
 })
 
+describe('TodoList - UI - Amalgamation Applications', () => {
+  beforeAll(() => {
+    sessionStorage.clear()
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+  })
+
+  it('displays a DRAFT numbered amalgamation application', async () => {
+    // init store
+    rootStore.nameRequest = null
+    rootStore.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: FilingTypes.AMALGAMATION,
+              status: FilingStatus.DRAFT
+            },
+            amalgamation: {
+              type: AmalgamationTypes.REGULAR
+            },
+            displayName: 'BC Limited Company Amalgamation Application - Regular'
+          } as any
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { vuetify })
+    const vm = wrapper.vm as any
+    await flushPromises()
+
+    expect(vm.todoItems.length).toEqual(1)
+    expect(wrapper.findAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    const item = wrapper.find('.list-item')
+    expect(item.find('.list-item__title').text()).toContain('BC Limited Company Amalgamation Application - Regular')
+    expect(item.find('.list-item__subtitle').text()).toBe('DRAFT')
+    expect(item.find('.btn-draft-resume').text()).toBe('Fill out Amalgamation Application')
+
+    wrapper.destroy()
+  })
+
+  it('displays a DRAFT named amalgamation application', async () => {
+    // init store
+    rootStore.nameRequest = {}
+    rootStore.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: FilingTypes.AMALGAMATION,
+              status: FilingStatus.DRAFT
+            },
+            amalgamation: {
+              type: AmalgamationTypes.REGULAR
+            },
+            displayName: 'My Amalgamated Company Amalgamation Application - Regular'
+          } as any
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { vuetify })
+    const vm = wrapper.vm as any
+    await flushPromises()
+
+    expect(vm.todoItems.length).toEqual(1)
+    expect(wrapper.findAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    const item = wrapper.find('.list-item')
+    expect(item.find('.list-item__title').text()).toContain('My Amalgamated Company Amalgamation Application - Regular')
+    expect(item.find('.expand-btn').text()).toBe('View Details')
+    expect(item.find('.list-item__subtitle').text()).toContain('NR APPROVED')
+    expect(item.find('.btn-draft-resume').text()).toBe('Fill out Amalgamation Application')
+
+    wrapper.destroy()
+  })
+})
+
 describe('TodoList - Click Tests', () => {
   const { assign } = window.location
 
@@ -2276,6 +2362,118 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     const button = wrapper.find('.list-item__actions .v-btn')
     expect(button.attributes('disabled')).toBeUndefined()
     expect(button.find('.v-btn__content').text()).toContain('Incorporate a Numbered Company')
+    await button.trigger('click')
+
+    // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+    const createUrl = 'https://create.url/?id=T123456789'
+    expect(window.location.assign).toHaveBeenCalledWith(createUrl + '&accountid=' + accountId)
+
+    wrapper.destroy()
+  })
+})
+
+describe('TodoList - Click Tests - Amalgamation Applications', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // init store
+    sessionStorage.clear()
+    const configuration = {
+      VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+    businessStore.setLegalName('My Amalgamated Company')
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: vi.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('redirects to Create URL when \'Resume\' is clicked on a numbered amalgamation application', async () => {
+    rootStore.nameRequest = null
+    rootStore.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: FilingTypes.AMALGAMATION,
+              status: FilingStatus.DRAFT
+            },
+            amalgamation: {
+              type: AmalgamationTypes.REGULAR
+            },
+            displayName: 'BC Limited Company Amalgamation Application - Regular'
+          } as any
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+    rootStore.entityStatus = EntityStatus.DRAFT_AMALGAMATION
+
+    const wrapper = mount(TodoList, { vuetify })
+    const vm = wrapper.vm as any
+    await flushPromises()
+
+    expect(vm.todoItems.length).toEqual(1)
+
+    const button = wrapper.find('.list-item__actions .v-btn')
+    expect(button.attributes('disabled')).toBeUndefined()
+    expect(button.find('.v-btn__content').text()).toContain('Fill out Amalgamation Application')
+    await button.trigger('click')
+
+    // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+    const createUrl = 'https://create.url/?id=T123456789'
+    expect(window.location.assign).toHaveBeenCalledWith(createUrl + '&accountid=' + accountId)
+
+    wrapper.destroy()
+  })
+
+  it('redirects to Create URL when button is clicked on a named amalgamation application', async () => {
+    rootStore.nameRequest = { nrNum: 'NR 1234567' }
+    rootStore.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: FilingTypes.AMALGAMATION,
+              status: FilingStatus.DRAFT
+            },
+            amalgamation: {
+              nameRequest: {
+                nrNumber: 'NR 1234567'
+              },
+              type: AmalgamationTypes.REGULAR
+            },
+            displayName: 'BC Limited Company Amalgamation Application - Regular'
+          } as any
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+    rootStore.entityStatus = EntityStatus.DRAFT_AMALGAMATION
+
+    const wrapper = mount(TodoList, { vuetify })
+    const vm = wrapper.vm as any
+    await flushPromises()
+
+    expect(vm.todoItems.length).toEqual(1)
+
+    const button = wrapper.find('.list-item__actions .v-btn')
+    expect(button.attributes('disabled')).toBeUndefined()
+    expect(button.find('.v-btn__content').text()).toContain('Fill out Amalgamation Application')
     await button.trigger('click')
 
     // verify redirection
