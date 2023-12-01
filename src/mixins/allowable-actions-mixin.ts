@@ -4,7 +4,6 @@ import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
-import { LoginSource } from 'sbc-common-components/src/util/constants'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {

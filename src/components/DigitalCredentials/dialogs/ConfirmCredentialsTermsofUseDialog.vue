@@ -12,14 +12,12 @@
         <p
           id="dialog-title"
           class="warning-title"
-        >
-          Digital Business Card Terms of Use
-        </p>
+        />
         <p
           id="dialog-text"
           class="warning-text"
         >
-          I promise to be a good person and not use this credential for evil.
+          <CredentialsTermsOfUse />
         </p>
       </v-card-text>
 
@@ -53,8 +51,13 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import CredentialsTermsOfUse from './CredentialsTermsOfUse.vue'
 
-  @Component({})
+  @Component({
+    components: {
+      CredentialsTermsOfUse
+    }
+  })
 export default class ConfirmCredentialsTermsOfUseDialog extends Vue {
     /** Prop to display the dialog. */
     @Prop({ default: false }) readonly dialog!: boolean
