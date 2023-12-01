@@ -2114,7 +2114,7 @@ describe('App as a draft named amalgamation application', () => {
       return Promise.resolve(USER_INFO)
     })
 
-    // GET NR data
+    // mock "fetchNameRequest" legal service
     vi.spyOn(LegalServices, 'fetchNameRequest').mockImplementation((): any => {
       return Promise.resolve({
         applicants: {},
