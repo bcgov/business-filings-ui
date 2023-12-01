@@ -52,6 +52,7 @@ describe('StaffNotation', () => {
     // allow all filings referenced in this component
     // some of these are normally mutually exclusive, but that's OK for testing
     businessStore.setAllowedActions({
+      digitalBusinessCard: false,
       filing: {
         filingTypes: [
           { name: FilingTypes.REGISTRARS_NOTATION },
