@@ -98,6 +98,7 @@ describe('Dashboard - UI', () => {
 
     vi.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
     businessStore.setAllowedActions({
+      digitalBusinessCard: false,
       filing: {
         filingTypes: [
           { name: 'changeOfAddress' },
@@ -122,6 +123,7 @@ describe('Dashboard - UI', () => {
 
     vi.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
     businessStore.setAllowedActions({
+      digitalBusinessCard: false,
       filing: {
         filingTypes: []
       } as any

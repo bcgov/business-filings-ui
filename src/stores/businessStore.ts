@@ -142,13 +142,23 @@ export const useBusinessStore = defineStore('business', {
     },
 
     /** Is True if entity is a Benefit Company. */
-    isBComp (state: BusinessStateIF): boolean {
-      return (state.businessInfo.legalType === CorpTypeCd.BENEFIT_COMPANY)
+    isBComp (): boolean {
+      return (this.getLegalType === CorpTypeCd.BENEFIT_COMPANY)
     },
 
     /** Is True if entity is a BC Company. */
-    isBcCompany (state: BusinessStateIF): boolean {
-      return (state.businessInfo.legalType === CorpTypeCd.BC_COMPANY)
+    isBcCompany (): boolean {
+      return (this.getLegalType === CorpTypeCd.BC_COMPANY)
+    },
+
+    /** Is True if entity is a BC Community Contribution Company. */
+    isCcc (): boolean {
+      return (this.getLegalType === CorpTypeCd.BC_CCC)
+    },
+
+    /** Is True if entity is a BC ULC Company. */
+    isUlc (): boolean {
+      return (this.getLegalType === CorpTypeCd.BC_ULC_COMPANY)
     },
 
     /** Is True if entity is a BEN/BC/CCC/ULC. */
@@ -161,19 +171,24 @@ export const useBusinessStore = defineStore('business', {
       )
     },
 
-    /** Is True if entity is a BC Community Contribution Company. */
-    isCcc (state: BusinessStateIF): boolean {
-      return (state.businessInfo.legalType === CorpTypeCd.BC_CCC)
-    },
-
     /** Is True if entity is a Cooperative. */
-    isCoop (state: BusinessStateIF): boolean {
-      return (state.businessInfo.legalType === CorpTypeCd.COOP)
+    isCoop (): boolean {
+      return (this.getLegalType === CorpTypeCd.COOP)
     },
 
-    /** Is True if entity is a BC Corporation. */
-    isCorp (state: BusinessStateIF): boolean {
-      return (state.businessInfo.legalType === CorpTypeCd.CORPORATION)
+    /** Is True if entity is a Corporation. */
+    isCorp (): boolean {
+      return (this.getLegalType === CorpTypeCd.CORPORATION)
+    },
+
+    /** Is True if entity is a General Partnership. */
+    isPartnership (): boolean {
+      return (this.getLegalType === CorpTypeCd.PARTNERSHIP)
+    },
+
+    /** Is True if entity is a Sole Proprietorship. */
+    isSoleProp (): boolean {
+      return (this.getLegalType === CorpTypeCd.SOLE_PROP)
     },
 
     /** Is True if entity is a Sole Proprietorship or General Partnership. */
@@ -194,21 +209,6 @@ export const useBusinessStore = defineStore('business', {
     /** Is True if business is in liquidation. */
     isLiquidation (): boolean {
       return (this.getBusinessState === EntityState.LIQUIDATION)
-    },
-
-    /** Is True if entity is a General Partnership. */
-    isPartnership (): boolean {
-      return (this.getLegalType === CorpTypeCd.PARTNERSHIP)
-    },
-
-    /** Is True if entity is a Sole Proprietorship. */
-    isSoleProp (): boolean {
-      return (this.getLegalType === CorpTypeCd.SOLE_PROP)
-    },
-
-    /** Is True if entity is a BC ULC Company. */
-    isUlc (): boolean {
-      return (this.getLegalType === CorpTypeCd.BC_ULC_COMPANY)
     }
   },
 

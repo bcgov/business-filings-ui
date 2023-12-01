@@ -4,7 +4,6 @@ import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
-import { LoginSource } from 'sbc-common-components/src/util/constants'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {
@@ -15,7 +14,6 @@ export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) isSoleProp!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
-  @Getter(useRootStore) getUserInfo!: any
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -47,6 +45,10 @@ export default class AllowableActionsMixin extends Vue {
 
       case AllowableActions.AGM_LOCATION_CHANGE: {
         return this.isAllowedFiling(FilingTypes.AGM_LOCATION_CHANGE)
+      }
+
+      case AllowableActions.AMALGAMATION: {
+        return this.isAllowedFiling(FilingTypes.AMALGAMATION)
       }
 
       case AllowableActions.BUSINESS_INFORMATION: {
@@ -99,7 +101,7 @@ export default class AllowableActionsMixin extends Vue {
         // NB: this feature is targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('enable-digital-credentials')
         const isDigitalBusinessCardAllowed = this.getAllowedActions?.digitalBusinessCard
-        return ff && isDigitalBusinessCardAllowed
+        return (ff && isDigitalBusinessCardAllowed)
       }
 
       case AllowableActions.DIRECTOR_CHANGE: {

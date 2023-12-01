@@ -173,7 +173,6 @@ describe('AGM Extension view', () => {
     })
 
     // simulate eligible data and valid component
-    // *** TODO: add more data here and below when verifying payload
     wrapper.setData({
       data: { isEligible: true },
       extensionRequestValid: true
