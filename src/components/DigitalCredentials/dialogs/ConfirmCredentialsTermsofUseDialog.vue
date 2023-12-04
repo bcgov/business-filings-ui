@@ -2,7 +2,7 @@
   <v-dialog
     id="confirm-credentials-terms-of-use-dialog"
     v-model="dialog"
-    width="45rem"
+    width="60rem"
     persistent
     :attach="attach"
     content-class="confirm-credentials-terms-of-use-dialog"

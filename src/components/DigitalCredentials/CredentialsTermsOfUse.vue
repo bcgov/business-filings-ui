@@ -34,7 +34,7 @@
             <li>
               if you are under 19, have obtained the consent of your parent or guardian to accept these Terms
               of Use on your behalf, in which case your parent or guardian is responsible for your
-              compliancewith these Terms of Use.
+              compliance with these Terms of Use.
             </li>
           </ol>
         </div>
@@ -257,7 +257,7 @@
           target="_blank"
         >{{ touLink }}</a> for changes. The Province is not
         responsible for your failure to receive any notification sent to your Wallet or email address, and
-        regardless of whether you receive such notification your continued use of the Digital Business Card will
+        regardless of whether you receive such notification, your continued use of the Digital Business Card will
         constitute your unconditional acceptance of any changes to these Terms of Use.
       </p>
     </section>
@@ -298,7 +298,7 @@
           In these Terms of Use, the following terms have the following meanings:
         </p>
         <p>
-          <span class="font-weight-bold">“BC Services Card”</span> means the Province issued identification card
+          <span class="font-weight-bold">“BC Services Card”</span> means the Province-issued identification card
           to facilitate access to various government services and programs and which may include information such
           as an individual's name, photograph, date of birth, and a unique identifier.
         </p>
@@ -342,6 +342,10 @@ export default class CredentialsTermsOfUse extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
+.font-weight-bold {
+  color: $gray9;
+}
 
 ol.alpha {
   counter-reset: list;
