@@ -4,7 +4,7 @@
     class="warning-text"
   >
     <section>
-      <p class="font-weight-bold text-center warning-title">
+      <p class="font-weight-bold text-center warning-title pt-4">
         TERMS OF USE
       </p>
     </section>
