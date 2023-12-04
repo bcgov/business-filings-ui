@@ -4,12 +4,12 @@
     class="warning-text"
   >
     <section>
-      <p class="font-weight-bold text-center warning-title pt-4">
+      <p class="font-weight-bold terms-of-use-title text-center warning-title pt-4">
         TERMS OF USE
       </p>
     </section>
     <section>
-      <p class="font-weight-bold">
+      <p class="font-weight-bold terms-of-use-title">
         1.&emsp;Terms of Use
       </p>
       <p class="text-justify">
@@ -19,7 +19,7 @@
       </p>
     </section>
     <section>
-      <p class="font-weight-bold">
+      <p class="font-weight-bold terms-of-use-title">
         2.&emsp;Ability to Accept Terms of Use
       </p>
       <div class="text-justify">
@@ -41,7 +41,7 @@
       </div>
     </section>
     <section>
-      <p class="font-weight-bold pt-4">
+      <p class="font-weight-bold terms-of-use-title pt-4">
         3.&emsp;Creation and Issuance of Digital Business Card
       </p>
       <div class="text-justify">
@@ -67,7 +67,7 @@
       </div>
     </section>
     <section>
-      <p class="font-weight-bold pt-4">
+      <p class="font-weight-bold terms-of-use-title pt-4">
         4.&emsp;Presentation of Digital Business Card
       </p>
       <p class="text-justify">
@@ -78,7 +78,7 @@
       </p>
     </section>
     <section>
-      <p class="font-weight-bold">
+      <p class="font-weight-bold terms-of-use-title">
         5.&emsp;Acceptable Use
       </p>
       <div class="text-justify">
@@ -114,7 +114,7 @@
       </div>
     </section>
     <section>
-      <p class="font-weight-bold pt-4">
+      <p class="font-weight-bold terms-of-use-title pt-4">
         6.&emsp;Wallet and Device Protection
       </p>
       <div class="text-justify">
@@ -134,7 +134,7 @@
       </div>
     </section>
     <section>
-      <p class="font-weight-bold pt-4">
+      <p class="font-weight-bold terms-of-use-title pt-4">
         7.&emsp;Ownership and License
       </p>
       <p class="text-justify">
@@ -145,7 +145,7 @@
       </p>
     </section>
     <section>
-      <p class="font-weight-bold">
+      <p class="font-weight-bold terms-of-use-title">
         8.&emsp;Revocation of Digital Business Card
       </p>
       <p class="text-justify">
@@ -159,7 +159,7 @@
       </p>
     </section>
     <section>
-      <p class="font-weight-bold">
+      <p class="font-weight-bold terms-of-use-title">
         9.&emsp;Termination
       </p>
       <div class="text-justify">
@@ -179,7 +179,7 @@
       </div>
     </section>
     <section>
-      <p class="font-weight-bold pt-4">
+      <p class="font-weight-bold terms-of-use-title pt-4">
         10.&emsp;No Warranty
       </p>
       <div class="text-justify">
@@ -207,7 +207,7 @@
       </div>
     </section>
     <section>
-      <p class="font-weight-bold pt-4">
+      <p class="font-weight-bold terms-of-use-title pt-4">
         11.&emsp;Limitation of Liability
       </p>
       <p class="text-justify">
@@ -223,7 +223,7 @@
       </p>
     </section>
     <section>
-      <p class="font-weight-bold">
+      <p class="font-weight-bold terms-of-use-title">
         12.&emsp;Indemnity
       </p>
       <div class="text-justify">
@@ -243,7 +243,7 @@
       </div>
     </section>
     <section>
-      <p class="font-weight-bold pt-4">
+      <p class="font-weight-bold terms-of-use-title pt-4">
         13.&emsp;Changes to Terms of Use
       </p>
       <p class="text-justify">
@@ -262,7 +262,7 @@
       </p>
     </section>
     <section>
-      <p class="font-weight-bold">
+      <p class="font-weight-bold terms-of-use-title">
         14.&emsp;Province Contact Information
       </p>
       <p class="text-justify">
@@ -272,7 +272,7 @@
       </p>
     </section>
     <section>
-      <p class="font-weight-bold">
+      <p class="font-weight-bold terms-of-use-title">
         15.&emsp;General
       </p>
       <p class="text-justify">
@@ -290,7 +290,7 @@
       </p>
     </section>
     <section>
-      <p class="font-weight-bold">
+      <p class="font-weight-bold terms-of-use-title">
         16.&emsp;Definitions
       </p>
       <div class="text-justify">
@@ -298,31 +298,33 @@
           In these Terms of Use, the following terms have the following meanings:
         </p>
         <p>
-          <span class="font-weight-bold">“BC Services Card”</span> means the Province-issued identification card
-          to facilitate access to various government services and programs and which may include information such
-          as an individual's name, photograph, date of birth, and a unique identifier.
+          <span class="font-weight-bold terms-of-use-title">“BC Services Card”</span> means the Province-issued
+          identification card to facilitate access to various government services and programs and which may include
+          information such as an individual's name, photograph, date of birth, and a unique identifier.
         </p>
         <p>
-          <span class="font-weight-bold">“Digital Business Card”</span> means the verifiable credential issued to
-          you to identify you as the person who, in relation to the matters set out in section 88(1)(a) to (c) of
-          the <span class="font-italic">Partnership Act</span>, filed a registration statement respecting a sole
-          proprietorship with the Registrar of Companies for the purpose of providing that information to
-          Verifiers.
+          <span class="font-weight-bold terms-of-use-title">“Digital Business Card”</span> means the verifiable
+          credential issued to you to identify you as the person who, in relation to the matters set out in section
+          88(1)(a) to (c) of the <span class="font-italic">Partnership Act</span>, filed a registration statement
+          respecting a sole proprietorship with the Registrar of Companies for the purpose of providing that information
+          to Verifiers.
         </p>
         <p>
-          <span class="font-weight-bold">“Province”</span> means His Majesty the King in right of the Province of
-          British Columbia as represented by the Minister of Citizens' Services.
+          <span class="font-weight-bold terms-of-use-title">“Province”</span> means His Majesty the King in right of the
+          Province of British Columbia as represented by the Minister of Citizens' Services.
         </p>
         <p>
-          <span class="font-weight-bold">“Terms of Use”</span> means the agreement referred to in section 1.
+          <span class="font-weight-bold terms-of-use-title">“Terms of Use”</span> means the agreement referred to in
+          section 1.
         </p>
         <p>
-          <span class="font-weight-bold">“Verifiers”</span> means third parties to whom you present your Digital
-          Business Card for the purpose of allowing those third parties to verify its contents.
+          <span class="font-weight-bold terms-of-use-title">“Verifiers”</span> means third parties to whom you present
+          your Digital Business Card for the purpose of allowing those third parties to verify its contents.
         </p>
         <p>
-          <span class="font-weight-bold">“Wallet”</span> means software, such as the BC Wallet mobile device app,
-          that you can use to receive, store and present digital credentials such as your Digital Business Card.
+          <span class="font-weight-bold terms-of-use-title">“Wallet”</span> means software, such as the BC Wallet mobile
+          device app, that you can use to receive, store and present digital credentials such as your Digital Business
+          Card.
         </p>
       </div>
     </section>
@@ -343,7 +345,7 @@ export default class CredentialsTermsOfUse extends Vue {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.font-weight-bold {
+.terms-of-use-title {
   color: $gray9;
 }
 
@@ -393,5 +395,4 @@ ol.roman {
   font-size: $px-16;
   color: $gray7;
   line-height: $px-24;
-}
-</style>
+}</style>
