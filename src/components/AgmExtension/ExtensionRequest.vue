@@ -382,8 +382,8 @@ export default class ExtensionRequest extends Vue {
         DateUtilities.dateToYyyyMmDd(this.data.incorporationDate), this.data.prevExpiryDate) - 18
       this.data.extensionDuration = Math.min(6, (12 - totalExtensionApproved))
       this.data.agmDueDate = DateUtilities.addMonthsToDate(
-        this.data.extensionDuration + totalExtensionApproved,
-        cutOffYyyyMmDd
+        this.data.extensionDuration,
+        this.data.prevExpiryDate
       )
     }
   }
