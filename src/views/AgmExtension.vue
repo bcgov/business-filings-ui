@@ -176,7 +176,7 @@ import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } f
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons } from '@/enums'
 import { AgmExtEvalIF, ConfirmDialogType, EmptyAgmExtEval } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -206,7 +206,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
   @Getter(useRootStore) getUserInfo!: any
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
-
+  @Getter(useFilingHistoryListStore) getTotalAgmExtensionDuration!: number
   // enum for template
   readonly FilingCodes = FilingCodes
 
@@ -430,7 +430,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
         isFirstAgm: this.data.isFirstAgm,
         extReqForAgmYear: this.data.isPrevExtension,
         intendedAgmDate: this.data.intendedAgmDate,
-        totalApprovedExt: this.data.extensionDuration,
+        totalApprovedExt: this.getTotalAgmExtensionDuration + this.data.extensionDuration,
         expireDateApprovedExt: this.data.agmDueDate,
         // conditionally add properties if not null
         ...(this.data.prevAgmDate && { prevAgmRefDate: this.data.prevAgmDate }),
