@@ -95,7 +95,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.AMALGAMATION)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: FilingTypes.AMALGAMATION })
+    setAllowedFilingType({ name: FilingTypes.AMALGAMATION_APPLICATION })
     expect(vm.isAllowed(AllowableActions.AMALGAMATION)).toBe(true)
   })
 

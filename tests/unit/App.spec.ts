@@ -2030,10 +2030,10 @@ describe('App as a draft numbered amalgamation application', () => {
           header: {
             date: '2020-05-21T00:11:55.887740+00:00',
             filingId: 789,
-            name: FilingTypes.AMALGAMATION,
+            name: FilingTypes.AMALGAMATION_APPLICATION,
             status: FilingStatus.DRAFT
           },
-          amalgamation: {
+          amalgamationApplication: {
             nameRequest: {
               legalType: CorpTypeCd.BC_COMPANY
             },
@@ -2079,9 +2079,9 @@ describe('App as a draft numbered amalgamation application', () => {
     expect(rootStore.tasks[0].enabled).toBe(true)
     expect(rootStore.tasks[0].order).toBe(1)
     expect(rootStore.tasks[0].task.filing.business).not.toBeNull()
-    expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamation')
+    expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamationApplication')
     expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
-    expect(rootStore.tasks[0].task.filing.amalgamation).not.toBeNull()
+    expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
     expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Amalgamation Application - Regular')
   })
 })
@@ -2143,10 +2143,10 @@ describe('App as a draft named amalgamation application', () => {
           header: {
             date: '2020-05-21T00:11:55.887740+00:00',
             filingId: 789,
-            name: FilingTypes.AMALGAMATION,
+            name: FilingTypes.AMALGAMATION_APPLICATION,
             status: FilingStatus.DRAFT
           },
-          amalgamation: {
+          amalgamationApplication: {
             nameRequest: {
               nrNumber: 'NR 1234567',
               legalType: CorpTypeCd.BC_COMPANY
@@ -2193,9 +2193,9 @@ describe('App as a draft named amalgamation application', () => {
     expect(rootStore.tasks[0].enabled).toBe(true)
     expect(rootStore.tasks[0].order).toBe(1)
     expect(rootStore.tasks[0].task.filing.business).not.toBeNull()
-    expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamation')
+    expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamationApplication')
     expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
-    expect(rootStore.tasks[0].task.filing.amalgamation).not.toBeNull()
+    expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
     expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Amalgamation Application - Regular')
   })
 })
@@ -2241,10 +2241,10 @@ describe('App as a completed amalgamation application', () => {
             date: '2020-05-21T00:11:55.887740+00:00',
             effectiveDate: '2020-05-21T00:11:55.887740+00:00',
             filingId: 789,
-            name: FilingTypes.AMALGAMATION,
+            name: FilingTypes.AMALGAMATION_APPLICATION,
             status: FilingStatus.COMPLETED
           },
-          amalgamation: {
+          amalgamationApplication: {
             nameRequest: {
               nrNumber: 'NR 1234567',
               legalType: CorpTypeCd.BC_COMPANY
@@ -2293,9 +2293,9 @@ describe('App as a completed amalgamation application', () => {
     expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
     expect(filingHistoryListStore.filings[0].displayName).toBe('BC Limited Company Amalgamation Application - Regular')
     expect(filingHistoryListStore.filings[0].filingSubType).toBe(FilingSubTypes.AMALGAMATION_REGULAR)
-    expect(filingHistoryListStore.filings[0].name).toBe('amalgamation')
+    expect(filingHistoryListStore.filings[0].name).toBe('amalgamationApplication')
     expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
     expect(filingHistoryListStore.filings[0].data.applicationDate).toBe('2020-05-20')
-    expect(filingHistoryListStore.filings[0].data.legalFilings).toEqual(['amalgamation'])
+    expect(filingHistoryListStore.filings[0].data.legalFilings).toEqual(['amalgamationApplication'])
   })
 })

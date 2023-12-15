@@ -35,7 +35,7 @@ describe('Amalgamation Filing', () => {
           documentsLink: 'dummy_link',
           data: {},
           effectiveDate: new Date('2021-01-01 08:00:00 GMT'),
-          name: FilingTypes.AMALGAMATION,
+          name: FilingTypes.AMALGAMATION_APPLICATION,
           status: FilingStatus.COMPLETED,
           submittedDate: new Date('2021-01-01 08:00:00 GMT'),
           submitter: 'John Doe'

@@ -65,7 +65,7 @@ export interface ApiFilingIF {
       toLegalType?: CorpTypeCd
     }
 
-    amalgamation?: any // some object
+    amalgamationApplication?: any // some object
 
     // AR filings only
     annualReport?: {

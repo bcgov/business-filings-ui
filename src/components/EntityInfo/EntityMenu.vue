@@ -41,6 +41,46 @@
       </v-tooltip>
     </span>
 
+    <!-- Amalgamate -->
+    <span v-if="isBusiness && !isHistorical">
+      <template v-if="!isAdminFrozen && !isPendingDissolution">
+        <v-btn
+          id="amalgamate-button"
+          small
+          text
+          color="primary"
+          :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
+        >
+          <v-icon medium>mdi-domain-plus</v-icon>
+          <span class="font-13 ml-1">Amalgamate</span>
+        </v-btn>
+      </template>
+      <template v-else>
+        <v-tooltip
+          top
+          content-class="top-tooltip"
+          transition="fade-transition"
+        >
+          <template #activator="{ on }">
+            <span v-on="on">
+              <v-btn
+                id="amalgamate-button"
+                small
+                text
+                color="primary"
+                :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
+                v-on="on"
+              >
+                <v-icon medium>mdi-domain-plus</v-icon>
+                <span class="font-13 ml-1">Amalgamate</span>
+              </v-btn>
+            </span>
+          </template>
+          {{ amalgamateTooltipText }}
+        </v-tooltip>
+      </template>
+    </span>
+
     <!-- Download Business Summary -->
     <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
       <v-tooltip
@@ -237,6 +277,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
@@ -282,6 +323,14 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
       return 'The business must be in good standing to request an AGM location change.'
     } else {
       return 'Request an AGM location change.'
+    }
+  }
+
+  get amalgamateTooltipText (): string {
+    if (this.isAdminFrozen) {
+      return 'This business is frozen and cannot be involved in an amalgamation.'
+    } else {
+      return 'This business has a future effective dissolution and cannot be involved in an amalgamation.'
     }
   }
 

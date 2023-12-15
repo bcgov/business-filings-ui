@@ -627,7 +627,7 @@ export default {
         throw new Error(`Invalid ${filingName} filing - filing status`)
       }
 
-      const isAmalgamation = (filingName === FilingTypes.AMALGAMATION)
+      const isAmalgamation = (filingName === FilingTypes.AMALGAMATION_APPLICATION)
       const isIncorporationApplication = (filingName === FilingTypes.INCORPORATION_APPLICATION)
       const isRegistration = (filingName === FilingTypes.REGISTRATION)
 
@@ -656,7 +656,7 @@ export default {
       }
 
       // special check for amalgamation application
-      if (isAmalgamation && !filing.amalgamation.type) {
+      if (isAmalgamation && !filing.amalgamationApplication.type) {
         throw new Error('Missing amalgamation type')
       }
 

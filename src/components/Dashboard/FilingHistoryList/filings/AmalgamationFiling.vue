@@ -38,7 +38,7 @@
         <h4>Amalgamation Complete</h4>
 
         <p>
-          {{ companyName }} has been successfully incorporated.
+          {{ companyName }} has been successfully amalgamated.
         </p>
 
         <p>

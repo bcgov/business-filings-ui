@@ -1614,10 +1614,10 @@ describe('TodoList - UI - Amalgamation Applications', () => {
         task: {
           filing: {
             header: {
-              name: FilingTypes.AMALGAMATION,
+              name: FilingTypes.AMALGAMATION_APPLICATION,
               status: FilingStatus.DRAFT
             },
-            amalgamation: {
+            amalgamationApplication: {
               type: AmalgamationTypes.REGULAR
             },
             displayName: 'BC Limited Company Amalgamation Application - Regular'
@@ -1653,10 +1653,10 @@ describe('TodoList - UI - Amalgamation Applications', () => {
         task: {
           filing: {
             header: {
-              name: FilingTypes.AMALGAMATION,
+              name: FilingTypes.AMALGAMATION_APPLICATION,
               status: FilingStatus.DRAFT
             },
-            amalgamation: {
+            amalgamationApplication: {
               type: AmalgamationTypes.REGULAR
             },
             displayName: 'My Amalgamated Company Amalgamation Application - Regular'
@@ -2406,10 +2406,10 @@ describe('TodoList - Click Tests - Amalgamation Applications', () => {
         task: {
           filing: {
             header: {
-              name: FilingTypes.AMALGAMATION,
+              name: FilingTypes.AMALGAMATION_APPLICATION,
               status: FilingStatus.DRAFT
             },
-            amalgamation: {
+            amalgamationApplication: {
               type: AmalgamationTypes.REGULAR
             },
             displayName: 'BC Limited Company Amalgamation Application - Regular'
@@ -2447,10 +2447,10 @@ describe('TodoList - Click Tests - Amalgamation Applications', () => {
         task: {
           filing: {
             header: {
-              name: FilingTypes.AMALGAMATION,
+              name: FilingTypes.AMALGAMATION_APPLICATION,
               status: FilingStatus.DRAFT
             },
-            amalgamation: {
+            amalgamationApplication: {
               nameRequest: {
                 nrNumber: 'NR 1234567'
               },
