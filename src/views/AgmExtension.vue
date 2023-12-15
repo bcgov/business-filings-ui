@@ -206,7 +206,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
   @Getter(useRootStore) getUserInfo!: any
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
-  @Getter(useFilingHistoryListStore) getTotalAgmExtensionDuration!: number
+  @Getter(useFilingHistoryListStore) getTotalAgmExtensionDuration!: (year: number) => number;
   // enum for template
   readonly FilingCodes = FilingCodes
 
@@ -430,7 +430,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
         isFirstAgm: this.data.isFirstAgm,
         extReqForAgmYear: this.data.isPrevExtension,
         intendedAgmDate: this.data.intendedAgmDate,
-        totalApprovedExt: this.getTotalAgmExtensionDuration + this.data.extensionDuration,
+        totalApprovedExt: this.getTotalAgmExtensionDuration(Number(this.data.agmYear)) + this.data.extensionDuration,
         expireDateApprovedExt: this.data.agmDueDate,
         // conditionally add properties if not null
         ...(this.data.prevAgmDate && { prevAgmRefDate: this.data.prevAgmDate }),
