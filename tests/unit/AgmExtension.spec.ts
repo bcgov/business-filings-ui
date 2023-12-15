@@ -3,10 +3,10 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createLocalVue, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 import { LegalServices } from '@/services'
 
 // components
@@ -30,6 +30,7 @@ const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 const rootStore = useRootStore()
+const filingHistoryListStore = useFilingHistoryListStore()
 
 describe('AGM Extension view', () => {
   let wrapper: any
@@ -153,6 +154,17 @@ describe('AGM Extension view', () => {
 
     // verify that dialog is now enabled
     expect(wrapper.findComponent(NotEligibleExtensionDialog).attributes('dialog')).toBe('true')
+  })
+
+  it('returns total months in agm within the same year extension', async () => {
+    const filingHistoryList = [
+      { name: FilingTypes.AGM_EXTENSION, data: { agmExtension: { extensionDuration: 2, year: 2023 } } },
+      { name: FilingTypes.AGM_EXTENSION, data: { agmExtension: { extensionDuration: 4, year: 2023 } } },
+      { name: FilingTypes.AGM_EXTENSION, data: { agmExtension: { extensionDuration: 4, year: 2024 } } }
+    ]
+    filingHistoryListStore.setFilings(filingHistoryList as any)
+    const totalAgmExtension = filingHistoryListStore.getTotalAgmExtensionDuration(2023)
+    expect(totalAgmExtension).toBe(6)
   })
 
   it('files JSON data properly when eligible', async () => {

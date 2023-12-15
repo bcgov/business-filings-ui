@@ -38,6 +38,31 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       })
     },
 
+    /** Returns the total AGM extension duration requires argument for year */
+    getTotalAgmExtensionDuration (state: FilingHistoryListStateIF): (year: number) => number {
+      return (year: number) => {
+        return state.filings.reduce((totalMonths, filing) => {
+          // Skip if not AGM_EXTENSION
+          if (filing.name !== FilingTypes.AGM_EXTENSION) {
+            return totalMonths
+          }
+          const filingExtension = filing.data?.agmExtension
+          // Cast year as number
+          // Skip if extension data is missing
+          if (!filingExtension) {
+            return totalMonths
+          }
+          // Skip if years don't match
+          if (Number(filingExtension.year) !== year) {
+            return totalMonths
+          }
+          // Add total months for the specific AGM year
+          totalMonths += filingExtension.extensionDuration || 0
+          return totalMonths
+        }, 0)
+      }
+    },
+
     /** The count of filings in the Filing History List. */
     getHistoryCount (): number {
       const filings = this.getFilings as ApiFilingIF[]
