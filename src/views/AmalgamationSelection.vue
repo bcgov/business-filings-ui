@@ -151,15 +151,12 @@ export default class AmalgamationSelection extends Vue {
   @Getter(useBusinessStore) isCcc!: boolean
   @Getter(useBusinessStore) isUlc!: boolean
 
-  filingId = 0 // id param of this selection panel route
-
   /** Called when component is created. */
   created (): void {
-    // id must be 0
-    this.filingId = +this.$route.params.filingId // number or NaN
+    const filingId = +this.$route.params.filingId // id param of this selection panel route, must be 0
 
     // if required data isn't set, go back to dashboard
-    if (!this.getIdentifier || this.filingId !== 0) {
+    if (!this.getIdentifier || filingId !== 0) {
       this.$router.push({ name: Routes.DASHBOARD })
     }
   }
