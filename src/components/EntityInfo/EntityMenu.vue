@@ -366,7 +366,6 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   }
 
   goToAmalgamationSelection (): void {
-    // 0 means "new filing"
     this.$router.push({ name: Routes.AMALGAMATION_SELECTION, params: { filingId: '0' } })
   }
 

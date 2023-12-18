@@ -155,6 +155,7 @@ export default class AmalgamationSelection extends Vue {
     if (this.isBComp || this.isBcCompany) return 'BC limited company'
     if (this.isCcc) return 'BC community contribution company'
     if (this.isUlc) return 'BC unlimited liability company'
+    return 'Unknown'
   }
 
   /** Start Regular Long-form button pressed. */
