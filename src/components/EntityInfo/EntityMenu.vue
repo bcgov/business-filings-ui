@@ -41,6 +41,34 @@
       </v-tooltip>
     </span>
 
+    <!-- Amalgamate -->
+    <span v-if="isBusiness && !isHistorical">
+      <v-tooltip
+        top
+        content-class="top-tooltip"
+        transition="fade-transition"
+        :disabled="!amalgamateTooltipText"
+      >
+        <template #activator="{ on }">
+          <span v-on="on">
+            <v-btn
+              id="amalgamate-button"
+              small
+              text
+              color="primary"
+              :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
+              @click="goToAmalgamationSelection()"
+              v-on="on"
+            >
+              <v-icon medium>mdi-domain-plus</v-icon>
+              <span class="font-13 ml-1">Amalgamate</span>
+            </v-btn>
+          </span>
+        </template>
+        {{ amalgamateTooltipText }}
+      </v-tooltip>
+    </span>
+
     <!-- Download Business Summary -->
     <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
       <v-tooltip
@@ -237,6 +265,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
@@ -285,6 +314,16 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     }
   }
 
+  /** The tooltip text for the amalgamate button. Text changes depending on the business status. */
+  get amalgamateTooltipText (): string {
+    if (this.isAdminFrozen) {
+      return 'This business is frozen and cannot be involved in an amalgamation.'
+    } else if (this.isPendingDissolution) {
+      return 'This business has a future effective dissolution and cannot be involved in an amalgamation.'
+    }
+    return null
+  }
+
   /**
    * Emits an event to display NIGS dialog if company is not in good standing except Coop
    * Otherwise, navigates to the Edit UI to view or change company information.
@@ -312,6 +351,10 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
       return
     }
     this.emitConfirmDissolution()
+  }
+
+  goToAmalgamationSelection (): void {
+    this.$router.push({ name: Routes.AMALGAMATION_SELECTION, params: { filingId: '0' } })
   }
 
   goToConsentContinuationOutFiling (): void {

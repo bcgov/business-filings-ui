@@ -1,4 +1,4 @@
-import { CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import { AmalgamationTypes, CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
 import { ApiDateTimeUtc, CommentIF, DocumentIF, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
   from '@/interfaces'
 
@@ -65,7 +65,9 @@ export interface ApiFilingIF {
       toLegalType?: CorpTypeCd
     }
 
-    amalgamation?: any // some object
+    amalgamationApplication?: {
+      type: AmalgamationTypes
+    }
 
     // AR filings only
     annualReport?: {

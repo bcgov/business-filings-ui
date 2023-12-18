@@ -168,6 +168,18 @@ export default class LegalServices {
   }
 
   /**
+   * Creates (posts) a draft (temporary) business record.
+   * Must be logged in to use this.
+   * Throws an exception on error.
+   */
+  static async createBusiness (businessRequest: any): Promise<any> {
+    const legalApiUrl = sessionStorage.getItem('LEGAL_API_URL')
+
+    const url = `${legalApiUrl}/businesses?draft=true`
+    return axios.post(url, businessRequest)
+  }
+
+  /**
    * Updates (puts) a filing.
    * @param businessId the business identifier (aka entity inc no)
    * @param filing the object body of the request

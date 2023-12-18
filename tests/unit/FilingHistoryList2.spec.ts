@@ -37,7 +37,7 @@ const isCorrected = (filing) => !!filing.correctionFilingId
 const isIncorporationApplication = (filing) => (filing.name === FilingTypes.INCORPORATION_APPLICATION)
 // const isBcompCoa = (filing) => false FUTURE: implement BComp tests
 const isAlteration = (filing) => (filing.name === FilingTypes.ALTERATION)
-const isAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION)
+const isAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION)
 const isConsentContinuationOut = (filing) => (filing.name === FilingTypes.CONSENT_CONTINUATION_OUT)
 const isStaff = (filing) => (
   filing.name === FilingTypes.REGISTRARS_NOTATION ||
@@ -131,9 +131,9 @@ filings.forEach((filing: any, index: number) => {
       expect(vm.getFilings.length).toBe(1) // sanity check
       const item = vm.getFilings[0]
       expect(item.businessIdentifier).toBe('BC1234567')
-      expect(item.data.amalgamation.type).toBe(FilingSubTypes.AMALGAMATION_REGULAR)
+      expect(item.data.amalgamationApplication.type).toBe(FilingSubTypes.AMALGAMATION_REGULAR)
       expect(item.displayName).toBe('Amalgamation Application - Regular')
-      expect(item.name).toBe(FilingTypes.AMALGAMATION)
+      expect(item.name).toBe(FilingTypes.AMALGAMATION_APPLICATION)
       expect(item.status).toBe(FilingStatus.COMPLETED)
 
       // verify display

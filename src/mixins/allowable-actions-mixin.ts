@@ -48,7 +48,7 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.AMALGAMATION: {
-        return this.isAllowedFiling(FilingTypes.AMALGAMATION)
+        return this.isAllowedFiling(FilingTypes.AMALGAMATION_APPLICATION)
       }
 
       case AllowableActions.BUSINESS_INFORMATION: {
