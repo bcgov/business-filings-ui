@@ -47,7 +47,7 @@
         top
         content-class="top-tooltip"
         transition="fade-transition"
-        :disabled="!isAdminFrozen && !isPendingDissolution"
+        :disabled="!isAdminFrozen && !isPendingDissolution && !amalgamateTooltipText"
       >
         <template #activator="{ on }">
           <span v-on="on">
@@ -321,7 +321,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     } else if (this.isPendingDissolution) {
       return 'This business has a future effective dissolution and cannot be involved in an amalgamation.'
     }
-    return ''
+    return null
   }
 
   /**
