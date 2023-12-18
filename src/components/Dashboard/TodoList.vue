@@ -1385,11 +1385,11 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       )
 
       const item: TodoItemIF = {
-        name: FilingTypes.AMALGAMATION,
+        name: FilingTypes.AMALGAMATION_APPLICATION,
         filingId: header.filingId,
         title: filing.displayName,
         subtitle,
-        draftTitle: FilingNames.AMALGAMATION,
+        draftTitle: FilingNames.AMALGAMATION_APPLICATION,
         status: header.status,
         enabled: task.enabled,
         order: task.order,
