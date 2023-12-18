@@ -114,6 +114,7 @@
       <main v-if="isSigninRoute || dataLoaded">
         <Breadcrumb :breadcrumbs="breadcrumbs" />
         <EntityInfo
+          v-if="!isAmalgamationSelectionRoute"
           @confirmDissolution="confirmDissolutionDialog = true"
           @notInGoodStanding="nigsMessage = $event; notInGoodStandingDialog = true"
           @downloadBusinessSummary="downloadBusinessSummary()"
@@ -288,6 +289,11 @@ export default {
       const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
       // FUTURE: also check that token isn't expired!
       return !!keycloakToken
+    },
+
+    /** Is true if this is the amalgamation selection panel page. */
+    isAmalgamationSelectionRoute (): boolean {
+      return this.$route?.name === Routes.AMALGAMATION_SELECTION
     },
 
     /** The About text. */

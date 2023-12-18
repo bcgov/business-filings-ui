@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="!isAmalgamationSelectionRoute"
     id="entity-info"
     :class=" { 'staff': isRoleStaff, 'hover': showHoverStyle }"
   >
@@ -82,10 +81,6 @@ export default class EntityInfo extends Vue {
       this.$route?.name === Routes.STANDALONE_ADDRESSES ||
       this.$route?.name === Routes.STANDALONE_DIRECTORS
     )
-  }
-
-  get isAmalgamationSelectionRoute (): boolean {
-    return this.$route.matched.some(route => route.path.includes(Routes.AMALGAMATION_SELECTION))
   }
 
   get isDCRoute (): boolean {

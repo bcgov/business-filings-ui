@@ -348,9 +348,15 @@ export default class EnumUtilities {
       case FilingTypes.AGM_LOCATION_CHANGE: return FilingNames.AGM_LOCATION_CHANGE
       case FilingTypes.ALTERATION: return FilingNames.ALTERATION
       case FilingTypes.AMALGAMATION_APPLICATION:
-        if (subType === FilingSubTypes.AMALGAMATION_HORIZONTAL) return `${FilingNames.AMALGAMATION_APPLICATION} - Horizontal`
-        if (subType === FilingSubTypes.AMALGAMATION_REGULAR) return `${FilingNames.AMALGAMATION_APPLICATION} - Regular`
-        if (subType === FilingSubTypes.AMALGAMATION_VERTICAL) return `${FilingNames.AMALGAMATION_APPLICATION} - Vertical`
+        if (subType === FilingSubTypes.AMALGAMATION_HORIZONTAL) {
+          return `${FilingNames.AMALGAMATION_APPLICATION} - Horizontal`
+        }
+        if (subType === FilingSubTypes.AMALGAMATION_REGULAR) {
+          return `${FilingNames.AMALGAMATION_APPLICATION} - Regular`
+        }
+        if (subType === FilingSubTypes.AMALGAMATION_VERTICAL) {
+          return `${FilingNames.AMALGAMATION_APPLICATION} - Vertical`
+        }
         return FilingNames.AMALGAMATION_APPLICATION
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS

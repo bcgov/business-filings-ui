@@ -137,18 +137,31 @@
 import { useBusinessStore } from '@/stores'
 import { Getter } from 'pinia-class'
 import { Component, Vue } from 'vue-property-decorator'
-import Axios from 'axios'
-import { addAxiosInterceptors } from 'sbc-common-components/src/util/interceptors'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
+import { Routes } from '@/enums'
 
 @Component({})
 export default class AmalgamationSelection extends Vue {
+  @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLegalType!: string
   @Getter(useBusinessStore) isBComp!: boolean
   @Getter(useBusinessStore) isBcCompany!: boolean
   @Getter(useBusinessStore) isCcc!: boolean
   @Getter(useBusinessStore) isUlc!: boolean
+
+  filingId = 0 // id param of this selection panel route
+
+  /** Called when component is created. */
+  created (): void {
+    // id must be 0
+    this.filingId = +this.$route.params.filingId // number or NaN
+
+    // if required data isn't set, go back to dashboard
+    if (!this.getIdentifier || this.filingId !== 0) {
+      this.$router.push({ name: Routes.DASHBOARD })
+    }
+  }
 
   /** Get the amalmagated company result name depending on the type. */
   getRegularAmalgamationText (): string {
@@ -164,6 +177,8 @@ export default class AmalgamationSelection extends Vue {
     // if (this.isBComp) legalType = CorpTypeCd.BC_COMPANY
     // else legalType = this.getLegalType
 
+    window.alert('This action is not available at the moment. Please check again later.')
+
     try {
       // show spinner since this is a network call
       this.$root.$emit('showSpinner', true)
@@ -174,19 +189,6 @@ export default class AmalgamationSelection extends Vue {
       this.$root.$emit('showSpinner', false)
       throw new Error('Unable to Amalgamate Now ' + error)
     }
-  }
-
-  /**
-   * Creates (posts) a draft (temporary) business record.
-   * Must be logged in to use this.
-   * Throws an exception on error.
-   */
-  async createBusiness (businessRequest: any): Promise<any> {
-    const axios = addAxiosInterceptors(Axios.create())
-    const legalApiUrl = sessionStorage.getItem('LEGAL_API_URL')
-
-    const url = `${legalApiUrl}/businesses?draft=true`
-    return axios.post(url, businessRequest)
   }
 
   /**
@@ -204,7 +206,7 @@ export default class AmalgamationSelection extends Vue {
         business: {
           legalType: legalType
         },
-        amalgamation: {
+        amalgamationApplication: {
           nameRequest: {
             legalType: legalType
           },

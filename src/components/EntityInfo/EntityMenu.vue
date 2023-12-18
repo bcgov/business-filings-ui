@@ -43,44 +43,30 @@
 
     <!-- Amalgamate -->
     <span v-if="isBusiness && !isHistorical">
-      <template v-if="!isAdminFrozen && !isPendingDissolution">
-        <v-btn
-          id="amalgamate-button"
-          small
-          text
-          color="primary"
-          :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
-          @click="goToAmalgamationSelection()"
-        >
-          <v-icon medium>mdi-domain-plus</v-icon>
-          <span class="font-13 ml-1">Amalgamate</span>
-        </v-btn>
-      </template>
-      <template v-else>
-        <v-tooltip
-          top
-          content-class="top-tooltip"
-          transition="fade-transition"
-        >
-          <template #activator="{ on }">
-            <span v-on="on">
-              <v-btn
-                id="amalgamate-button"
-                small
-                text
-                color="primary"
-                :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
-                @click="goToAmalgamationSelection()"
-                v-on="on"
-              >
-                <v-icon medium>mdi-domain-plus</v-icon>
-                <span class="font-13 ml-1">Amalgamate</span>
-              </v-btn>
-            </span>
-          </template>
-          {{ amalgamateTooltipText }}
-        </v-tooltip>
-      </template>
+      <v-tooltip
+        top
+        content-class="top-tooltip"
+        transition="fade-transition"
+        :disabled="!isAdminFrozen && !isPendingDissolution"
+      >
+        <template #activator="{ on }">
+          <span v-on="on">
+            <v-btn
+              id="amalgamate-button"
+              small
+              text
+              color="primary"
+              :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
+              @click="goToAmalgamationSelection()"
+              v-on="on"
+            >
+              <v-icon medium>mdi-domain-plus</v-icon>
+              <span class="font-13 ml-1">Amalgamate</span>
+            </v-btn>
+          </span>
+        </template>
+        {{ amalgamateTooltipText }}
+      </v-tooltip>
     </span>
 
     <!-- Download Business Summary -->
@@ -328,12 +314,14 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     }
   }
 
+  /** The tooltip text for the amalgamate button. Text changes depending on the business status. */
   get amalgamateTooltipText (): string {
     if (this.isAdminFrozen) {
       return 'This business is frozen and cannot be involved in an amalgamation.'
-    } else {
+    } else if (this.isPendingDissolution) {
       return 'This business has a future effective dissolution and cannot be involved in an amalgamation.'
     }
+    return ''
   }
 
   /**
