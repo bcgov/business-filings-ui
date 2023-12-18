@@ -50,6 +50,7 @@
           text
           color="primary"
           :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
+          @click="goToAmalgamationSelection()"
         >
           <v-icon medium>mdi-domain-plus</v-icon>
           <span class="font-13 ml-1">Amalgamate</span>
@@ -69,6 +70,7 @@
                 text
                 color="primary"
                 :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
+                @click="goToAmalgamationSelection()"
                 v-on="on"
               >
                 <v-icon medium>mdi-domain-plus</v-icon>
@@ -361,6 +363,11 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
       return
     }
     this.emitConfirmDissolution()
+  }
+
+  goToAmalgamationSelection (): void {
+    // 0 means "new filing"
+    this.$router.push({ name: Routes.AMALGAMATION_SELECTION, params: { filingId: '0' } })
   }
 
   goToConsentContinuationOutFiling (): void {

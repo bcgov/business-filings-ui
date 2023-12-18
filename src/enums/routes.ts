@@ -3,6 +3,7 @@ import { Routes as DCRoutes } from '@/components/DigitalCredentials/enums/routes
 export enum CoreRoutes {
   AGM_EXTENSION = 'agm-extension',
   AGM_LOCATION_CHANGE = 'agm-location-chg',
+  AMALGAMATION_SELECTION = 'amalgamation-selection',
   ANNUAL_REPORT = 'annual-report',
   CONSENT_CONTINUATION_OUT = 'consent-continuation-out',
   CONTINUATION_OUT = 'continuation-out',
