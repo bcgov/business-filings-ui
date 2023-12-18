@@ -140,6 +140,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
 import { Routes } from '@/enums'
+import { LegalServices } from '@/services'
 
 @Component({})
 export default class AmalgamationSelection extends Vue {
@@ -216,7 +217,7 @@ export default class AmalgamationSelection extends Vue {
     } as any
 
     const createBusinessResponse =
-      await this.createBusiness(businessRequest).catch(error => {
+      await LegalServices.createBusiness(businessRequest).catch(error => {
         throw new Error('Unable to create new Amalgamation Draft ' + error)
       })
 
