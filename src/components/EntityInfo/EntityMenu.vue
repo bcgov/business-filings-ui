@@ -47,7 +47,7 @@
         top
         content-class="top-tooltip"
         transition="fade-transition"
-        :disabled="!isAdminFrozen && !isPendingDissolution && !amalgamateTooltipText"
+        :disabled="!amalgamateTooltipText"
       >
         <template #activator="{ on }">
           <span v-on="on">
