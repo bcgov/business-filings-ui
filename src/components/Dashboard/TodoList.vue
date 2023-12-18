@@ -1030,7 +1030,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         case FilingTypes.ALTERATION:
           await this.loadAlteration(task)
           break
-        case FilingTypes.AMALGAMATION:
+        case FilingTypes.AMALGAMATION_APPLICATION:
           await this.loadAmalgamation(task)
           break
         case FilingTypes.ANNUAL_REPORT:
@@ -1309,7 +1309,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   async loadAmalgamation (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
-    const amalgamation = filing.amalgamation
+    const amalgamation = filing.amalgamationApplication
 
     if (header && amalgamation) {
       // set subtitle only if DRAFT IA
@@ -1334,11 +1334,11 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       )
 
       const item: TodoItemIF = {
-        name: FilingTypes.AMALGAMATION,
+        name: FilingTypes.AMALGAMATION_APPLICATION,
         filingId: header.filingId,
         title: filing.displayName,
         subtitle,
-        draftTitle: FilingNames.AMALGAMATION,
+        draftTitle: FilingNames.AMALGAMATION_APPLICATION,
         status: header.status,
         enabled: task.enabled,
         order: task.order,
@@ -1766,7 +1766,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   /** Resumes a draft filing. */
   doResumeFiling (item: TodoItemIF): void {
     switch (item.name) {
-      case FilingTypes.AMALGAMATION: {
+      case FilingTypes.AMALGAMATION_APPLICATION: {
         // navigate to Create UI to resume this Amalgamation
         const amalgamationUrl = `${this.getCreateUrl}?id=${this.tempRegNumber}`
         navigate(amalgamationUrl)

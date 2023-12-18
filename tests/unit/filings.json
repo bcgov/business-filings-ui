@@ -561,7 +561,7 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/comments",
       "data": {
-        "amalgamation": {
+        "amalgamationApplication": {
           "type": "regular"
         },
         "legalFilings": [
@@ -574,7 +574,7 @@
       "filingId": 112751,
       "filingLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751",
       "isFutureEffective": false,
-      "name": "amalgamation",
+      "name": "amalgamationApplication",
       "paymentStatusCode": null,
       "status": "COMPLETED",
       "submittedDate": "Fri, 03 Feb 2023 18:52:00 GMT",

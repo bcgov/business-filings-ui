@@ -172,7 +172,7 @@ describe('Entity Header - data', () => {
       {
         displayName: 'BC Limited Company Amalgamation Application - Regular',
         effectiveDate: '2019-06-02 19:22:59 GMT',
-        name: FilingTypes.AMALGAMATION,
+        name: FilingTypes.AMALGAMATION_APPLICATION,
         status: FilingStatus.COMPLETED,
         submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
       } as any
@@ -199,7 +199,7 @@ describe('Entity Header - data', () => {
       {
         displayName: 'BC Limited Company Amalgamation Application - Regular',
         effectiveDate: '2019-06-02 19:22:59 GMT',
-        name: FilingTypes.AMALGAMATION,
+        name: FilingTypes.AMALGAMATION_APPLICATION,
         status: FilingStatus.COMPLETED,
         submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
       } as any
@@ -226,7 +226,7 @@ describe('Entity Header - data', () => {
       {
         displayName: 'BC Limited Company Amalgamation Application - Regular',
         effectiveDate: '2019-06-02 19:22:59 GMT',
-        name: FilingTypes.AMALGAMATION,
+        name: FilingTypes.AMALGAMATION_APPLICATION,
         status: FilingStatus.COMPLETED,
         submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
       } as any
@@ -253,7 +253,7 @@ describe('Entity Header - data', () => {
       {
         displayName: 'BC Limited Company Amalgamation Application - Regular',
         effectiveDate: '2019-06-02 19:22:59 GMT',
-        name: FilingTypes.AMALGAMATION,
+        name: FilingTypes.AMALGAMATION_APPLICATION,
         status: FilingStatus.COMPLETED,
         submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
       } as any

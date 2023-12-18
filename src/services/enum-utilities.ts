@@ -129,7 +129,7 @@ export default class EnumUtilities {
 
   /** Returns True if filing is an Amalgamation. */
   static isTypeAmalgamation (item: any): boolean {
-    return (item.name === FilingTypes.AMALGAMATION)
+    return (item.name === FilingTypes.AMALGAMATION_APPLICATION)
   }
 
   /** Returns True if filing is a Regular Amalgamation. */
@@ -138,7 +138,7 @@ export default class EnumUtilities {
       // the property in a todo item or filing item:
       item.filingSubType === FilingSubTypes.AMALGAMATION_REGULAR ||
       // the property in a state filing:
-      item.restoration?.type === FilingSubTypes.AMALGAMATION_REGULAR
+      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_REGULAR
     )
   }
 
@@ -148,7 +148,7 @@ export default class EnumUtilities {
       // the property in a todo item or filing item:
       item.filingSubType === FilingSubTypes.AMALGAMATION_HORIZONTAL ||
       // the property in a state filing:
-      item.restoration?.type === FilingSubTypes.AMALGAMATION_HORIZONTAL
+      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_HORIZONTAL
     )
   }
 
@@ -158,7 +158,7 @@ export default class EnumUtilities {
       // the property in a todo item or filing item:
       item.filingSubType === FilingSubTypes.AMALGAMATION_VERTICAL ||
       // the property in a state filing:
-      item.restoration?.type === FilingSubTypes.AMALGAMATION_VERTICAL
+      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_VERTICAL
     )
   }
 
@@ -347,11 +347,17 @@ export default class EnumUtilities {
       case FilingTypes.AGM_EXTENSION: return FilingNames.AGM_EXTENSION
       case FilingTypes.AGM_LOCATION_CHANGE: return FilingNames.AGM_LOCATION_CHANGE
       case FilingTypes.ALTERATION: return FilingNames.ALTERATION
-      case FilingTypes.AMALGAMATION:
-        if (subType === FilingSubTypes.AMALGAMATION_HORIZONTAL) return `${FilingNames.AMALGAMATION} - Horizontal`
-        if (subType === FilingSubTypes.AMALGAMATION_REGULAR) return `${FilingNames.AMALGAMATION} - Regular`
-        if (subType === FilingSubTypes.AMALGAMATION_VERTICAL) return `${FilingNames.AMALGAMATION} - Vertical`
-        return FilingNames.AMALGAMATION
+      case FilingTypes.AMALGAMATION_APPLICATION:
+        if (subType === FilingSubTypes.AMALGAMATION_HORIZONTAL) {
+          return `${FilingNames.AMALGAMATION_APPLICATION} - Horizontal`
+        }
+        if (subType === FilingSubTypes.AMALGAMATION_REGULAR) {
+          return `${FilingNames.AMALGAMATION_APPLICATION} - Regular`
+        }
+        if (subType === FilingSubTypes.AMALGAMATION_VERTICAL) {
+          return `${FilingNames.AMALGAMATION_APPLICATION} - Vertical`
+        }
+        return FilingNames.AMALGAMATION_APPLICATION
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS
       case FilingTypes.CHANGE_OF_COMPANY_INFO: return FilingNames.CHANGE_OF_COMPANY_INFO
