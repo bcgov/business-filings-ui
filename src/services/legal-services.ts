@@ -1,11 +1,10 @@
 // Libraries
 import axios from '@/axios-auth'
-import { Axios, AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 import { ApiBusinessIF, ApiFilingIF, CommentIF, DocumentIF, FetchDocumentsIF, PresignedUrlIF }
   from '@/interfaces'
 import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
 import { StatusCodes } from 'http-status-codes'
-import { addAxiosInterceptors } from 'sbc-common-components/src/util/interceptors'
 
 /**
  * Class that provides integration with the Legal API.
