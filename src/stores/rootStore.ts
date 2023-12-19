@@ -160,7 +160,7 @@ export const useRootStore = defineStore('root', {
       return state.fetchingDataSpinner
     },
 
-    /** Whether to show the Fetching Data spinner. */
+    /** Whether to show the Starting Amalgamation spinner. */
     showStartingAmalgamationSpinner (state: RootStateIF): boolean {
       return state.startingAmalgamationSpinner
     },

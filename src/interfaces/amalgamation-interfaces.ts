@@ -41,7 +41,7 @@ export interface AmalgamationApplicationIF {
   courtOrder?: CourtOrderIF
 }
 
-/** Restoration filing interface. */
+/** Amalgamation Application filing interface. */
 export interface AmalgamationApplicationFilingIF {
   header: {
     name: FilingTypes
