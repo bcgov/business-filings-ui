@@ -94,6 +94,25 @@
       </div>
     </v-fade-transition>
 
+    <!-- Starting Amalgamation spinner -->
+    <v-fade-transition>
+      <div
+        v-show="showStartingAmalgamationSpinner"
+        class="loading-container grayed-out"
+      >
+        <div class="loading__content">
+          <v-progress-circular
+            color="primary"
+            size="50"
+            indeterminate
+          />
+          <div class="loading-msg white--text">
+            Starting Amalgamation
+          </div>
+        </div>
+      </div>
+    </v-fade-transition>
+
     <SbcHeader />
 
     <!-- Alert banner -->
@@ -250,7 +269,8 @@ export default {
         'isAppFiling',
         'isAppTask',
         'isRoleStaff',
-        'showFetchingDataSpinner'
+        'showFetchingDataSpinner',
+        'showStartingAmalgamationSpinner'
       ]),
 
     /** The Business ID string. */
@@ -396,6 +416,7 @@ export default {
         'setCurrentJsDate',
         'setEntityStatus',
         'setFetchingDataSpinner',
+        'setStartingAmalgamationSpinner',
         'setKeycloakRoles',
         'setNameRequest',
         'setParties',

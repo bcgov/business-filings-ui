@@ -26,6 +26,7 @@ export const useRootStore = defineStore('root', {
     businessAddress: null,
     configObject: null,
     fetchingDataSpinner: false,
+    startingAmalgamationSpinner: false,
     filingData: [],
     nameRequest: null,
     parties: [],
@@ -159,6 +160,11 @@ export const useRootStore = defineStore('root', {
       return state.fetchingDataSpinner
     },
 
+    /** Whether to show the Fetching Data spinner. */
+    showStartingAmalgamationSpinner (state: RootStateIF): boolean {
+      return state.startingAmalgamationSpinner
+    },
+
     /**
      * This is used to show Legal Obligations only for a new business
      * that has no tasks and hasn't filed anything yet (except their IA).
@@ -282,6 +288,10 @@ export const useRootStore = defineStore('root', {
   actions: {
     setFetchingDataSpinner (val: boolean) {
       this.fetchingDataSpinner = val
+    },
+
+    setStartingAmalgamationSpinner (val: boolean) {
+      this.startingAmalgamationSpinner = val
     },
 
     setStateFiling (stateFilingResponse: any) {

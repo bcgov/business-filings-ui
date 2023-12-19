@@ -134,22 +134,26 @@
 </template>
 
 <script lang="ts">
-import { useBusinessStore } from '@/stores'
-import { Getter } from 'pinia-class'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { Action, Getter } from 'pinia-class'
 import { Component, Vue } from 'vue-property-decorator'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
 import { Routes } from '@/enums'
 import { LegalServices } from '@/services'
+import { navigate } from '@/utils'
 
 @Component({})
 export default class AmalgamationSelection extends Vue {
+  @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLegalType!: string
   @Getter(useBusinessStore) isBComp!: boolean
   @Getter(useBusinessStore) isBcCompany!: boolean
   @Getter(useBusinessStore) isCcc!: boolean
   @Getter(useBusinessStore) isUlc!: boolean
+
+  @Action(useRootStore) setStartingAmalgamationSpinner!: (x: boolean) => void
 
   /** Called when component is created. */
   created (): void {
@@ -171,20 +175,20 @@ export default class AmalgamationSelection extends Vue {
 
   /** Start Regular Long-form button pressed. */
   async startRegularAmalgamation (): Promise<any> {
-    // let legalType = null
-    // if (this.isBComp) legalType = CorpTypeCd.BC_COMPANY
-    // else legalType = this.getLegalType
-
-    window.alert('This action is not available at the moment. Please check again later.')
+    let legalType = null
+    if (this.isBComp) legalType = CorpTypeCd.BC_COMPANY
+    else legalType = this.getLegalType
 
     try {
       // show spinner since this is a network call
-      this.$root.$emit('showSpinner', true)
-      // const accountId = +JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id || 0
-      // const businessId = await this.createBusinessAA(accountId, legalType)
+      this.setStartingAmalgamationSpinner(true)
+      const accountId = +JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id || 0
+      const businessId = await this.createBusinessAA(accountId, legalType)
+      const amalgamationUrl = `${this.getCreateUrl}?id=${businessId}`
+      navigate(amalgamationUrl)
       return
     } catch (error) {
-      this.$root.$emit('showSpinner', false)
+      this.setStartingAmalgamationSpinner(false)
       throw new Error('Unable to Amalgamate Now ' + error)
     }
   }
