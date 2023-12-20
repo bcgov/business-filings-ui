@@ -295,6 +295,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
 describe('Entity Menu - Amagamate button tests', () => {
   it('displays the Amalgamate button', async () => {
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.$state.businessInfo.state = EntityState.ACTIVE
 
     const wrapper = mount(EntityMenu, {
       vuetify,
@@ -302,20 +303,11 @@ describe('Entity Menu - Amagamate button tests', () => {
       propsData: { businessId: 'BC1234567' }
     })
 
-    expect(wrapper.find('#amalgamate-button').exists()).toBe(true)
-    expect(wrapper.find('#amalgamate-button').text()).toBe('Amalgamate')
-    expect(wrapper.find('#amalgamate-button').classes()).not.toContain('v-btn--disabled') // enabled
-    wrapper.destroy()
-  })
+    await wrapper.find('.menu-btn').trigger('click')
 
-  it('don\'t display Amalgamate button if business is historical', async () => {
-    businessStore.$state.businessInfo.state = EntityState.HISTORICAL
-
-    const wrapper = mount(EntityMenu, {
-      vuetify
-    })
-
-    expect(wrapper.find('#amalgamate-button').exists()).toBe(false)
+    expect(wrapper.find('#amalgamate-list-item').exists()).toBe(true)
+    expect(wrapper.find('#amalgamate-list-item').text()).toBe('Amalgamate')
+    expect(wrapper.find('#amalgamate-list-item').classes()).not.toContain('v-list-item--disabled') // enabled
     wrapper.destroy()
   })
 
@@ -328,9 +320,11 @@ describe('Entity Menu - Amagamate button tests', () => {
       propsData: { businessId: 'BC1234567' }
     })
 
-    expect(wrapper.find('#amalgamate-button').exists()).toBe(true)
-    expect(wrapper.find('#amalgamate-button').text()).toBe('Amalgamate')
-    expect(wrapper.find('#amalgamate-button').classes()).toContain('v-btn--disabled') // disabled
+    await wrapper.find('.menu-btn').trigger('click')
+
+    expect(wrapper.find('#amalgamate-list-item').exists()).toBe(true)
+    expect(wrapper.find('#amalgamate-list-item').text()).toBe('Amalgamate')
+    expect(wrapper.find('#amalgamate-list-item').classes()).toContain('v-list-item--disabled') // disabled
     wrapper.destroy()
   })
 })
