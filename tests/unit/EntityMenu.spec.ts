@@ -295,6 +295,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
 describe('Entity Menu - Amagamate button tests', () => {
   it('displays the Amalgamate button', async () => {
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.$state.businessInfo.state = EntityState.ACTIVE
 
     const wrapper = mount(EntityMenu, {
       vuetify,
@@ -312,6 +313,7 @@ describe('Entity Menu - Amagamate button tests', () => {
 
   it('amalgamate button is disabled if not allowed', async () => {
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.$state.businessInfo.state = EntityState.ACTIVE
 
     const wrapper = mount(EntityMenu, {
       vuetify,

@@ -27,7 +27,7 @@
           <v-card
             id="start-horizontal-short-form-card"
             flat
-            class="pt-8 pb-8 px-8"
+            class="pa-8"
           >
             <h2>
               Horizontal short-form amalgamation
@@ -63,7 +63,7 @@
           <v-card
             id="start-vertical-short-form-card"
             flat
-            class="pt-8 pb-8 px-8"
+            class="pa-8"
           >
             <h2>
               Vertical short-form amalgamation
@@ -99,7 +99,7 @@
           <v-card
             id="start-regular-long-form-card"
             flat
-            class="pt-8 pb-8 px-8"
+            class="pa-8"
           >
             <h2>
               Regular long-form amalgamation
