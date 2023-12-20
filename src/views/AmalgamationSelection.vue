@@ -14,7 +14,7 @@
                 Choose the type of amalgamation to be filed.
               </h1>
               <p>
-                There are two types of amalgamation filings. Choose the appropriate one for your filing.
+                Choose the appropriate one for your filing.
               </p>
             </header>
           </article>
@@ -27,7 +27,7 @@
           <v-card
             id="start-horizontal-short-form-card"
             flat
-            class="pt-6 pb-8 px-4"
+            class="pt-8 pb-8 px-8"
           >
             <h2>
               Horizontal short-form amalgamation
@@ -63,7 +63,7 @@
           <v-card
             id="start-vertical-short-form-card"
             flat
-            class="pt-6 pb-8 px-4"
+            class="pt-8 pb-8 px-8"
           >
             <h2>
               Vertical short-form amalgamation
@@ -99,7 +99,7 @@
           <v-card
             id="start-regular-long-form-card"
             flat
-            class="pt-6 pb-8 px-4"
+            class="pt-8 pb-8 px-8"
           >
             <h2>
               Regular long-form amalgamation
@@ -235,10 +235,8 @@ export default class AmalgamationSelection extends Vue {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-header p,
-section p,
-ul {
-  color: $gray7;
+p, ul {
+  color: $gray9;
 }
 
 h1 {
@@ -250,7 +248,7 @@ h1 {
 // Have all the 3 options (cards) with same height.
 .v-card {
   height: 100%;
-  margin-bottom: 8rem;
+  margin-bottom: 4rem;
   position: relative;
 }
 

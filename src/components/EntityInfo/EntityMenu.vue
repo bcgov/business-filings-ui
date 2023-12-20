@@ -41,34 +41,6 @@
       </v-tooltip>
     </span>
 
-    <!-- Amalgamate -->
-    <span v-if="isBusiness && !isHistorical">
-      <v-tooltip
-        top
-        content-class="top-tooltip"
-        transition="fade-transition"
-        :disabled="!amalgamateTooltipText"
-      >
-        <template #activator="{ on }">
-          <span v-on="on">
-            <v-btn
-              id="amalgamate-button"
-              small
-              text
-              color="primary"
-              :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
-              @click="goToAmalgamationSelection()"
-              v-on="on"
-            >
-              <v-icon medium>mdi-domain-plus</v-icon>
-              <span class="font-13 ml-1">Amalgamate</span>
-            </v-btn>
-          </span>
-        </template>
-        {{ amalgamateTooltipText }}
-      </v-tooltip>
-    </span>
-
     <!-- Download Business Summary -->
     <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
       <v-tooltip
@@ -239,6 +211,33 @@
                 </template>
                 <span>{{ agmLocationChgToolTipText }}</span>
               </v-tooltip>
+
+              <!-- Amalgamate -->
+              <v-tooltip
+                right
+                content-class="right-tooltip"
+              >
+                <template #activator="{ on }">
+                  <div
+                    v-on="on"
+                  >
+                    <v-list-item
+                      id="amalgamate-list-item"
+                      small
+                      text
+                      color="primary"
+                      :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
+                      @click="goToAmalgamationSelection()"
+                      v-on="on"
+                    >
+                      <v-list-item-title>
+                        <span class="app-blue">Amalgamate</span>
+                      </v-list-item-title>
+                    </v-list-item>
+                  </div>
+                </template>
+                <span>{{ amalgamateTooltipText }}</span>
+              </v-tooltip>
             </span>
           </v-list-item-group>
         </v-list>
@@ -321,7 +320,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     } else if (this.isPendingDissolution) {
       return 'This business has a future effective dissolution and cannot be involved in an amalgamation.'
     }
-    return null
+    return 'Amalgamate with other businesses.'
   }
 
   /**
