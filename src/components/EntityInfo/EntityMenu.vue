@@ -41,34 +41,6 @@
       </v-tooltip>
     </span>
 
-    <!-- Amalgamate -->
-    <span v-if="isBusiness && !isHistorical">
-      <v-tooltip
-        top
-        content-class="top-tooltip"
-        transition="fade-transition"
-        :disabled="!amalgamateTooltipText"
-      >
-        <template #activator="{ on }">
-          <span v-on="on">
-            <v-btn
-              id="amalgamate-button"
-              small
-              text
-              color="primary"
-              :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
-              @click="goToAmalgamationSelection()"
-              v-on="on"
-            >
-              <v-icon medium>mdi-domain-plus</v-icon>
-              <span class="font-13 ml-1">Amalgamate</span>
-            </v-btn>
-          </span>
-        </template>
-        {{ amalgamateTooltipText }}
-      </v-tooltip>
-    </span>
-
     <!-- Download Business Summary -->
     <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
       <v-tooltip
