@@ -1378,10 +1378,11 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
       // NB: incorporationApplication may be undefined
       const haveData = Boolean(
+        amalgamation?.amalgamatingBusinesses ||
         amalgamation?.offices ||
         amalgamation?.contactPoint ||
         amalgamation?.parties ||
-        amalgamation?.shareClasses
+        amalgamation?.shareStructure?.shareClasses
       )
 
       const item: TodoItemIF = {
