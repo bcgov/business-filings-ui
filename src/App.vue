@@ -75,10 +75,10 @@
       </div>
     </v-fade-transition>
 
-    <!-- Fetching Data spinner -->
+    <!-- Fetching Data/Starting Amalgamation spinner -->
     <v-fade-transition>
       <div
-        v-show="showFetchingDataSpinner"
+        v-show="spinnerText"
         class="loading-container grayed-out"
       >
         <div class="loading__content">
@@ -88,7 +88,7 @@
             indeterminate
           />
           <div class="loading-msg white--text">
-            Fetching Data
+            {{ spinnerText }}
           </div>
         </div>
       </div>
@@ -250,7 +250,8 @@ export default {
         'isAppFiling',
         'isAppTask',
         'isRoleStaff',
-        'showFetchingDataSpinner'
+        'showFetchingDataSpinner',
+        'showStartingAmalgamationSpinner'
       ]),
 
     /** The Business ID string. */
@@ -306,6 +307,13 @@ export default {
       const bannerText: string = GetFeatureFlag('banner-text')
       // remove spaces so that " " becomes falsy
       return bannerText?.trim() || null
+    },
+
+    /** Spinner text. */
+    spinnerText (): string {
+      if (this.showFetchingDataSpinner) return 'Fetching Data'
+      if (this.showStartingAmalgamationSpinner) return 'Starting Amalgamation'
+      return null
     },
 
     /** The route breadcrumbs list. */

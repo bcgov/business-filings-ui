@@ -1,4 +1,5 @@
-import { AlterationIF, ApiBusinessIF, RestorationIF, SpecialResolutionIF } from '@/interfaces'
+import { AlterationIF, AmalgamationApplicationIF,
+  ApiBusinessIF, RestorationIF, SpecialResolutionIF } from '@/interfaces'
 import { FilingStatus, FilingTypes } from '@/enums'
 
 /** A filing's header object from the Legal API. */
@@ -39,7 +40,7 @@ export interface TaskTodoIF {
   agmExtension?: any
   agmLocationChange?: any
   alteration?: AlterationIF
-  amalgamationApplication?: any
+  amalgamationApplication?: AmalgamationApplicationIF
   annualReport?: any
   business: ApiBusinessIF
   changeOfAddress?: any

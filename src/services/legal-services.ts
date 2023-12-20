@@ -173,9 +173,7 @@ export default class LegalServices {
    * Throws an exception on error.
    */
   static async createBusiness (businessRequest: any): Promise<any> {
-    const legalApiUrl = sessionStorage.getItem('LEGAL_API_URL')
-
-    const url = `${legalApiUrl}/businesses?draft=true`
+    const url = `businesses?draft=true`
     return axios.post(url, businessRequest)
   }
 
