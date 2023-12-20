@@ -292,13 +292,55 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
   })
 })
 
+describe('Entity Menu - Amagamate button tests', () => {
+  it('displays the Amalgamate button', async () => {
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      mixins: [{ methods: { isAllowed: () => true } }],
+      propsData: { businessId: 'BC1234567' }
+    })
+
+    expect(wrapper.find('#amalgamate-button').exists()).toBe(true)
+    expect(wrapper.find('#amalgamate-button').text()).toBe('Amalgamate')
+    expect(wrapper.find('#amalgamate-button').classes()).not.toContain('v-btn--disabled') // enabled
+    wrapper.destroy()
+  })
+
+  it('don\'t display Amalgamate button if business is historical', async () => {
+    businessStore.$state.businessInfo.state = EntityState.HISTORICAL
+
+    const wrapper = mount(EntityMenu, {
+      vuetify
+    })
+
+    expect(wrapper.find('#amalgamate-button').exists()).toBe(false)
+    wrapper.destroy()
+  })
+
+  it('amalgamate button is disabled if not allowed', async () => {
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.$state.businessInfo.state = EntityState.ACTIVE
+
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      propsData: { businessId: 'BC1234567' }
+    })
+
+    expect(wrapper.find('#amalgamate-button').exists()).toBe(true)
+    expect(wrapper.find('#amalgamate-button').text()).toBe('Amalgamate')
+    expect(wrapper.find('#amalgamate-button').classes()).toContain('v-btn--disabled') // disabled
+    wrapper.destroy()
+  })
+})
+
 describe('Entity Menu - Dissolve this Business click tests', () => {
   const router = mockRouter.mock()
 
   it('displays the Dissolve this Business button', async () => {
     businessStore.setState(EntityState.ACTIVE)
 
-    // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
       router,
