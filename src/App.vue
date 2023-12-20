@@ -75,10 +75,10 @@
       </div>
     </v-fade-transition>
 
-    <!-- Fetching Data spinner -->
+    <!-- Fetching Data/Starting Amalgamation spinner -->
     <v-fade-transition>
       <div
-        v-show="showFetchingDataSpinner"
+        v-show="spinnerText"
         class="loading-container grayed-out"
       >
         <div class="loading__content">
@@ -88,26 +88,7 @@
             indeterminate
           />
           <div class="loading-msg white--text">
-            Fetching Data
-          </div>
-        </div>
-      </div>
-    </v-fade-transition>
-
-    <!-- Starting Amalgamation spinner -->
-    <v-fade-transition>
-      <div
-        v-show="showStartingAmalgamationSpinner"
-        class="loading-container grayed-out"
-      >
-        <div class="loading__content">
-          <v-progress-circular
-            color="primary"
-            size="50"
-            indeterminate
-          />
-          <div class="loading-msg white--text">
-            Starting Amalgamation
+            {{ spinnerText }}
           </div>
         </div>
       </div>
@@ -328,6 +309,13 @@ export default {
       return bannerText?.trim() || null
     },
 
+    /** Spinner text. */
+    spinnerText (): string {
+      if (this.showFetchingDataSpinner) return 'Fetching Data'
+      if (this.showStartingAmalgamationSpinner) return 'Starting Amalgamation'
+      return null
+    },
+
     /** The route breadcrumbs list. */
     breadcrumbs (): Array<BreadcrumbIF> {
       const breadcrumbs = this.$route?.meta?.breadcrumb
@@ -416,7 +404,6 @@ export default {
         'setCurrentJsDate',
         'setEntityStatus',
         'setFetchingDataSpinner',
-        'setStartingAmalgamationSpinner',
         'setKeycloakRoles',
         'setNameRequest',
         'setParties',

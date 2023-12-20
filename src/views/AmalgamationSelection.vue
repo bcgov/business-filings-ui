@@ -1,5 +1,5 @@
 <template>
-  <div id="agm-location-chg">
+  <div id="amalgamation-selection">
     <!-- Main Body -->
     <v-container class="view-container">
       <v-row>
@@ -25,6 +25,7 @@
         <!-- First Choice -->
         <v-col>
           <v-card
+            id="start-horizontal-short-form-card"
             flat
             class="pt-6 pb-8 px-4"
           >
@@ -43,9 +44,10 @@
             </ul>
             <br>
             <p>Shareholders of the amalgamating corporations do not need to approve the amalgamation.</p>
-            <div class="start-horizontal-short-form-btn-div">
+            <div class="btn-div">
               <!-- TODO: Remove disabled when doing short form amalgamations -->
               <v-btn
+                id="horizontal-short-form-btn"
                 disabled
                 color="primary"
                 large
@@ -59,6 +61,7 @@
         <!-- Second Choice -->
         <v-col>
           <v-card
+            id="start-vertical-short-form-card"
             flat
             class="pt-6 pb-8 px-4"
           >
@@ -77,9 +80,10 @@
             </ul>
             <br>
             <p>Shareholders of the amalgamating corporations do not need to approve the amalgamation.</p>
-            <div class="start-horizontal-short-form-btn-div">
+            <div class="btn-div">
               <!-- TODO: Remove disabled when doing short form amalgamations -->
               <v-btn
+                id="vertical-short-form-btn"
                 disabled
                 color="primary"
                 large
@@ -93,6 +97,7 @@
         <!-- Third Choice -->
         <v-col>
           <v-card
+            id="start-regular-long-form-card"
             flat
             class="pt-6 pb-8 px-4"
           >
@@ -117,8 +122,9 @@
               When the amalgamation is complete, your company will be a
               <strong>{{ getRegularAmalgamationText() }}.</strong>
             </p>
-            <div class="start-horizontal-short-form-btn-div">
+            <div class="btn-div">
               <v-btn
+                id="regular-long-form-btn"
                 color="primary"
                 large
                 @click="startRegularAmalgamation()"
@@ -175,15 +181,14 @@ export default class AmalgamationSelection extends Vue {
 
   /** Start Regular Long-form button pressed. */
   async startRegularAmalgamation (): Promise<any> {
-    let legalType = null
-    if (this.isBComp) legalType = CorpTypeCd.BC_COMPANY
-    else legalType = this.getLegalType
+    const legalType = this.getLegalType as CorpTypeCd
 
+    // Create a draft amalgamation and redirect to Create UI
     try {
       // show spinner since this is a network call
       this.setStartingAmalgamationSpinner(true)
       const accountId = +JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id || 0
-      const businessId = await this.createBusinessAA(accountId, legalType)
+      const businessId = await this.createBusinessAA(accountId, legalType, AmalgamationTypes.REGULAR)
       const amalgamationUrl = `${this.getCreateUrl}?id=${businessId}`
       navigate(amalgamationUrl)
       return
@@ -198,7 +203,7 @@ export default class AmalgamationSelection extends Vue {
    * @param accountId Account ID of logged in user.
    * @param legalType The legal type of the amalgamated business
    */
-  async createBusinessAA (accountId: number, legalType: CorpTypeCd): Promise<string> {
+  async createBusinessAA (accountId: number, legalType: CorpTypeCd, type: AmalgamationTypes): Promise<string> {
     const businessRequest = {
       filing: {
         header: {
@@ -212,7 +217,7 @@ export default class AmalgamationSelection extends Vue {
           nameRequest: {
             legalType: legalType
           },
-          type: AmalgamationTypes.REGULAR
+          type: type
         }
       }
     } as any
@@ -251,7 +256,7 @@ h1 {
 
 // Center and push the buttons to the botton of the cards.
 // Keep them centered in the cards regardless of screen size.
-.start-horizontal-short-form-btn-div {
+.btn-div {
   position: absolute;
   bottom: 2rem;
   margin-left: auto;

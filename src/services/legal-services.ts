@@ -5,7 +5,6 @@ import { ApiBusinessIF, ApiFilingIF, CommentIF, DocumentIF, FetchDocumentsIF, Pr
   from '@/interfaces'
 import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
 import { StatusCodes } from 'http-status-codes'
-import { useConfigurationStore } from '@/stores'
 
 /**
  * Class that provides integration with the Legal API.
@@ -174,9 +173,7 @@ export default class LegalServices {
    * Throws an exception on error.
    */
   static async createBusiness (businessRequest: any): Promise<any> {
-    const legalApiUrl = useConfigurationStore().getLegalApiUrl
-
-    const url = `${legalApiUrl}businesses?draft=true`
+    const url = `businesses?draft=true`
     return axios.post(url, businessRequest)
   }
 

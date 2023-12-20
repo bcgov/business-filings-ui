@@ -1,4 +1,5 @@
-import { AlterationIF, AmalgamationApplicationIF, ApiBusinessIF, RestorationIF, SpecialResolutionIF } from '@/interfaces'
+import { AlterationIF, AmalgamationApplicationIF,
+  ApiBusinessIF, RestorationIF, SpecialResolutionIF } from '@/interfaces'
 import { FilingStatus, FilingTypes } from '@/enums'
 
 /** A filing's header object from the Legal API. */

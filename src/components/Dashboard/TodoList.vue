@@ -1325,8 +1325,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
-      // NB: incorporationApplicationmay be undefined
+      // NB: amalgamation application may be undefined
       const haveData = Boolean(
+        amalgamation?.amalgamatingBusinesses ||
         amalgamation?.offices ||
         amalgamation?.contactPoint ||
         amalgamation?.parties ||
