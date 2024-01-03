@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { CorpTypeCd, EntityStatus, FilingSubTypes, FilingTypes } from '@/enums'
-import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF, RootStateIF,
-  TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
+import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF,
+  RootStateIF, TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 import { useBusinessStore } from './businessStore'
 import { useFilingHistoryListStore } from './filingHistoryListStore'
@@ -225,40 +225,74 @@ export const useRootStore = defineStore('root', {
       return state.stateFiling
     },
 
-    /**
-     * A formatted concatenation of the name and the effective date of the filing.
-     * Only used when entity is historical.
-     */
+    /** The historical reason text to display in the info header. */
     getReasonText (): string {
+      const enDash = '–' // ALT + 0150
       const businessStore = useBusinessStore()
-      const stateFiling = this.getStateFiling as StateFilingIF // may be null
 
+      if (!businessStore.isHistorical) return null // safety check
+
+      // check if historical reason is amalgamation
+      const amalgamatedInto = businessStore.getAmalgamatedInto
+      if (amalgamatedInto) return reasonTextAmalgamation()
+
+      // get state filing (may be null)
+      const stateFiling = this.getStateFiling as StateFilingIF
       const filingType = stateFiling?.header?.name
       if (!filingType) return null // safety check
 
-      // create reason text to display in the info header
-      let name: string
-      let date: string
+      // check if historical reason is dissolution
+      if (filingType === FilingTypes.DISSOLUTION) return reasonTextDissolution()
 
-      if (filingType === FilingTypes.DISSOLUTION) {
-        name = EnumUtilities.dissolutionTypeToName(
+      // check if historical reason is continuation out
+      if (filingType === FilingTypes.CONTINUATION_OUT) return reasonTextContinuationOut()
+
+      // fallback reason text
+      return reasonTextOther()
+
+      //
+      // helper functions
+      //
+
+      /** The reason text for a business made historical by an amalgamation. */
+      function reasonTextAmalgamation (): string {
+        const name = 'Amalgamation'
+        const amalgamationDate = DateUtilities.apiToDate(amalgamatedInto.amalgamationDate)
+        if (!amalgamationDate) throw new Error('Invalid amalgamation date')
+        const date = DateUtilities.dateToPacificDate(amalgamationDate, true)
+        const identifier = amalgamatedInto.identifier || 'Unknown Company'
+        return `${name} ${enDash} ${date} ${enDash} ${identifier}`
+      }
+
+      /** The reason text for a business made historical by a dissolution. */
+      function reasonTextDissolution (): string {
+        const name = EnumUtilities.dissolutionTypeToName(
           businessStore.isFirm,
-          (stateFiling?.dissolution?.dissolutionType as FilingSubTypes)
+          (stateFiling.dissolution?.dissolutionType as FilingSubTypes)
         )
         const dissolutionDate = DateUtilities.yyyyMmDdToDate(stateFiling.dissolution?.dissolutionDate)
         if (!dissolutionDate) throw new Error('Invalid dissolution date')
-        date = DateUtilities.dateToPacificDate(dissolutionDate, true)
-      } else {
-        name = (filingType === FilingTypes.CONTINUATION_OUT)
-          ? 'Continued Out'
-          : EnumUtilities.filingTypeToName(filingType)
-        const effectiveDate = DateUtilities.apiToDate(stateFiling.header.effectiveDate)
-        if (!effectiveDate) throw new Error('Invalid effective date')
-        date = DateUtilities.dateToPacificDateTime(effectiveDate)
+        const date = DateUtilities.dateToPacificDate(dissolutionDate, true)
+        return `${name} ${enDash} ${date}`
       }
 
-      const enDash = '–' // ALT + 0150
-      return `${name} ${enDash} ${date}`
+      /** The reason text for a business made historical by a continuation out. */
+      function reasonTextContinuationOut (): string {
+        const name = 'Continued Out'
+        const effectiveDate = DateUtilities.apiToDate(stateFiling.header?.effectiveDate)
+        if (!effectiveDate) throw new Error('Invalid effective date')
+        const dateTime = DateUtilities.dateToPacificDateTime(effectiveDate)
+        return `${name} ${enDash} ${dateTime}`
+      }
+
+      /** The reason text for a business made historical by some other state filing. */
+      function reasonTextOther (): string {
+        const name = EnumUtilities.filingTypeToName(filingType)
+        const effectiveDate = DateUtilities.apiToDate(stateFiling.header?.effectiveDate)
+        if (!effectiveDate) throw new Error('Invalid effective date')
+        const dateTime = DateUtilities.dateToPacificDateTime(effectiveDate)
+        return `${name} ${enDash} ${dateTime}`
+      }
     },
 
     /** The limited restoration active-until date, if it exists, otherwise null. */
