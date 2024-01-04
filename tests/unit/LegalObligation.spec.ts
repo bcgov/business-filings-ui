@@ -22,6 +22,7 @@ const rootStore = useRootStore()
 const newIncorporationFiling = [
   {
     availableOnPaperOnly: false,
+    displayLedger: true,
     displayName: 'Incorporation Application',
     effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 123,
@@ -36,6 +37,7 @@ const newIncorporationFiling = [
 const newRegistrationFiling = [
   {
     availableOnPaperOnly: false,
+    displayLedger: true,
     displayName: 'Registration',
     effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 123,
@@ -50,6 +52,7 @@ const newRegistrationFiling = [
 const businessWithMaintenanceFiling = [
   {
     availableOnPaperOnly: false,
+    displayLedger: true,
     displayName: 'Incorporation Application',
     effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 123,
@@ -61,6 +64,7 @@ const businessWithMaintenanceFiling = [
   },
   {
     availableOnPaperOnly: false,
+    displayLedger: true,
     displayName: 'Annual Report (2019)',
     effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 456,

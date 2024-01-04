@@ -49,6 +49,7 @@ describe('Filing History List - misc functionality', () => {
       availableOnPaperOnly: false,
       businessIdentifier: 'CP0001191',
       commentsCount: 0,
+      displayLedger: true,
       displayName: 'Annual Report',
       effectiveDate: '2019-06-02 19:22:59 GMT',
       filingId: 111,
@@ -62,6 +63,7 @@ describe('Filing History List - misc functionality', () => {
       availableOnPaperOnly: false,
       businessIdentifier: 'CP0001191',
       commentsCount: 2,
+      displayLedger: true,
       displayName: 'Change of Address',
       // Effective Date is way in the future so it's always > now
       effectiveDate: '2099-12-13 08:00:00 GMT', // Dec 13, 2099 at 00:00:00 am Pacific
@@ -122,6 +124,7 @@ describe('Filing History List - misc functionality', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Annual Report',
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 111,
@@ -135,6 +138,7 @@ describe('Filing History List - misc functionality', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Change of Directors',
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 222,
@@ -148,6 +152,7 @@ describe('Filing History List - misc functionality', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Change of Address',
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 333,
@@ -161,6 +166,7 @@ describe('Filing History List - misc functionality', () => {
         availableOnPaperOnly: true,
         businessIdentifier: 'CP0001191',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Annual Report',
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 444,
@@ -174,6 +180,7 @@ describe('Filing History List - misc functionality', () => {
         availableOnPaperOnly: true,
         businessIdentifier: 'CP0001191',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Change of Directors',
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 555,
@@ -187,6 +194,7 @@ describe('Filing History List - misc functionality', () => {
         availableOnPaperOnly: true,
         businessIdentifier: 'CP0001191',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Change of Address',
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 666,
@@ -218,6 +226,7 @@ describe('Filing History List - misc functionality', () => {
         availableOnPaperOnly: true,
         businessIdentifier: 'CP0001191',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Change of Directors',
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 222,
@@ -269,6 +278,7 @@ describe('Filing History List - misc functionality', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Annual Report',
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 111,
@@ -323,6 +333,7 @@ describe('Filing History List - misc functionality', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Full Restoration Application',
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 111,
@@ -389,6 +400,7 @@ describe('Filing History List - misc functionality', () => {
             legalName: 'BC1234567 LTD.'
           }
         } as any,
+        displayLedger: true,
         displayName: 'Limited Restoration Application',
         documentsLink: 'http://test',
         effectiveDate: '2019-11-20 22:17:54 GMT',
@@ -604,6 +616,66 @@ describe('Filing History List - misc functionality', () => {
     // only conditions[6]: Registration as not a firm
     businessStore.setLegalType(CorpTypeCd.COOP)
     expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(true)
+  })
+
+  it('displays multiple filing items, and remove the filing that displayLedger is false', async () => {
+    // init store
+    businessStore.setIdentifier('CP0001191')
+    filingHistoryListStore.setFilings([
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'CP0001191',
+        commentsCount: 0,
+        displayLedger: true,
+        displayName: 'Annual Report',
+        effectiveDate: '2019-11-20 22:17:54 GMT',
+        filingId: 111,
+        isFutureEffective: false,
+        name: FilingTypes.ANNUAL_REPORT,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Tue, 02 July 2019 12:00:00 GMT',
+        submitter: 'Submitter 1'
+      } as any,
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'BC0001191',
+        commentsCount: 0,
+        displayLedger: true,
+        displayName: 'Benefit Company Incorporation Application - ACME Benefit Inc',
+        effectiveDate: '2019-11-20 22:17:54 GMT',
+        filingId: 222,
+        isFutureEffective: false,
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Thu, 04 Apr 2019 12:00:00 GMT',
+        submitter: 'Submitter 2'
+      },
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'CP0001191',
+        commentsCount: 0,
+        displayLedger: false,
+        displayName: 'Admin Freeze',
+        effectiveDate: '2019-11-20 22:17:54 GMT',
+        filingId: 333,
+        isFutureEffective: false,
+        name: FilingTypes.ADMIN_FREEZE,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Mon, 06 May 2019 12:00:00 GMT',
+        submitter: 'Submitter 3'
+      }
+    ])
+
+    const wrapper = mount(FilingHistoryList, { vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.getFilings.length).toEqual(2)
+    expect(wrapper.findAll('.default-filing').length).toEqual(1)
+    expect(wrapper.findAll('.incorporation-application').length).toEqual(1)
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    wrapper.destroy()
   })
 })
 
@@ -911,6 +983,7 @@ describe('Filing History List - redirections', () => {
         availableOnPaperOnly: false,
         businessIdenfier: 'CP1002587',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Special Resolution',
         effectiveDate: 'Wed, 24 May 2023 18:02:16 GMT',
         filingId: 145190,
@@ -983,6 +1056,7 @@ describe('Filing History List - redirections', () => {
         availableOnPaperOnly: false,
         businessIdenfier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Incorporation Application',
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
@@ -1053,6 +1127,7 @@ describe('Filing History List - redirections', () => {
         availableOnPaperOnly: false,
         businessIdenfier: 'CP1002587',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Incorporation Application',
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
@@ -1139,6 +1214,7 @@ describe('Filing History List - incorporation applications', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'BC Benefit Company Incorporation Application - ACME Benefit Inc',
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
@@ -1180,6 +1256,7 @@ describe('Filing History List - incorporation applications', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'BC Benefit Company Incorporation Application - Numbered Benefit Company',
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
@@ -1221,6 +1298,7 @@ describe('Filing History List - incorporation applications', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'BC Benefit Company Incorporation Application - ACME Benefit Inc',
         effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
         filingId: 85114,
@@ -1284,6 +1362,7 @@ describe('Filing History List - incorporation applications', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'BC Benefit Company Incorporation Application - ACME Benefit Inc',
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
@@ -1347,6 +1426,7 @@ describe('Filing History List - incorporation applications', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Benefit Company Incorporation Application - ACME Benefit Inc',
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
@@ -1409,6 +1489,7 @@ describe('Filing History List - incorporation applications', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Benefit Company Incorporation Application - ACME Benefit Inc',
         effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
         filingId: 85114,
@@ -1471,6 +1552,7 @@ describe('Filing History List - incorporation applications', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Benefit Company Incorporation Application - ACME Benefit Inc',
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
@@ -1533,6 +1615,7 @@ describe('Filing History List - incorporation applications', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Benefit Company Incorporation Application - ACME Benefit Inc',
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
@@ -1613,6 +1696,7 @@ describe('Filing History List - paper only and other filings', () => {
         availableOnPaperOnly: true,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Annual Report (2017)',
         effectiveDate: '2017-03-24 19:20:05 GMT',
         filingId: 85114,
@@ -1665,6 +1749,7 @@ describe('Filing History List - paper only and other filings', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Alteration - Change of Company Information',
         effectiveDate: '2020-03-24 19:20:05 GMT',
         filingId: 85114,
@@ -1725,6 +1810,7 @@ describe('Filing History List - paper only and other filings', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Alteration from a BC Limited Company to a BC Benefit Company',
         effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
         filingId: 85114,
@@ -1790,6 +1876,7 @@ describe('Filing History List - paper only and other filings', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Alteration from a BC Limited Company to a BC Benefit Company',
         effectiveDate: '2020-04-24 19:20:05 GMT', // past date
         filingId: 85114,
@@ -1855,6 +1942,7 @@ describe('Filing History List - paper only and other filings', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Alteration from a BC Limited Company to a BC Benefit Company',
         effectiveDate: '2020-03-24 19:20:05 GMT',
         filingId: 85114,
@@ -1919,6 +2007,7 @@ describe('Filing History List - paper only and other filings', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Registrar\'s Notation',
         effectiveDate: '2021-05-05 20:37:44 GMT',
         filingId: 123,
@@ -1975,6 +2064,7 @@ describe('Filing History List - paper only and other filings', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Registrar\'s Order',
         effectiveDate: '2021-05-05 20:37:44 GMT',
         filingId: 123,
@@ -2031,6 +2121,7 @@ describe('Filing History List - paper only and other filings', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Court Order',
         effectiveDate: '2021-05-05 20:37:44 GMT',
         filingId: 123,
@@ -2087,6 +2178,7 @@ describe('Filing History List - with Court Order documents', () => {
     availableOnPaperOnly: false,
     businessIdentifier: 'BC0871300',
     commentsCounts: 0,
+    displayLedger: true,
     displayName: 'Court Order 17321728',
     documentsLink: 'businesses/BC0871300/filings/111/documents',
     effectiveDate: '2019-12-13 00:00:00 GMT',
@@ -2174,6 +2266,7 @@ describe('Filing History List - with documents', () => {
     availableOnPaperOnly: false,
     businessIdentifier: 'CP0001191',
     commentsCounts: 0,
+    displayLedger: true,
     displayName: 'Annual Report (2019)',
     documentsLink: 'businesses/CP0001191/filings/111/documents',
     effectiveDate: '2019-12-13 00:00:00 GMT',
@@ -2309,6 +2402,7 @@ describe('Filing History List - detail comments', () => {
     businessIdentifier: 'CP0001191',
     commentsCount: 2,
     commentsLink: 'businesses/CP0001191/filings/111/comments',
+    displayLedger: true,
     displayName: 'Annual Report',
     effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 111,
@@ -2326,6 +2420,7 @@ describe('Filing History List - detail comments', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Annual Report',
         effectiveDate: '2019-06-02 19:22:59 GMT',
         filingId: 111,
@@ -2353,6 +2448,7 @@ describe('Filing History List - detail comments', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
         commentsCount: 2,
+        displayLedger: true,
         displayName: 'Change of Address',
         // Effective Date is way in the future so it's always > now
         effectiveDate: '2099-12-13 08:00:00 GMT', // Dec 13, 2099 at 00:00:00 am Pacific
@@ -2457,6 +2553,7 @@ describe('Filing History List - without documents', () => {
     availableOnPaperOnly: false,
     businessIdentifier: 'CP0001191',
     commentsCounts: 0,
+    displayLedger: true,
     displayName: 'Involuntary Dissolution',
     effectiveDate: '2019-12-13 00:00:00 GMT',
     filingId: 111,
@@ -2491,6 +2588,7 @@ describe('Filing History List - expands Consent to Continue Out', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: '6-Month Consent to Continue Out',
         effectiveDate: '2022-11-20 22:17:54 GMT',
         filingId: 111,
@@ -2537,6 +2635,7 @@ describe('Filing History List - expands Continuation Out', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'Continuation Out',
         effectiveDate: '2022-11-20 22:17:54 GMT',
         filingId: 111,
@@ -2583,6 +2682,7 @@ describe('Filing History List - expands AGM Location Change', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'AGM Location Change',
         effectiveDate: '2022-11-20 22:17:54 GMT',
         filingId: 111,
@@ -2629,6 +2729,7 @@ describe('Filing History List - expands AGM Extension', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
         commentsCount: 0,
+        displayLedger: true,
         displayName: 'AGM Extension',
         effectiveDate: '2022-11-20 22:17:54 GMT',
         filingId: 111,
