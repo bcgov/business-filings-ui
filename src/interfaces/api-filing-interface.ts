@@ -12,6 +12,7 @@ export interface ApiFilingIF {
   commentsCount: number
   commentsLink: string // URL to fetch this filing's comments
   displayName: string
+  displayLedger: boolean // Display on the ledger
   documentsLink: string // URL to fetch this filing's documents
   effectiveDate: FormattedDateTimeGmt
   filingId: number

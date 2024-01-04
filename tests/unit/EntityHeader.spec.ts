@@ -170,6 +170,7 @@ describe('Entity Header - data', () => {
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([
       {
+        displayLedger: true,
         displayName: 'BC Limited Company Amalgamation Application - Regular',
         effectiveDate: '2019-06-02 19:22:59 GMT',
         name: FilingTypes.AMALGAMATION_APPLICATION,
@@ -197,6 +198,7 @@ describe('Entity Header - data', () => {
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([
       {
+        displayLedger: true,
         displayName: 'BC Limited Company Amalgamation Application - Regular',
         effectiveDate: '2019-06-02 19:22:59 GMT',
         name: FilingTypes.AMALGAMATION_APPLICATION,
@@ -224,6 +226,7 @@ describe('Entity Header - data', () => {
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([
       {
+        displayLedger: true,
         displayName: 'BC Limited Company Amalgamation Application - Regular',
         effectiveDate: '2019-06-02 19:22:59 GMT',
         name: FilingTypes.AMALGAMATION_APPLICATION,
@@ -251,6 +254,7 @@ describe('Entity Header - data', () => {
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([
       {
+        displayLedger: true,
         displayName: 'BC Limited Company Amalgamation Application - Regular',
         effectiveDate: '2019-06-02 19:22:59 GMT',
         name: FilingTypes.AMALGAMATION_APPLICATION,
