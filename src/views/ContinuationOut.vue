@@ -838,7 +838,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
         ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
       }
       return ret
-    } catch (error) {
+    } catch (error: any) {
       // save errors or warnings, if any
       this.saveErrors = error?.response?.data?.errors || []
       this.saveWarnings = error?.response?.data?.warnings || []

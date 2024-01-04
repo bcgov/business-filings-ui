@@ -528,7 +528,7 @@
             </div>
           </template>
 
-          <!-- is this a draft IA or Registration? -->
+          <!-- is this a draft Amalgamation or IA or Registration? -->
           <template
             v-else-if="isStatusDraft(item) && (isTypeAmalgamation(item) || isTypeIncorporationApplication(item) ||
               isTypeRegistration(item))"
