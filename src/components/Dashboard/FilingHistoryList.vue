@@ -143,7 +143,6 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
   is (filing: ApiFilingIF): string {
     switch (true) {
       case filing.availableOnPaperOnly: return 'paper-filing' // must come first
-      case EnumUtilities.isTypeAdminFreeze(filing): return null
       case EnumUtilities.isTypeAgmExtension(filing): return 'agm-extension'
       case EnumUtilities.isTypeAlteration(filing): return 'alteration-filing'
       case EnumUtilities.isTypeAmalgamation(filing): return 'amalgamation-filing'
