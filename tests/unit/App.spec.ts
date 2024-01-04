@@ -1598,7 +1598,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
   })
 })
 
-describe('App as an historical business', () => {
+describe('App as an historical business - Amalgamation', () => {
   let wrapper: Wrapper<Vue>
 
   beforeAll(() => {
@@ -1650,9 +1650,127 @@ describe('App as an historical business', () => {
       .returns(new Promise(resolve => resolve({
         data: {
           business: {
-            arMaxDate: '2021-12-10',
-            arMinDate: '2022-12-02',
-            dissolutionDate: '2021-12-06',
+            amalgamatedInto: {
+              amalgamationDate: '2023-12-01T08:00:00+00:00',
+              amalgamationType: AmalgamationTypes.REGULAR,
+              identifier: 'BC7654321',
+              legalName: 'Amalgamated Business Name Ltd.'
+            },
+            foundingDate: '2021-12-02T20:15:00+00:00',
+            goodStanding: true,
+            hasRestrictions: false,
+            identifier: 'BC1234567',
+            lastAddressChangeDate: '2021-12-02',
+            lastAnnualReportDate: '',
+            lastDirectorChangeDate: '2021-12-02',
+            legalName: 'HISTORICAL CORP.',
+            legalType: 'BEN',
+            nextAnnualReport: '2022-12-02T08:00:00+00:00',
+            state: 'HISTORICAL',
+            stateFiling: null,
+            submitter: 'bcsc/pmd3qdz4hzr3hpwbm7jwufel6flpqtyj'
+          }
+        }
+      })))
+
+    // GET tasks
+    get.withArgs('businesses/BC1234567/tasks')
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+
+    // GET filings
+    get.withArgs('businesses/BC1234567/filings')
+      .returns(new Promise(resolve => resolve({ data: { filings: [] } })))
+
+    // GET addresses
+    get.withArgs('businesses/BC1234567/addresses')
+      .returns(new Promise(resolve => resolve({ data: {} })))
+
+    // GET directors
+    get.withArgs('businesses/BC1234567/parties')
+      .returns(new Promise(resolve => resolve({ data: { parties: [] } })))
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, {
+      localVue,
+      router,
+      vuetify
+    })
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('fetches and parses state filing properly', () => {
+    expect(businessStore.isActive).toBe(false)
+    expect(businessStore.isHistorical).toBe(true)
+    expect(businessStore.isLiquidation).toBe(false)
+    expect(rootStore.getReasonText).toBe('Amalgamation – December 1, 2023 – BC7654321')
+  })
+})
+
+describe('App as an historical business - Voluntary Dissolution', () => {
+  let wrapper: Wrapper<Vue>
+
+  beforeAll(() => {
+    // clear store
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([])
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+  })
+
+  beforeEach(async () => {
+    const get = sinon.stub(axios, 'get')
+
+    // GET authorizations (role) from Auth API
+    get.withArgs('entities/BC1234567/authorizations')
+      .returns(new Promise(resolve => resolve({
+        data:
+        {
+          roles: ['edit', 'view']
+        }
+      })))
+
+    // GET user info from Auth API
+    get.withArgs('users/@me')
+      .returns(new Promise(resolve => resolve({
+        data: USER_INFO
+      })))
+
+    // GET entity info from Auth API
+    get.withArgs('entities/BC1234567')
+      .returns(new Promise(resolve => resolve({
+        data:
+        {
+          // Auth API Entity data
+          contacts: [
+            {
+              email: 'first.last@email.com',
+              phone: '(111)-222-3333',
+              phoneExtension: '444'
+            }
+          ]
+        }
+      })))
+
+    // GET business info from Legal API
+    get.withArgs('businesses/BC1234567')
+      .returns(new Promise(resolve => resolve({
+        data: {
+          business: {
+            dissolutionDate: '2023-12-01',
             foundingDate: '2021-12-02T20:15:00+00:00',
             goodStanding: true,
             hasRestrictions: false,
@@ -1686,10 +1804,10 @@ describe('App as an historical business', () => {
             business: {},
             dissolution: {
               dissolutionType: 'voluntary',
-              dissolutionDate: '2021-12-01'
+              dissolutionDate: '2023-12-01'
             },
             header: {
-              effectiveDate: '2021-12-06T20:05:35.168290+00:00',
+              effectiveDate: '2023-12-01T08:00:00+00:00',
               name: 'dissolution'
             }
           }
@@ -1729,7 +1847,136 @@ describe('App as an historical business', () => {
     expect(businessStore.isActive).toBe(false)
     expect(businessStore.isHistorical).toBe(true)
     expect(businessStore.isLiquidation).toBe(false)
-    expect(rootStore.getReasonText).toBe('Voluntary Dissolution – December 1, 2021')
+    expect(rootStore.getReasonText).toBe('Voluntary Dissolution – December 1, 2023')
+  })
+})
+
+describe('App as an historical business - Continuation Out', () => {
+  let wrapper: Wrapper<Vue>
+
+  beforeAll(() => {
+    // clear store
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([])
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+  })
+
+  beforeEach(async () => {
+    const get = sinon.stub(axios, 'get')
+
+    // GET authorizations (role) from Auth API
+    get.withArgs('entities/BC1234567/authorizations')
+      .returns(new Promise(resolve => resolve({
+        data:
+        {
+          roles: ['edit', 'view']
+        }
+      })))
+
+    // GET user info from Auth API
+    get.withArgs('users/@me')
+      .returns(new Promise(resolve => resolve({
+        data: USER_INFO
+      })))
+
+    // GET entity info from Auth API
+    get.withArgs('entities/BC1234567')
+      .returns(new Promise(resolve => resolve({
+        data:
+        {
+          // Auth API Entity data
+          contacts: [
+            {
+              email: 'first.last@email.com',
+              phone: '(111)-222-3333',
+              phoneExtension: '444'
+            }
+          ]
+        }
+      })))
+
+    // GET business info from Legal API
+    get.withArgs('businesses/BC1234567')
+      .returns(new Promise(resolve => resolve({
+        data: {
+          business: {
+            foundingDate: '2021-12-02T20:15:00+00:00',
+            goodStanding: true,
+            hasRestrictions: false,
+            identifier: 'BC1234567',
+            lastAddressChangeDate: '2021-12-02',
+            lastAnnualReportDate: '',
+            lastDirectorChangeDate: '2021-12-02',
+            legalName: 'HISTORICAL CORP.',
+            legalType: 'BEN',
+            nextAnnualReport: '2022-12-02T08:00:00+00:00',
+            state: 'HISTORICAL',
+            stateFiling: 'businesses/BC1234567/filings/113526',
+            submitter: 'bcsc/pmd3qdz4hzr3hpwbm7jwufel6flpqtyj'
+          }
+        }
+      })))
+
+    // GET tasks
+    get.withArgs('businesses/BC1234567/tasks')
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+
+    // GET filings
+    get.withArgs('businesses/BC1234567/filings')
+      .returns(new Promise(resolve => resolve({ data: { filings: [] } })))
+
+    // GET state filing
+    get.withArgs('businesses/BC1234567/filings/113526')
+      .returns(new Promise(resolve => resolve({
+        data: {
+          filing: {
+            business: {},
+            continuationOut: {},
+            header: {
+              effectiveDate: '2023-12-01T08:01:00+00:00',
+              name: 'continuationOut'
+            }
+          }
+        }
+      })))
+
+    // GET addresses
+    get.withArgs('businesses/BC1234567/addresses')
+      .returns(new Promise(resolve => resolve({ data: {} })))
+
+    // GET directors
+    get.withArgs('businesses/BC1234567/parties')
+      .returns(new Promise(resolve => resolve({ data: { parties: [] } })))
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, {
+      localVue,
+      router,
+      vuetify
+    })
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('fetches and parses state filing properly', () => {
+    expect(businessStore.isActive).toBe(false)
+    expect(businessStore.isHistorical).toBe(true)
+    expect(businessStore.isLiquidation).toBe(false)
+    expect(rootStore.getReasonText).toBe('Continued Out – December 1, 2023 at 12:01 am Pacific time')
   })
 })
 

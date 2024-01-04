@@ -1,4 +1,5 @@
-import { AllowedActionsIF, ApiBusinessIF, ApiDateTimeUtc, BusinessStateIF, BusinessWarningIF } from '@/interfaces'
+import { AllowedActionsIF, AmalgamatedIntoIF, ApiBusinessIF, ApiDateTimeUtc, BusinessStateIF, BusinessWarningIF }
+  from '@/interfaces'
 import { defineStore } from 'pinia'
 import { CorpTypeCd, EntityState } from '@/enums'
 import { DateUtilities, LegalServices } from '@/services/'
@@ -34,9 +35,14 @@ export const useBusinessStore = defineStore('business', {
   }),
 
   getters: {
-    /** The allowed actions object. */
+    /** The Allowed Actions object. */
     getAllowedActions (state: BusinessStateIF): AllowedActionsIF {
       return state.businessInfo.allowedActions
+    },
+
+    /** The Amalgamated Info object. */
+    getAmalgamatedInto (state: BusinessStateIF): AmalgamatedIntoIF {
+      return state.businessInfo.amalgamatedInto
     },
 
     /** The business number (aka Tax ID). */
@@ -49,7 +55,7 @@ export const useBusinessStore = defineStore('business', {
       return state.businessInfo.warnings
     },
 
-    /** The business state.businessInfo. */
+    /** The business state. */
     getBusinessState (state: BusinessStateIF): EntityState {
       return state.businessInfo.state
     },
