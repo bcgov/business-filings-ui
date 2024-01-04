@@ -30,8 +30,9 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       return state.filings.filter(filing => {
         // safety check for required fields
         if (!filing.name || !filing.displayName || !filing.effectiveDate || !filing.submittedDate || !filing.status || !filing.displayLedger) {
-          // eslint-disable-next-line no-console
-          console.log('Invalid filing =', filing)
+          if (filing.displayLedger)
+            // eslint-disable-next-line no-console
+            console.log('Invalid filing =', filing)
           return false
         }
         return true
