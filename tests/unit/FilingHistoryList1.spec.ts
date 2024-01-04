@@ -663,7 +663,7 @@ describe('Filing History List - misc functionality', () => {
         status: FilingStatus.COMPLETED,
         submittedDate: 'Mon, 06 May 2019 12:00:00 GMT',
         submitter: 'Submitter 3'
-      },
+      }
     ])
 
     const wrapper = mount(FilingHistoryList, { vuetify })
