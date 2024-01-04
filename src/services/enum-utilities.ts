@@ -127,6 +127,11 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.CORRECTION)
   }
 
+  /** Returns True if filing is a Dissolution. */
+  static isTypeDissolution (item: any): boolean {
+    return (item.name === FilingTypes.DISSOLUTION)
+  }
+
   /** Returns True if filing is an Amalgamation. */
   static isTypeAmalgamation (item: any): boolean {
     return (item.name === FilingTypes.AMALGAMATION_APPLICATION)

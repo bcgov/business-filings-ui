@@ -42,7 +42,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       })
     },
 
-    /** Returns the total AGM extension duration requires argument for year */
+    /** The function to compute total AGM extension duration. Requires argument for AGM Year. */
     getTotalAgmExtensionDuration (state: FilingHistoryListStateIF): (year: number) => number {
       return (year: number) => {
         return state.filings.reduce((totalMonths, filing) => {
@@ -51,11 +51,11 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
             return totalMonths
           }
           const filingExtension = filing.data?.agmExtension
-          // Cast year as number
           // Skip if extension data is missing
           if (!filingExtension) {
             return totalMonths
           }
+          // Cast year as number
           // Skip if years don't match
           if (Number(filingExtension.year) !== year) {
             return totalMonths
