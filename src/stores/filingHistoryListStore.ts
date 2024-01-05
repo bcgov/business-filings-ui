@@ -33,7 +33,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
           // eslint-disable-next-line no-console
           console.log('Invalid filing =', filing)
           return false
-        } else if (!filing.displayLedger) {
+        } else if (filing.displayLedger === false) {
           // eslint-disable-next-line no-console
           console.log('Not shown filing on the ledger =', filing)
           return false
