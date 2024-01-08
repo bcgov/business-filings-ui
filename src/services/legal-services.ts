@@ -82,11 +82,11 @@ export default class LegalServices {
   }
 
   /**
-   * Fetches the draft Application filing.
+   * Fetches the draft IA / Registration / Amalgamation filing.
    * This is a unique request using the temp reg number.
    * This assumes a single filing is returned.
    * @param tempRegNumber the temporary registration number
-   * @returns the draft app response
+   * @returns the draft app response (a single filing)
    */
   static async fetchDraftApp (tempRegNumber: string): Promise<any> {
     const url = `businesses/${tempRegNumber}/filings`
