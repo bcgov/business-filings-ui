@@ -1,10 +1,12 @@
-import { AmalgamationTypes, CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import { AmalgamationTypes, CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingSubTypes, FilingTypes }
+  from '@/enums'
 import { ApiDateTimeUtc, CommentIF, DocumentIF, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
   from '@/interfaces'
 
 /**
- * A filing object from the Legal API ("filings" call).
- * See also History Item interface.
+ * A filing object from the Legal API ("filings" call). This is the newer response with extra metadata
+ * instead of separate business / documents / header / filing objects.
+ * This object is also what the Filings History List uses directly.
  */
 export interface ApiFilingIF {
   availableOnPaperOnly: boolean
@@ -12,7 +14,7 @@ export interface ApiFilingIF {
   commentsCount: number
   commentsLink: string // URL to fetch this filing's comments
   displayName: string
-  displayLedger: boolean // Display on the ledger
+  displayLedger: boolean // whether to display this ledger item
   documentsLink: string // URL to fetch this filing's documents
   effectiveDate: FormattedDateTimeGmt
   filingId: number

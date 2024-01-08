@@ -2,7 +2,11 @@ import { AlterationIF, AmalgamationApplicationIF,
   ApiBusinessIF, RestorationIF, SpecialResolutionIF } from '@/interfaces'
 import { FilingStatus, FilingTypes } from '@/enums'
 
-/** A filing's header object from the Legal API. */
+/**
+ * The header object from the Legal API when the filing contains separate business /
+ * documents / header / filing objects. This is the older response from the "filings"
+ * call but is still used for fetching draft apps or tasks.
+ */
 export interface ApiHeaderIF {
   accountId?: number // NOT USED
   ARFilingYear?: number // ARs only
@@ -33,7 +37,7 @@ export interface ApiHeaderIF {
 }
 
 /**
- * A task todo (or filing) object.
+ * The object for a draft application (or registration or amalgamation) filing or todo task.
  * Note that only `business` and `header` are required.
  */
 export interface TaskTodoIF {
@@ -64,8 +68,8 @@ export interface TaskTodoIF {
 }
 
 /**
- * A task object from the Legal API ("tasks" call).
- * See also Todo Item interface.
+ * A task object from the Legal API ("tasks" call), which contains a draft filing or a todo item.
+ * See also TodoItemIF.
  */
 export interface ApiTaskIF {
   enabled: boolean

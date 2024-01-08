@@ -753,6 +753,7 @@ export default {
         businessIdentifier: this.getIdentifier,
         commentsCount: application.commentsCount,
         commentsLink: application.commentsLink,
+        displayLedger: application.displayLedger,
         displayName: `${description} ${filingName}`,
         documentsLink: application.documentsLink,
         effectiveDate: this.apiToUtcString(header.effectiveDate),

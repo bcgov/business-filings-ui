@@ -3,7 +3,7 @@ import { PaymentErrorIF } from '@/interfaces'
 
 /**
  * A Todo List item (ie, local object).
- * See also Api Task interface.
+ * See also ApiTaskIF.
  */
 export interface TodoItemIF {
   draftTitle: string
