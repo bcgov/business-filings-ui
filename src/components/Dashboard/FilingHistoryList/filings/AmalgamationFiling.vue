@@ -32,7 +32,7 @@
       />
 
       <div
-        v-else-if="isStatusCompleted"
+        v-if="!!tempRegNumber && isStatusCompleted"
         class="completed-ia-details"
       >
         <h4>Amalgamation Complete</h4>
@@ -87,6 +87,11 @@ export default class AmalgamationFiling extends Vue {
   @Getter(useBusinessStore) getEntityName!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getMyBusinessRegistryUrl!: string
+
+  /** The Temporary Registration Number string (may be null). */
+  get tempRegNumber (): string {
+    return sessionStorage.getItem('TEMP_REG_NUMBER')
+  }
 
   /** Whether this filing is in Complete status. */
   get isStatusCompleted (): boolean {
