@@ -38,7 +38,7 @@
           </template>
         </v-checkbox>
         <p class="certify-clause signature-date">
-          <strong>Date:</strong> {{ formattedCurrentDate }}
+          <strong>Date:</strong> {{ formattedCurrentDate || '[unknown]' }}
         </p>
         <p class="certify-clause">
           {{ message }}
@@ -94,7 +94,7 @@ export default class Certify extends Vue {
 
   get formattedCurrentDate (): string {
     const date = DateUtilities.yyyyMmDdToDate(this.getCurrentDate)
-    return (DateUtilities.dateToPacificDate(date, true) || 'Unknown')
+    return DateUtilities.dateToPacificDate(date, true)
   }
 
   /** The trimmed "Certified By" string (may be ''). */
