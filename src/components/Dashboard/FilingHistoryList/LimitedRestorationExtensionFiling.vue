@@ -7,7 +7,7 @@
 
     <p>
       The period of restoration was successfuly extended and is active
-      <strong>until {{ expiryDateFriendly || '[Unknown]' }}</strong>. At the end of the extended
+      <strong>until {{ expiryDateFriendly || '[unknown]' }}</strong>. At the end of the extended
       limited restoration period, the company will be automatically dissolved. If you require
       assistance to extend a limited restoration/reinstatement or wish to convert your restoration
       from a limited period to a full restoration, please contact BC Registries staff:
