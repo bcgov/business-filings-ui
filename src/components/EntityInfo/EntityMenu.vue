@@ -219,6 +219,7 @@
               >
                 <template #activator="{ on }">
                   <div
+                    v-if="enableAmalgamation"
                     v-on="on"
                   >
                     <v-list-item
@@ -293,6 +294,10 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   get enableAgmLocationChg (): boolean {
     return !!GetFeatureFlag('supported-agm-location-chg-entities').includes(this.getLegalType)
+  }
+
+  get enableAmalgamation (): boolean {
+    return !!GetFeatureFlag('supported-amalgamation-entities').includes(this.getLegalType)
   }
 
   /** The tooltip text for AGM Extension list item. Text is different if action item is disabled. */
