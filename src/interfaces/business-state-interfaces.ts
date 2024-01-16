@@ -29,6 +29,7 @@ export interface BusinessWarningIF {
   filing?: string // not used
   message: string
   warningType: string // FUTURE: use an enum
+  data?: any // optional extra properties (eg, amalgamationDate)
 }
 
 /** The Business object from the Legal API. */

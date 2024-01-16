@@ -7,8 +7,8 @@ import { ContactInfo } from '@/components/common'
 import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 
 describe('Missing Information component', () => {

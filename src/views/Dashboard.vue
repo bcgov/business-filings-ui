@@ -29,6 +29,7 @@
                 </h2>
               </header>
               <!-- FUTURE: move these to a new Alerts component and inside one expansion panel -->
+              <Amalgamation v-if="isAmalgamationAlert" />
               <FrozenInformation v-if="isFrozenInformationAlert" />
               <MissingInformation v-if="isMissingInformationAlert" />
               <NotInCompliance v-if="isNotInComplianceAlert" />
@@ -237,15 +238,16 @@ import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import CustodianListSm from '@/components/Dashboard/CustodianListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
+import Amalgamation from '@/components/Dashboard/Alerts/Amalgamation.vue'
 import FrozenInformation from '@/components/Dashboard/Alerts/FrozenInformation.vue'
+import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
+import NotInCompliance from '@/components/Dashboard/Alerts/NotInCompliance.vue'
+import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 import ProprietorPartnersListSm from '@/components/Dashboard/ProprietorPartnersListSm.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import { CoaWarningDialog } from '@/components/dialogs'
-import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
-import NotInCompliance from '@/components/Dashboard/Alerts/NotInCompliance.vue'
-import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.vue'
 import { Routes, AllowableActions, Roles } from '@/enums'
 import { PartyIF } from '@/interfaces'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
@@ -256,6 +258,7 @@ export default {
 
   components: {
     AddressListSm,
+    Amalgamation,
     CoaWarningDialog,
     CustodianListSm,
     DirectorListSm,
@@ -293,6 +296,7 @@ export default {
         'getIdentifier',
         'hasComplianceWarning',
         'hasMissingInfoWarning',
+        'isFutureEffectiveAmalgamation',
         'isAdminFrozen',
         'isBenBcCccUlc',
         'isFirm',
@@ -348,14 +352,19 @@ export default {
       return +this.$route.query.filing_id
     },
 
-    /** Whether to show Missing Information alert. */
-    isMissingInformationAlert (): boolean {
-      return this.hasMissingInfoWarning
+    /** Whether to show Amalgamation alert. */
+    isAmalgamationAlert (): boolean {
+      return this.isFutureEffectiveAmalgamation
     },
 
     /** Whether to show Missing Information alert. */
     isFrozenInformationAlert (): boolean {
       return this.isAdminFrozen
+    },
+
+    /** Whether to show Missing Information alert. */
+    isMissingInformationAlert (): boolean {
+      return this.hasMissingInfoWarning
     },
 
     /** Whether to show Not In Compliance alert. */
@@ -371,6 +380,7 @@ export default {
     /** The number of alerts. */
     alertCount (): number {
       let count = 0
+      if (this.isAmalgamationAlert) count++
       if (this.isFrozenInformationAlert) count++
       if (this.isMissingInformationAlert) count++
       if (this.isNotInComplianceAlert) count++
@@ -385,7 +395,7 @@ export default {
 
   methods: {
     goToStandaloneDirectors () {
-      this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: 0 } }) // 0 means "new COD filing"
+      this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: '0' } }) // 0 means "new COD filing"
     },
 
     goToChangeFiling () {
@@ -394,7 +404,7 @@ export default {
     },
 
     goToStandaloneAddresses () {
-      this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: 0 } }) // 0 means "new COA filing"
+      this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: '0' } }) // 0 means "new COA filing"
     },
 
     reloadDataIfNeeded (needed: boolean) {

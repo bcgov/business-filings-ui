@@ -9,10 +9,10 @@
         class="date-tooltip d-inline cursor-default"
         v-on="on"
       >
-        <span class="dotted-underline">{{ dateString }}</span>
+        <span class="dotted-underline">{{ dateString || '[unknown]' }}</span>
       </div>
     </template>
-    {{ dateTimeString }}
+    {{ dateTimeString || '[unknown]' }}
   </v-tooltip>
 </template>
 
@@ -25,11 +25,11 @@ export default class DateTooltip extends Vue {
   @Prop({ default: null }) readonly date!: Date
 
   get dateString (): string {
-    return (DateUtilities.dateToPacificDate(this.date) || '[unknown]')
+    return DateUtilities.dateToPacificDate(this.date)
   }
 
   get dateTimeString (): string {
-    return (DateUtilities.dateToPacificDateTime(this.date) || '[unknown]')
+    return DateUtilities.dateToPacificDateTime(this.date)
   }
 }
 </script>
