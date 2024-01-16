@@ -292,7 +292,22 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
   })
 })
 
-describe('Entity Menu - Amagamate button tests', () => {
+describe('Entity Menu - Amalgamate button tests', () => {
+  beforeAll(() => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-agm-extension-entities') return ''
+      if (flag === 'supported-agm-location-chg-entities') return ''
+      if (flag === 'supported-amalgamation-entities') return 'BC'
+      return null
+    })
+  })
+
+  afterAll(() => {
+    // restore feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockRestore()
+  })
+
   it('displays the Amalgamate button', async () => {
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     businessStore.$state.businessInfo.state = EntityState.ACTIVE
@@ -559,6 +574,7 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
       if (flag === 'supported-agm-extension-entities') return 'BEN'
       if (flag === 'supported-agm-location-chg-entities') return ''
+      if (flag === 'supported-amalgamation-entities') return ''
       return null
     })
   })
@@ -597,6 +613,7 @@ describe('Entity Menu - Request AGM Location Change click tests', () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
       if (flag === 'supported-agm-extension-entities') return ''
       if (flag === 'supported-agm-location-chg-entities') return 'BEN'
+      if (flag === 'supported-amalgamation-entities') return ''
       return null
     })
   })
