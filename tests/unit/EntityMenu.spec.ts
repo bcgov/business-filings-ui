@@ -292,7 +292,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
   })
 })
 
-describe('Entity Menu - Amagamate button tests', () => {
+describe('Entity Menu - Amalgamate button tests', () => {
   beforeAll(() => {
     // override feature flag
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
