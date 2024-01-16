@@ -143,6 +143,11 @@ export const useBusinessStore = defineStore('business', {
       )
     },
 
+    /** Is True if the business is part of a future effective amalgamation filing. */
+    isFutureEffectiveAmalgamation (): boolean {
+      return this.getBusinessWarnings.some(item => item.warningType === 'FUTURE_EFFECTIVE_AMALGAMATION')
+    },
+
     /** Is True if business is active. */
     isActive (): boolean {
       return (this.getBusinessState === EntityState.ACTIVE)

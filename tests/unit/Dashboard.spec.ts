@@ -218,7 +218,7 @@ describe('Dashboard - Click Tests', () => {
 
     // verify routing to Standalone Office Address Filing page with id=0
     expect(vm.$route.name).toBe('standalone-addresses')
-    expect(vm.$route.params.filingId).toBe(0)
+    expect(vm.$route.params.filingId).toBe('0')
 
     wrapper.destroy()
   })
@@ -251,7 +251,7 @@ describe('Dashboard - Click Tests', () => {
     wrapper.findComponent(CoaWarningDialog).vm.$emit('proceed', true)
 
     expect(vm.$route.name).toBe('standalone-addresses')
-    expect(vm.$route.params.filingId).toBe(0)
+    expect(vm.$route.params.filingId).toBe('0')
 
     wrapper.destroy()
   })
@@ -276,7 +276,7 @@ describe('Dashboard - Click Tests', () => {
 
     // verify routing to Standalone Directors Filing page with id=0
     expect(vm.$route.name).toBe('standalone-directors')
-    expect(vm.$route.params.filingId).toBe(0)
+    expect(vm.$route.params.filingId).toBe('0')
 
     wrapper.destroy()
   })
