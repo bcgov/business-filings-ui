@@ -1,5 +1,11 @@
 <template>
   <div id="amalgamation-selection">
+    <TechnicalErrorDialog
+      :dialog="showErrorDialog"
+      attach="#amalgamation-selection"
+      @close="showErrorDialog = false"
+    />
+
     <!-- Main Body -->
     <v-container class="view-container">
       <v-row>
@@ -145,21 +151,28 @@ import { Action, Getter } from 'pinia-class'
 import { Component, Vue } from 'vue-property-decorator'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
-import { Routes } from '@/enums'
+import { AmlRoles, AmlTypes, Routes } from '@/enums'
 import { LegalServices } from '@/services'
 import { navigate } from '@/utils'
+import { TechnicalErrorDialog } from '@/components/dialogs'
 
-@Component({})
+@Component({
+  components: {
+    TechnicalErrorDialog
+  }
+})
 export default class AmalgamationSelection extends Vue {
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
-  @Getter(useBusinessStore) getLegalType!: string
+  @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useBusinessStore) isBComp!: boolean
   @Getter(useBusinessStore) isBcCompany!: boolean
   @Getter(useBusinessStore) isCcc!: boolean
   @Getter(useBusinessStore) isUlc!: boolean
 
   @Action(useRootStore) setStartingAmalgamationSpinner!: (x: boolean) => void
+
+  showErrorDialog = false
 
   /** Called when component is created. */
   created (): void {
@@ -171,7 +184,7 @@ export default class AmalgamationSelection extends Vue {
     }
   }
 
-  /** Get the amalmagated company result name depending on the type. */
+  /** The amalmagated company result name depending on the type. */
   getRegularAmalgamationText (): string {
     if (this.isBComp || this.isBcCompany) return 'BC limited company'
     if (this.isCcc) return 'BC community contribution company'
@@ -179,55 +192,69 @@ export default class AmalgamationSelection extends Vue {
     return 'Unknown'
   }
 
-  /** Start Regular Long-form button pressed. */
+  /** Called when Start Regular Long-form button is clicked. */
   async startRegularAmalgamation (): Promise<any> {
-    const legalType = this.getLegalType as CorpTypeCd
-
-    // Create a draft amalgamation and redirect to Create UI
+    // Create a draft amalgamation application then redirect to Create UI.
     try {
       // show spinner since this is a network call
       this.setStartingAmalgamationSpinner(true)
-      const accountId = +JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id || 0
-      const businessId = await this.createBusinessAA(accountId, legalType, AmalgamationTypes.REGULAR)
+      const businessId = await this.createBusinessAA(AmalgamationTypes.REGULAR)
       const amalgamationUrl = `${this.getCreateUrl}?id=${businessId}`
       navigate(amalgamationUrl)
       return
     } catch (error) {
+      console.log('Error: unable to amalgamate now =', error)
       this.setStartingAmalgamationSpinner(false)
-      throw new Error('Unable to Amalgamate Now ' + error)
+      this.showErrorDialog = true
     }
   }
 
   /**
-   * Create a draft amalgamation application based on selected business type.
-   * @param accountId Account ID of logged in user.
-   * @param legalType The legal type of the amalgamated business
+   * Creates a draft amalgamation application.
+   * @param type the type of amalgamation to create
+   * @returns the business identifier of the newly created amalgamation application
    */
-  async createBusinessAA (accountId: number, legalType: CorpTypeCd, type: AmalgamationTypes): Promise<string> {
-    const businessRequest = {
+  private async createBusinessAA (type: AmalgamationTypes): Promise<string> {
+    const accountId = +JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id || 0
+    const legalType = this.getLegalType
+
+    const draftAmalgamationApplication = {
       filing: {
         header: {
           name: FilingTypes.AMALGAMATION_APPLICATION,
-          accountId: accountId
+          accountId
         },
         business: {
-          legalType: legalType
+          legalType
         },
         amalgamationApplication: {
           nameRequest: {
-            legalType: legalType
+            legalType
           },
-          type: type
+          type
         }
       }
     } as any
 
-    const createBusinessResponse =
-      await LegalServices.createBusiness(businessRequest).catch(error => {
-        throw new Error('Unable to create new Amalgamation Draft ' + error)
-      })
+    // if this is a regular amalgamation, pre-populate the current business as a TING
+    if (type === AmalgamationTypes.REGULAR) {
+      draftAmalgamationApplication.filing.amalgamationApplication.amalgamatingBusinesses = [
+        {
+          type: AmlTypes.LEAR,
+          role: AmlRoles.AMALGAMATING,
+          identifier: this.getIdentifier
+        }
+      ]
+    }
 
-    return createBusinessResponse.data?.filing?.business?.identifier as string
+    // create the draft business record
+    // (throws an exception on error, which startRegularAmalgamation() will handle)
+    const filing = await LegalServices.createDraftBusiness(draftAmalgamationApplication)
+
+    // validate and return the identifier
+    const identifier = filing?.business?.identifier as string
+    if (!identifier) throw new Error('Invalid business identifier')
+    return identifier
   }
 }
 </script>
