@@ -12,6 +12,7 @@ const defaultFlagSet: LDFlagSet = {
   'enable-digital-credentials': false,
   'sentry-enable': false, // by default, no sentry logs
   'show-alert-phone-numbers-firm': false,
+  'supported-amalgamation-entities': [],
   'supported-business-summary-entities': [],
   'supported-correction-entities': [],
   'supported-dissolution-entities': [],
