@@ -48,7 +48,9 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.AMALGAMATION: {
-        return this.isAllowedFiling(FilingTypes.AMALGAMATION_APPLICATION)
+        // NB: specific entities are targeted via LaunchDarkly
+        const ff = !!GetFeatureFlag('supported-amalgamation-entities')?.includes(this.getLegalType)
+        return (ff && this.isAllowedFiling(FilingTypes.AMALGAMATION_APPLICATION))
       }
 
       case AllowableActions.BUSINESS_INFORMATION: {

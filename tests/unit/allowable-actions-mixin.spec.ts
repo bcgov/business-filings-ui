@@ -90,11 +90,20 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Amalgamation is allowed', () => {
-    // verify no allowed filing type
+    vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
+
+    // verify allowed filing type but no feature flag
+    setAllowedFilingType({ name: FilingTypes.AMALGAMATION_APPLICATION })
+    setFeatureFlag([])
+    expect(vm.isAllowed(AllowableActions.AMALGAMATION)).toBe(false)
+
+    // verify feature flag but no allowed filing type
+    setFeatureFlag([CorpTypeCd.BC_COMPANY])
     setAllowedFilingType()
     expect(vm.isAllowed(AllowableActions.AMALGAMATION)).toBe(false)
 
-    // verify allowed filing type
+    // verify both feature flag and allowed filing type
+    setFeatureFlag([CorpTypeCd.BC_COMPANY])
     setAllowedFilingType({ name: FilingTypes.AMALGAMATION_APPLICATION })
     expect(vm.isAllowed(AllowableActions.AMALGAMATION)).toBe(true)
   })
