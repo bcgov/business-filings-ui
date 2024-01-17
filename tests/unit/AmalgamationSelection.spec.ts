@@ -79,7 +79,7 @@ describe('AmalgamationSelection', () => {
   })
 
   it('start regular long-form button clicked', async () => {
-    const createFiling = vi.spyOn((LegalServices as any), 'createBusiness')
+    const createFiling = vi.spyOn((LegalServices as any), 'createDraftBusiness')
     const button = wrapper.find('#regular-long-form-btn')
     await button.trigger('click')
 
