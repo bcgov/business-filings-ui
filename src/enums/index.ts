@@ -1,5 +1,6 @@
 export * from './actions'
 export * from './allowableActions'
+export * from './amalgamationEnums'
 export * from './applicationTypes'
 export * from './correctionTypes'
 export * from './effectOfOrderTypes'

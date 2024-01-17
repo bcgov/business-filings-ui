@@ -155,6 +155,7 @@ export default class LegalServices {
     if (isDraft) {
       url += '?draft=true'
     }
+
     return axios.post(url, { filing })
       .then(response => {
         const filing = response?.data?.filing
@@ -168,13 +169,23 @@ export default class LegalServices {
   }
 
   /**
-   * Creates (posts) a draft (temporary) business record.
-   * Must be logged in to use this.
-   * Throws an exception on error.
+   * Creates (posts) a draft business record, which is used to bootstrap a new business.
+   * @param businessRequest the object body of the request
+   * @returns the filing object associated with the temporary business
    */
-  static async createBusiness (businessRequest: any): Promise<any> {
+  static async createDraftBusiness (businessRequest: any): Promise<any> {
     const url = `businesses?draft=true`
+
     return axios.post(url, businessRequest)
+      .then(response => {
+        const filing = response?.data?.filing
+        if (!filing) {
+          // eslint-disable-next-line no-console
+          console.log('createDraftBusiness() error - invalid response =', response)
+          throw new Error('Invalid filing')
+        }
+        return filing
+      })
   }
 
   /**
@@ -190,6 +201,7 @@ export default class LegalServices {
     if (isDraft) {
       url += '?draft=true'
     }
+
     return axios.put(url, { filing })
       .then(response => {
         const filing = response?.data?.filing
