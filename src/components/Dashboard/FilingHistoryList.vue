@@ -233,7 +233,9 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
 }
 
 :deep(.v-expansion-panel-header) {
+  min-height: auto !important;
   padding: 0;
+  margin-top: 0.25rem;
 
   .v-expansion-panel-header__icon {
     display: none;
