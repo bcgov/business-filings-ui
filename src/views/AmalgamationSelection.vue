@@ -211,6 +211,7 @@ export default class AmalgamationSelection extends Vue {
     }
   }
 
+  /** Called when Start Short form Horizontal button is clicked. */
   async startHorizontalAmalgamation (): Promise<any> {
     // Create a draft amalgamation application then redirect to Create UI.
     try {
@@ -227,8 +228,8 @@ export default class AmalgamationSelection extends Vue {
     }
   }
 
+  /** Called when Start Short form Vertical button is clicked. */
   async startVerticalAmalgamation (): Promise<any> {
-    // Create a draft amalgamation application then redirect to Create UI.
     try {
       // show spinner since this is a network call
       this.setStartingAmalgamationSpinner(true)
