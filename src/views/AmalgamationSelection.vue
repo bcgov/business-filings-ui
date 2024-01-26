@@ -54,9 +54,9 @@
               <!-- TODO: Remove disabled when doing short form amalgamations -->
               <v-btn
                 id="horizontal-short-form-btn"
-                disabled
                 color="primary"
                 large
+                @click="startHorizontalAmalgamation()"
               >
                 <strong>Start Horizontal Short-form</strong>
               </v-btn>
@@ -90,9 +90,9 @@
               <!-- TODO: Remove disabled when doing short form amalgamations -->
               <v-btn
                 id="vertical-short-form-btn"
-                disabled
                 color="primary"
                 large
+                @click="startVerticalAmalgamation()"
               >
                 <strong>Start Vertical Short-form</strong>
               </v-btn>
@@ -155,6 +155,7 @@ import { AmlRoles, AmlTypes, Routes } from '@/enums'
 import { LegalServices } from '@/services'
 import { navigate } from '@/utils'
 import { TechnicalErrorDialog } from '@/components/dialogs'
+import { OfficeAddressIF, PartyIF, ShareClassIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -163,6 +164,8 @@ import { TechnicalErrorDialog } from '@/components/dialogs'
 })
 export default class AmalgamationSelection extends Vue {
   @Getter(useConfigurationStore) getCreateUrl!: string
+  @Getter(useRootStore) getBusinessEmail!: string
+  @Getter(useRootStore) getFullPhoneNumber!: string
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useBusinessStore) isBComp!: boolean
@@ -209,6 +212,38 @@ export default class AmalgamationSelection extends Vue {
     }
   }
 
+  async startHorizontalAmalgamation (): Promise<any> {
+    // Create a draft amalgamation application then redirect to Create UI.
+    try {
+      // show spinner since this is a network call
+      this.setStartingAmalgamationSpinner(true)
+      const businessId = await this.createBusinessAA(AmalgamationTypes.HORIZONTAL)
+      const amalgamationUrl = `${this.getCreateUrl}?id=${businessId}`
+      navigate(amalgamationUrl)
+      return
+    } catch (error) {
+      console.log('Error: unable to amalgamate now =', error)
+      this.setStartingAmalgamationSpinner(false)
+      this.showErrorDialog = true
+    }
+  }
+
+  async startVerticalAmalgamation (): Promise<any> {
+    // Create a draft amalgamation application then redirect to Create UI.
+    try {
+      // show spinner since this is a network call
+      this.setStartingAmalgamationSpinner(true)
+      const businessId = await this.createBusinessAA(AmalgamationTypes.VERTICAL)
+      const amalgamationUrl = `${this.getCreateUrl}?id=${businessId}`
+      navigate(amalgamationUrl)
+      return
+    } catch (error) {
+      console.log('Error: unable to amalgamate now =', error)
+      this.setStartingAmalgamationSpinner(false)
+      this.showErrorDialog = true
+    }
+  }
+
   /**
    * Creates a draft amalgamation application.
    * @param type the type of amalgamation to create
@@ -231,7 +266,11 @@ export default class AmalgamationSelection extends Vue {
           nameRequest: {
             legalType
           },
-          type
+          type,
+          contactPoint: {
+            email: this.getBusinessEmail,
+            phone: this.getFullPhoneNumber
+          }
         }
       }
     } as any
@@ -242,6 +281,17 @@ export default class AmalgamationSelection extends Vue {
         {
           type: AmlTypes.LEAR,
           role: AmlRoles.AMALGAMATING,
+          identifier: this.getIdentifier
+        }
+      ]
+    }
+
+    // For Horizontal and Vertical amalgamation, set current business as Holding company
+    if (type === AmalgamationTypes.HORIZONTAL || type === AmalgamationTypes.VERTICAL ) {
+      draftAmalgamationApplication.filing.amalgamationApplication.amalgamatingBusinesses = [
+        {
+          type: AmlTypes.LEAR,
+          role: AmlRoles.HOLDING,
           identifier: this.getIdentifier
         }
       ]
