@@ -286,7 +286,7 @@ export default class AmalgamationSelection extends Vue {
     }
 
     // For Horizontal and Vertical amalgamation, set current business as Holding company
-    if (type === AmalgamationTypes.HORIZONTAL || type === AmalgamationTypes.VERTICAL ) {
+    if (type === AmalgamationTypes.HORIZONTAL || type === AmalgamationTypes.VERTICAL) {
       draftAmalgamationApplication.filing.amalgamationApplication.amalgamatingBusinesses = [
         {
           type: AmlTypes.LEAR,
