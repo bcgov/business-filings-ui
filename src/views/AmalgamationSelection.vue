@@ -155,7 +155,6 @@ import { AmlRoles, AmlTypes, Routes } from '@/enums'
 import { LegalServices } from '@/services'
 import { navigate } from '@/utils'
 import { TechnicalErrorDialog } from '@/components/dialogs'
-import { OfficeAddressIF, PartyIF, ShareClassIF } from '@/interfaces'
 
 @Component({
   components: {
