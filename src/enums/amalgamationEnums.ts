@@ -1,6 +1,7 @@
 export enum AmlRoles {
   AMALGAMATING = 'amalgamating',
-  HOLDING = 'holding'
+  HOLDING = 'holding',
+  PRIMARY = 'primary'
 }
 
 export enum AmlTypes {

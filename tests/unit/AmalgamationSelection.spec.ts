@@ -42,25 +42,29 @@ describe('AmalgamationSelection', () => {
   })
 
   it('content of horizontal short form card is correct', () => {
+    const vm = wrapper.vm as any
+    useBusinessStore().setLegalType(CorpTypeCd.BC_COMPANY)
+
     expect(wrapper.find('#start-horizontal-short-form-card > h2').text()).toBe('Horizontal short-form amalgamation')
     expect(wrapper.find('#start-horizontal-short-form-card > p').text()).toContain(
       'A horizontal short-form amalgamation can be used if the amalgamating corporations')
     expect(wrapper.find('#start-horizontal-short-form-card > p').text()).toContain(
       'are all wholly owned subsidiaries of the same holding body corporate.')
     expect(wrapper.find('#horizontal-short-form-btn').text()).toBe('Start Horizontal Short-form')
-    // TODO: Need to update this line when short form amalgamations are implemented
-    expect(wrapper.find('#horizontal-short-form-btn').classes()).toContain('v-btn--disabled') // disabled
+    expect(wrapper.find('#horizontal-short-form-btn').classes()).not.toContain('v-btn--disabled')
   })
 
   it('content of vertical short form card is correct', () => {
+    const vm = wrapper.vm as any
+    useBusinessStore().setLegalType(CorpTypeCd.BC_COMPANY)
+
     expect(wrapper.find('#start-vertical-short-form-card > h2').text()).toBe('Vertical short-form amalgamation')
     expect(wrapper.find('#start-vertical-short-form-card > p').text()).toContain(
       'A vertical short-form amalgamation can be used if the subsidiary')
     expect(wrapper.find('#start-vertical-short-form-card > p').text()).toContain(
       'corporations are wholly owned by the corporation they are amalgamating with.')
     expect(wrapper.find('#vertical-short-form-btn').text()).toBe('Start Vertical Short-form')
-    // TODO: Need to update this line when short form amalgamations are implemented
-    expect(wrapper.find('#vertical-short-form-btn').classes()).toContain('v-btn--disabled') // disabled
+    expect(wrapper.find('#vertical-short-form-btn').classes()).not.toContain('v-btn--disabled')
   })
 
   it('content of regular long form card is correct', () => {
@@ -81,6 +85,22 @@ describe('AmalgamationSelection', () => {
   it('start regular long-form button clicked', async () => {
     const createFiling = vi.spyOn((LegalServices as any), 'createDraftBusiness')
     const button = wrapper.find('#regular-long-form-btn')
+    await button.trigger('click')
+
+    expect(createFiling).toHaveBeenCalled()
+  })
+
+  it('start horizontal short-form button clicked', async () => {
+    const createFiling = vi.spyOn((LegalServices as any), 'createDraftBusiness')
+    const button = wrapper.find('#horizontal-short-form-btn')
+    await button.trigger('click')
+
+    expect(createFiling).toHaveBeenCalled()
+  })
+
+  it('start vertical short-form button clicked', async () => {
+    const createFiling = vi.spyOn((LegalServices as any), 'createDraftBusiness')
+    const button = wrapper.find('#vertical-short-form-btn')
     await button.trigger('click')
 
     expect(createFiling).toHaveBeenCalled()
