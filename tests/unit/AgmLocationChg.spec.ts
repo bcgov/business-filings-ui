@@ -2,18 +2,16 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import AgmLocationChg from '@/views/AgmLocationChg.vue'
-import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
-  from '@/components/dialogs'
-import { BusinessNameForeign, EffectiveDate, Certify, DetailComment, ForeignJurisdiction } from '@/components/common'
-import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
-import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
-import { LegalServices } from '@/services'
+import { Certify } from '@/components/common'
+import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import sinon from 'sinon'
+import axios from '@/axios-auth'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -23,84 +21,136 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 Vue.config.silent = true
 
 Vue.use(Vuetify)
-
+const vuetify = new Vuetify({})
 const localVue = createLocalVue()
 localVue.use(VueRouter)
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
+const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
 
-describe.skip('AGM Location Chg view', () => {
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
+document.body.setAttribute('data-app', 'true')
+
+describe('AGM Location Chg view', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: vi.fn() } as any
+
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+    }
+    configurationStore.setConfiguration(configuration)
+
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+  })
+
   beforeEach(() => {
     // init store
     rootStore.currentDate = '2020-03-04'
-    businessStore.setLegalType(CorpTypeCd.COOP)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setLegalName('My Test Entity')
-    businessStore.setIdentifier('CP1234567')
+    businessStore.setIdentifier('BC0007291')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['staff'] // continuation outs currently apply to staff only
+    rootStore.keycloakRoles = ['user']
+
+    // mock "get tasks" endpoint - needed for hasPendingTasks()
+    sinon
+      .stub(axios, 'get')
+      .withArgs('businesses/BC0007291/tasks')
+      .returns(Promise.resolve({ data: { tasks: [] } }))
+
+    // mock "save and file" endpoint
+    sinon
+      .stub(axios, 'post')
+      .withArgs('businesses/BC0007291/filings')
+      .returns(Promise.resolve({
+        data: {
+          filing: {
+            agmLocationChange: {
+              year: '2023',
+              agmLocation: 'Toronto, Ontario, Canada',
+              reason: 'Test Reason'
+            },
+            business: {
+              foundingDate: '2007-04-08T00:00:00+00:00',
+              identifier: 'BC0007291',
+              legalName: 'Legal Name - BC0007291'
+            },
+            header: {
+              name: 'agmLocationChange',
+              date: '2017-06-06',
+              submitter: 'bc0007291',
+              status: 'PENDING',
+              filingId: 123,
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              paymentToken: '321',
+              isPaymentActionRequired: true
+            }
+          }
+        }
+      }))
   })
 
-  it('mounts the sub-components properly', async () => {
-    const $route = { params: { filingId: '0' } }
+  afterEach(() => {
+    sinon.restore()
+    vi.restoreAllMocks()
+  })
 
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('mounts the sub-components properly', () => {
     // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
+    const $route = { params: { filingId: '0' } }
 
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route, $router } })
-    wrapper.vm.$data.dataLoaded = true
-    await Vue.nextTick()
 
     // verify sub-components
-    expect(wrapper.findComponent(BusinessNameForeign).exists()).toBe(true)
+    expect(wrapper.findComponent(AgmYear).exists()).toBe(true)
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
-    expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
-    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
-    expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
-    expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
-    expect(wrapper.findComponent(EffectiveDate).exists()).toBe(true)
-    expect(wrapper.findComponent(ForeignJurisdiction).exists()).toBe(true)
-    expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
-    expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
 
     wrapper.destroy()
   })
 
-  it('sets filing data properly', async () => {
-    const $route = { params: { filingId: '0' } }
-
+  it('sets filing data properly', () => {
     // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
+    const $route = { params: { filingId: '0' } }
 
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route, $router } })
-    wrapper.vm.$data.dataLoaded = true
-    await Vue.nextTick()
-
     const vm: any = wrapper.vm
 
     // verify initial Filing Data
     expect(vm.filingData).not.toBeUndefined()
     expect(vm.filingData).not.toBeNull()
     expect(vm.filingData.length).toBe(1)
-    expect(vm.filingData[0].filingTypeCode).toBe('COUTI')
-    expect(vm.filingData[0].entityType).toBe('CP')
+    expect(vm.filingData[0].filingTypeCode).toBe('AGMLC')
+    expect(vm.filingData[0].entityType).toBe('BEN')
 
     wrapper.destroy()
   })
 
   it('sets computed states properly', () => {
-    // mock $route
-    const $route = { params: { filingId: '0' } }
-
     // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
+    const $route = { params: { filingId: '0' } }
 
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route, $router } })
     const vm: any = wrapper.vm
@@ -114,211 +164,71 @@ describe.skip('AGM Location Chg view', () => {
     expect(!!vm.isPayRequired).toBe(true)
 
     // verify "validated" - all true
-    vm.businessNameValid = true
+    vm.agmLocationValid = true
+    vm.agmYearValid = true
     vm.certifyFormValid = true
-    vm.courtOrderValid = true
-    vm.detailCommentValid = true
-    vm.documentDeliveryValid = true
-    vm.effectiveDateValid = true
-    vm.foreignJurisdictionValid = true
+    vm.reasonValid = true
     expect(!!vm.isPageValid).toBe(true)
 
-    // verify "validated" - invalid Detail Comment form
-    vm.businessNameValid = true
+    // verify "validated" - invalid agm year
+    vm.agmLocationValid = true
+    vm.agmYearValid = false
     vm.certifyFormValid = true
-    vm.courtOrderValid = true
-    vm.detailCommentValid = false
-    vm.documentDeliveryValid = true
-    vm.effectiveDateValid = true
-    vm.foreignJurisdictionValid = true
+    vm.reasonValid = true
+    expect(!!vm.isPageValid).toBe(false)
+
+    // verify "validated" - invalid reason
+    vm.agmLocationValid = true
+    vm.agmYearValid = true
+    vm.certifyFormValid = true
+    vm.reasonValid = false
+    expect(!!vm.isPageValid).toBe(false)
+
+    // verify "validated" - invalid Location change form
+    vm.agmLocationValid = false
+    vm.agmYearValid = true
+    vm.certifyFormValid = true
+    vm.reasonValid = true
     expect(!!vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Certify form
-    vm.businessNameValid = true
+    vm.agmLocationValid = true
+    vm.agmYearValid = true
     vm.certifyFormValid = false
-    vm.courtOrderValid = true
-    vm.detailCommentValid = true
-    vm.documentDeliveryValid = true
-    vm.effectiveDateValid = true
-    vm.foreignJurisdictionValid = true
+    vm.reasonValid = true
     expect(!!vm.isPageValid).toBe(false)
-
-    // verify "validated" - invalid Court Order form
-    vm.businessNameValid = true
-    vm.certifyFormValid = true
-    vm.courtOrderValid = false
-    vm.detailCommentValid = true
-    vm.documentDeliveryValid = true
-    vm.effectiveDateValid = true
-    vm.foreignJurisdictionValid = true
-    expect(!!vm.isPageValid).toBe(false)
-
-    // verify "validated" - invalid Document Delivery form
-    vm.businessNameValid = true
-    vm.certifyFormValid = true
-    vm.courtOrderValid = true
-    vm.detailCommentValid = true
-    vm.documentDeliveryValid = false
-    vm.effectiveDateValid = true
-    vm.foreignJurisdictionValid = true
-    expect(!!vm.isPageValid).toBe(false)
-
-    // verify "validated" - invalid Foreign Jurisdiction form
-    vm.businessNameValid = true
-    vm.certifyFormValid = true
-    vm.courtOrderValid = true
-    vm.detailCommentValid = true
-    vm.documentDeliveryValid = true
-    vm.effectiveDateValid = true
-    vm.foreignJurisdictionValid = false
-    expect(vm.isPageValid).toBe(false)
-    wrapper.destroy()
-
-    // verify "validated" - invalid Effective Date form
-    vm.businessNameValid = true
-    vm.certifyFormValid = true
-    vm.courtOrderValid = true
-    vm.detailCommentValid = true
-    vm.documentDeliveryValid = true
-    vm.effectiveDateValid = false
-    vm.foreignJurisdictionValid = true
-    expect(vm.isPageValid).toBe(false)
-    wrapper.destroy()
-
-    // verify "validated" - invalid Business Name Foreign form
-    vm.businessNameValid = false
-    vm.certifyFormValid = true
-    vm.courtOrderValid = true
-    vm.detailCommentValid = true
-    vm.documentDeliveryValid = true
-    vm.effectiveDateValid = true
-    vm.foreignJurisdictionValid = true
-    expect(vm.isPageValid).toBe(false)
-    wrapper.destroy()
   })
 
-  it('saves draft continuation out properly', async () => {
-    // mock "has pending tasks" legal service
-    vi.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
-      return Promise.resolve(false)
-    })
+  it('saves a new filing and redirects to Pay URL when the File & Pay button is clicked', async () => {
+    const $route = { params: { filingId: '0' } } // new filing id
 
-    // mock "create filing" legal service
-    // (garbage response data - we aren't testing that)
-    vi.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
-      return Promise.resolve({
-        business: {},
-        header: { filingId: 456 },
-        agmLocationChg: {
-          continuationOutDate: '2023-06-10',
-          details: 'test',
-          foreignJurisdiction: {
-            country: 'LB'
-          },
-          legalName: 'North Shore Toys LTD.'
-        },
-        annualReport: {}
-      })
-    })
-
-    // mock $route
-    const $route = { params: { filingId: '0' } }
-
-    // create local Vue and mock router
-    createLocalVue().use(VueRouter)
-    const router = mockRouter.mock()
-    router.push({ name: 'continuation-out' })
-
-    const wrapper = shallowMount(AgmLocationChg, {
-      router,
-      stubs: {
-        BusinessNameForeign: true,
-        CourtOrderPoa: true,
-        DetailComment: true,
-        DocumentDelivery: true,
-        Certify: true,
-        EffectiveDate: true,
-        ForeignJurisdiction: true,
-        SbcFeeSummary: true
-      },
-      mocks: { $route }
-    })
+    const wrapper = shallowMount(AgmLocationChg, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // wait for fetch to complete
-    await flushPromises()
-
-    // call the save action (since clicking button doesn't work)
-    await vm.onClickSave()
-
-    // verify new Filing ID
-    expect(vm.filingId).toBe(456)
-
-    wrapper.destroy()
-  })
-
-  it('resumes draft continuation out properly', async () => {
-    // mock "fetch filing" legal service
-    vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
-      return Promise.resolve({
-        business: {
-          identifier: 'CP1234567',
-          legalName: 'My Test Entity'
-        },
-        header: {
-          name: 'agmLocationChg',
-          status: 'DRAFT',
-          certifiedBy: 'Johnny Certifier',
-          routingSlipNumber: '123456789',
-          priority: true
-        },
-        agmLocationChg: {
-          continuationOutDate: '2023-06-10',
-          details: 'Line 1\nLine 2\nLine 3',
-          foreignJurisdiction: {
-            country: 'CA',
-            region: 'AB'
-          },
-          legalName: 'North Shore Toys LTD.'
-        },
-        annualReport: {}
-      })
+    // make sure form is validated
+    await wrapper.setData({
+      agmLocationValid: true,
+      agmYearValid: true,
+      certifyFormValid: true,
+      reasonValid: true
     })
 
-    // mock $route
-    const $route = { params: { filingId: '456' } }
+    expect(vm.isPageValid).toEqual(true)
 
-    // create local Vue and mock router
-    createLocalVue().use(VueRouter)
-    const router = mockRouter.mock()
-    router.push({ name: 'continuation-out' })
+    // fee is set to 0
+    vm.totalFee = 0
 
-    const wrapper = shallowMount(AgmLocationChg, {
-      router,
-      stubs: {
-        BusinessNameForeign: true,
-        CourtOrderPoa: true,
-        DetailComment: true,
-        DocumentDelivery: true,
-        Certify: true,
-        EffectiveDate: true,
-        ForeignJurisdiction: true,
-        SbcFeeSummary: true
-      },
-      mocks: { $route }
-    })
-    const vm: any = wrapper.vm
+    // sanity check
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
-    // wait for fetches to complete
-    await flushPromises()
+    // click the File & Pay button
+    await vm.onClickFilePay()
+    await flushPromises() // wait for save to complete and everything to update
 
-    expect(vm.certifiedBy).toBe('Johnny Certifier')
-    // NB: line 1 (default comment) should be removed
-    expect(vm.detailComment).toBe('Line 2\nLine 3')
-    expect(vm.initialEffectiveDate).toBe('2023-06-10')
-    expect(vm.initialBusinessName).toBe('North Shore Toys LTD.')
-    expect(vm.initialCountry).toBe('CA')
-    expect(vm.initialRegion).toBe('AB')
+    // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
+    expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
   })

@@ -143,7 +143,9 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
   is (filing: ApiFilingIF): string {
     switch (true) {
       case filing.availableOnPaperOnly: return 'paper-filing' // must come first
+      case EnumUtilities.isTypeAgmExtension(filing): return 'agm-extension'
       case EnumUtilities.isTypeAlteration(filing): return 'alteration-filing'
+      case EnumUtilities.isTypeAmalgamation(filing): return 'amalgamation-filing'
       case EnumUtilities.isTypeChangeOfAddress(filing): return 'change-of-address'
       case EnumUtilities.isTypeConsentContinuationOut(filing): return 'consent-continuation-out'
       case EnumUtilities.isTypeContinuationOut(filing): return 'continuation-out'
@@ -231,7 +233,9 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
 }
 
 :deep(.v-expansion-panel-header) {
+  min-height: auto !important;
   padding: 0;
+  margin-top: 0.25rem;
 
   .v-expansion-panel-header__icon {
     display: none;

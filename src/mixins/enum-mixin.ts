@@ -45,6 +45,11 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.ALTERATION)
   }
 
+  /** DEPRECATED Returns True if filing is an Amalgamation. */
+  isTypeAmalgamation (item: any): boolean {
+    return (item.name === FilingTypes.AMALGAMATION_APPLICATION)
+  }
+
   /** DEPRECATED Returns True if filing is an Annual Report. */
   isTypeAnnualReport (item: any): boolean {
     return (item.name === FilingTypes.ANNUAL_REPORT)
@@ -63,6 +68,11 @@ export default class EnumMixin extends Vue {
   /** DEPRECATED Returns True if filing is a Correction. */
   isTypeCorrection (item: any): boolean {
     return (item.name === FilingTypes.CORRECTION)
+  }
+
+  /** DEPRECATED Returns True if filing is a Dissolution. */
+  isTypeDissolution (item: any): boolean {
+    return (item.name === FilingTypes.DISSOLUTION)
   }
 
   /** DEPRECATED Returns True if filing is an Incorporation Application. */

@@ -1,4 +1,5 @@
 import { EntityState, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
+import { AmalgamationTypes } from '@bcrs-shared-components/enums'
 import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
 
 export interface FilingTypeIF {
@@ -9,6 +10,7 @@ export interface FilingTypeIF {
 }
 
 export interface AllowedActionsIF {
+  digitalBusinessCard: boolean
   filing: {
     filingSubmissionLink: string
     filingTypes: Array<FilingTypeIF>
@@ -24,11 +26,19 @@ export interface AlternateNameIF {
   operatingName: string
 }
 
+export interface AmalgamatedIntoIF {
+  amalgamationDate: ApiDateTimeUtc
+  amalgamationType: AmalgamationTypes
+  identifier: string // eg, BC7654321
+  legalName: string
+}
+
 export interface BusinessWarningIF {
   code: string // FUTURE: use an enum
   filing?: string // not used
   message: string
   warningType: string // FUTURE: use an enum
+  data?: any // optional extra properties (eg, amalgamationDate)
 }
 
 /** The Business object from the Legal API. */
@@ -37,6 +47,7 @@ export interface ApiBusinessIF {
   adminFreeze: boolean
   allowedActions: AllowedActionsIF
   alternateNames?: Array<AlternateNameIF>
+  amalgamatedInto?: AmalgamatedIntoIF
   arMaxDate?: IsoDatePacific // not used
   arMinDate?: IsoDatePacific // not used
   associationType: string // COOP only
@@ -69,7 +80,7 @@ export interface ApiBusinessIF {
   warnings: Array<BusinessWarningIF>
 }
 
-/** The Business module state interface. */
+/** The state model interface for the Business Store. */
 export interface BusinessStateIF {
   businessInfo: ApiBusinessIF
 }

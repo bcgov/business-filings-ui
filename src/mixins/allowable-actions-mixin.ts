@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils'
-import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
 
@@ -9,9 +9,9 @@ import { useBusinessStore, useRootStore } from '@/stores'
 export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) getAllowedActions!: AllowedActionsIF
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
-  @Getter(useBusinessStore) isBComp!: boolean
   @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isSoleProp!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
@@ -40,13 +40,15 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.AGM_EXTENSION: {
-        return true // *** FOR DEBUGGING ONLY
-        // return this.isAllowedFiling(FilingTypes.AGM_EXTENSION)
+        return this.isAllowedFiling(FilingTypes.AGM_EXTENSION)
       }
 
-      case AllowableActions.AGM_LOCATION_CHG: {
-        return true // *** FOR DEBUGGING ONLY
-        // return this.isAllowedFiling(FilingTypes.AGM_LOCATION_CHG)
+      case AllowableActions.AGM_LOCATION_CHANGE: {
+        return this.isAllowedFiling(FilingTypes.AGM_LOCATION_CHANGE)
+      }
+
+      case AllowableActions.AMALGAMATION: {
+        return this.isAllowedFiling(FilingTypes.AMALGAMATION_APPLICATION)
       }
 
       case AllowableActions.BUSINESS_INFORMATION: {
@@ -91,11 +93,15 @@ export default class AllowableActionsMixin extends Vue {
         return (isBusiness && this.isRoleStaff)
       }
 
+      /**
+       * DBC feature is only available to self-registered owners of an SP
+       * who are logged in via BCSC.
+       */
       case AllowableActions.DIGITAL_CREDENTIALS: {
         // NB: this feature is targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('enable-digital-credentials')
-        const isNotaDcRoute = !(this.$route.matched.some(route => route.name === Routes.DIGITAL_CREDENTIALS))
-        return (ff && isNotaDcRoute && this.isGoodStanding && this.isBComp && !this.isRoleStaff)
+        const isDigitalBusinessCardAllowed = this.getAllowedActions?.digitalBusinessCard
+        return (ff && isDigitalBusinessCardAllowed)
       }
 
       case AllowableActions.DIRECTOR_CHANGE: {
@@ -111,11 +117,13 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.LIMITED_RESTORATION_EXTENSION: {
-        return this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)
+        return !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType) &&
+        this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)
       }
 
       case AllowableActions.LIMITED_RESTORATION_TO_FULL: {
-        return this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_TO_FULL)
+        return !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType) &&
+        this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_TO_FULL)
       }
 
       case AllowableActions.PUT_BACK_ON: {
@@ -137,9 +145,11 @@ export default class AllowableActionsMixin extends Vue {
       case AllowableActions.RESTORATION: {
         // full restoration or limited restoration
         // but not limited restoration extension or limited restoration to full
+        const ff = !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType)
         return (
-          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.FULL_RESTORATION) ||
-          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION)
+          ff &&
+          (this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.FULL_RESTORATION) ||
+          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION))
         )
       }
 

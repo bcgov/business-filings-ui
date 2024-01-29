@@ -1,9 +1,8 @@
 <template>
-  <div
-    id="credentials-table"
-    class="mt-8"
-  >
-    <header class="credentials-table-header">
+  <div id="credentials-table">
+    <h1>My Credential Dashboard</h1>
+
+    <header class="credentials-table-header mt-4">
       <label class="font-weight-bold pl-2">Your Digital Credentials</label>
     </header>
 
@@ -21,10 +20,17 @@
           {{ formatCredentialType(item.credentialType) }}
         </template>
         <template #[`item.isIssued`]="{ item }">
-          {{ item.isIssued ? 'Issued' : 'Pending' }}
+          {{ item.isRevoked ? "Revoked" : item.isIssued ? "Issued" : "Pending" }}
         </template>
         <template #[`item.dateOfIssue`]="{ item }">
-          {{ apiToPacificDate(item.dateOfIssue) || '-' }}
+          {{ apiToPacificDateTime(item.dateOfIssue) || "-" }}
+        </template>
+        <template #[`item.action`]="{ item }">
+          <CredentialsMenu
+            :issuedCredential="item"
+            @onConfirmRevokeCredential="promptConfirmRevokeCredential($event)"
+            @onConfirmReplaceCredential="promptConfirmReplaceCredential($event)"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -32,17 +38,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { DigitalCredentialsIF, TableHeaderIF } from '@/interfaces'
+import { Component, Mixins, Prop, Emit } from 'vue-property-decorator'
+import { DigitalCredentialIF, TableHeaderIF } from '@/interfaces'
 import { DigitalCredentialTypes } from '@/enums'
 import { DateMixin } from '@/mixins'
+import CredentialsMenu from '@/components/DigitalCredentials/CredentialsMenu.vue'
 
-@Component({})
+@Component({
+  components: {
+    CredentialsMenu
+  }
+})
 export default class CredentialsTable extends Mixins(DateMixin) {
-  @Prop({ default: () => [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
+  @Prop({ default: () => [] }) readonly issuedCredentials!: Array<DigitalCredentialIF>
 
   get credentialsTableHeaders (): Array<TableHeaderIF> {
-    // Do not display headers if there is table data
+    // Do not display headers if there is no table data
     if (this.issuedCredentials.length === 0) return []
     return [
       {
@@ -62,22 +73,41 @@ export default class CredentialsTable extends Mixins(DateMixin) {
       },
       {
         class: 'column-lg',
-        text: 'Date of Issue',
+        text: 'Issue Date',
         value: 'dateOfIssue'
+      },
+      {
+        class: 'column-lg',
+        text: '',
+        value: 'action'
       }
     ]
   }
 
   formatCredentialType (credentialType: DigitalCredentialTypes): string {
     // Safety check
-    if (!credentialType) return 'Unknown'
+    if (!credentialType) {
+      return 'Unknown'
+    }
     return credentialType.charAt(0).toUpperCase() + credentialType.slice(1) + ' Credential'
+  }
+
+  /** Emits an event to prompt confirmation to revoke credential. */
+  @Emit('onPromptConfirmRevokeCredential')
+  promptConfirmRevokeCredential (issuedCredential: DigitalCredentialIF): DigitalCredentialIF {
+    return issuedCredential
+  }
+
+  /** Emits an event to prompt confirmation to replace credential. */
+  @Emit('onPromptConfirmReplaceCredential')
+  promptConfirmReplaceCredential (issuedCredential: DigitalCredentialIF): DigitalCredentialIF {
+    return issuedCredential
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
+@import "@/assets/styles/theme.scss";
 
 .credentials-table-header {
   background-color: $BCgovBlue5O;
@@ -87,10 +117,13 @@ export default class CredentialsTable extends Mixins(DateMixin) {
 
 // Vuetify overrides for Table Headers and Cells
 :deep() {
-  .v-data-table > .v-data-table__wrapper > table > thead > tr > th, td {
+
+  .v-data-table>.v-data-table__wrapper>table>thead>tr>th,
+  td {
     color: $gray7;
-    font-size: .875rem;
+    font-size: $px-14;
   }
+
   .column-lg {
     width: 15rem !important;
   }

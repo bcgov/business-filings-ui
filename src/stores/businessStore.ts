@@ -1,8 +1,10 @@
-import { AllowedActionsIF, ApiBusinessIF, ApiDateTimeUtc, BusinessStateIF, BusinessWarningIF } from '@/interfaces'
+import { AllowedActionsIF, AmalgamatedIntoIF, ApiBusinessIF, ApiDateTimeUtc, BusinessStateIF, BusinessWarningIF }
+  from '@/interfaces'
 import { defineStore } from 'pinia'
 import { CorpTypeCd, EntityState } from '@/enums'
 import { DateUtilities, LegalServices } from '@/services/'
 import { GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
+import { useRootStore } from './rootStore'
 
 export const useBusinessStore = defineStore('business', {
   state: (): BusinessStateIF => ({
@@ -33,9 +35,14 @@ export const useBusinessStore = defineStore('business', {
   }),
 
   getters: {
-    /** The allowed actions object. */
+    /** The Allowed Actions object. */
     getAllowedActions (state: BusinessStateIF): AllowedActionsIF {
       return state.businessInfo.allowedActions
+    },
+
+    /** The Amalgamated Info object. */
+    getAmalgamatedInto (state: BusinessStateIF): AmalgamatedIntoIF {
+      return state.businessInfo.amalgamatedInto
     },
 
     /** The business number (aka Tax ID). */
@@ -48,7 +55,7 @@ export const useBusinessStore = defineStore('business', {
       return state.businessInfo.warnings
     },
 
-    /** The business state.businessInfo. */
+    /** The business state. */
     getBusinessState (state: BusinessStateIF): EntityState {
       return state.businessInfo.state
     },
@@ -101,9 +108,13 @@ export const useBusinessStore = defineStore('business', {
 
     /** The entity name, or numbered description, or empty string. */
     getEntityName (): string {
-      return (
-        this.getLegalName || GetCorpNumberedDescription(this.getLegalType)
-      )
+      const rootStore = useRootStore()
+
+      if (rootStore.isDraftAmalgamation || rootStore.isFiledAmalgamation) {
+        return this.getLegalName || 'Numbered Amalgamated Company'
+      } else {
+        return (this.getLegalName || GetCorpNumberedDescription(this.getLegalType))
+      }
     },
 
     /** The state filing URL (may be null). */
@@ -132,6 +143,11 @@ export const useBusinessStore = defineStore('business', {
       )
     },
 
+    /** Is True if the business is part of a future effective amalgamation filing. */
+    isFutureEffectiveAmalgamation (): boolean {
+      return this.getBusinessWarnings.some(item => item.warningType === 'FUTURE_EFFECTIVE_AMALGAMATION')
+    },
+
     /** Is True if business is active. */
     isActive (): boolean {
       return (this.getBusinessState === EntityState.ACTIVE)
@@ -143,13 +159,23 @@ export const useBusinessStore = defineStore('business', {
     },
 
     /** Is True if entity is a Benefit Company. */
-    isBComp (state: BusinessStateIF): boolean {
-      return (state.businessInfo.legalType === CorpTypeCd.BENEFIT_COMPANY)
+    isBComp (): boolean {
+      return (this.getLegalType === CorpTypeCd.BENEFIT_COMPANY)
     },
 
     /** Is True if entity is a BC Company. */
-    isBcCompany (state: BusinessStateIF): boolean {
-      return (state.businessInfo.legalType === CorpTypeCd.BC_COMPANY)
+    isBcCompany (): boolean {
+      return (this.getLegalType === CorpTypeCd.BC_COMPANY)
+    },
+
+    /** Is True if entity is a BC Community Contribution Company. */
+    isCcc (): boolean {
+      return (this.getLegalType === CorpTypeCd.BC_CCC)
+    },
+
+    /** Is True if entity is a BC ULC Company. */
+    isUlc (): boolean {
+      return (this.getLegalType === CorpTypeCd.BC_ULC_COMPANY)
     },
 
     /** Is True if entity is a BEN/BC/CCC/ULC. */
@@ -162,19 +188,24 @@ export const useBusinessStore = defineStore('business', {
       )
     },
 
-    /** Is True if entity is a BC Community Contribution Company. */
-    isCcc (state: BusinessStateIF): boolean {
-      return (state.businessInfo.legalType === CorpTypeCd.BC_CCC)
-    },
-
     /** Is True if entity is a Cooperative. */
-    isCoop (state: BusinessStateIF): boolean {
-      return (state.businessInfo.legalType === CorpTypeCd.COOP)
+    isCoop (): boolean {
+      return (this.getLegalType === CorpTypeCd.COOP)
     },
 
-    /** Is True if entity is a BC Corporation. */
-    isCorp (state: BusinessStateIF): boolean {
-      return (state.businessInfo.legalType === CorpTypeCd.BC_CORPORATION)
+    /** Is True if entity is a Corporation. */
+    isCorp (): boolean {
+      return (this.getLegalType === CorpTypeCd.CORPORATION)
+    },
+
+    /** Is True if entity is a General Partnership. */
+    isPartnership (): boolean {
+      return (this.getLegalType === CorpTypeCd.PARTNERSHIP)
+    },
+
+    /** Is True if entity is a Sole Proprietorship. */
+    isSoleProp (): boolean {
+      return (this.getLegalType === CorpTypeCd.SOLE_PROP)
     },
 
     /** Is True if entity is a Sole Proprietorship or General Partnership. */
@@ -195,21 +226,6 @@ export const useBusinessStore = defineStore('business', {
     /** Is True if business is in liquidation. */
     isLiquidation (): boolean {
       return (this.getBusinessState === EntityState.LIQUIDATION)
-    },
-
-    /** Is True if entity is a General Partnership. */
-    isPartnership (): boolean {
-      return (this.getLegalType === CorpTypeCd.PARTNERSHIP)
-    },
-
-    /** Is True if entity is a Sole Proprietorship. */
-    isSoleProp (): boolean {
-      return (this.getLegalType === CorpTypeCd.SOLE_PROP)
-    },
-
-    /** Is True if entity is a BC ULC Company. */
-    isUlc (): boolean {
-      return (this.getLegalType === CorpTypeCd.BC_ULC_COMPANY)
     }
   },
 

@@ -11,6 +11,7 @@ import LegalServices from '@/services/legal-services'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { EntityState, FilingSubTypes, FilingTypes } from '@/enums'
 import { waitForUpdate } from '../wait-for-update'
+import * as utils from '@/utils'
 
 Vue.use(Vuetify)
 
@@ -51,6 +52,7 @@ describe('StaffNotation', () => {
     // allow all filings referenced in this component
     // some of these are normally mutually exclusive, but that's OK for testing
     businessStore.setAllowedActions({
+      digitalBusinessCard: false,
       filing: {
         filingTypes: [
           { name: FilingTypes.REGISTRARS_NOTATION },
@@ -117,11 +119,6 @@ describe('StaffNotation', () => {
         disabled: false
       },
       {
-        type: 'restoration',
-        label: 'Restore Company',
-        disabled: false
-      },
-      {
         type: 'put-back-on',
         label: 'Put Back On',
         disabled: false
@@ -130,23 +127,13 @@ describe('StaffNotation', () => {
         type: 'admin-freeze',
         label: 'Freeze Business',
         disabled: false
-      },
+      }
       // only displayed for corps and coops (not firms)
       // {
       //   type: 'consent-continue-out',
       //   label: 'Consent to Continuation Out',
       //   disabled: false
       // },
-      {
-        type: 'extend-limited-restoration',
-        label: 'Extend Limited Restoration',
-        disabled: false
-      },
-      {
-        type: 'convert-full-restoration',
-        label: 'Convert to Full Restoration',
-        disabled: false
-      }
     ]
 
     // verify menu items
@@ -267,6 +254,83 @@ describe('StaffNotation', () => {
         expect(menuItemUnderTest.classes()).not.toContain('v-list-item--disabled')
       }
     }
+    expect(wrapper.findAll('.v-list-item__title')).toHaveLength(menuItems.length)
+
+    wrapper.destroy()
+  })
+
+  it('renders drop down menu correctly - historical', async () => {
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-restoration-entities') return 'SP'
+      return null
+    })
+    businessStore.setState(EntityState.HISTORICAL)
+    const wrapper = mount(StaffNotation, { vuetify })
+
+    // open menu
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.vm.$data.expand).toBe(true)
+
+    // menu items expected as follows
+    const menuItems = [
+      {
+        type: 'registrars-notation',
+        label: 'Add Registrar\'s Notation',
+        disabled: false
+      },
+      {
+        type: 'registrars-order',
+        label: 'Add Registrar\'s Order',
+        disabled: false
+      },
+      {
+        type: 'court-order',
+        label: 'Add Court Order',
+        disabled: false
+      },
+      {
+        type: 'record-conversion',
+        label: 'Record Conversion',
+        disabled: false
+      },
+      {
+        type: 'put-back-on',
+        label: 'Put Back On',
+        disabled: false
+      },
+      {
+        type: 'admin-freeze',
+        label: 'Freeze Business',
+        disabled: false
+      },
+      {
+        type: 'restoration',
+        label: 'Restore Company',
+        disabled: false
+      },
+      {
+        type: 'extend-limited-restoration',
+        label: 'Extend Limited Restoration',
+        disabled: false
+      },
+      {
+        type: 'convert-full-restoration',
+        label: 'Convert to Full Restoration',
+        disabled: false
+      }
+    ]
+
+    // verify menu items
+    for (const menuItem of menuItems) {
+      const menuItemUnderTest = wrapper.find('[data-type="' + menuItem.type + '"]')
+      expect(menuItemUnderTest.text()).toBe(menuItem.label)
+      if (menuItem.disabled) {
+        expect(menuItemUnderTest.classes()).toContain('v-list-item--disabled')
+      } else {
+        expect(menuItemUnderTest.classes()).not.toContain('v-list-item--disabled')
+      }
+    }
+
     expect(wrapper.findAll('.v-list-item__title')).toHaveLength(menuItems.length)
 
     wrapper.destroy()
@@ -437,7 +501,7 @@ describe('StaffNotation', () => {
     // set store specifically for this test
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY) // corp
     businessStore.setIdentifier('BC1234567')
-
+    businessStore.setState(EntityState.HISTORICAL)
     // stub "create draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/BC1234567/filings?draft=true').returns(
       new Promise(resolve =>
@@ -477,7 +541,7 @@ describe('StaffNotation', () => {
     // set store specifically for this test
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     businessStore.setIdentifier('BC1234567')
-
+    businessStore.setState(EntityState.HISTORICAL)
     // stub "create draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/BC1234567/filings?draft=true').returns(
       new Promise(resolve =>
@@ -521,7 +585,7 @@ describe('StaffNotation', () => {
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setIdentifier('BC1234567')
     rootStore.currentDate = '2022-12-31'
-    businessStore.setState(EntityState.ACTIVE)
+    businessStore.setState(EntityState.HISTORICAL)
     rootStore.setStateFiling({
       business: {
         state: 'ACTIVE'

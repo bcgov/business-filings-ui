@@ -7,9 +7,13 @@ import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import axios from '@/axios-auth'
+import { AuthServices, LegalServices } from '@/services'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import App from '@/App.vue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { AmalgamationTypes, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import * as utils from '@/utils'
 
 // mock fetch() as it is not defined in Vitest
 // NB: it should be `global.fetch` but that doesn't work and this does
@@ -910,7 +914,7 @@ describe('App as a Draft IA with approved NR', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1032,7 +1036,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1135,7 +1139,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1238,7 +1242,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1314,6 +1318,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
 
   beforeAll(() => {
     // clear store
+    rootStore.setNameRequest(null)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([])
 
@@ -1341,7 +1346,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1416,11 +1421,6 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     wrapper.destroy()
   })
 
-  it('fetches NR data properly', () => {
-    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(businessStore.getLegalName).toBe('My Name Request')
-  })
-
   it.skip('fetches IA filing properly', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('BEN')
@@ -1456,11 +1456,12 @@ describe('App as a PAID (pending) Incorporation Application', () => {
 })
 
 describe('App as a COMPLETED Incorporation Application', () => {
-  // Intermediate scenario - While returning from payment completion page
+  // Intermediate scenario - still using Temp Reg Number
   let wrapper: Wrapper<Vue>
 
   beforeAll(() => {
     // clear store
+    rootStore.setNameRequest(null)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([])
 
@@ -1488,7 +1489,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1563,11 +1564,6 @@ describe('App as a COMPLETED Incorporation Application', () => {
     wrapper.destroy()
   })
 
-  it('fetches NR data properly', () => {
-    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(businessStore.getLegalName).toBe('My Name Request')
-  })
-
   it.skip('fetches IA filing properly', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('BEN')
@@ -1602,7 +1598,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
   })
 })
 
-describe('App as an historical business', () => {
+describe('App as an historical business - Amalgamation', () => {
   let wrapper: Wrapper<Vue>
 
   beforeAll(() => {
@@ -1654,9 +1650,127 @@ describe('App as an historical business', () => {
       .returns(new Promise(resolve => resolve({
         data: {
           business: {
-            arMaxDate: '2021-12-10',
-            arMinDate: '2022-12-02',
-            dissolutionDate: '2021-12-06',
+            amalgamatedInto: {
+              amalgamationDate: '2023-12-01T08:00:00+00:00',
+              amalgamationType: AmalgamationTypes.REGULAR,
+              identifier: 'BC7654321',
+              legalName: 'Amalgamated Business Name Ltd.'
+            },
+            foundingDate: '2021-12-02T20:15:00+00:00',
+            goodStanding: true,
+            hasRestrictions: false,
+            identifier: 'BC1234567',
+            lastAddressChangeDate: '2021-12-02',
+            lastAnnualReportDate: '',
+            lastDirectorChangeDate: '2021-12-02',
+            legalName: 'HISTORICAL CORP.',
+            legalType: 'BEN',
+            nextAnnualReport: '2022-12-02T08:00:00+00:00',
+            state: 'HISTORICAL',
+            stateFiling: null,
+            submitter: 'bcsc/pmd3qdz4hzr3hpwbm7jwufel6flpqtyj'
+          }
+        }
+      })))
+
+    // GET tasks
+    get.withArgs('businesses/BC1234567/tasks')
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+
+    // GET filings
+    get.withArgs('businesses/BC1234567/filings')
+      .returns(new Promise(resolve => resolve({ data: { filings: [] } })))
+
+    // GET addresses
+    get.withArgs('businesses/BC1234567/addresses')
+      .returns(new Promise(resolve => resolve({ data: {} })))
+
+    // GET directors
+    get.withArgs('businesses/BC1234567/parties')
+      .returns(new Promise(resolve => resolve({ data: { parties: [] } })))
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, {
+      localVue,
+      router,
+      vuetify
+    })
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('fetches and parses state filing properly', () => {
+    expect(businessStore.isActive).toBe(false)
+    expect(businessStore.isHistorical).toBe(true)
+    expect(businessStore.isLiquidation).toBe(false)
+    expect(rootStore.getReasonText).toBe('Amalgamation – December 1, 2023 – BC7654321')
+  })
+})
+
+describe('App as an historical business - Voluntary Dissolution', () => {
+  let wrapper: Wrapper<Vue>
+
+  beforeAll(() => {
+    // clear store
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([])
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+  })
+
+  beforeEach(async () => {
+    const get = sinon.stub(axios, 'get')
+
+    // GET authorizations (role) from Auth API
+    get.withArgs('entities/BC1234567/authorizations')
+      .returns(new Promise(resolve => resolve({
+        data:
+        {
+          roles: ['edit', 'view']
+        }
+      })))
+
+    // GET user info from Auth API
+    get.withArgs('users/@me')
+      .returns(new Promise(resolve => resolve({
+        data: USER_INFO
+      })))
+
+    // GET entity info from Auth API
+    get.withArgs('entities/BC1234567')
+      .returns(new Promise(resolve => resolve({
+        data:
+        {
+          // Auth API Entity data
+          contacts: [
+            {
+              email: 'first.last@email.com',
+              phone: '(111)-222-3333',
+              phoneExtension: '444'
+            }
+          ]
+        }
+      })))
+
+    // GET business info from Legal API
+    get.withArgs('businesses/BC1234567')
+      .returns(new Promise(resolve => resolve({
+        data: {
+          business: {
+            dissolutionDate: '2023-12-01',
             foundingDate: '2021-12-02T20:15:00+00:00',
             goodStanding: true,
             hasRestrictions: false,
@@ -1690,10 +1804,10 @@ describe('App as an historical business', () => {
             business: {},
             dissolution: {
               dissolutionType: 'voluntary',
-              dissolutionDate: '2021-12-01'
+              dissolutionDate: '2023-12-01'
             },
             header: {
-              effectiveDate: '2021-12-06T20:05:35.168290+00:00',
+              effectiveDate: '2023-12-01T08:00:00+00:00',
               name: 'dissolution'
             }
           }
@@ -1733,7 +1847,136 @@ describe('App as an historical business', () => {
     expect(businessStore.isActive).toBe(false)
     expect(businessStore.isHistorical).toBe(true)
     expect(businessStore.isLiquidation).toBe(false)
-    expect(rootStore.getReasonText).toBe('Voluntary Dissolution – December 1, 2021')
+    expect(rootStore.getReasonText).toBe('Voluntary Dissolution – December 1, 2023')
+  })
+})
+
+describe('App as an historical business - Continuation Out', () => {
+  let wrapper: Wrapper<Vue>
+
+  beforeAll(() => {
+    // clear store
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([])
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+  })
+
+  beforeEach(async () => {
+    const get = sinon.stub(axios, 'get')
+
+    // GET authorizations (role) from Auth API
+    get.withArgs('entities/BC1234567/authorizations')
+      .returns(new Promise(resolve => resolve({
+        data:
+        {
+          roles: ['edit', 'view']
+        }
+      })))
+
+    // GET user info from Auth API
+    get.withArgs('users/@me')
+      .returns(new Promise(resolve => resolve({
+        data: USER_INFO
+      })))
+
+    // GET entity info from Auth API
+    get.withArgs('entities/BC1234567')
+      .returns(new Promise(resolve => resolve({
+        data:
+        {
+          // Auth API Entity data
+          contacts: [
+            {
+              email: 'first.last@email.com',
+              phone: '(111)-222-3333',
+              phoneExtension: '444'
+            }
+          ]
+        }
+      })))
+
+    // GET business info from Legal API
+    get.withArgs('businesses/BC1234567')
+      .returns(new Promise(resolve => resolve({
+        data: {
+          business: {
+            foundingDate: '2021-12-02T20:15:00+00:00',
+            goodStanding: true,
+            hasRestrictions: false,
+            identifier: 'BC1234567',
+            lastAddressChangeDate: '2021-12-02',
+            lastAnnualReportDate: '',
+            lastDirectorChangeDate: '2021-12-02',
+            legalName: 'HISTORICAL CORP.',
+            legalType: 'BEN',
+            nextAnnualReport: '2022-12-02T08:00:00+00:00',
+            state: 'HISTORICAL',
+            stateFiling: 'businesses/BC1234567/filings/113526',
+            submitter: 'bcsc/pmd3qdz4hzr3hpwbm7jwufel6flpqtyj'
+          }
+        }
+      })))
+
+    // GET tasks
+    get.withArgs('businesses/BC1234567/tasks')
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+
+    // GET filings
+    get.withArgs('businesses/BC1234567/filings')
+      .returns(new Promise(resolve => resolve({ data: { filings: [] } })))
+
+    // GET state filing
+    get.withArgs('businesses/BC1234567/filings/113526')
+      .returns(new Promise(resolve => resolve({
+        data: {
+          filing: {
+            business: {},
+            continuationOut: {},
+            header: {
+              effectiveDate: '2023-12-01T08:01:00+00:00',
+              name: 'continuationOut'
+            }
+          }
+        }
+      })))
+
+    // GET addresses
+    get.withArgs('businesses/BC1234567/addresses')
+      .returns(new Promise(resolve => resolve({ data: {} })))
+
+    // GET directors
+    get.withArgs('businesses/BC1234567/parties')
+      .returns(new Promise(resolve => resolve({ data: { parties: [] } })))
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, {
+      localVue,
+      router,
+      vuetify
+    })
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('fetches and parses state filing properly', () => {
+    expect(businessStore.isActive).toBe(false)
+    expect(businessStore.isHistorical).toBe(true)
+    expect(businessStore.isLiquidation).toBe(false)
+    expect(rootStore.getReasonText).toBe('Continued Out – December 1, 2023 at 12:01 am Pacific time')
   })
 })
 
@@ -1769,7 +2012,7 @@ describe('App as a Draft Registration with approved NR', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1860,11 +2103,12 @@ describe('App as a Draft Registration with approved NR', () => {
 })
 
 describe('App as a COMPLETED Registration Application', () => {
-  // Intermediate scenario - While returning from payment completion page
+  // Intermediate scenario - still using Temp Reg Number
   let wrapper: Wrapper<Vue>
 
   beforeAll(() => {
     // clear store
+    rootStore.setNameRequest(null)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([])
 
@@ -1892,7 +2136,7 @@ describe('App as a COMPLETED Registration Application', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1967,11 +2211,6 @@ describe('App as a COMPLETED Registration Application', () => {
     wrapper.destroy()
   })
 
-  it('fetches NR data properly', () => {
-    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(businessStore.getLegalName).toBe('My Name Request')
-  })
-
   it.skip('fetches Registration filing properly', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('SP')
@@ -1996,5 +2235,314 @@ describe('App as a COMPLETED Registration Application', () => {
     expect(filingHistoryListStore.filings[0].submitter).toBe('Submitter')
     expect(filingHistoryListStore.filings[0].data.applicationDate).toBe('2020-05-10')
     expect(filingHistoryListStore.filings[0].data.legalFilings).toEqual(['registration'])
+  })
+})
+
+describe('App as a draft numbered amalgamation application', () => {
+  let wrapper: Wrapper<Vue>
+
+  beforeAll(() => {
+    // clear store
+    businessStore.setLegalName(null)
+    rootStore.setNameRequest(null)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([])
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+  })
+
+  beforeEach(async () => {
+    // mock "fetchAuthorizations" auth service
+    vi.spyOn(AuthServices, 'fetchAuthorizations').mockImplementation((): any => {
+      return Promise.resolve({
+        data: { roles: ['edit', 'view'] }
+      })
+    })
+
+    // mock "fetchUserInfo" auth service
+    vi.spyOn(AuthServices, 'fetchUserInfo').mockImplementation((): any => {
+      return Promise.resolve(USER_INFO)
+    })
+
+    // mock "fetchDraftApp" legal service
+    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+      return Promise.resolve({
+        filing: {
+          business: {
+            identifier: 'T123456789',
+            legalType: CorpTypeCd.BC_COMPANY
+          },
+          header: {
+            date: '2020-05-21T00:11:55.887740+00:00',
+            filingId: 789,
+            name: FilingTypes.AMALGAMATION_APPLICATION,
+            status: FilingStatus.DRAFT
+          },
+          amalgamationApplication: {
+            nameRequest: {
+              legalType: CorpTypeCd.BC_COMPANY
+            },
+            type: AmalgamationTypes.REGULAR
+          }
+        }
+      })
+    })
+
+    // mock "UpdateLdUser" auth service
+    vi.spyOn(utils, 'UpdateLdUser').mockImplementation((): any => {
+      return Promise.resolve()
+    })
+
+    // create a Local Vue and install router (and store) on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, { localVue, router, vuetify })
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('fetches amalgamation filing properly', () => {
+    expect(rootStore.getNameRequest).toBeNull()
+    expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.isBcCompany).toBe(true)
+    expect(businessStore.isGoodStanding).toBe(true)
+    expect(businessStore.getLegalName).toBeNull()
+    expect(rootStore.isDraftAmalgamation).toBe(true)
+    expect(rootStore.isAppTask).toBe(true)
+
+    // verify loaded task
+    expect(rootStore.tasks.length).toBe(1)
+    expect(rootStore.tasks[0].enabled).toBe(true)
+    expect(rootStore.tasks[0].order).toBe(1)
+    expect(rootStore.tasks[0].task.filing.business).not.toBeNull()
+    expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamationApplication')
+    expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
+    expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
+    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Amalgamation Application - Regular')
+  })
+})
+
+describe('App as a draft named amalgamation application', () => {
+  let wrapper: Wrapper<Vue>
+
+  beforeAll(() => {
+    // clear store
+    businessStore.setLegalName(null)
+    rootStore.setNameRequest(null)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([])
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+  })
+
+  beforeEach(async () => {
+    // mock "fetchAuthorizations" auth service
+    vi.spyOn(AuthServices, 'fetchAuthorizations').mockImplementation((): any => {
+      return Promise.resolve({
+        data: { roles: ['edit', 'view'] }
+      })
+    })
+
+    // mock "fetchUserInfo" auth service
+    vi.spyOn(AuthServices, 'fetchUserInfo').mockImplementation((): any => {
+      return Promise.resolve(USER_INFO)
+    })
+
+    // mock "fetchNameRequest" legal service
+    vi.spyOn(LegalServices, 'fetchNameRequest').mockImplementation((): any => {
+      return Promise.resolve({
+        applicants: {},
+        expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+        legalType: CorpTypeCd.BC_COMPANY,
+        names: [
+          {
+            name: 'My Amalgamated Company',
+            state: 'APPROVED'
+          }
+        ],
+        nrNum: 'NR 1234567',
+        request_action_cd: 'NEW',
+        state: 'APPROVED'
+      })
+    })
+
+    // mock "fetchDraftApp" legal service
+    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+      return Promise.resolve({
+        filing: {
+          business: {
+            identifier: 'T123456789',
+            legalType: CorpTypeCd.BC_COMPANY
+          },
+          header: {
+            date: '2020-05-21T00:11:55.887740+00:00',
+            filingId: 789,
+            name: FilingTypes.AMALGAMATION_APPLICATION,
+            status: FilingStatus.DRAFT
+          },
+          amalgamationApplication: {
+            nameRequest: {
+              nrNumber: 'NR 1234567',
+              legalType: CorpTypeCd.BC_COMPANY
+            },
+            type: AmalgamationTypes.REGULAR
+          }
+        }
+      })
+    })
+
+    // mock "UpdateLdUser" auth service
+    vi.spyOn(utils, 'UpdateLdUser').mockImplementation((): any => {
+      return Promise.resolve()
+    })
+
+    // create a Local Vue and install router (and store) on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, { localVue, router, vuetify })
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('fetches amalgamation filing properly', () => {
+    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
+    expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.isBcCompany).toBe(true)
+    expect(businessStore.isGoodStanding).toBe(true)
+    expect(businessStore.getLegalName).toBe('My Amalgamated Company')
+    expect(rootStore.isDraftAmalgamation).toBe(true)
+    expect(rootStore.isAppTask).toBe(true)
+
+    // verify loaded task
+    expect(rootStore.tasks.length).toBe(1)
+    expect(rootStore.tasks[0].enabled).toBe(true)
+    expect(rootStore.tasks[0].order).toBe(1)
+    expect(rootStore.tasks[0].task.filing.business).not.toBeNull()
+    expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamationApplication')
+    expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
+    expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
+    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Amalgamation Application - Regular')
+  })
+})
+
+describe('App as a completed amalgamation application', () => {
+  // Intermediate scenario - still using Temp Reg Number
+  let wrapper: Wrapper<Vue>
+
+  beforeAll(() => {
+    // clear store
+    businessStore.setLegalName(null)
+    rootStore.setNameRequest(null)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([])
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+  })
+
+  beforeEach(async () => {
+    // mock "fetchAuthorizations" auth service
+    vi.spyOn(AuthServices, 'fetchAuthorizations').mockImplementation((): any => {
+      return Promise.resolve({
+        data: { roles: ['edit', 'view'] }
+      })
+    })
+
+    // mock "fetchUserInfo" auth service
+    vi.spyOn(AuthServices, 'fetchUserInfo').mockImplementation((): any => {
+      return Promise.resolve(USER_INFO)
+    })
+
+    // mock "fetchDraftApp" legal service
+    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+      return Promise.resolve({
+        filing: {
+          business: {
+            identifier: 'T123456789',
+            legalType: CorpTypeCd.BC_COMPANY
+          },
+          header: {
+            date: '2020-05-21T00:11:55.887740+00:00',
+            effectiveDate: '2020-05-21T00:11:55.887740+00:00',
+            filingId: 789,
+            name: FilingTypes.AMALGAMATION_APPLICATION,
+            status: FilingStatus.COMPLETED
+          },
+          amalgamationApplication: {
+            nameRequest: {
+              nrNumber: 'NR 1234567',
+              legalType: CorpTypeCd.BC_COMPANY
+            },
+            offices: BCOMP_ADDRESSES,
+            parties: BCOMP_PARTIES,
+            type: AmalgamationTypes.REGULAR
+          }
+        }
+      })
+    })
+
+    // mock "UpdateLdUser" auth service
+    vi.spyOn(utils, 'UpdateLdUser').mockImplementation((): any => {
+      return Promise.resolve()
+    })
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, { localVue, router, vuetify })
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('fetches amalgamation filing properly', () => {
+    expect(rootStore.getNameRequest).toBeNull()
+    expect(rootStore.getEntityStatus).toBe(EntityStatus.FILED_AMALGAMATION)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.isBcCompany).toBe(true)
+    expect(businessStore.isGoodStanding).toBe(true)
+    expect(businessStore.getLegalName).toBeNull()
+    expect(rootStore.isFiledAmalgamation).toBe(true)
+    expect(rootStore.isAppFiling).toBe(true)
+
+    // verify loaded filing
+    expect(filingHistoryListStore.filings.length).toBe(1)
+    expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
+    expect(filingHistoryListStore.filings[0].displayName).toBe('BC Limited Company Amalgamation Application - Regular')
+    expect(filingHistoryListStore.filings[0].filingSubType).toBe(FilingSubTypes.AMALGAMATION_REGULAR)
+    expect(filingHistoryListStore.filings[0].name).toBe('amalgamationApplication')
+    expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
+    expect(filingHistoryListStore.filings[0].data.applicationDate).toBe('2020-05-20')
+    expect(filingHistoryListStore.filings[0].data.legalFilings).toEqual(['amalgamationApplication'])
   })
 })

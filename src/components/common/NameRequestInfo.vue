@@ -91,7 +91,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { getName } from 'country-list'
 import { capitalize, formatPhoneNumber } from '@/utils'
-import { NameRequestStates } from '@/enums'
+import { NameRequestStates, NameRequestTypes } from '@/enums'
 import { NameRequestIF, NameRequestApplicantIF } from '@/interfaces'
 import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
@@ -124,6 +124,9 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
 
   /** The request type. */
   get requestType (): string {
+    if (this.nameRequest.request_action_cd === NameRequestTypes.AMALGAMATION) {
+      return 'Amalgamation'
+    }
     return 'New Business'
   }
 
@@ -167,11 +170,9 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
   /** The applicant's name. */
   get applicantName (): string {
     let name: string
-    if (this.applicant?.middleName) {
-      name = `${this.applicant?.firstName} ${this.applicant?.middleName} ${this.applicant?.lastName}`
-    } else {
-      name = `${this.applicant?.firstName} ${this.applicant?.lastName}`
-    }
+    const firstName = this.applicant?.firstName ? this.applicant.firstName + ' ' : ''
+    const middleName = this.applicant?.middleName ? this.applicant.middleName + ' ' : ''
+    name = `${firstName}${middleName}${this.applicant?.lastName}`
     return name
   }
 

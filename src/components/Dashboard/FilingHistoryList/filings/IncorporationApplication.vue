@@ -32,13 +32,13 @@
       />
 
       <div
-        v-else-if="isStatusCompleted"
+        v-if="!!tempRegNumber && isStatusCompleted"
         class="completed-ia-details"
       >
         <h4>Incorporation Complete</h4>
 
         <p>
-          {{ getLegalName || 'A Numbered Benefit Company' }} has been successfully incorporated.
+          {{ companyName }} has been successfully incorporated.
         </p>
 
         <p>
@@ -84,8 +84,14 @@ export default class IncorporationApplication extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
+  @Getter(useBusinessStore) getEntityName!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getMyBusinessRegistryUrl!: string
+
+  /** The Temporary Registration Number string (may be null). */
+  get tempRegNumber (): string {
+    return sessionStorage.getItem('TEMP_REG_NUMBER')
+  }
 
   /** Whether this filing is in Complete status. */
   get isStatusCompleted (): boolean {
@@ -108,6 +114,13 @@ export default class IncorporationApplication extends Vue {
       this.filing.isFutureEffective &&
       DateUtilities.isDateFuture(this.filing.effectiveDate)
     )
+  }
+
+  /** The legal name or numbered description of the new company. */
+  get companyName (): string {
+    if (this.getLegalName) return this.getLegalName
+    if (this.getEntityName) return `A ${this.getEntityName}`
+    return 'Unknown Name'
   }
 
   returnToMyBusinessRegistry (): void {

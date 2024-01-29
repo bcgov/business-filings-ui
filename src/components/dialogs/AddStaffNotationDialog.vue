@@ -155,6 +155,7 @@ import { FormIF } from '@/interfaces'
 import { EffectOfOrderTypes, FilingSubTypes, FilingTypes, PageSizes } from '@/enums'
 import { EnumUtilities, LegalServices } from '@/services'
 import { useAuthenticationStore, useBusinessStore, useRootStore } from '@/stores'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {
@@ -198,7 +199,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   @Getter(useRootStore) getCurrentDate!: string
   @Getter(useBusinessStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getLegalName!: string
-  @Getter(useBusinessStore) getLegalType!: string
+  @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useAuthenticationStore) getKeycloakGuid!: string
   @Getter(useBusinessStore) isAdminFrozen!: boolean

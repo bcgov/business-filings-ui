@@ -1,6 +1,7 @@
 import Dashboard from '@/views/Dashboard.vue'
 import AgmExtension from '@/views/AgmExtension.vue'
 import AgmLocationChg from '@/views/AgmLocationChg.vue'
+import AmalgamationSelection from '@/views/AmalgamationSelection.vue'
 import AnnualReport from '@/views/AnnualReport.vue'
 import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
@@ -39,16 +40,32 @@ export default [
   },
   {
     path: '/agm-location-chg',
-    name: Routes.AGM_LOCATION_CHG,
+    name: Routes.AGM_LOCATION_CHANGE,
     component: AgmLocationChg,
     meta: {
       requiresAuth: true,
       breadcrumb: [
         {
-          text: `File ${FilingNames.AGM_LOCATION_CHG}`,
+          text: `File ${FilingNames.AGM_LOCATION_CHANGE}`,
           disabled: false,
           exact: true,
-          to: { name: Routes.AGM_LOCATION_CHG }
+          to: { name: Routes.AGM_LOCATION_CHANGE }
+        }
+      ]
+    }
+  },
+  {
+    path: '/amalgamation-selection',
+    name: Routes.AMALGAMATION_SELECTION,
+    component: AmalgamationSelection,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: 'Amalgamation Selection',
+          disabled: false,
+          exact: true,
+          to: { name: Routes.AMALGAMATION_SELECTION }
         }
       ]
     }

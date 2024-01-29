@@ -1,9 +1,10 @@
 // Libraries
 import axios from '@/axios-auth'
 import { AxiosResponse } from 'axios'
-import { ApiBusinessIF, ApiFilingIF, CommentIF, DocumentIF, FetchDocumentsIF, NameRequestIF,
-  PresignedUrlIF } from '@/interfaces'
+import { ApiBusinessIF, ApiFilingIF, CommentIF, DocumentIF, FetchDocumentsIF, PresignedUrlIF }
+  from '@/interfaces'
 import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
+import { StatusCodes } from 'http-status-codes'
 
 /**
  * Class that provides integration with the Legal API.
@@ -81,11 +82,11 @@ export default class LegalServices {
   }
 
   /**
-   * Fetches the draft Application filing.
+   * Fetches the draft IA / Registration / Amalgamation filing.
    * This is a unique request using the temp reg number.
    * This assumes a single filing is returned.
    * @param tempRegNumber the temporary registration number
-   * @returns the draft app response
+   * @returns the draft app response (a single filing)
    */
   static async fetchDraftApp (tempRegNumber: string): Promise<any> {
     const url = `businesses/${tempRegNumber}/filings`
@@ -95,15 +96,33 @@ export default class LegalServices {
   }
 
   /**
-   * Fetches a Name Request.
-   * @param filingId the NR number
-   * @returns the name request object
+   * Fetches name request data.
+   * @param nrNumber the name request number (eg, NR 1234567) to fetch
+   * @param phone the name request phone (eg, 12321232)
+   * @param email the name request email (eg, nr@example.com)
+   * @returns a promise to return the NR data, or null if not found
    */
-  static async fetchNameRequest (nrNumber: string): Promise<NameRequestIF> {
-    const url = `nameRequests/${nrNumber}`
+  static async fetchNameRequest (nrNumber: string, phone = '', email = ''): Promise<any> {
+    const url = `nameRequests/${nrNumber}/validate?phone=${phone}&email=${email}`
+
     return axios.get(url)
-      // workaround because data is at "response.data.data"
-      .then(response => response?.data)
+      .then(response => {
+        if (response?.data) {
+          return response.data
+        }
+        // eslint-disable-next-line no-console
+        console.log('fetchNameRequest() error - invalid response =', response)
+        throw new Error('Invalid API response')
+      }).catch(error => {
+        if (error?.response?.status === StatusCodes.NOT_FOUND) {
+          return null // NR not found (not an error)
+        } else if (error?.response?.status === StatusCodes.BAD_REQUEST) {
+          throw new Error('Sent invalid email or phone number.') // Sent invalid email or phone
+        } else if (error?.response?.status === StatusCodes.FORBIDDEN) {
+          throw new Error('Not sent email or phone number.') // Not sent the email or phone
+        }
+        throw error
+      })
   }
 
   /**
@@ -136,12 +155,33 @@ export default class LegalServices {
     if (isDraft) {
       url += '?draft=true'
     }
+
     return axios.post(url, { filing })
       .then(response => {
         const filing = response?.data?.filing
         if (!filing) {
           // eslint-disable-next-line no-console
           console.log('createFiling() error - invalid response =', response)
+          throw new Error('Invalid filing')
+        }
+        return filing
+      })
+  }
+
+  /**
+   * Creates (posts) a draft business record, which is used to bootstrap a new business.
+   * @param businessRequest the object body of the request
+   * @returns the filing object associated with the temporary business
+   */
+  static async createDraftBusiness (businessRequest: any): Promise<any> {
+    const url = `businesses?draft=true`
+
+    return axios.post(url, businessRequest)
+      .then(response => {
+        const filing = response?.data?.filing
+        if (!filing) {
+          // eslint-disable-next-line no-console
+          console.log('createDraftBusiness() error - invalid response =', response)
           throw new Error('Invalid filing')
         }
         return filing
@@ -161,6 +201,7 @@ export default class LegalServices {
     if (isDraft) {
       url += '?draft=true'
     }
+
     return axios.put(url, { filing })
       .then(response => {
         const filing = response?.data?.filing
@@ -308,7 +349,7 @@ export default class LegalServices {
   //
 
   /**
-   * Fetches digital credential information.
+   * Fetches digital credentials for a business.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
@@ -323,7 +364,7 @@ export default class LegalServices {
   }
 
   /**
-   * Creates a digital credentials invitation.
+   * Creates a wallet connection invitation.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
@@ -338,12 +379,12 @@ export default class LegalServices {
   }
 
   /**
-   * Fetches a digital credentials connection information.
+   * Fetches a list of wallet connections for a business.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
-  static async fetchCredentialConnection (businessId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/connection`
+  static async fetchCredentialConnections (businessId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/connections`
     return axios.get(url)
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -353,15 +394,84 @@ export default class LegalServices {
   }
 
   /**
-   * Issues a digital credentials offer.
+   * Removes an active credential wallet connection.
+   * @param businessId the business identifier (aka entity inc no)
+   * @returns the axios response
+   */
+  static async removeActiveCredentialConnection (businessId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/activeConnection`
+    return axios.delete(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
+  }
+
+  /**
+   * Removes a credential wallet connection.
+   * @param businessId the business identifier (aka entity inc no)
+   * @param connectionId the connection identifier
+   * @returns the axios response
+   */
+  static async removeCredentialConnection (businessId: string, connectionId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/connections/${connectionId}`
+    return axios.delete(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
+  }
+
+  /**
+   * Sends a digital credential offer.
    * @param businessId The business identifier (aka entity inc no)
    * @param credentialType The credential offer type
    * @returns the axios response
    */
-  static async issueCredentialOffer (businessId: string, credentialType: DigitalCredentialTypes)
-  : Promise<AxiosResponse> {
+  static async sendCredentialOffer (
+    businessId: string,
+    credentialType: DigitalCredentialTypes)
+    : Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/${credentialType}`
     return axios.post(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
+  }
+
+  /**
+   * Revokes a digital credential.
+   * @param businessId The business identifier (aka entity inc no)
+   * @param credentialId The credential identifier
+   * @returns the axios response
+   */
+  static async revokeCredential (
+    businessId: string,
+    credentialId: string,
+    reissue = false)
+    : Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/${credentialId}/revoke`
+    return axios.post(url, { reissue })
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
+  }
+
+  /**
+   * Removes a digital credential.
+   * @param businessId The business identifier (aka entity inc no)
+   * @param credentialId The credential identifier
+   * @returns the axios response
+   */
+  static async removeCredential (businessId: string, credentialId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/${credentialId}`
+    return axios.delete(url)
       .catch(error => {
         // eslint-disable-next-line no-console
         console.log(error.message)

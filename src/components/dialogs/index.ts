@@ -13,11 +13,13 @@ import FileCorrectionDialog from './FileCorrectionDialog.vue'
 import LoadCorrectionDialog from './LoadCorrectionDialog.vue'
 import NameRequestAuthErrorDialog from './NameRequestAuthErrorDialog.vue'
 import NameRequestInvalidDialog from './NameRequestInvalidDialog.vue'
+import NotEligibleExtensionDialog from './NotEligibleExtensionDialog.vue'
 import NotInGoodStandingDialog from '@/components/dialogs/NotInGoodStandingDialog.vue'
 import PaymentErrorDialog from './PaymentErrorDialog.vue'
 import ResumeErrorDialog from './ResumeErrorDialog.vue'
 import SaveErrorDialog from './SaveErrorDialog.vue'
 import StaffPaymentDialog from './StaffPaymentDialog.vue'
+import TechnicalErrorDialog from './TechnicalErrorDialog.vue'
 
 export {
   AddCommentDialog,
@@ -35,9 +37,11 @@ export {
   LoadCorrectionDialog,
   NameRequestAuthErrorDialog,
   NameRequestInvalidDialog,
+  NotEligibleExtensionDialog,
   NotInGoodStandingDialog,
   PaymentErrorDialog,
   ResumeErrorDialog,
   SaveErrorDialog,
-  StaffPaymentDialog
+  StaffPaymentDialog,
+  TechnicalErrorDialog
 }

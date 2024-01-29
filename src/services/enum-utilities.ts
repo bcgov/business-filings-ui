@@ -67,6 +67,16 @@ export default class EnumUtilities {
   // Filing Type helpers
   //
 
+  /** Returns True if filing is an AGM Extension. */
+  static isTypeAgmExtension (item: any): boolean {
+    return (item.name === FilingTypes.AGM_EXTENSION)
+  }
+
+  /** Returns True if filing is an AGM Location Change. */
+  static isTypeAgmLocationChange (item: any): boolean {
+    return (item.name === FilingTypes.AGM_LOCATION_CHANGE)
+  }
+
   /** Returns True if filing is an Alteration. */
   static isTypeAlteration (item: any): boolean {
     return (item.name === FilingTypes.ALTERATION)
@@ -115,6 +125,46 @@ export default class EnumUtilities {
   /** Returns True if filing is a Correction. */
   static isTypeCorrection (item: any): boolean {
     return (item.name === FilingTypes.CORRECTION)
+  }
+
+  /** Returns True if filing is a Dissolution. */
+  static isTypeDissolution (item: any): boolean {
+    return (item.name === FilingTypes.DISSOLUTION)
+  }
+
+  /** Returns True if filing is an Amalgamation. */
+  static isTypeAmalgamation (item: any): boolean {
+    return (item.name === FilingTypes.AMALGAMATION_APPLICATION)
+  }
+
+  /** Returns True if filing is a Regular Amalgamation. */
+  static isTypeAmalgamationRegular (item: any): boolean {
+    return (
+      // the property in a todo item or filing item:
+      item.filingSubType === FilingSubTypes.AMALGAMATION_REGULAR ||
+      // the property in a state filing:
+      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_REGULAR
+    )
+  }
+
+  /** Returns True if filing is a Horizontal Amalgamation. */
+  static isTypeAmalgamationHorizontal (item: any): boolean {
+    return (
+      // the property in a todo item or filing item:
+      item.filingSubType === FilingSubTypes.AMALGAMATION_HORIZONTAL ||
+      // the property in a state filing:
+      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_HORIZONTAL
+    )
+  }
+
+  /** Returns True if filing is a Vertical Amalgamation. */
+  static isTypeAmalgamationVertical (item: any): boolean {
+    return (
+      // the property in a todo item or filing item:
+      item.filingSubType === FilingSubTypes.AMALGAMATION_VERTICAL ||
+      // the property in a state filing:
+      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_VERTICAL
+    )
   }
 
   /** Returns True if filing is an Incorporation Application. */
@@ -299,7 +349,20 @@ export default class EnumUtilities {
       case FilingTypes.ADMIN_FREEZE:
         // FUTURE: add freeze/unfreeze checks here
         return FilingNames.ADMIN_FREEZE
+      case FilingTypes.AGM_EXTENSION: return FilingNames.AGM_EXTENSION
+      case FilingTypes.AGM_LOCATION_CHANGE: return FilingNames.AGM_LOCATION_CHANGE
       case FilingTypes.ALTERATION: return FilingNames.ALTERATION
+      case FilingTypes.AMALGAMATION_APPLICATION:
+        if (subType === FilingSubTypes.AMALGAMATION_HORIZONTAL) {
+          return `${FilingNames.AMALGAMATION_APPLICATION} - Horizontal`
+        }
+        if (subType === FilingSubTypes.AMALGAMATION_REGULAR) {
+          return `${FilingNames.AMALGAMATION_APPLICATION} - Regular`
+        }
+        if (subType === FilingSubTypes.AMALGAMATION_VERTICAL) {
+          return `${FilingNames.AMALGAMATION_APPLICATION} - Vertical`
+        }
+        return FilingNames.AMALGAMATION_APPLICATION
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS
       case FilingTypes.CHANGE_OF_COMPANY_INFO: return FilingNames.CHANGE_OF_COMPANY_INFO
@@ -322,7 +385,7 @@ export default class EnumUtilities {
         if (subType === FilingSubTypes.LIMITED_RESTORATION_EXTENSION) return FilingNames.RESTORATION_EXTENSION
         if (subType === FilingSubTypes.FULL_RESTORATION) return FilingNames.RESTORATION_FULL
         if (subType === FilingSubTypes.LIMITED_RESTORATION) return FilingNames.RESTORATION_LIMITED
-        return FilingNames.UNKNOWN
+        return FilingNames.RESTORATION_APPLICATION
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
       case FilingTypes.PUT_BACK_ON: return FilingNames.PUT_BACK_ON
@@ -332,13 +395,15 @@ export default class EnumUtilities {
   }
 
   /**
-   * Converts a string in "camelCase" (or "PascalCase") to separate, title-case words,
+   * Converts a string in "camelCase" (or "PascalCase") to a string of separate, title-case words,
    * suitable for a title or proper name.
    * @param s the string to convert
    * @returns the converted string
    */
   static camelCaseToWords (s: string): string {
-    return s?.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase()) || ''
+    const words = s?.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase()) || ''
+    // SPECIAL CASE: convert 'Agm' to uppercase
+    return words.replace('Agm', 'AGM')
   }
 
   /**

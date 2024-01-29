@@ -17,7 +17,7 @@ import Directors from '@/components/common/Directors.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
 import { ConfigJson } from '@/resources/business-config'
-import { CorpTypeCd, FilingStatus } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -54,7 +54,6 @@ describe('Annual Report - Part 1 - UI', () => {
     rootStore.ARFilingYear = 2017
     rootStore.arMinDate = '2017-01-01'
     rootStore.arMaxDate = '2018-04-30'
-    rootStore.currentFilingStatus = FilingStatus.NEW
     businessStore.setLegalType(CorpTypeCd.COOP)
   })
 
@@ -97,7 +96,6 @@ describe('Annual Report - Part 1 - UI', () => {
     expect(businessStore.getIdentifier).toEqual('CP0001191')
     expect(businessStore.getLegalType).toEqual('CP')
     expect(rootStore.ARFilingYear).toEqual(2017)
-    expect(rootStore.currentFilingStatus).toEqual('NEW')
 
     // check titles and sub-titles
     expect(vm.$el.querySelector('#annual-report-header').textContent).toContain('2017')
@@ -372,7 +370,6 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     businessStore.setIdentifier('BC0007291')
     rootStore.ARFilingYear = 2018
     rootStore.nextARDate = '2018-09-26'
-    rootStore.currentFilingStatus = FilingStatus.NEW
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
   })
 
@@ -397,7 +394,6 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     expect(businessStore.getLegalType).toEqual('BEN')
     expect(rootStore.ARFilingYear).toEqual(2018)
     expect(rootStore.nextARDate).toEqual('2018-09-26')
-    expect(rootStore.currentFilingStatus).toEqual('NEW')
 
     // check titles and sub-titles
     expect(vm.$el.querySelector('#annual-report-header-BC').textContent).toContain('2018')
@@ -509,7 +505,6 @@ describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalName('Legal Name - CP0001191')
     rootStore.ARFilingYear = 2017
-    rootStore.setCurrentFilingStatus(FilingStatus.DRAFT)
     rootStore.arMinDate = '2017-01-01'
     rootStore.arMaxDate = '2018-04-30'
 
@@ -589,7 +584,6 @@ describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalName('Legal Name - CP0001191')
     rootStore.ARFilingYear = 2017
-    rootStore.setCurrentFilingStatus(FilingStatus.DRAFT)
     rootStore.arMinDate = '2017-01-01'
     rootStore.arMaxDate = '2018-04-30'
 
@@ -673,7 +667,6 @@ describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalName('Legal Name - CP0001191')
     rootStore.ARFilingYear = 2017
-    rootStore.setCurrentFilingStatus(FilingStatus.DRAFT)
     rootStore.arMinDate = '2017-01-01'
     rootStore.arMaxDate = '2018-04-30'
 
@@ -764,7 +757,6 @@ describe('Annual Report - Part 3 - Submitting', () => {
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setLegalName('Legal Name - CP0001191')
     rootStore.ARFilingYear = 2017
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
     rootStore.arMinDate = '2017-01-01'
     rootStore.arMaxDate = '2018-04-30'
 
@@ -1049,7 +1041,6 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     rootStore.ARFilingYear = 2018
     rootStore.nextARDate = '2018-09-26'
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
     rootStore.setRegisteredAddress({} as any)
     rootStore.setRecordsAddress({} as any)
 
@@ -1176,7 +1167,6 @@ describe('Annual Report - Part 4 - Saving', () => {
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setLegalName('Legal Name - CP0001191')
     rootStore.ARFilingYear = 2017
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
     rootStore.arMinDate = '2017-01-01'
     rootStore.arMaxDate = '2018-04-30'
 
@@ -1330,7 +1320,6 @@ describe('Annual Report - Part 5 - Data', () => {
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setLegalName('Legal Name - CP0001191')
     rootStore.ARFilingYear = currentFilingYear
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
     rootStore.arMinDate = '2017-01-01'
     rootStore.arMaxDate = '2018-04-30'
 
@@ -1606,7 +1595,6 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
     rootStore.ARFilingYear = 2018
     rootStore.currentDate = '2018-09-26'
     rootStore.nextARDate = '2018-09-26'
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
     rootStore.setRegisteredAddress({} as any)
     rootStore.setRecordsAddress({} as any)
 
@@ -1765,7 +1753,6 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setLegalName('Legal Name - CP0001191')
     rootStore.ARFilingYear = 2017
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
     rootStore.arMinDate = '2017-01-01'
     rootStore.arMaxDate = '2018-04-30'
 
@@ -1968,7 +1955,6 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
     businessStore.setLegalName('Legal Name - CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     rootStore.ARFilingYear = 2017
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
     businessStore.setIdentifier('CP0001191')
     rootStore.arMinDate = '2017-01-01'
     rootStore.arMaxDate = '2018-04-30'
@@ -2089,7 +2075,6 @@ describe('Annual Report - payment required error', () => {
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setLegalName('Legal Name - CP0001191')
     rootStore.ARFilingYear = 2017
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
 
     // mock "file post" endpoint, with a pay error response
     const p1 = Promise.reject({

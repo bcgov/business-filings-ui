@@ -20,6 +20,7 @@
           filled
           persistent-hint
           label="Person's legal name"
+          :disabled="disableEdit"
           :value="certifiedBy"
           :rules="[ v => !!v || 'A person\'s legal name is required.']"
           @input="emitCertifiedBy($event)"
@@ -37,7 +38,7 @@
           </template>
         </v-checkbox>
         <p class="certify-clause signature-date">
-          <strong>Date:</strong> {{ getCurrentDate }}
+          <strong>Date:</strong> {{ formattedCurrentDate || '[unknown]' }}
         </p>
         <p class="certify-clause">
           {{ message }}
@@ -50,6 +51,7 @@
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
+import { DateUtilities } from '@/services'
 import { useRootStore } from '@/stores'
 
 @Component({})
@@ -77,14 +79,22 @@ export default class Certify extends Vue {
   /** Prompt the validations. Used for global validations. */
   @Prop({ default: false }) readonly validateForm!: boolean
 
-  certifyName = ''
+  /** Whether to disable the Certified By input field. */
+  @Prop({ default: false }) readonly disableEdit!: boolean
 
+  // local properties
+  certifyName = ''
   checkboxState = false
 
   /** Called when component is created. */
   created (): void {
     // inform parent of initial validity
     this.emitValid(!!this.trimmedCertifiedBy && this.isCertified)
+  }
+
+  get formattedCurrentDate (): string {
+    const date = DateUtilities.yyyyMmDdToDate(this.getCurrentDate)
+    return DateUtilities.dateToPacificDate(date, true)
   }
 
   /** The trimmed "Certified By" string (may be ''). */
@@ -166,6 +176,13 @@ export default class Certify extends Vue {
 .v-input--checkbox::v-deep {
   .v-icon {
     margin-top: -1.25rem;
+  }
+}
+
+// vertically align the ripple circle with the check box
+:deep() {
+  .v-input--selection-controls__ripple {
+    margin-top: -3px;
   }
 }
 </style>

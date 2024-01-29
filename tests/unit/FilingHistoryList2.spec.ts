@@ -7,6 +7,7 @@ import flushPromises from 'flush-promises'
 import axios from '@/axios-auth'
 import sinon from 'sinon'
 import { filings } from './filings.json'
+import { FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
 
 // Components and sub-components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
@@ -33,16 +34,17 @@ const itIf = (condition) => condition ? it : it.skip
 const isPaperOnly = (filing) => filing.availableOnPaperOnly
 const isCorrection = (filing) => !!filing.correctedFilingId
 const isCorrected = (filing) => !!filing.correctionFilingId
-const isIncorporationApplication = (filing) => (filing.name === 'incorporationApplication')
+const isIncorporationApplication = (filing) => (filing.name === FilingTypes.INCORPORATION_APPLICATION)
 // const isBcompCoa = (filing) => false FUTURE: implement BComp tests
-const isAlteration = (filing) => (filing.name === 'alteration')
-const isConsentContinuationOut = (filing) => (filing.name === 'consentContinuationOut')
+const isAlteration = (filing) => (filing.name === FilingTypes.ALTERATION)
+const isAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION)
+const isConsentContinuationOut = (filing) => (filing.name === FilingTypes.CONSENT_CONTINUATION_OUT)
 const isStaff = (filing) => (
-  filing.name === 'registrarsNotation' ||
-  filing.name === 'registrarsOrder' ||
-  filing.name === 'courtOrder' ||
-  filing.name === 'putBackOn' ||
-  (filing.name === 'dissolution' && filing.displayName === 'Administrative Dissolution')
+  filing.name === FilingTypes.REGISTRARS_NOTATION ||
+  filing.name === FilingTypes.REGISTRARS_ORDER ||
+  filing.name === FilingTypes.COURT_ORDER ||
+  filing.name === FilingTypes.PUT_BACK_ON ||
+  (filing.name === FilingTypes.DISSOLUTION && filing.displayName === 'Administrative Dissolution')
 )
 
 // Iterate over sample filings
@@ -65,8 +67,7 @@ filings.forEach((filing: any, index: number) => {
         .returns(new Promise(resolve => resolve({ data: { documents: {} } })))
 
       // mount the component
-      wrapper = mount(FilingHistoryList, {
-        propsData: { dissolutionType: filing?.data?.dissolution?.dissolutionType }, vuetify })
+      wrapper = mount(FilingHistoryList, { vuetify })
       vm = wrapper.vm
     })
 
@@ -110,7 +111,6 @@ filings.forEach((filing: any, index: number) => {
 
     // itIf(isBcompCoa(filing))('BCOMP change of address filing', () => {
     //   expect(vm.getFilings.length).toBe(1) // sanity check
-
     //   expect(item.isFutureEffectiveCoaPending).toBeDefined()
     // })
 
@@ -124,6 +124,25 @@ filings.forEach((filing: any, index: number) => {
       // expect(item.isFutureEffectiveAlterationPending).toBeDefined() // FUTURE: test this more specifically
       // expect(item.toLegalType).toBeDefined() // FUTURE: test this more specifically
       // expect(item.fromLegalType).toBeDefined() // FUTURE: test this more specifically
+    })
+
+    itIf(isAmalgamation(filing))('amalgamation filing', () => {
+      // verify data
+      expect(vm.getFilings.length).toBe(1) // sanity check
+      const item = vm.getFilings[0]
+      expect(item.businessIdentifier).toBe('BC1234567')
+      expect(item.data.amalgamationApplication.type).toBe(FilingSubTypes.AMALGAMATION_REGULAR)
+      expect(item.displayName).toBe('Amalgamation Application - Regular')
+      expect(item.name).toBe(FilingTypes.AMALGAMATION_APPLICATION)
+      expect(item.status).toBe(FilingStatus.COMPLETED)
+
+      // verify display
+      expect(wrapper.find('.item-header-title').text()).toBe('Amalgamation Application - Regular')
+      expect(wrapper.find('.item-header-subtitle').text()).toContain('FILED AND PAID')
+      expect(wrapper.find('.item-header-subtitle').text()).toContain('(filed by Registry Staff on Feb 3, 2023)')
+      expect(wrapper.find('.item-header-subtitle').text()).toContain('EFFECTIVE as of Feb 3, 2023')
+      expect(wrapper.find('.view-details').text()).toBe('View Documents')
+      expect(wrapper.find('.hide-details').text()).toBe('Hide Documents')
     })
 
     itIf(isConsentContinuationOut(filing))('consent to continuation out filing', () => {
@@ -253,10 +272,10 @@ filings.forEach((filing: any, index: number) => {
       } else if (item.isFutureEffectiveAlterationPending) {
         expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(true)
       } else if (item.isFutureEffectiveAlteration) {
-        expect(wrapper.ffindComponentind(FutureEffective).exists()).toBe(true)
+        expect(wrapper.findComponent(FutureEffective).exists()).toBe(true)
       // } else if (item.status === 'PAID') {
       //   expect(wrapper.findComponent(PendingFiling).exists()).toBe(true)
-      // // } else if (item.name === 'alteration') {
+      // } else if (item.name === 'alteration') {
       //   expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(true)
       } else if (item.availableOnPaperOnly) {
         expect(wrapper.findComponent(PaperFiling).exists()).toBe(true)

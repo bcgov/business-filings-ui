@@ -90,7 +90,7 @@ describe('Entity Menu - entities', () => {
     // set store properties
     businessStore.setLegalName('My Named Company')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.entityStatus = EntityStatus.DRAFT_APP
+    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
     rootStore.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method
@@ -124,7 +124,7 @@ describe('Entity Menu - entities', () => {
     // set store properties
     businessStore.setLegalName('My Future Company')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.entityStatus = EntityStatus.FILED_APP
+    rootStore.entityStatus = EntityStatus.FILED_INCORP_APP
     rootStore.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method
@@ -173,13 +173,13 @@ describe('Entity Menu - View and Change Business Information button', () => {
     },
     { // 2
       businessId: null,
-      state: 'DRAFT_APP',
+      state: 'DRAFT_INCORP_APP',
       isAllowed: false,
       buttonExists: false
     },
     { // 3
       businessId: null,
-      state: 'FILED_APP',
+      state: 'FILED_INCORP_APP',
       isAllowed: false,
       buttonExists: false
     },
@@ -214,6 +214,7 @@ describe('Entity Menu - View and Change Business Information button', () => {
 
 describe('Entity Menu - View and Change Business Information click tests', () => {
   const { assign } = window.location
+  const router = mockRouter.mock()
 
   beforeAll(() => {
     // mock the window.location.assign function
@@ -245,6 +246,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
 
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -273,6 +275,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
 
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'CP1234567' }
     })
@@ -289,13 +292,67 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
   })
 })
 
+describe('Entity Menu - Amalgamate button tests', () => {
+  beforeAll(() => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-agm-extension-entities') return ''
+      if (flag === 'supported-agm-location-chg-entities') return ''
+      if (flag === 'supported-amalgamation-entities') return 'BC'
+      return null
+    })
+  })
+
+  afterAll(() => {
+    // restore feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockRestore()
+  })
+
+  it('displays the Amalgamate button', async () => {
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.$state.businessInfo.state = EntityState.ACTIVE
+
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      mixins: [{ methods: { isAllowed: () => true } }],
+      propsData: { businessId: 'BC1234567' }
+    })
+
+    await wrapper.find('.menu-btn').trigger('click')
+
+    expect(wrapper.find('#amalgamate-list-item').exists()).toBe(true)
+    expect(wrapper.find('#amalgamate-list-item').text()).toBe('Amalgamate')
+    expect(wrapper.find('#amalgamate-list-item').classes()).not.toContain('v-list-item--disabled') // enabled
+    wrapper.destroy()
+  })
+
+  it('amalgamate button is disabled if not allowed', async () => {
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.$state.businessInfo.state = EntityState.ACTIVE
+
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      propsData: { businessId: 'BC1234567' }
+    })
+
+    await wrapper.find('.menu-btn').trigger('click')
+
+    expect(wrapper.find('#amalgamate-list-item').exists()).toBe(true)
+    expect(wrapper.find('#amalgamate-list-item').text()).toBe('Amalgamate')
+    expect(wrapper.find('#amalgamate-list-item').classes()).toContain('v-list-item--disabled') // disabled
+    wrapper.destroy()
+  })
+})
+
 describe('Entity Menu - Dissolve this Business click tests', () => {
+  const router = mockRouter.mock()
+
   it('displays the Dissolve this Business button', async () => {
     businessStore.setState(EntityState.ACTIVE)
 
-    // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -315,6 +372,7 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -335,6 +393,7 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -350,10 +409,13 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
 })
 
 describe('Entity Menu - Business Summary click tests', () => {
+  const router = mockRouter.mock()
+
   it('displays the Business Summary button', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -370,6 +432,7 @@ describe('Entity Menu - Business Summary click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -383,19 +446,23 @@ describe('Entity Menu - Business Summary click tests', () => {
   })
 })
 
-describe('Entity Menu - Business Digital Credentials click tests', () => {
-  it('displays the Business Digital Credentials button', async () => {
+describe('Entity Menu - Digital Business Cards click tests', () => {
+  const router = mockRouter.mock()
+
+  it('displays the Digital Business Cards button', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
-    await Vue.nextTick()
+
+    await wrapper.find('.menu-btn').trigger('click')
 
     const button = wrapper.find('#view-add-digital-credentials-button')
     expect(button.exists()).toBe(true)
-    expect(button.text()).toBe('Business Digital Credentials')
+    expect(button.text()).toBe('Digital Business Cards')
 
     wrapper.destroy()
   })
@@ -404,10 +471,12 @@ describe('Entity Menu - Business Digital Credentials click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
-    await Vue.nextTick()
+
+    await wrapper.find('.menu-btn').trigger('click')
 
     // click the button and verify emitted event
     await wrapper.find('#view-add-digital-credentials-button').trigger('click')
@@ -418,10 +487,13 @@ describe('Entity Menu - Business Digital Credentials click tests', () => {
 })
 
 describe('Entity Menu - More actions click tests', () => {
+  const router = mockRouter.mock()
+
   it('renders More actions correctly', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -456,7 +528,22 @@ describe('Entity Menu - More actions click tests', () => {
   })
 })
 
+it('renders More actions if historical and digital credential feature is allowed', async () => {
+  businessStore.setState(EntityState.HISTORICAL)
+
+  const wrapper = mount(EntityMenu, {
+    vuetify,
+    mixins: [{ methods: { isAllowed: () => true } }],
+    propsData: { businessId: 'BC1234567' }
+  })
+
+  expect(wrapper.find('.menu-btn').exists()).toBe(true)
+  wrapper.destroy()
+})
+
 describe('Entity Menu - Consent to Continuation click tests', () => {
+  const router = mockRouter.mock()
+
   it('displays the Consent to Continuation button', async () => {
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     businessStore.setState(EntityState.ACTIVE)
@@ -464,6 +551,7 @@ describe('Entity Menu - Consent to Continuation click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -479,10 +567,16 @@ describe('Entity Menu - Consent to Continuation click tests', () => {
 })
 
 describe('Entity Menu - Request AGM Extension click tests', () => {
+  const router = mockRouter.mock()
+
   beforeAll(() => {
     // override feature flag
-    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(
-      (flag) => (flag === 'enable-agm-extension'))
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-agm-extension-entities') return 'BEN'
+      if (flag === 'supported-agm-location-chg-entities') return ''
+      if (flag === 'supported-amalgamation-entities') return ''
+      return null
+    })
   })
 
   afterAll(() => {
@@ -491,9 +585,12 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
   })
 
   it('displays the Request AGM Extension button', async () => {
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -509,10 +606,16 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
 })
 
 describe('Entity Menu - Request AGM Location Change click tests', () => {
+  const router = mockRouter.mock()
+
   beforeAll(() => {
     // override feature flag
-    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(
-      (flag) => (flag === 'enable-agm-location-chg'))
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-agm-extension-entities') return ''
+      if (flag === 'supported-agm-location-chg-entities') return 'BEN'
+      if (flag === 'supported-amalgamation-entities') return ''
+      return null
+    })
   })
 
   afterAll(() => {
@@ -521,9 +624,12 @@ describe('Entity Menu - Request AGM Location Change click tests', () => {
   })
 
   it('displays the Request AGM Location Change button', async () => {
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })

@@ -12,6 +12,7 @@
           "incorporationApplication"
         ]
       },
+      "displayLedger": true,
       "displayName": "Incorporation Application",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112760/documents",
       "effectiveDate": "Fri, 01 Nov 2019 00:02:26 GMT",
@@ -36,6 +37,7 @@
           "F.18"
         ]
       },
+      "displayLedger": true,
       "displayName": "F.18",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112759/documents",
       "effectiveDate": "Tue, 01 Oct 2019 00:02:26 GMT",
@@ -59,6 +61,7 @@
         ],
         "specialResolution": {}
       },
+      "displayLedger": true,
       "displayName": "Special Resolution",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112758/documents",
       "effectiveDate": "Sun, 01 Sep 2019 00:02:26 GMT",
@@ -91,6 +94,7 @@
           "orderDetails": "A note about order"
         }
       },
+      "displayLedger": true,
       "displayName": "Alteration",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112763/documents",
       "effectiveDate": "Fri, 15 Feb 2019 00:02:26 GMT",
@@ -123,6 +127,7 @@
           "orderDetails": "different order details"
         }
       },
+      "displayLedger": true,
       "displayName": "Alteration",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112762/documents",
       "effectiveDate": "Tue, 01 Jan 2019 00:02:26 GMT",
@@ -141,6 +146,7 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112761/comments",
       "data": {},
+      "displayLedger": true,
       "displayName": "Alteration",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112761/documents",
       "effectiveDate": "Sat, 01 Dec 2018 00:02:26 GMT",
@@ -165,6 +171,7 @@
           "correction"
         ]
       },
+      "displayLedger": true,
       "displayName": "Correction - Annual Report (2018)",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112757/documents",
       "effectiveDate": "Thu, 01 Nov 2018 00:02:26 GMT",
@@ -195,6 +202,7 @@
           "changeOfDirectors"
         ]
       },
+      "displayLedger": true,
       "displayName": "Annual Report (2018) - Corrected",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756/documents",
       "effectiveDate": "Mon, 01 Oct 2018 00:02:26 GMT",
@@ -218,6 +226,7 @@
         ],
         "registrarsOrder": {}
       },
+      "displayLedger": true,
       "displayName": "Registrar's Order",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112755/documents",
       "effectiveDate": "Wed, 01 Aug 2018 00:02:26 GMT",
@@ -241,6 +250,7 @@
         ],
         "registrarsNotation": {}
       },
+      "displayLedger": true,
       "displayName": "Registrar's Notation",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112754/documents",
       "effectiveDate": "Sun, 01 Jul 2018 00:02:26 GMT",
@@ -269,6 +279,7 @@
           "orderDetails": "my order details"
         }
       },
+      "displayLedger": true,
       "displayName": "Court Order",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112753/documents",
       "effectiveDate": "Fri, 01 Jun 2018 00:02:26 GMT",
@@ -292,6 +303,7 @@
         ],
         "transition": {}
       },
+      "displayLedger": true,
       "displayName": "Transition Application",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112752/documents",
       "effectiveDate": "Tue, 01 May 2018 00:02:26 GMT",
@@ -317,6 +329,7 @@
           "dissolution"
         ]
       },
+      "displayLedger": true,
       "displayName": "Dissolution",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112751/documents",
       "effectiveDate": "Sun, 01 Apr 2018 00:02:26 GMT",
@@ -340,6 +353,7 @@
         ],
         "specialResolution": {}
       },
+      "displayLedger": true,
       "displayName": "Special Resolution",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112750/documents",
       "effectiveDate": "Thu, 01 Mar 2018 00:02:26 GMT",
@@ -363,6 +377,7 @@
           "conversion"
         ]
       },
+      "displayLedger": true,
       "displayName": "Conversion",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112749/documents",
       "effectiveDate": "Thu, 01 Feb 2018 00:02:26 GMT",
@@ -389,6 +404,7 @@
           "annualReport"
         ]
       },
+      "displayLedger": true,
       "displayName": "Annual Report (2018)",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112748/documents",
       "effectiveDate": "Mon, 01 Jan 2018 00:02:26 GMT",
@@ -412,6 +428,7 @@
           "changeOfDirectors"
         ]
       },
+      "displayLedger": true,
       "displayName": "Director Change",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112747/documents",
       "effectiveDate": "Fri, 01 Dec 2017 00:02:26 GMT",
@@ -435,6 +452,7 @@
           "changeOfAddress"
         ]
       },
+      "displayLedger": true,
       "displayName": "Address Change",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112746/documents",
       "effectiveDate": "Wed, 01 Nov 2017 00:02:26 GMT",
@@ -459,6 +477,7 @@
           "incorporationApplication"
         ]
       },
+      "displayLedger": true,
       "displayName": "Incorporation Application",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112744/documents",
       "effectiveDate": "Sun, 01 Oct 2017 00:02:26 GMT",
@@ -491,6 +510,7 @@
           "orderDetails": "A note about order"
         }
       },
+      "displayLedger": true,
       "displayName": "Alteration",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112745/documents",
       "effectiveDate": "Sun, 01 Oct 2017 00:02:26 GMT",
@@ -516,6 +536,7 @@
           "dissolution"
         ]
       },
+      "displayLedger": true,
       "displayName": "Administrative Dissolution",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756/documents",
       "effectiveDate": "Sun, 01 Apr 2018 00:02:26 GMT",
@@ -543,6 +564,7 @@
           "consentContinuationOut"
         ]
       },
+      "displayLedger": true,
       "displayName": "6-Month Consent to Continue Out",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756/documents",
       "effectiveDate": "Fri, 03 Feb 2023 18:52:00 GMT",
@@ -550,6 +572,32 @@
       "filingLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756",
       "isFutureEffective": false,
       "name": "consentContinuationOut",
+      "paymentStatusCode": null,
+      "status": "COMPLETED",
+      "submittedDate": "Fri, 03 Feb 2023 18:52:00 GMT",
+      "submitter": "Registry Staff"
+    },
+    {
+      "availableOnPaperOnly": false,
+      "businessIdentifier": "BC1234567",
+      "commentsCount": 0,
+      "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/comments",
+      "data": {
+        "amalgamationApplication": {
+          "type": "regular"
+        },
+        "legalFilings": [
+          "amalgamation"
+        ]
+      },
+      "displayLedger": true,
+      "displayName": "Amalgamation Application - Regular",
+      "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/documents",
+      "effectiveDate": "Fri, 03 Feb 2023 18:52:00 GMT",
+      "filingId": 112751,
+      "filingLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751",
+      "isFutureEffective": false,
+      "name": "amalgamationApplication",
       "paymentStatusCode": null,
       "status": "COMPLETED",
       "submittedDate": "Fri, 03 Feb 2023 18:52:00 GMT",

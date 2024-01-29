@@ -193,6 +193,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
+                  :disableEdit="!isRoleStaff"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                   @valid="certifyFormValid=$event"
@@ -366,6 +367,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) getUserInfo!: any
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
@@ -502,6 +504,11 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     }
 
     this.dataLoaded = true
+
+    // Pre-populate the certified block with the logged in user's name (if not staff)
+    if (!this.isRoleStaff && this.getUserInfo) {
+      this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
+    }
 
     // always include consent continue out code
     // use existing Priority and Waive Fees flags
@@ -840,7 +847,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
         ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
       }
       return ret
-    } catch (error) {
+    } catch (error: any) {
       // save errors or warnings, if any
       this.saveErrors = error?.response?.data?.errors || []
       this.saveWarnings = error?.response?.data?.warnings || []

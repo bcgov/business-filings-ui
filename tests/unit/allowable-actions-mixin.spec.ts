@@ -27,6 +27,7 @@ describe('Allowable Actions Mixin', () => {
 
   function setAllowedFilingType (filingType = {}) {
     businessStore.setAllowedActions({
+      digitalBusinessCard: false,
       filing: {
         filingSubmissionLink: '',
         filingTypes: [filingType as FilingTypeIF]
@@ -86,6 +87,16 @@ describe('Allowable Actions Mixin', () => {
     // verify allowed filing type
     setAllowedFilingType({ name: FilingTypes.DISSOLUTION })
     expect(vm.isAllowed(AllowableActions.ADMINISTRATIVE_DISSOLUTION)).toBe(true)
+  })
+
+  it('identifies whether Amalgamation is allowed', () => {
+    // verify no allowed filing type
+    setAllowedFilingType()
+    expect(vm.isAllowed(AllowableActions.AMALGAMATION)).toBe(false)
+
+    // verify allowed filing type
+    setAllowedFilingType({ name: FilingTypes.AMALGAMATION_APPLICATION })
+    expect(vm.isAllowed(AllowableActions.AMALGAMATION)).toBe(true)
   })
 
   it('identifies whether Annual Report is allowed', () => {

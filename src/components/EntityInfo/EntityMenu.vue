@@ -69,32 +69,8 @@
       </v-tooltip>
     </span>
 
-    <!-- View/Add Digital Credentials -->
-    <span v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS)">
-      <v-tooltip
-        top
-        content-class="top-tooltip"
-        transition="fade-transition"
-      >
-        <template #activator="{ on }">
-          <v-btn
-            id="view-add-digital-credentials-button"
-            small
-            text
-            color="primary"
-            @click="emitViewAddDigitalCredentials()"
-            v-on="on"
-          >
-            <v-icon medium>mdi-file-certificate-outline</v-icon>
-            <span class="font-13 ml-1">Business Digital Credentials</span>
-          </v-btn>
-        </template>
-        Manage the digital credentials generated for the business.
-      </v-tooltip>
-    </span>
-
     <!-- More Actions -->
-    <span v-if="isBusiness && !isHistorical">
+    <span v-if="isBusiness && areMoreActionsAvailable">
       <v-menu
         v-model="expand"
         offset-y
@@ -122,89 +98,148 @@
 
         <v-list dense>
           <v-list-item-group color="primary">
-            <!-- Dissolve Business -->
-            <v-tooltip
-              right
-              content-class="right-tooltip"
-            >
-              <template #activator="{ on }">
-                <v-list-item
-                  id="dissolution-list-item"
-                  :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
-                  v-on="on"
-                  @click="promptDissolve()"
-                >
-                  <v-list-item-title>
-                    <span class="app-blue">Dissolve this Business</span>
-                  </v-list-item-title>
-                </v-list-item>
-              </template>
-              Dissolving the business will make this business historical
-              and it will be struck from the corporate registry.
-            </v-tooltip>
+            <!-- View/Add Digital Credentials -->
+            <span v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS)">
+              <v-tooltip
+                right
+                content-class="right-tooltip"
+              >
+                <template #activator="{ on }">
+                  <v-list-item
+                    id="view-add-digital-credentials-button"
+                    @click="emitViewAddDigitalCredentials()"
+                    v-on="on"
+                  >
+                    <v-list-item-title>
+                      <span class="app-blue">Digital Business Cards</span>
+                    </v-list-item-title>
+                  </v-list-item>
+                </template>
+                Manage the digital cards generated for the business.
+              </v-tooltip>
+            </span>
 
-            <!-- Consent to Continue Out -->
-            <v-tooltip
-              right
-              content-class="right-tooltip"
-            >
-              <template #activator="{ on }">
-                <v-list-item
-                  v-if="isBenBcCccUlc || isCoop"
-                  id="cco-list-item"
-                  :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
-                  v-on="on"
-                  @click="goToConsentContinuationOutFiling()"
-                >
-                  <v-list-item-title>
-                    <span class="app-blue">Consent to Continue Out</span>
-                  </v-list-item-title>
-                </v-list-item>
-              </template>
-              Submit a Consent to Continue Out of the province of B.C.
-            </v-tooltip>
+            <span v-if="!isHistorical">
+              <!-- Dissolve Business -->
+              <v-tooltip
+                right
+                content-class="right-tooltip"
+              >
+                <template #activator="{ on }">
+                  <v-list-item
+                    id="dissolution-list-item"
+                    :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
+                    v-on="on"
+                    @click="promptDissolve()"
+                  >
+                    <v-list-item-title>
+                      <span class="app-blue">Dissolve this Business</span>
+                    </v-list-item-title>
+                  </v-list-item>
+                </template>
+                Dissolving the business will make this business historical
+                and it will be struck from the corporate registry.
+              </v-tooltip>
 
-            <!-- Request AGM Extension -->
-            <v-tooltip
-              right
-              content-class="right-tooltip"
-            >
-              <template #activator="{ on }">
-                <v-list-item
-                  v-if="enableAgmExtension"
-                  id="agm-ext-list-item"
-                  :disabled="!isAllowed(AllowableActions.AGM_EXTENSION)"
-                  v-on="on"
-                  @click="goToAgmExtensionFiling()"
-                >
-                  <v-list-item-title>
-                    <span class="app-blue">Request AGM Extension</span>
-                  </v-list-item-title>
-                </v-list-item>
-              </template>
-              Request an AGM extension. The longest extension granted at one time is six months.
-            </v-tooltip>
+              <!-- Consent to Continue Out -->
+              <v-tooltip
+                right
+                content-class="right-tooltip"
+              >
+                <template #activator="{ on }">
+                  <v-list-item
+                    v-if="isBenBcCccUlc || isCoop"
+                    id="cco-list-item"
+                    :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
+                    v-on="on"
+                    @click="goToConsentContinuationOutFiling()"
+                  >
+                    <v-list-item-title>
+                      <span class="app-blue">Consent to Continue Out</span>
+                    </v-list-item-title>
+                  </v-list-item>
+                </template>
+                Submit a Consent to Continue Out of the province of B.C.
+              </v-tooltip>
 
-            <!-- Request AGM Location Change -->
-            <v-tooltip
-              right
-              content-class="right-tooltip"
-            >
-              <template #activator="{ on }">
-                <v-list-item
-                  v-if="enableAgmLocationChg"
-                  id="agm-loc-chg-list-item"
-                  :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHG)"
-                  v-on="on"
-                  @click="goToAgmLocationChgFiling()"
-                >
-                  <v-list-item-title>
-                    <span class="app-blue">Request AGM Location Change</span>
-                  </v-list-item-title>
-                </v-list-item>
-              </template>
-              Request an AGM location change.
-            </v-tooltip>
+              <!-- Request AGM Extension -->
+              <v-tooltip
+                right
+                content-class="right-tooltip"
+              >
+                <template #activator="{ on }">
+                  <div
+                    v-if="enableAgmExtension"
+                    v-on="on"
+                  >
+                    <v-list-item
+                      id="agm-ext-list-item"
+                      :disabled="!isAllowed(AllowableActions.AGM_EXTENSION)"
+                      v-on="on"
+                      @click="goToAgmExtensionFiling()"
+                    >
+                      <v-list-item-title>
+                        <span class="app-blue">Request AGM Extension</span>
+                      </v-list-item-title>
+                    </v-list-item>
+                  </div>
+                </template>
+                <span>{{ agmExtensionToolTipText }}</span>
+              </v-tooltip>
+
+              <!-- Request AGM Location Change -->
+              <v-tooltip
+                right
+                content-class="right-tooltip"
+              >
+                <template #activator="{ on }">
+                  <div
+                    v-if="enableAgmLocationChg"
+                    v-on="on"
+                  >
+                    <v-list-item
+                      id="agm-loc-chg-list-item"
+                      :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHANGE)"
+                      v-on="on"
+                      @click="goToAgmLocationChgFiling()"
+                    >
+                      <v-list-item-title>
+                        <span class="app-blue">Request AGM Location Change</span>
+                      </v-list-item-title>
+                    </v-list-item>
+                  </div>
+                </template>
+                <span>{{ agmLocationChgToolTipText }}</span>
+              </v-tooltip>
+
+              <!-- Amalgamate -->
+              <v-tooltip
+                right
+                content-class="right-tooltip"
+              >
+                <template #activator="{ on }">
+                  <div
+                    v-if="enableAmalgamation"
+                    v-on="on"
+                  >
+                    <v-list-item
+                      id="amalgamate-list-item"
+                      small
+                      text
+                      color="primary"
+                      :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
+                      @click="goToAmalgamationSelection()"
+                      v-on="on"
+                    >
+                      <v-list-item-title>
+                        <span class="app-blue">Amalgamate</span>
+                      </v-list-item-title>
+                    </v-list-item>
+                  </div>
+                </template>
+                <span>{{ amalgamateTooltipText }}</span>
+              </v-tooltip>
+            </span>
           </v-list-item-group>
         </v-list>
       </v-menu>
@@ -230,6 +265,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
@@ -245,12 +281,51 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     return !!this.businessId
   }
 
+  /**
+   * More actions should only display if an entity is not historical or if the Digital Credentials
+   * feature is available, otherwise an empty menu will display for historical entities. */
+  get areMoreActionsAvailable (): boolean {
+    return !this.isHistorical || this.isAllowed(AllowableActions.DIGITAL_CREDENTIALS)
+  }
+
   get enableAgmExtension (): boolean {
-    return !!GetFeatureFlag('enable-agm-extension')
+    return !!GetFeatureFlag('supported-agm-extension-entities').includes(this.getLegalType)
   }
 
   get enableAgmLocationChg (): boolean {
-    return !!GetFeatureFlag('enable-agm-location-chg')
+    return !!GetFeatureFlag('supported-agm-location-chg-entities').includes(this.getLegalType)
+  }
+
+  get enableAmalgamation (): boolean {
+    return !!GetFeatureFlag('supported-amalgamation-entities').includes(this.getLegalType)
+  }
+
+  /** The tooltip text for AGM Extension list item. Text is different if action item is disabled. */
+  get agmExtensionToolTipText (): string {
+    if (!this.isAllowed(AllowableActions.AGM_EXTENSION)) {
+      return 'The business must be in good standing to request an AGM extension.'
+    } else {
+      return 'Request an AGM extension. The longest extension granted at one time is six months.'
+    }
+  }
+
+  /** The tooltip text for AGM Location Change list item. Text is different if action item is disabled. */
+  get agmLocationChgToolTipText (): string {
+    if (!this.isAllowed(AllowableActions.AGM_LOCATION_CHANGE)) {
+      return 'The business must be in good standing to request an AGM location change.'
+    } else {
+      return 'Request an AGM location change.'
+    }
+  }
+
+  /** The tooltip text for the amalgamate button. Text changes depending on the business status. */
+  get amalgamateTooltipText (): string {
+    if (this.isAdminFrozen) {
+      return 'This business is frozen and cannot be involved in an amalgamation.'
+    } else if (this.isPendingDissolution) {
+      return 'This business has a future effective dissolution and cannot be involved in an amalgamation.'
+    }
+    return 'Amalgamate with other businesses.'
   }
 
   /**
@@ -282,6 +357,10 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     this.emitConfirmDissolution()
   }
 
+  goToAmalgamationSelection (): void {
+    this.$router.push({ name: Routes.AMALGAMATION_SELECTION, params: { filingId: '0' } })
+  }
+
   goToConsentContinuationOutFiling (): void {
     // 0 means "new filing"
     this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
@@ -294,7 +373,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   goToAgmLocationChgFiling (): void {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.AGM_LOCATION_CHG, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.AGM_LOCATION_CHANGE, params: { filingId: '0' } })
   }
 
   /** Emits an event to confirm dissolution. */

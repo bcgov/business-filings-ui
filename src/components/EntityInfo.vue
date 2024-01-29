@@ -18,7 +18,7 @@
             :tempRegNumber="tempRegNumber"
           />
           <EntityMenu
-            v-if="!isInLocalFilingPage"
+            v-if="!(isInLocalFilingPage || isDCRoute)"
             class="mt-2 ml-n3"
             :businessId="businessId"
             @confirmDissolution="emitConfirmDissolution()"
@@ -49,7 +49,7 @@ import EntityDefinitions from './EntityInfo/EntityDefinitions.vue'
 import EntityHeader from './EntityInfo/EntityHeader.vue'
 import EntityMenu from './EntityInfo/EntityMenu.vue'
 import { useRootStore } from '@/stores'
-import { Routes } from '@/enums/routes'
+import { Routes, DCRoutes } from '@/enums/routes'
 
 @Component({
   components: {
@@ -73,7 +73,7 @@ export default class EntityInfo extends Vue {
   get isInLocalFilingPage (): boolean {
     return (
       this.$route?.name === Routes.AGM_EXTENSION ||
-      this.$route?.name === Routes.AGM_LOCATION_CHG ||
+      this.$route?.name === Routes.AGM_LOCATION_CHANGE ||
       this.$route?.name === Routes.ANNUAL_REPORT ||
       this.$route?.name === Routes.CONSENT_CONTINUATION_OUT ||
       this.$route?.name === Routes.CONTINUATION_OUT ||
@@ -81,6 +81,10 @@ export default class EntityInfo extends Vue {
       this.$route?.name === Routes.STANDALONE_ADDRESSES ||
       this.$route?.name === Routes.STANDALONE_DIRECTORS
     )
+  }
+
+  get isDCRoute (): boolean {
+    return this.$route.matched.some(route => route.path.includes(DCRoutes.DIGITAL_CREDENTIALS))
   }
 
   /** The Temporary Registration Number string (may be null). */

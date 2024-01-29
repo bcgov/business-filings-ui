@@ -33,9 +33,38 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
           // eslint-disable-next-line no-console
           console.log('Invalid filing =', filing)
           return false
+        } else if (filing.displayLedger === false) {
+          // eslint-disable-next-line no-console
+          console.log('Not shown filing on the ledger =', filing)
+          return false
         }
         return true
       })
+    },
+
+    /** The function to compute total AGM extension duration. Requires argument for AGM Year. */
+    getTotalAgmExtensionDuration (state: FilingHistoryListStateIF): (year: number) => number {
+      return (year: number) => {
+        return state.filings.reduce((totalMonths, filing) => {
+          // Skip if not AGM_EXTENSION
+          if (filing.name !== FilingTypes.AGM_EXTENSION) {
+            return totalMonths
+          }
+          const filingExtension = filing.data?.agmExtension
+          // Skip if extension data is missing
+          if (!filingExtension) {
+            return totalMonths
+          }
+          // Cast year as number
+          // Skip if years don't match
+          if (Number(filingExtension.year) !== year) {
+            return totalMonths
+          }
+          // Add total months for the specific AGM year
+          totalMonths += filingExtension.extensionDuration || 0
+          return totalMonths
+        }, 0)
+      }
     },
 
     /** The count of filings in the Filing History List. */
@@ -192,7 +221,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
 
         // check if we're opening a new panel
         if (!isCurrentPanel) {
-        // get a reference to the filing so we can update it right in the main list
+          // get a reference to the filing so we can update it right in the main list
           const filing = this.getFilings[index]
 
           // check if we're missing comments or documents

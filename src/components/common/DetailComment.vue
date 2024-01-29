@@ -32,20 +32,6 @@ export default class DetailComment extends Vue {
     textarea: any
   }
 
-  /** Array of validations rules for the textarea. */
-  get rules (): Array<(val) => boolean | string> {
-    // include whitespace in maximum length check
-    return [
-      val => (val && val.trim().length > 0) || 'Detail is required.',
-      val => (val && val.length <= this.maxLength) || 'Maximum characters exceeded.'
-    ]
-  }
-
-  /** Public method to reset Vuetify validation on textarea. */
-  resetValidation (): void {
-    (this.$refs.textarea as any).resetValidation()
-  }
-
   /** Comment (v-model) passed into this component (required). */
   @Prop({ default: '' }) readonly value!: string
 
@@ -61,7 +47,24 @@ export default class DetailComment extends Vue {
   /** Prompt the validations. Used for global validations. */
   @Prop({ default: false }) readonly validateForm!: boolean
 
+  /** Text is required error message. */
+  @Prop({ default: 'Detail is required.' }) readonly textRequiredErrorMsg!: string
+
   detailedComment = ''
+
+  /** Array of validations rules for the textarea. */
+  get rules (): Array<(val) => boolean | string> {
+    // include whitespace in maximum length check
+    return [
+      val => (val && val.trim().length > 0) || this.textRequiredErrorMsg,
+      val => (val && val.length <= this.maxLength) || 'Maximum characters exceeded.'
+    ]
+  }
+
+  /** Public method to reset Vuetify validation on textarea. */
+  resetValidation (): void {
+    (this.$refs.textarea as any).resetValidation()
+  }
 
   /** Called when component is created. */
   created (): void {
@@ -90,8 +93,9 @@ export default class DetailComment extends Vue {
 
   /** Emits an event with the changed comment (ie, updated v-model). */
   @Emit('input')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitInput (val: string): void {}
+  emitInput (val: string): void {
+    this.detailedComment = val
+  }
 
   /** Emits an event indicating whether or not this component is valid. */
   @Emit('valid')
@@ -113,7 +117,6 @@ export default class DetailComment extends Vue {
   // Move the placeholder and input text from the edges.
   :deep() {
     .theme--light.v-input input, .theme--light.v-input textarea {
-      background-color: $gray1;
       padding-top: 0.5rem;
       padding-left: 0.5rem;
     }

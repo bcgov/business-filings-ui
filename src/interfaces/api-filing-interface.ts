@@ -1,10 +1,12 @@
-import { CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import { AmalgamationTypes, CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingSubTypes, FilingTypes }
+  from '@/enums'
 import { ApiDateTimeUtc, CommentIF, DocumentIF, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
   from '@/interfaces'
 
 /**
- * A filing object from the Legal API ("filings" call).
- * See also History Item interface.
+ * A filing object from the Legal API ("filings" call). This is the newer response with extra metadata
+ * instead of separate business / documents / header / filing objects.
+ * This object is also what the Filings History List uses directly.
  */
 export interface ApiFilingIF {
   availableOnPaperOnly: boolean
@@ -12,6 +14,7 @@ export interface ApiFilingIF {
   commentsCount: number
   commentsLink: string // URL to fetch this filing's comments
   displayName: string
+  displayLedger: boolean // whether to display this ledger item
   documentsLink: string // URL to fetch this filing's documents
   effectiveDate: FormattedDateTimeGmt
   filingId: number
@@ -41,10 +44,32 @@ export interface ApiFilingIF {
       freeze: boolean
     }
 
+    agmExtension?: {
+      year: string // YYYY-MM-DD
+      isFirstAgm: boolean
+      prevAgmRefDate: string // YYYY-MM-DD
+      extReqForAgmYear: boolean
+      expireDateCurrExt: string // YYYY-MM-DD
+      intendedAgmDate: string // YYYY-MM-DD
+      totalApprovedExt: number // in months
+      extensionDuration: number // in months
+      expireDateApprovedExt: string // YYYY-MM-DD
+    }
+
+    agmLocationChange?: {
+      year: string
+      reason: string
+      agmLocation: string
+    }
+
     // alteration filings only
     alteration?: {
       fromLegalType?: CorpTypeCd
       toLegalType?: CorpTypeCd
+    }
+
+    amalgamationApplication?: {
+      type: AmalgamationTypes
     }
 
     // AR filings only

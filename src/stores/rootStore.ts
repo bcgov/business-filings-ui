@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
-import { CorpTypeCd, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
-import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF, StateIF,
-  TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
+import { CorpTypeCd, EntityStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF,
+  RootStateIF, TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 import { useBusinessStore } from './businessStore'
 import { useFilingHistoryListStore } from './filingHistoryListStore'
 
 export const useRootStore = defineStore('root', {
-  state: (): StateIF => ({
+  state: (): RootStateIF => ({
     authRoles: [],
     currentDate: null,
     currentJsDate: null,
@@ -25,19 +25,20 @@ export const useRootStore = defineStore('root', {
     nextARDate: null,
     businessAddress: null,
     configObject: null,
-    currentFilingStatus: null,
     fetchingDataSpinner: false,
+    startingAmalgamationSpinner: false,
     filingData: [],
     nameRequest: null,
     parties: [],
     recordsAddress: null,
     registeredAddress: null,
-    tasks: []
+    tasks: [],
+    userInfo: null
   }),
 
   getters: {
     /** The list of tasks from the API. */
-    getTasks (state: StateIF): ApiTaskIF[] {
+    getTasks (state: RootStateIF): ApiTaskIF[] {
       return state.tasks
     },
 
@@ -46,7 +47,7 @@ export const useRootStore = defineStore('root', {
      * NB: internally this is stored as UTC
      * NB: use date mixins to display this
      */
-    getCurrentJsDate (state: StateIF): Date {
+    getCurrentJsDate (state: RootStateIF): Date {
       return state.currentJsDate
     },
 
@@ -54,22 +55,22 @@ export const useRootStore = defineStore('root', {
      * The current date (YYYY-MM-DD), which was refreshed when the dashload loaded,
      * in Pacific timezone.
      */
-    getCurrentDate (state: StateIF): IsoDatePacific {
+    getCurrentDate (state: RootStateIF): IsoDatePacific {
       return state.currentDate
     },
 
     /** The current year. */
-    getCurrentYear (state: StateIF): number {
+    getCurrentYear (state: RootStateIF): number {
       return (state.currentDate ? +state.currentDate.substring(0, 4) : 0)
     },
 
     /** The business email. */
-    getBusinessEmail (state: StateIF): string {
+    getBusinessEmail (state: RootStateIF): string {
       return state.businessEmail
     },
 
     /** The business phone number and optional extension. */
-    getFullPhoneNumber (state: StateIF): string {
+    getFullPhoneNumber (state: RootStateIF): string {
       const phone = state.businessPhone
       const ext = state.businessPhoneExtension
 
@@ -80,24 +81,25 @@ export const useRootStore = defineStore('root', {
     },
 
     /** The roles from the Keycloak token (JWT). */
-    getKeycloakRoles (state: StateIF): Array<string> {
+    getKeycloakRoles (state: RootStateIF): Array<string> {
       return state.keycloakRoles
     },
 
-    /** Is True if Staff role is set.
+    /**
+     * Is True if Staff role is set.
      * DEPRECATED - use authentication/isKeycloakRoleStaff() instead
      */
-    isRoleStaff (state: StateIF): boolean {
+    isRoleStaff (state: RootStateIF): boolean {
       return state.keycloakRoles.includes('staff')
     },
 
     /** Is True if app permissions includes Edit role. */
-    isRoleEdit (state: StateIF): boolean {
+    isRoleEdit (state: RootStateIF): boolean {
       return state.authRoles.includes('edit')
     },
 
     /** Is True if app permission includes View role. */
-    isRoleView (state: StateIF): boolean {
+    isRoleView (state: RootStateIF): boolean {
       return state.authRoles.includes('view')
     },
 
@@ -106,43 +108,68 @@ export const useRootStore = defineStore('root', {
       return false // FUTURE: implement this
     },
 
-    /** Is True if this is a Draft Application. */
-    isAppTask (state: StateIF): boolean {
-      return (state.entityStatus === EntityStatus.DRAFT_APP)
+    getEntityStatus (state: RootStateIF): EntityStatus {
+      return state.entityStatus
     },
 
-    /** Is True if this is a Paid or Completed Application. */
-    isAppFiling (state: StateIF): boolean {
-      return (state.entityStatus === EntityStatus.FILED_APP)
+    isDraftAmalgamation (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.DRAFT_AMALGAMATION)
+    },
+
+    isDraftIncorpApp (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.DRAFT_INCORP_APP)
+    },
+
+    isDraftRegistration (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.DRAFT_REGISTRATION)
+    },
+
+    isFiledAmalgamation (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.FILED_AMALGAMATION)
+    },
+
+    isFiledIncorpApp (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.FILED_INCORP_APP)
+    },
+
+    isFiledRegistration (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.FILED_REGISTRATION)
+    },
+
+    /** Is True if this is a Draft or Pending application. */
+    isAppTask (): boolean {
+      return (
+        this.isDraftAmalgamation || this.isDraftIncorpApp || this.isDraftRegistration
+      )
+    },
+
+    /** Is True if this is a Completed or Paid application. */
+    isAppFiling (): boolean {
+      return (
+        this.isFiledAmalgamation || this.isFiledIncorpApp || this.isFiledRegistration
+      )
     },
 
     /** The Name Request (may be null). */
-    getNameRequest (state: StateIF): any {
+    getNameRequest (state: RootStateIF): any {
       return (state.nameRequest)
     },
 
-    isCurrentFilingEditable (state: StateIF): boolean {
-      return (state.currentFilingStatus === FilingStatus.NEW || state.currentFilingStatus === FilingStatus.DRAFT)
-    },
-
-    getReportState (state: StateIF): string {
-      switch (state.currentFilingStatus) {
-        case FilingStatus.NEW: return ''
-        case FilingStatus.DRAFT: return 'Draft'
-      }
-      return state.currentFilingStatus
-    },
-
     /** Whether to show the Fetching Data spinner. */
-    showFetchingDataSpinner (state: StateIF): boolean {
+    showFetchingDataSpinner (state: RootStateIF): boolean {
       return state.fetchingDataSpinner
+    },
+
+    /** Whether to show the Starting Amalgamation spinner. */
+    showStartingAmalgamationSpinner (state: RootStateIF): boolean {
+      return state.startingAmalgamationSpinner
     },
 
     /**
      * This is used to show Legal Obligations only for a new business
      * that has no tasks and hasn't filed anything yet (except their IA).
      **/
-    isBusinessWithNoMaintenanceFilings (state: StateIF): boolean {
+    isBusinessWithNoMaintenanceFilings (state: RootStateIF): boolean {
       const filingHistoryListStore = useFilingHistoryListStore()
       return (
         // no todo items
@@ -156,32 +183,37 @@ export const useRootStore = defineStore('root', {
     },
 
     /** The entity registered office address. */
-    getRegisteredOfficeAddress (state: StateIF): OfficeAddressIF {
+    getRegisteredOfficeAddress (state: RootStateIF): OfficeAddressIF {
       return state.registeredAddress
     },
 
     /** The parties list from the API. */
-    getParties (state: StateIF): Array<PartyIF> {
+    getParties (state: RootStateIF): Array<PartyIF> {
       return state.parties
     },
 
     /** The entity business address. */
-    getBusinessAddress (state: StateIF): OfficeAddressIF {
+    getBusinessAddress (state: RootStateIF): OfficeAddressIF {
       return state.businessAddress
     },
 
     /** The entity resource text for confirmation modal. */
-    getDissolutionConfirmationResource (state: StateIF): DissolutionConfirmationResourceIF {
+    getDissolutionConfirmationResource (state: RootStateIF): DissolutionConfirmationResourceIF {
       return state.configObject?.dissolutionConfirmation
     },
     /** The entity TodoList resources. */
-    getTodoListResource (state: StateIF): TodoListResourceIF {
+    getTodoListResource (state: RootStateIF): TodoListResourceIF {
       return state.configObject?.todoList
     },
 
     /** The corp type code from Auth db (may be null). */
-    getCorpTypeCd (state: StateIF): CorpTypeCd {
+    getCorpTypeCd (state: RootStateIF): CorpTypeCd {
       return state.corpTypeCd
+    },
+
+    /** The user info from Auth db (may be null). */
+    getUserInfo (state: RootStateIF): any {
+      return state.userInfo
     },
 
     //
@@ -189,44 +221,78 @@ export const useRootStore = defineStore('root', {
     //
 
     /** The filing that changed the business state, if there is one. */
-    getStateFiling (state: StateIF): StateFilingIF {
+    getStateFiling (state: RootStateIF): StateFilingIF {
       return state.stateFiling
     },
 
-    /**
-     * A formatted concatenation of the name and the effective date of the filing.
-     * Only used when entity is historical.
-     */
+    /** The historical reason text to display in the info header. */
     getReasonText (): string {
+      const enDash = '–' // ALT + 0150
       const businessStore = useBusinessStore()
-      const stateFiling = this.getStateFiling as StateFilingIF // may be null
 
+      if (!businessStore.isHistorical) return null // safety check
+
+      // check if historical reason is amalgamation
+      const amalgamatedInto = businessStore.getAmalgamatedInto
+      if (amalgamatedInto) return reasonTextAmalgamation()
+
+      // get state filing (may be null)
+      const stateFiling = this.getStateFiling as StateFilingIF
       const filingType = stateFiling?.header?.name
       if (!filingType) return null // safety check
 
-      // create reason text to display in the info header
-      let name: string
-      let date: string
+      // check if historical reason is dissolution
+      if (filingType === FilingTypes.DISSOLUTION) return reasonTextDissolution()
 
-      if (filingType === FilingTypes.DISSOLUTION) {
-        name = EnumUtilities.dissolutionTypeToName(
+      // check if historical reason is continuation out
+      if (filingType === FilingTypes.CONTINUATION_OUT) return reasonTextContinuationOut()
+
+      // fallback reason text
+      return reasonTextOther()
+
+      //
+      // helper functions
+      //
+
+      /** The reason text for a business made historical by an amalgamation. */
+      function reasonTextAmalgamation (): string {
+        const name = 'Amalgamation'
+        const amalgamationDate = DateUtilities.apiToDate(amalgamatedInto.amalgamationDate)
+        if (!amalgamationDate) throw new Error('Invalid amalgamation date')
+        const date = DateUtilities.dateToPacificDate(amalgamationDate, true)
+        const identifier = amalgamatedInto.identifier || 'Unknown Company'
+        return `${name} ${enDash} ${date} ${enDash} ${identifier}`
+      }
+
+      /** The reason text for a business made historical by a dissolution. */
+      function reasonTextDissolution (): string {
+        const name = EnumUtilities.dissolutionTypeToName(
           businessStore.isFirm,
-          (stateFiling?.dissolution?.dissolutionType as FilingSubTypes)
+          (stateFiling.dissolution?.dissolutionType as FilingSubTypes)
         )
         const dissolutionDate = DateUtilities.yyyyMmDdToDate(stateFiling.dissolution?.dissolutionDate)
         if (!dissolutionDate) throw new Error('Invalid dissolution date')
-        date = DateUtilities.dateToPacificDate(dissolutionDate, true)
-      } else {
-        name = (filingType === FilingTypes.CONTINUATION_OUT)
-          ? 'Continued Out'
-          : EnumUtilities.filingTypeToName(filingType)
-        const effectiveDate = DateUtilities.apiToDate(stateFiling.header.effectiveDate)
-        if (!effectiveDate) throw new Error('Invalid effective date')
-        date = DateUtilities.dateToPacificDateTime(effectiveDate)
+        const date = DateUtilities.dateToPacificDate(dissolutionDate, true)
+        return `${name} ${enDash} ${date}`
       }
 
-      const enDash = '–' // ALT + 0150
-      return `${name} ${enDash} ${date}`
+      /** The reason text for a business made historical by a continuation out. */
+      function reasonTextContinuationOut (): string {
+        const name = 'Continued Out'
+        const effectiveDate = DateUtilities.apiToDate(stateFiling.header?.effectiveDate)
+        if (!effectiveDate) throw new Error('Invalid effective date')
+        const dateTime = DateUtilities.dateToPacificDateTime(effectiveDate)
+        return `${name} ${enDash} ${dateTime}`
+      }
+
+      /** The reason text for a business made historical by some other state filing. */
+      function reasonTextOther (): string {
+        const name = EnumUtilities.filingTypeToName(filingType)
+        const effectiveDate = DateUtilities.apiToDate(stateFiling.header?.effectiveDate)
+        if (!effectiveDate) throw new Error('Invalid effective date')
+        const dateTime = DateUtilities.dateToPacificDateTime(effectiveDate)
+        return `${name} ${enDash} ${dateTime}`
+      }
     },
 
     /** The limited restoration active-until date, if it exists, otherwise null. */
@@ -258,6 +324,10 @@ export const useRootStore = defineStore('root', {
       this.fetchingDataSpinner = val
     },
 
+    setStartingAmalgamationSpinner (val: boolean) {
+      this.startingAmalgamationSpinner = val
+    },
+
     setStateFiling (stateFilingResponse: any) {
       this.stateFiling = stateFilingResponse
     },
@@ -269,6 +339,10 @@ export const useRootStore = defineStore('root', {
 
     setUserKeycloakGuid (userKeycloakGuid: string) {
       this.userKeycloakGuid = userKeycloakGuid
+    },
+
+    setUserInfo (val: any) {
+      this.userInfo = val
     },
 
     /** Set the app permissions. */
@@ -318,10 +392,6 @@ export const useRootStore = defineStore('root', {
 
     setBusinessPhoneExtension (businessPhoneExtension: string) {
       this.businessPhoneExtension = businessPhoneExtension
-    },
-
-    setCurrentFilingStatus (currentFilingStatus: FilingStatus) {
-      this.currentFilingStatus = currentFilingStatus
     },
 
     setTasks (tasks: Array<ApiTaskIF>) {

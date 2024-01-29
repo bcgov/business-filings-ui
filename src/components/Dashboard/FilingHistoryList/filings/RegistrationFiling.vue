@@ -6,14 +6,18 @@
   >
     <template #body>
       <div
-        v-if="isStatusCompleted"
+        v-if="!!tempRegNumber && isStatusCompleted"
         class="completed-dissolution-details"
       >
         <h4>Registration Complete</h4>
 
-        <p>{{ getLegalName || 'This company' }} has been successfully registered.</p>
+        <p>
+          {{ getLegalName || 'This company' }} has been successfully registered.
+        </p>
 
-        <p>Return to My Business Registry to access your business and file changes.</p>
+        <p>
+          Return to My Business Registry to access your business and file changes.
+        </p>
 
         <div class="to-dashboard-container text-center mt-6">
           <v-btn
@@ -48,6 +52,11 @@ export default class RegistrationFiling extends Vue {
 
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getMyBusinessRegistryUrl!: string
+
+  /** The Temporary Registration Number string (may be null). */
+  get tempRegNumber (): string {
+    return sessionStorage.getItem('TEMP_REG_NUMBER')
+  }
 
   get isStatusCompleted (): boolean {
     return EnumUtilities.isStatusCompleted(this.filing)

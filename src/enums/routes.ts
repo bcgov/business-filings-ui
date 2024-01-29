@@ -1,6 +1,9 @@
-export enum Routes {
+import { Routes as DCRoutes } from '@/components/DigitalCredentials/enums/routes'
+
+export enum CoreRoutes {
   AGM_EXTENSION = 'agm-extension',
-  AGM_LOCATION_CHG = 'agm-location-chg',
+  AGM_LOCATION_CHANGE = 'agm-location-chg',
+  AMALGAMATION_SELECTION = 'amalgamation-selection',
   ANNUAL_REPORT = 'annual-report',
   CONSENT_CONTINUATION_OUT = 'consent-continuation-out',
   CONTINUATION_OUT = 'continuation-out',
@@ -10,10 +13,13 @@ export enum Routes {
   STANDALONE_DIRECTORS = 'standalone-directors',
   SIGNIN = 'signin',
   SIGNOUT = 'signout',
+}
 
-  // Digital Credential Routes for Pilot
-  DIGITAL_CREDENTIALS = 'digital-credentials',
-  DOWNLOAD_WALLET = 'download-wallet',
-  REGISTER_WALLET = 'register-wallet',
-  ISSUE_CREDENTIALS = 'issue-credentials'
+export { DCRoutes }
+
+// Combined routes
+export type Routes = CoreRoutes | DCRoutes
+export const Routes = {
+  ...CoreRoutes,
+  ...DCRoutes
 }
