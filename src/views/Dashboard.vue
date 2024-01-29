@@ -296,6 +296,7 @@ export default {
         'getIdentifier',
         'hasComplianceWarning',
         'hasMissingInfoWarning',
+        'isFutureEffectiveAmalgamation',
         'isAdminFrozen',
         'isBenBcCccUlc',
         'isFirm',

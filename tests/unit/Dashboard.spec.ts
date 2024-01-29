@@ -110,6 +110,23 @@ describe('Dashboard - UI', () => {
     })
   })
 
+  it('identifies app tasks vs app filings', () => {
+    const tests = [
+      { entityStatus: EntityStatus.DRAFT_AMALGAMATION, isAppTask: true },
+      { entityStatus: EntityStatus.DRAFT_INCORP_APP, isAppTask: true },
+      { entityStatus: EntityStatus.DRAFT_REGISTRATION, isAppTask: true },
+      { entityStatus: EntityStatus.FILED_AMALGAMATION, isAppFiling: true },
+      { entityStatus: EntityStatus.FILED_INCORP_APP, isAppFiling: true },
+      { entityStatus: EntityStatus.FILED_REGISTRATION, isAppFiling: true }
+    ]
+
+    tests.forEach((test) => {
+      rootStore.entityStatus = test.entityStatus
+      expect(vm.isAppTask).toBe(!!test.isAppTask)
+      expect(vm.isAppFiling).toBe(!!test.isAppFiling)
+    })
+  })
+
   it('updates its counts from sub-component events', () => {
     wrapper.findComponent(TodoList).vm.$emit('todo-count', 2)
     // wrapper.findComponent(FilingHistoryList).vm.$emit('history-count', 3)

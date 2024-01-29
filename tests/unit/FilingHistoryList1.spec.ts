@@ -688,6 +688,66 @@ describe('Filing History List - misc functionality', () => {
 
     wrapper.destroy()
   })
+
+  it('displays multiple filing items, and remove the filing that displayLedger is false', async () => {
+    // init store
+    businessStore.setIdentifier('CP0001191')
+    filingHistoryListStore.setFilings([
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'CP0001191',
+        commentsCount: 0,
+        displayLedger: true,
+        displayName: 'Annual Report',
+        effectiveDate: '2019-11-20 22:17:54 GMT',
+        filingId: 111,
+        isFutureEffective: false,
+        name: FilingTypes.ANNUAL_REPORT,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Tue, 02 July 2019 12:00:00 GMT',
+        submitter: 'Submitter 1'
+      } as any,
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'BC0001191',
+        commentsCount: 0,
+        displayLedger: true,
+        displayName: 'Benefit Company Incorporation Application - ACME Benefit Inc',
+        effectiveDate: '2019-11-20 22:17:54 GMT',
+        filingId: 222,
+        isFutureEffective: false,
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Thu, 04 Apr 2019 12:00:00 GMT',
+        submitter: 'Submitter 2'
+      },
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'CP0001191',
+        commentsCount: 0,
+        displayLedger: false,
+        displayName: 'Admin Freeze',
+        effectiveDate: '2019-11-20 22:17:54 GMT',
+        filingId: 333,
+        isFutureEffective: false,
+        name: FilingTypes.ADMIN_FREEZE,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Mon, 06 May 2019 12:00:00 GMT',
+        submitter: 'Submitter 3'
+      }
+    ])
+
+    const wrapper = mount(FilingHistoryList, { vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.getFilings.length).toEqual(2)
+    expect(wrapper.findAll('.default-filing').length).toEqual(1)
+    expect(wrapper.findAll('.incorporation-application').length).toEqual(1)
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    wrapper.destroy()
+  })
 })
 
 describe('Filing History List - redirections', () => {
