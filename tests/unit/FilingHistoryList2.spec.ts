@@ -37,12 +37,12 @@ const isCorrected = (filing) => !!filing.correctionFilingId
 const isIncorporationApplication = (filing) => (filing.name === FilingTypes.INCORPORATION_APPLICATION)
 // const isBcompCoa = (filing) => false FUTURE: implement BComp tests
 const isAlteration = (filing) => (filing.name === FilingTypes.ALTERATION)
-const isRegularAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION
-  && filing.filingSubType === FilingSubTypes.AMALGAMATION_REGULAR)
-const isHorizontalAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION
-  && filing.filingSubType === FilingSubTypes.AMALGAMATION_HORIZONTAL)
-const isVerticalAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION
-  && filing.filingSubType === FilingSubTypes.AMALGAMATION_VERTICAL)
+const isRegularAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION &&
+  filing.filingSubType === FilingSubTypes.AMALGAMATION_REGULAR)
+const isHorizontalAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION &&
+  filing.filingSubType === FilingSubTypes.AMALGAMATION_HORIZONTAL)
+const isVerticalAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION &&
+  filing.filingSubType === FilingSubTypes.AMALGAMATION_VERTICAL)
 const isConsentContinuationOut = (filing) => (filing.name === FilingTypes.CONSENT_CONTINUATION_OUT)
 const isStaff = (filing) => (
   filing.name === FilingTypes.REGISTRARS_NOTATION ||

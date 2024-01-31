@@ -1765,8 +1765,6 @@ describe('TodoList - UI - Amalgamation Applications', () => {
     wrapper.destroy()
   })
 
-
-  
   it('displays a DRAFT numbered short form vertical amalgamation application', async () => {
     // init store
     rootStore.nameRequest = null
