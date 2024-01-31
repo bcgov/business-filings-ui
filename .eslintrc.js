@@ -24,6 +24,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'max-len': ['warn', { code: 120 }],
     'vue/attribute-hyphenation': 'off',
+    'vue/component-name-in-template-casing': ['error', 'PascalCase'],
     'vue/multi-word-component-names': 'off',
     'vue/no-deprecated-filter': 'warn',
     'vue/no-deprecated-slot-scope-attribute': 'warn',
