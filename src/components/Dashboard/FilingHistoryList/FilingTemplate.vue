@@ -53,7 +53,7 @@
       </div>
     </v-expansion-panel-header>
 
-    <v-expansion-panel-content class="pt-5">
+    <v-expansion-panel-content eager class="pt-5">
       <slot name="body">
         <!-- is this a generic paid (not yet completed) filing? -->
         <div
