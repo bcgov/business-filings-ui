@@ -2625,8 +2625,8 @@ describe('App as a draft horizontal amalgamation application', () => {
   })
 
   it('fetches horizontal amalgamation filing properly', () => {
-    expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
     expect(rootStore.getNameRequest).toBeNull()
+    expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
