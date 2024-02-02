@@ -2238,7 +2238,7 @@ describe('App as a COMPLETED Registration Application', () => {
   })
 })
 
-describe('App as a draft numbered amalgamation application', () => {
+describe('App as a draft numbered regular amalgamation application', () => {
   let wrapper: Wrapper<Vue>
 
   beforeAll(() => {
@@ -2311,7 +2311,7 @@ describe('App as a draft numbered amalgamation application', () => {
     wrapper.destroy()
   })
 
-  it('fetches amalgamation filing properly', () => {
+  it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
     expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
     expect(businessStore.getIdentifier).toBe('T123456789')
@@ -2333,7 +2333,7 @@ describe('App as a draft numbered amalgamation application', () => {
   })
 })
 
-describe('App as a draft named amalgamation application', () => {
+describe('App as a draft named regular amalgamation application', () => {
   let wrapper: Wrapper<Vue>
 
   beforeAll(() => {
@@ -2425,7 +2425,7 @@ describe('App as a draft named amalgamation application', () => {
     wrapper.destroy()
   })
 
-  it('fetches amalgamation filing properly', () => {
+  it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
     expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
     expect(businessStore.getIdentifier).toBe('T123456789')
@@ -2447,7 +2447,7 @@ describe('App as a draft named amalgamation application', () => {
   })
 })
 
-describe('App as a completed amalgamation application', () => {
+describe('App as a completed regular amalgamation application', () => {
   // Intermediate scenario - still using Temp Reg Number
   let wrapper: Wrapper<Vue>
 
@@ -2525,7 +2525,7 @@ describe('App as a completed amalgamation application', () => {
     wrapper.destroy()
   })
 
-  it('fetches amalgamation filing properly', () => {
+  it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
     expect(rootStore.getEntityStatus).toBe(EntityStatus.FILED_AMALGAMATION)
     expect(businessStore.getIdentifier).toBe('T123456789')
@@ -2540,6 +2540,413 @@ describe('App as a completed amalgamation application', () => {
     expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
     expect(filingHistoryListStore.filings[0].displayName).toBe('BC Limited Company Amalgamation Application - Regular')
     expect(filingHistoryListStore.filings[0].filingSubType).toBe(FilingSubTypes.AMALGAMATION_REGULAR)
+    expect(filingHistoryListStore.filings[0].name).toBe('amalgamationApplication')
+    expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
+    expect(filingHistoryListStore.filings[0].data.applicationDate).toBe('2020-05-20')
+    expect(filingHistoryListStore.filings[0].data.legalFilings).toEqual(['amalgamationApplication'])
+  })
+})
+
+describe('App as a draft horizontal amalgamation application', () => {
+  let wrapper: Wrapper<Vue>
+
+  beforeAll(() => {
+    // clear store
+    businessStore.setLegalName(null)
+    rootStore.setNameRequest(null)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([])
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+  })
+
+  beforeEach(async () => {
+    // mock "fetchAuthorizations" auth service
+    vi.spyOn(AuthServices, 'fetchAuthorizations').mockImplementation((): any => {
+      return Promise.resolve({
+        data: { roles: ['edit', 'view'] }
+      })
+    })
+
+    // mock "fetchUserInfo" auth service
+    vi.spyOn(AuthServices, 'fetchUserInfo').mockImplementation((): any => {
+      return Promise.resolve(USER_INFO)
+    })
+
+    // mock "fetchDraftApp" legal service
+    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+      return Promise.resolve({
+        filing: {
+          business: {
+            identifier: 'T123456789',
+            legalType: CorpTypeCd.BC_COMPANY
+          },
+          header: {
+            date: '2020-05-21T00:11:55.887740+00:00',
+            filingId: 789,
+            name: FilingTypes.AMALGAMATION_APPLICATION,
+            status: FilingStatus.DRAFT
+          },
+          amalgamationApplication: {
+            nameRequest: {
+              legalType: CorpTypeCd.BC_COMPANY
+            },
+            contactPoint: {
+              email: 'tester@test.com',
+              phone: '(123) 456-7890'
+            },
+            type: AmalgamationTypes.HORIZONTAL
+          }
+        }
+      })
+    })
+
+    // mock "UpdateLdUser" auth service
+    vi.spyOn(utils, 'UpdateLdUser').mockImplementation((): any => {
+      return Promise.resolve()
+    })
+
+    // create a Local Vue and install router (and store) on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, { localVue, router, vuetify })
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('fetches horizontal amalgamation filing properly', () => {
+    expect(rootStore.getNameRequest).toBeNull()
+    expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.isBcCompany).toBe(true)
+    expect(businessStore.isGoodStanding).toBe(true)
+    expect(businessStore.getLegalName).toBeNull()
+    expect(rootStore.isDraftAmalgamation).toBe(true)
+    expect(rootStore.isAppTask).toBe(true)
+
+    // verify loaded task
+    expect(rootStore.tasks.length).toBe(1)
+    expect(rootStore.tasks[0].enabled).toBe(true)
+    expect(rootStore.tasks[0].order).toBe(1)
+    expect(rootStore.tasks[0].task.filing.business).not.toBeNull()
+    expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamationApplication')
+    expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
+    expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
+    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Amalgamation Application - Horizontal')
+  })
+})
+
+describe('App as a completed horizontal amalgamation application', () => {
+  // Intermediate scenario - still using Temp Reg Number
+  let wrapper: Wrapper<Vue>
+
+  beforeAll(() => {
+    // clear store
+    businessStore.setLegalName(null)
+    rootStore.setNameRequest(null)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([])
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+  })
+
+  beforeEach(async () => {
+    // mock "fetchAuthorizations" auth service
+    vi.spyOn(AuthServices, 'fetchAuthorizations').mockImplementation((): any => {
+      return Promise.resolve({
+        data: { roles: ['edit', 'view'] }
+      })
+    })
+
+    // mock "fetchUserInfo" auth service
+    vi.spyOn(AuthServices, 'fetchUserInfo').mockImplementation((): any => {
+      return Promise.resolve(USER_INFO)
+    })
+
+    // mock "fetchDraftApp" legal service
+    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+      return Promise.resolve({
+        filing: {
+          business: {
+            identifier: 'T123456789',
+            legalType: CorpTypeCd.BC_COMPANY
+          },
+          header: {
+            date: '2020-05-21T00:11:55.887740+00:00',
+            effectiveDate: '2020-05-21T00:11:55.887740+00:00',
+            filingId: 789,
+            name: FilingTypes.AMALGAMATION_APPLICATION,
+            status: FilingStatus.COMPLETED
+          },
+          amalgamationApplication: {
+            nameRequest: {
+              nrNumber: 'NR 1234567',
+              legalType: CorpTypeCd.BC_COMPANY
+            },
+            offices: BCOMP_ADDRESSES,
+            parties: BCOMP_PARTIES,
+            contactPoint: {
+              email: 'tester@test.com',
+              phone: '(123) 456-7890'
+            },
+            type: AmalgamationTypes.HORIZONTAL
+          }
+        }
+      })
+    })
+
+    // mock "UpdateLdUser" auth service
+    vi.spyOn(utils, 'UpdateLdUser').mockImplementation((): any => {
+      return Promise.resolve()
+    })
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, { localVue, router, vuetify })
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('fetches regular amalgamation filing properly', () => {
+    expect(rootStore.getNameRequest).toBeNull()
+    expect(rootStore.getEntityStatus).toBe(EntityStatus.FILED_AMALGAMATION)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.isBcCompany).toBe(true)
+    expect(businessStore.isGoodStanding).toBe(true)
+    expect(businessStore.getLegalName).toBeNull()
+    expect(rootStore.isFiledAmalgamation).toBe(true)
+    expect(rootStore.isAppFiling).toBe(true)
+
+    // verify loaded filing
+    expect(filingHistoryListStore.filings.length).toBe(1)
+    expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
+    expect(filingHistoryListStore.filings[0].displayName)
+      .toBe('BC Limited Company Amalgamation Application - Horizontal')
+    expect(filingHistoryListStore.filings[0].filingSubType).toBe(FilingSubTypes.AMALGAMATION_HORIZONTAL)
+    expect(filingHistoryListStore.filings[0].name).toBe('amalgamationApplication')
+    expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
+    expect(filingHistoryListStore.filings[0].data.applicationDate).toBe('2020-05-20')
+    expect(filingHistoryListStore.filings[0].data.legalFilings).toEqual(['amalgamationApplication'])
+  })
+})
+
+describe('App as a draft vertical amalgamation application', () => {
+  let wrapper: Wrapper<Vue>
+
+  beforeAll(() => {
+    // clear store
+    businessStore.setLegalName(null)
+    rootStore.setNameRequest(null)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([])
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+  })
+
+  beforeEach(async () => {
+    // mock "fetchAuthorizations" auth service
+    vi.spyOn(AuthServices, 'fetchAuthorizations').mockImplementation((): any => {
+      return Promise.resolve({
+        data: { roles: ['edit', 'view'] }
+      })
+    })
+
+    // mock "fetchUserInfo" auth service
+    vi.spyOn(AuthServices, 'fetchUserInfo').mockImplementation((): any => {
+      return Promise.resolve(USER_INFO)
+    })
+
+    // mock "fetchDraftApp" legal service
+    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+      return Promise.resolve({
+        filing: {
+          business: {
+            identifier: 'T123456789',
+            legalType: CorpTypeCd.BC_COMPANY
+          },
+          header: {
+            date: '2020-05-21T00:11:55.887740+00:00',
+            filingId: 789,
+            name: FilingTypes.AMALGAMATION_APPLICATION,
+            status: FilingStatus.DRAFT
+          },
+          amalgamationApplication: {
+            nameRequest: {
+              legalType: CorpTypeCd.BC_COMPANY
+            },
+            contactPoint: {
+              email: 'tester@test.com',
+              phone: '(123) 456-7890'
+            },
+            type: AmalgamationTypes.VERTICAL
+          }
+        }
+      })
+    })
+
+    // mock "UpdateLdUser" auth service
+    vi.spyOn(utils, 'UpdateLdUser').mockImplementation((): any => {
+      return Promise.resolve()
+    })
+
+    // create a Local Vue and install router (and store) on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, { localVue, router, vuetify })
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('fetches vertical amalgamation filing properly', () => {
+    expect(rootStore.getNameRequest).toBeNull()
+    expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.isBcCompany).toBe(true)
+    expect(businessStore.isGoodStanding).toBe(true)
+    expect(businessStore.getLegalName).toBeNull()
+    expect(rootStore.isDraftAmalgamation).toBe(true)
+    expect(rootStore.isAppTask).toBe(true)
+
+    // verify loaded task
+    expect(rootStore.tasks.length).toBe(1)
+    expect(rootStore.tasks[0].enabled).toBe(true)
+    expect(rootStore.tasks[0].order).toBe(1)
+    expect(rootStore.tasks[0].task.filing.business).not.toBeNull()
+    expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamationApplication')
+    expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
+    expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
+    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Amalgamation Application - Vertical')
+  })
+})
+
+describe('App as a completed vertical amalgamation application', () => {
+  // Intermediate scenario - still using Temp Reg Number
+  let wrapper: Wrapper<Vue>
+
+  beforeAll(() => {
+    // clear store
+    businessStore.setLegalName(null)
+    rootStore.setNameRequest(null)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([])
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+  })
+
+  beforeEach(async () => {
+    // mock "fetchAuthorizations" auth service
+    vi.spyOn(AuthServices, 'fetchAuthorizations').mockImplementation((): any => {
+      return Promise.resolve({
+        data: { roles: ['edit', 'view'] }
+      })
+    })
+
+    // mock "fetchUserInfo" auth service
+    vi.spyOn(AuthServices, 'fetchUserInfo').mockImplementation((): any => {
+      return Promise.resolve(USER_INFO)
+    })
+
+    // mock "fetchDraftApp" legal service
+    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+      return Promise.resolve({
+        filing: {
+          business: {
+            identifier: 'T123456789',
+            legalType: CorpTypeCd.BC_COMPANY
+          },
+          header: {
+            date: '2020-05-21T00:11:55.887740+00:00',
+            effectiveDate: '2020-05-21T00:11:55.887740+00:00',
+            filingId: 789,
+            name: FilingTypes.AMALGAMATION_APPLICATION,
+            status: FilingStatus.COMPLETED
+          },
+          amalgamationApplication: {
+            nameRequest: {
+              nrNumber: 'NR 1234567',
+              legalType: CorpTypeCd.BC_COMPANY
+            },
+            offices: BCOMP_ADDRESSES,
+            parties: BCOMP_PARTIES,
+            contactPoint: {
+              email: 'tester@test.com',
+              phone: '(123) 456-7890'
+            },
+            type: AmalgamationTypes.VERTICAL
+          }
+        }
+      })
+    })
+
+    // mock "UpdateLdUser" auth service
+    vi.spyOn(utils, 'UpdateLdUser').mockImplementation((): any => {
+      return Promise.resolve()
+    })
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, { localVue, router, vuetify })
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('fetches regular amalgamation filing properly', () => {
+    expect(rootStore.getNameRequest).toBeNull()
+    expect(rootStore.getEntityStatus).toBe(EntityStatus.FILED_AMALGAMATION)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.isBcCompany).toBe(true)
+    expect(businessStore.isGoodStanding).toBe(true)
+    expect(businessStore.getLegalName).toBeNull()
+    expect(rootStore.isFiledAmalgamation).toBe(true)
+    expect(rootStore.isAppFiling).toBe(true)
+
+    // verify loaded filing
+    expect(filingHistoryListStore.filings.length).toBe(1)
+    expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
+    expect(filingHistoryListStore.filings[0].displayName).toBe('BC Limited Company Amalgamation Application - Vertical')
+    expect(filingHistoryListStore.filings[0].filingSubType).toBe(FilingSubTypes.AMALGAMATION_VERTICAL)
     expect(filingHistoryListStore.filings[0].name).toBe('amalgamationApplication')
     expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
     expect(filingHistoryListStore.filings[0].data.applicationDate).toBe('2020-05-20')

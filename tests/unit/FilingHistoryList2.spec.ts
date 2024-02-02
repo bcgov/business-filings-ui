@@ -37,7 +37,12 @@ const isCorrected = (filing) => !!filing.correctionFilingId
 const isIncorporationApplication = (filing) => (filing.name === FilingTypes.INCORPORATION_APPLICATION)
 // const isBcompCoa = (filing) => false FUTURE: implement BComp tests
 const isAlteration = (filing) => (filing.name === FilingTypes.ALTERATION)
-const isAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION)
+const isRegularAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION &&
+  filing.filingSubType === FilingSubTypes.AMALGAMATION_REGULAR)
+const isHorizontalAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION &&
+  filing.filingSubType === FilingSubTypes.AMALGAMATION_HORIZONTAL)
+const isVerticalAmalgamation = (filing) => (filing.name === FilingTypes.AMALGAMATION_APPLICATION &&
+  filing.filingSubType === FilingSubTypes.AMALGAMATION_VERTICAL)
 const isConsentContinuationOut = (filing) => (filing.name === FilingTypes.CONSENT_CONTINUATION_OUT)
 const isStaff = (filing) => (
   filing.name === FilingTypes.REGISTRARS_NOTATION ||
@@ -126,7 +131,7 @@ filings.forEach((filing: any, index: number) => {
       // expect(item.fromLegalType).toBeDefined() // FUTURE: test this more specifically
     })
 
-    itIf(isAmalgamation(filing))('amalgamation filing', () => {
+    itIf(isRegularAmalgamation(filing))('regular amalgamation filing', () => {
       // verify data
       expect(vm.getFilings.length).toBe(1) // sanity check
       const item = vm.getFilings[0]
@@ -138,6 +143,44 @@ filings.forEach((filing: any, index: number) => {
 
       // verify display
       expect(wrapper.find('.item-header-title').text()).toBe('Amalgamation Application - Regular')
+      expect(wrapper.find('.item-header-subtitle').text()).toContain('FILED AND PAID')
+      expect(wrapper.find('.item-header-subtitle').text()).toContain('(filed by Registry Staff on Feb 3, 2023)')
+      expect(wrapper.find('.item-header-subtitle').text()).toContain('EFFECTIVE as of Feb 3, 2023')
+      expect(wrapper.find('.view-details').text()).toBe('View Documents')
+      expect(wrapper.find('.hide-details').text()).toBe('Hide Documents')
+    })
+
+    itIf(isHorizontalAmalgamation(filing))('horizontal amalgamation filing', async () => {
+      // verify data
+      expect(vm.getFilings.length).toBe(1) // sanity check
+      const item = vm.getFilings[0]
+      expect(item.businessIdentifier).toBe('BC1234567')
+      expect(item.data.amalgamationApplication.type).toBe(FilingSubTypes.AMALGAMATION_HORIZONTAL)
+      expect(item.displayName).toBe('Amalgamation Application - Horizontal')
+      expect(item.name).toBe(FilingTypes.AMALGAMATION_APPLICATION)
+      expect(item.status).toBe(FilingStatus.COMPLETED)
+
+      // verify display
+      expect(wrapper.find('.item-header-title').text()).toBe('Amalgamation Application - Horizontal')
+      expect(wrapper.find('.item-header-subtitle').text()).toContain('FILED AND PAID')
+      expect(wrapper.find('.item-header-subtitle').text()).toContain('(filed by Registry Staff on Feb 3, 2023)')
+      expect(wrapper.find('.item-header-subtitle').text()).toContain('EFFECTIVE as of Feb 3, 2023')
+      expect(wrapper.find('.view-details').text()).toBe('View Documents')
+      expect(wrapper.find('.hide-details').text()).toBe('Hide Documents')
+    })
+
+    itIf(isVerticalAmalgamation(filing))('vertical amalgamation filing', () => {
+      // verify data
+      expect(vm.getFilings.length).toBe(1) // sanity check
+      const item = vm.getFilings[0]
+      expect(item.businessIdentifier).toBe('BC1234567')
+      expect(item.data.amalgamationApplication.type).toBe(FilingSubTypes.AMALGAMATION_VERTICAL)
+      expect(item.displayName).toBe('Amalgamation Application - Vertical')
+      expect(item.name).toBe(FilingTypes.AMALGAMATION_APPLICATION)
+      expect(item.status).toBe(FilingStatus.COMPLETED)
+
+      // verify display
+      expect(wrapper.find('.item-header-title').text()).toBe('Amalgamation Application - Vertical')
       expect(wrapper.find('.item-header-subtitle').text()).toContain('FILED AND PAID')
       expect(wrapper.find('.item-header-subtitle').text()).toContain('(filed by Registry Staff on Feb 3, 2023)')
       expect(wrapper.find('.item-header-subtitle').text()).toContain('EFFECTIVE as of Feb 3, 2023')
