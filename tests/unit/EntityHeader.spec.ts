@@ -274,6 +274,8 @@ describe('Entity Header - data', () => {
     expect(wrapper.find('#business-description').text()).toBe('BC Limited Company')
   })
 
+  // Unit test assertions for Vertical amalgamation are pretty much the same except 'displayName'
+  // Reducing it to one as both tests are quite similar
   it('displays draft numbered amalgamation application - Horizontal', async () => {
     // set store properties
     businessStore.setLegalName(null)
@@ -301,6 +303,8 @@ describe('Entity Header - data', () => {
     expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Amalgamation Application - Horizontal')
   })
 
+  // Unit test assertions for Vertical amalgamation are pretty much the same except 'displayName'
+  // Reducing it to one as both tests are quite similar
   it('displays filed numbered amalgamated company - Horizontal', async () => {
     // set store properties
     businessStore.setLegalName(null)
@@ -329,6 +333,8 @@ describe('Entity Header - data', () => {
     expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Amalgamation Application - Horizontal')
   })
 
+  // Unit test assertions for Vertical amalgamation are pretty much the same except 'displayName'
+  // Reducing it to one as both tests are quite similar
   it('displays numbered amalgamated company - Horizontal amalgamation', async () => {
     // set store properties
     businessStore.setLegalName(null)
@@ -339,89 +345,6 @@ describe('Entity Header - data', () => {
       {
         displayLedger: true,
         displayName: 'BC Limited Company Amalgamation Application - Horizontal',
-        effectiveDate: '2019-06-02 19:22:59 GMT',
-        name: FilingTypes.AMALGAMATION_APPLICATION,
-        status: FilingStatus.COMPLETED,
-        submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
-      } as any
-    ])
-
-    const wrapper = shallowMount(EntityHeader, {
-      vuetify,
-      router,
-      propsData: { businessId: 'BC1234567', tempRegNumber: null }
-    })
-    await Vue.nextTick()
-
-    expect(wrapper.find('#entity-legal-name').text()).toBe('Numbered Limited Company')
-    expect(wrapper.find('#business-description').text()).toBe('BC Limited Company')
-  })
-
-  it('displays draft numbered amalgamation application - Vertical', async () => {
-    // set store properties
-    businessStore.setLegalName(null)
-    rootStore.entityStatus = EntityStatus.DRAFT_AMALGAMATION
-    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
-    filingHistoryListStore.setFilings([])
-    rootStore.setTasks([
-      {
-        task: {
-          filing: {
-            displayName: 'BC Limited Company Amalgamation Application - Vertical'
-          }
-        }
-      } as any
-    ])
-
-    const wrapper = shallowMount(EntityHeader, {
-      vuetify,
-      router,
-      propsData: { businessId: null, tempRegNumber: 'T1234567' }
-    })
-    await Vue.nextTick()
-
-    expect(wrapper.find('#app-name').text()).toBe('Numbered Amalgamated Company')
-    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Amalgamation Application - Vertical')
-  })
-
-  it('displays filed numbered amalgamated company - Vertical', async () => {
-    // set store properties
-    businessStore.setLegalName(null)
-    rootStore.entityStatus = EntityStatus.FILED_AMALGAMATION
-    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
-    rootStore.setTasks([])
-    filingHistoryListStore.setFilings([
-      {
-        displayLedger: true,
-        displayName: 'BC Limited Company Amalgamation Application - Vertical',
-        effectiveDate: '2019-06-02 19:22:59 GMT',
-        name: FilingTypes.AMALGAMATION_APPLICATION,
-        status: FilingStatus.COMPLETED,
-        submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
-      } as any
-    ])
-
-    const wrapper = shallowMount(EntityHeader, {
-      vuetify,
-      router,
-      propsData: { businessId: null, tempRegNumber: 'T1234567' }
-    })
-    await Vue.nextTick()
-
-    expect(wrapper.find('#app-name').text()).toBe('Numbered Amalgamated Company')
-    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Amalgamation Application - Vertical')
-  })
-
-  it('displays numbered amalgamated company - Vertical amalgamation', async () => {
-    // set store properties
-    businessStore.setLegalName(null)
-    rootStore.entityStatus = null
-    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
-    rootStore.setTasks([])
-    filingHistoryListStore.setFilings([
-      {
-        displayLedger: true,
-        displayName: 'BC Limited Company Amalgamation Application - Vertical',
         effectiveDate: '2019-06-02 19:22:59 GMT',
         name: FilingTypes.AMALGAMATION_APPLICATION,
         status: FilingStatus.COMPLETED,

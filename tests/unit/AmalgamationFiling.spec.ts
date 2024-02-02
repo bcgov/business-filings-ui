@@ -68,6 +68,8 @@ describe('Regular amalgamation Filing', () => {
   })
 })
 
+// Unit test assertions for Vertical amalgamation are pretty much the same except 'displayName'
+// Reducing it to one as both tests are quite similar
 describe('Horizontal amalgamation Filing', () => {
   let wrapper: Wrapper<AmalgamationFiling>
 
@@ -104,57 +106,6 @@ describe('Horizontal amalgamation Filing', () => {
   it('Displays expected content with a valid filing', async () => {
     // verify content
     expect(wrapper.find('.item-header-title').text()).toBe('Amalgamation Application - Horizontal')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('FILED AND PAID')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('(filed by John Doe on Jan 1, 2021)')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('EFFECTIVE as of Jan 1, 2021')
-    expect(wrapper.find('.view-details').text()).toBe('View Documents')
-    expect(wrapper.find('.hide-details').text()).toBe('Hide Documents')
-
-    await wrapper.find('.view-details').trigger('click')
-    expect(wrapper.find('.completed-ia-details').exists()).toBe(true)
-    expect(wrapper.find('h4').text()).toBe('Amalgamation Complete')
-    expect(wrapper.find('p').text()).toBe('MY COMPANY has been successfully amalgamated.')
-
-    wrapper.destroy()
-  })
-})
-
-describe('Vertical amalgamation Filing', () => {
-  let wrapper: Wrapper<AmalgamationFiling>
-
-  beforeAll(() => {
-    // init store
-    businessStore.setLegalName('MY COMPANY')
-
-    wrapper = mount(AmalgamationFiling, {
-      vuetify,
-      propsData: {
-        filing: {
-          comments: [],
-          commentsCount: 0,
-          commentsLink: null,
-          displayName: 'Amalgamation Application - Vertical',
-          documents: [],
-          documentsLink: 'dummy_link',
-          data: {},
-          effectiveDate: new Date('2021-01-01 08:00:00 GMT'),
-          name: FilingTypes.AMALGAMATION_APPLICATION,
-          status: FilingStatus.COMPLETED,
-          submittedDate: new Date('2021-01-01 08:00:00 GMT'),
-          submitter: 'John Doe'
-        },
-        index: 0
-      }
-    })
-  })
-
-  afterAll(() => {
-    wrapper.destroy()
-  })
-
-  it('Displays expected content with a valid filing', async () => {
-    // verify content
-    expect(wrapper.find('.item-header-title').text()).toBe('Amalgamation Application - Vertical')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('FILED AND PAID')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('(filed by John Doe on Jan 1, 2021)')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('EFFECTIVE as of Jan 1, 2021')
