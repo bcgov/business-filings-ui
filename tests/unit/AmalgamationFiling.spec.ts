@@ -22,6 +22,8 @@ describe('Regular amalgamation Filing', () => {
   beforeAll(() => {
     // init store
     businessStore.setLegalName('MY COMPANY')
+
+    // ensure tempRegNumber doesn't exist
     sessionStorage.setItem('TEMP_REG_NUMBER', null)
 
     wrapper = mount(AmalgamationFiling, {
