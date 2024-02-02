@@ -596,6 +596,61 @@
       "effectiveDate": "Fri, 03 Feb 2023 18:52:00 GMT",
       "filingId": 112751,
       "filingLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751",
+      "filingSubType": "regular",
+      "isFutureEffective": false,
+      "name": "amalgamationApplication",
+      "paymentStatusCode": null,
+      "status": "COMPLETED",
+      "submittedDate": "Fri, 03 Feb 2023 18:52:00 GMT",
+      "submitter": "Registry Staff"
+    },
+    {
+      "availableOnPaperOnly": false,
+      "businessIdentifier": "BC1234567",
+      "commentsCount": 0,
+      "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/comments",
+      "data": {
+        "amalgamationApplication": {
+          "type": "horizontal"
+        },
+        "legalFilings": [
+          "amalgamation"
+        ]
+      },
+      "displayLedger": true,
+      "displayName": "Amalgamation Application - Horizontal",
+      "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/documents",
+      "effectiveDate": "Fri, 03 Feb 2023 18:52:00 GMT",
+      "filingId": 112751,
+      "filingLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751",
+      "filingSubType": "horizontal",
+      "isFutureEffective": false,
+      "name": "amalgamationApplication",
+      "paymentStatusCode": null,
+      "status": "COMPLETED",
+      "submittedDate": "Fri, 03 Feb 2023 18:52:00 GMT",
+      "submitter": "Registry Staff"
+    },
+    {
+      "availableOnPaperOnly": false,
+      "businessIdentifier": "BC1234567",
+      "commentsCount": 0,
+      "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/comments",
+      "data": {
+        "amalgamationApplication": {
+          "type": "vertical"
+        },
+        "legalFilings": [
+          "amalgamation"
+        ]
+      },
+      "displayLedger": true,
+      "displayName": "Amalgamation Application - Vertical",
+      "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/documents",
+      "effectiveDate": "Fri, 03 Feb 2023 18:52:00 GMT",
+      "filingId": 112751,
+      "filingLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751",
+      "filingSubType": "vertical",
       "isFutureEffective": false,
       "name": "amalgamationApplication",
       "paymentStatusCode": null,
