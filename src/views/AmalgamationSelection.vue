@@ -203,7 +203,12 @@ export default class AmalgamationSelection extends Vue {
       // show spinner since this is a network call
       this.setStartingAmalgamationSpinner(true)
       const businessId = await this.createBusinessAA(amalgamationType)
-      const amalgamationUrl = `${this.getCreateUrl}?id=${businessId}`
+      const route =
+        amalgamationType === AmalgamationTypes.HORIZONTAL ||
+        amalgamationType === AmalgamationTypes.VERTICAL
+          ? 'amalg-short-information'
+          : 'amalg-reg-information'
+      const amalgamationUrl = `${this.getCreateUrl}${route}?id=${businessId}`
       navigate(amalgamationUrl)
       return
     } catch (error) {
