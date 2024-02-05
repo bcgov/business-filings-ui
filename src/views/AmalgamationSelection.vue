@@ -164,6 +164,7 @@ export default class AmalgamationSelection extends Vue {
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useRootStore) getFullPhoneNumber!: string
   @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useBusinessStore) isBComp!: boolean
   @Getter(useBusinessStore) isBcCompany!: boolean
@@ -229,6 +230,10 @@ export default class AmalgamationSelection extends Vue {
       type === AmalgamationTypes.VERTICAL
         ? CorrectNameOptions.CORRECT_AML_ADOPT
         : null
+    const legalName =
+      correctNameOption === CorrectNameOptions.CORRECT_AML_ADOPT
+        ? this.getLegalName
+        : null
     const draftAmalgamationApplication = {
       filing: {
         header: {
@@ -240,6 +245,7 @@ export default class AmalgamationSelection extends Vue {
         },
         amalgamationApplication: {
           nameRequest: {
+            legalName: legalName,
             legalType,
             correctNameOption: correctNameOption
           },
