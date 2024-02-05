@@ -148,7 +148,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import { Action, Getter } from 'pinia-class'
 import { Component, Vue } from 'vue-property-decorator'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
+import { AmalgamationTypes, CorrectNameOptions, FilingTypes } from '@bcrs-shared-components/enums'
 import { AmlRoles, AmlTypes, Routes } from '@/enums'
 import { LegalServices } from '@/services'
 import { navigate } from '@/utils'
@@ -224,7 +224,11 @@ export default class AmalgamationSelection extends Vue {
       type === AmalgamationTypes.VERTICAL ? this.getBusinessEmail : ''
     const phone = type === AmalgamationTypes.HORIZONTAL ||
       type === AmalgamationTypes.VERTICAL ? this.getFullPhoneNumber : ''
-
+    const correctNameOption =
+      type === AmalgamationTypes.HORIZONTAL ||
+      type === AmalgamationTypes.VERTICAL
+        ? CorrectNameOptions.CORRECT_AML_ADOPT
+        : null
     const draftAmalgamationApplication = {
       filing: {
         header: {
@@ -236,7 +240,8 @@ export default class AmalgamationSelection extends Vue {
         },
         amalgamationApplication: {
           nameRequest: {
-            legalType
+            legalType,
+            correctNameOption: correctNameOption
           },
           type,
           contactPoint: {
