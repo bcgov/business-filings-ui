@@ -148,7 +148,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import { Action, Getter } from 'pinia-class'
 import { Component, Vue } from 'vue-property-decorator'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
+import { AmalgamationTypes, CorrectNameOptions, FilingTypes } from '@bcrs-shared-components/enums'
 import { AmlRoles, AmlTypes, Routes } from '@/enums'
 import { LegalServices } from '@/services'
 import { navigate } from '@/utils'
@@ -164,6 +164,7 @@ export default class AmalgamationSelection extends Vue {
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useRootStore) getFullPhoneNumber!: string
   @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useBusinessStore) isBComp!: boolean
   @Getter(useBusinessStore) isBcCompany!: boolean
@@ -202,7 +203,12 @@ export default class AmalgamationSelection extends Vue {
       // show spinner since this is a network call
       this.setStartingAmalgamationSpinner(true)
       const businessId = await this.createBusinessAA(amalgamationType)
-      const amalgamationUrl = `${this.getCreateUrl}?id=${businessId}`
+      const route =
+        amalgamationType === AmalgamationTypes.HORIZONTAL ||
+        amalgamationType === AmalgamationTypes.VERTICAL
+          ? 'amalg-short-information'
+          : 'amalg-reg-information'
+      const amalgamationUrl = `${this.getCreateUrl}${route}?id=${businessId}`
       navigate(amalgamationUrl)
       return
     } catch (error) {
@@ -224,7 +230,15 @@ export default class AmalgamationSelection extends Vue {
       type === AmalgamationTypes.VERTICAL ? this.getBusinessEmail : ''
     const phone = type === AmalgamationTypes.HORIZONTAL ||
       type === AmalgamationTypes.VERTICAL ? this.getFullPhoneNumber : ''
-
+    const correctNameOption =
+      type === AmalgamationTypes.HORIZONTAL ||
+      type === AmalgamationTypes.VERTICAL
+        ? CorrectNameOptions.CORRECT_AML_ADOPT
+        : null
+    const legalName =
+      correctNameOption === CorrectNameOptions.CORRECT_AML_ADOPT
+        ? this.getLegalName
+        : null
     const draftAmalgamationApplication = {
       filing: {
         header: {
@@ -236,7 +250,9 @@ export default class AmalgamationSelection extends Vue {
         },
         amalgamationApplication: {
           nameRequest: {
-            legalType
+            legalName: legalName,
+            legalType,
+            correctNameOption: correctNameOption
           },
           type,
           contactPoint: {
