@@ -354,13 +354,13 @@ export default class EnumUtilities {
       case FilingTypes.ALTERATION: return FilingNames.ALTERATION
       case FilingTypes.AMALGAMATION_APPLICATION:
         if (subType === FilingSubTypes.AMALGAMATION_HORIZONTAL) {
-          return `${FilingNames.AMALGAMATION_APPLICATION} - Horizontal`
+          return `${FilingNames.AMALGAMATION_APPLICATION} Short-form (Horizontal)`
         }
         if (subType === FilingSubTypes.AMALGAMATION_REGULAR) {
-          return `${FilingNames.AMALGAMATION_APPLICATION} - Regular`
+          return `${FilingNames.AMALGAMATION_APPLICATION} (Regular)`
         }
         if (subType === FilingSubTypes.AMALGAMATION_VERTICAL) {
-          return `${FilingNames.AMALGAMATION_APPLICATION} - Vertical`
+          return `${FilingNames.AMALGAMATION_APPLICATION} Short-form (Vertical)`
         }
         return FilingNames.AMALGAMATION_APPLICATION
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')

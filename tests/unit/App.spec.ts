@@ -2329,7 +2329,7 @@ describe('App as a draft numbered regular amalgamation application', () => {
     expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamationApplication')
     expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
     expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
-    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Amalgamation Application - Regular')
+    expect(rootStore.tasks[0].task.filing.displayName).toBe('Amalgamation Application (Regular)')
   })
 })
 
@@ -2443,7 +2443,7 @@ describe('App as a draft named regular amalgamation application', () => {
     expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamationApplication')
     expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
     expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
-    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Amalgamation Application - Regular')
+    expect(rootStore.tasks[0].task.filing.displayName).toBe('Amalgamation Application (Regular)')
   })
 })
 
@@ -2538,7 +2538,7 @@ describe('App as a completed regular amalgamation application', () => {
     // verify loaded filing
     expect(filingHistoryListStore.filings.length).toBe(1)
     expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
-    expect(filingHistoryListStore.filings[0].displayName).toBe('BC Limited Company Amalgamation Application - Regular')
+    expect(filingHistoryListStore.filings[0].displayName).toBe('Amalgamation Application (Regular)')
     expect(filingHistoryListStore.filings[0].filingSubType).toBe(FilingSubTypes.AMALGAMATION_REGULAR)
     expect(filingHistoryListStore.filings[0].name).toBe('amalgamationApplication')
     expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
@@ -2642,7 +2642,7 @@ describe('App as a draft horizontal amalgamation application', () => {
     expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamationApplication')
     expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
     expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
-    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Amalgamation Application - Horizontal')
+    expect(rootStore.tasks[0].task.filing.displayName).toBe('Amalgamation Application Short-form (Horizontal)')
   })
 })
 
@@ -2741,8 +2741,7 @@ describe('App as a completed horizontal amalgamation application', () => {
     // verify loaded filing
     expect(filingHistoryListStore.filings.length).toBe(1)
     expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
-    expect(filingHistoryListStore.filings[0].displayName)
-      .toBe('BC Limited Company Amalgamation Application - Horizontal')
+    expect(filingHistoryListStore.filings[0].displayName).toBe('Amalgamation Application Short-form (Horizontal)')
     expect(filingHistoryListStore.filings[0].filingSubType).toBe(FilingSubTypes.AMALGAMATION_HORIZONTAL)
     expect(filingHistoryListStore.filings[0].name).toBe('amalgamationApplication')
     expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
@@ -2846,7 +2845,7 @@ describe('App as a draft vertical amalgamation application', () => {
     expect(rootStore.tasks[0].task.filing.header.name).toBe('amalgamationApplication')
     expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
     expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
-    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Amalgamation Application - Vertical')
+    expect(rootStore.tasks[0].task.filing.displayName).toBe('Amalgamation Application Short-form (Vertical)')
   })
 })
 
@@ -2945,7 +2944,7 @@ describe('App as a completed vertical amalgamation application', () => {
     // verify loaded filing
     expect(filingHistoryListStore.filings.length).toBe(1)
     expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
-    expect(filingHistoryListStore.filings[0].displayName).toBe('BC Limited Company Amalgamation Application - Vertical')
+    expect(filingHistoryListStore.filings[0].displayName).toBe('Amalgamation Application Short-form (Vertical)')
     expect(filingHistoryListStore.filings[0].filingSubType).toBe(FilingSubTypes.AMALGAMATION_VERTICAL)
     expect(filingHistoryListStore.filings[0].name).toBe('amalgamationApplication')
     expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
