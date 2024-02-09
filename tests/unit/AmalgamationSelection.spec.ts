@@ -42,7 +42,6 @@ describe('AmalgamationSelection', () => {
   })
 
   it('content of horizontal short form card is correct', () => {
-    const vm = wrapper.vm as any
     useBusinessStore().setLegalType(CorpTypeCd.BC_COMPANY)
 
     expect(wrapper.find('#start-horizontal-short-form-card > h2').text()).toBe('Horizontal short-form amalgamation')
@@ -55,7 +54,6 @@ describe('AmalgamationSelection', () => {
   })
 
   it('content of vertical short form card is correct', () => {
-    const vm = wrapper.vm as any
     useBusinessStore().setLegalType(CorpTypeCd.BC_COMPANY)
 
     expect(wrapper.find('#start-vertical-short-form-card > h2').text()).toBe('Vertical short-form amalgamation')

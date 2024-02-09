@@ -7,7 +7,7 @@ import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/sto
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
 import mockRouter from './mockRouter'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { EntityStatus, FilingStatus, FilingTypes } from '@/enums'
+import { EntityState, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
@@ -368,50 +368,63 @@ describe('Entity Header - HISTORICAL badge', () => {
   const router = mockRouter.mock()
 
   const variations = [
-    { // 0
-      entityState: 'ACTIVE',
+    { // variation 0 - active business
+      businessState: EntityState.ACTIVE,
       exists: false
     },
-    { // 1
-      entityState: 'LIQUIDATION',
+    { // variation 1 - business in liquidation
+      businessState: EntityState.LIQUIDATION,
       exists: false
     },
-    { // 2
-      entityState: 'HISTORICAL',
+    { // variation 2 - historical busines due to unknown reason
+      businessState: EntityState.HISTORICAL,
       stateFiling: null,
       exists: true,
       text: 'Unknown Reason'
     },
-    { // 3
-      entityState: 'HISTORICAL',
+    { // variation 3 - historical business due to voluntary dissolution
+      businessState: EntityState.HISTORICAL,
       stateFiling: {
-        header: { name: 'dissolution' },
+        header: { name: FilingTypes.DISSOLUTION },
         dissolution: {
           dissolutionDate: '2020-01-01',
-          dissolutionType: 'voluntary'
+          dissolutionType: FilingSubTypes.DISSOLUTION_VOLUNTARY
         }
       },
       exists: true,
       text: 'Voluntary Dissolution – January 1, 2020'
     },
-    { // 4
-      entityState: 'HISTORICAL',
+    { // variation 4 - historical company due to involuntary dissolution
+      businessState: EntityState.HISTORICAL,
       stateFiling: {
-        header: {
-          name: 'involuntaryDissolution',
-          effectiveDate: '2020-01-01T08:01:00+00:00'
+        header: { name: FilingTypes.DISSOLUTION },
+        dissolution: {
+          dissolutionDate: '2020-01-01',
+          dissolutionType: FilingSubTypes.DISSOLUTION_INVOLUNTARY
         }
       },
       exists: true,
-      text: 'Involuntary Dissolution – January 1, 2020 at 12:01 am Pacific time'
+      text: 'Involuntary Dissolution – January 1, 2020'
+    },
+    { // variation 5 - historical company due to amalgamation
+      businessState: EntityState.HISTORICAL,
+      businessInfo: {
+        amalgamatedInto: {
+          amalgamationDate: '2024-02-08T00:08:04.188642+00:00',
+          identifier: 'BC0871584'
+        }
+      },
+      exists: true,
+      text: 'Amalgamation – February 7, 2024 – BC0871584'
     }
   ]
 
   variations.forEach((_, index) => {
     it(`conditionally displays historical badge - variation #${index}`, async () => {
       // init store
-      businessStore.setState(_.entityState as any)
-      rootStore.setStateFiling(_.stateFiling as any || null)
+      businessStore.setState(_.businessState as any)
+      _.stateFiling && rootStore.setStateFiling(_.stateFiling as any)
+      _.businessInfo && businessStore.setBusinessInfo({ ...businessStore.businessInfo, ..._.businessInfo } as any)
 
       const wrapper = shallowMount(EntityHeader, {
         vuetify,
@@ -429,6 +442,7 @@ describe('Entity Header - HISTORICAL badge', () => {
       // cleanup
       businessStore.setState(null)
       rootStore.setStateFiling(null)
+      _.businessInfo && businessStore.setBusinessInfo({ ...businessStore.businessInfo, amalgamatedInto: null })
       wrapper.destroy()
     })
   })
