@@ -97,7 +97,8 @@ async function start () {
   const router = getVueRouter()
 
   // start Vue application
-  console.info('Starting app...') // eslint-disable-line no-console
+  const aboutApp = import.meta.env.ABOUT_APP
+  console.info(`Starting ${aboutApp}...`) // eslint-disable-line no-console
   new Vue({
     vuetify: new Vuetify({
       iconfont: 'mdi',

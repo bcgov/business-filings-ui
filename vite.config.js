@@ -11,18 +11,15 @@ const appName = JSON.parse(packageJson).appName
 const appVersion = JSON.parse(packageJson).version
 const sbcName = JSON.parse(packageJson).sbcName
 const sbcVersion = JSON.parse(packageJson).dependencies['sbc-common-components']
-const aboutText1 = (appName && appVersion) ? `${appName} v${appVersion}` : ''
-const aboutText2 = (sbcName && sbcVersion) ? `${sbcName} v${sbcVersion}` : ''
+const aboutApp = (appName && appVersion) ? `${appName} v${appVersion}` : 'Unknown APP'
+const aboutSbc = (sbcName && sbcVersion) ? `${sbcName} v${sbcVersion}` : 'Unknown SBC'
 
 // https://vitejs.dev/config/
 export default defineConfig(() => {
   return {
     define: {
-      'import.meta.env.ABOUT_TEXT':
-        (aboutText1 && aboutText2) ? `"${aboutText1}<br>${aboutText2}"`
-          : aboutText1 ? `"${aboutText1}"`
-            : aboutText2 ? `"${aboutText2}"`
-              : ''
+      'import.meta.env.ABOUT_APP': `"${aboutApp}"`,
+      'import.meta.env.ABOUT_SBC': `"${aboutSbc}"`
     },
     envPrefix: 'VUE_APP_', // Need to remove this after fixing vaults. Use import.meta.env with VUE_APP.
     plugins: [
