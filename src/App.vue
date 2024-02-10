@@ -299,7 +299,9 @@ export default {
 
     /** The About text. */
     aboutText (): string {
-      return import.meta.env.ABOUT_TEXT
+      const aboutApp = import.meta.env.ABOUT_APP
+      const aboutSbc = import.meta.env.ABOUT_SBC
+      return `${aboutApp}<br>${aboutSbc}`
     },
 
     /** Get banner text. */
@@ -720,7 +722,9 @@ export default {
       const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
 
       // save display name for later
-      filing.displayName = `${description}${dba}${filingName}`
+      filing.displayName = EnumUtilities.isTypeAmalgamation(header)
+        ? filingName
+        : `${description}${dba}${filingName}`
 
       // add this as a task item
       const taskItem: ApiTaskIF = {
@@ -746,6 +750,9 @@ export default {
 
       const description = GetCorpFullDescription(data.nameRequest.legalType)
       const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
+      const displayName = EnumUtilities.isTypeAmalgamation(header)
+        ? filingName
+        : `${description} ${filingName}`
 
       // add this as a filing item
       const filingItem = {
@@ -754,7 +761,7 @@ export default {
         commentsCount: application.commentsCount,
         commentsLink: application.commentsLink,
         displayLedger: application.displayLedger,
-        displayName: `${description} ${filingName}`,
+        displayName,
         documentsLink: application.documentsLink,
         effectiveDate: this.apiToUtcString(header.effectiveDate),
         filingId: header.filingId,
