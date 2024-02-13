@@ -27,6 +27,83 @@ document.body.setAttribute('data-app', 'true')
 // Prevent the warning "[Vuetify] Unable to locate target #staff-notation"
 document.body.setAttribute('id', 'staff-notation')
 
+describe('StaffNotation - Put Back On', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: vi.fn() } as any
+
+    const configuration = {
+      VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/',
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  beforeEach(() => {
+    // allow all filings referenced in this component
+    // some of these are normally mutually exclusive, but that's OK for testing
+    businessStore.setAllowedActions({
+      digitalBusinessCard: false,
+      filing: {
+        filingTypes: [
+          { name: FilingTypes.PUT_BACK_ON }
+        ]
+      } as any
+    })
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP) // firm
+    businessStore.setState(EntityState.HISTORICAL) // not active
+    businessStore.setAdminFreeze(false) // not frozen
+    businessStore.setIdentifier('SP1234567') // business id
+  })
+
+  it('renders the staff notation dialog correction for Put Back On', async () => {
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-put-back-on-entities') return 'SP'
+      return null
+    })
+    const wrapper = mount(StaffNotation, { vuetify })
+    // open menu
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.vm.$data.expand).toBe(true)
+
+    // find and click respective item
+    await wrapper.find('.v-list-item[data-type="put-back-on"]').trigger('click')
+    await Vue.nextTick()
+    const menuItemUnderTest = wrapper.find('[data-type="put-back-on"]')
+
+    // verify enabled Put Back On option
+    expect(menuItemUnderTest.classes()).not.toContain('v-list-item--disabled')
+
+    // verify flag
+    expect(wrapper.vm.$data.isAddingPutBackOn).toBeTruthy()
+
+    // verify modal title
+    expect(wrapper.find('#dialog-title').text()).toContain('Correction - Put Back On')
+
+    // verify textarea label
+    expect(wrapper.find('#notation-form .notation-textarea .v-label').text()).toBe('Add Detail')
+
+    // click Cancel button
+    await wrapper.find('#dialog-cancel-button').trigger('click')
+    await Vue.nextTick() // need to wait longer here
+    expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeFalsy()
+
+    // verify Close event
+    expect(wrapper.emitted('close').pop()).toEqual([false])
+
+    wrapper.destroy()
+  })
+})
+
 describe('StaffNotation', () => {
   const { assign } = window.location
 
@@ -262,6 +339,7 @@ describe('StaffNotation', () => {
   it('renders drop down menu correctly - historical', async () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
       if (flag === 'supported-restoration-entities') return 'SP'
+      if (flag === 'supported-put-back-on-entities') return 'SP'
       return null
     })
     businessStore.setState(EntityState.HISTORICAL)
@@ -417,6 +495,10 @@ describe('StaffNotation', () => {
   }
 
   it('renders the staff notation dialog correction for Put Back On', async () => {
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-put-back-on-entities') return 'SP'
+      return null
+    })
     const wrapper = mount(StaffNotation, { vuetify })
 
     // open menu
