@@ -127,7 +127,8 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.PUT_BACK_ON: {
-        return this.isAllowedFiling(FilingTypes.PUT_BACK_ON)
+        return this.isAllowedFiling(FilingTypes.PUT_BACK_ON) &&
+        !!GetFeatureFlag('supported-put-back-on-entities')?.includes(this.getLegalType)
       }
 
       case AllowableActions.RECORD_CONVERSION: {

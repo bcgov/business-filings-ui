@@ -19,6 +19,7 @@ const defaultFlagSet: LDFlagSet = {
   'supported-consent-continuation-out-entities': [],
   'supported-agm-extension-entities': [],
   'supported-agm-location-chg-entities': [],
+  'supported-put-back-on-entities': [],
   'supported-restoration-entities': []
 }
 
