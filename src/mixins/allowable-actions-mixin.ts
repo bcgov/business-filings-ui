@@ -118,17 +118,17 @@ export default class AllowableActionsMixin extends Vue {
 
       case AllowableActions.LIMITED_RESTORATION_EXTENSION: {
         return !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType) &&
-        this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)
+          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)
       }
 
       case AllowableActions.LIMITED_RESTORATION_TO_FULL: {
         return !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType) &&
-        this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_TO_FULL)
+          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_TO_FULL)
       }
 
       case AllowableActions.PUT_BACK_ON: {
         return this.isAllowedFiling(FilingTypes.PUT_BACK_ON) &&
-        !!GetFeatureFlag('supported-put-back-on-entities')?.includes(this.getLegalType)
+          !!GetFeatureFlag('supported-put-back-on-entities')?.includes(this.getLegalType)
       }
 
       case AllowableActions.RECORD_CONVERSION: {

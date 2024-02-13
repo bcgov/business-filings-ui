@@ -87,6 +87,10 @@ describe('StaffNotation - Put Back On', () => {
     // find and click respective item
     await wrapper.find('.v-list-item[data-type="put-back-on"]').trigger('click')
     await Vue.nextTick()
+    const menuItemUnderTest = wrapper.find('[data-type="put-back-on"]')
+
+    // verify enabled Put Back On option
+    expect(menuItemUnderTest.classes()).not.toContain('v-list-item--disabled')
 
     // verify flag
     expect(wrapper.vm.$data.isAddingPutBackOn).toBeTruthy()
@@ -108,6 +112,7 @@ describe('StaffNotation - Put Back On', () => {
     wrapper.destroy()
   })
 })
+
 describe('StaffNotation', () => {
   const { assign } = window.location
 
@@ -489,6 +494,41 @@ describe('StaffNotation', () => {
       wrapper.destroy()
     })
   }
+
+  it('renders the staff notation dialog correction for Put Back Onaa', async () => {
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-put-back-on-entities') return 'SP'
+      return null
+    })
+    const wrapper = mount(StaffNotation, { vuetify })
+
+    // open menu
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.vm.$data.expand).toBe(true)
+
+    // find and click respective item
+    await wrapper.find('.v-list-item[data-type="put-back-on"]').trigger('click')
+    await Vue.nextTick()
+
+    // verify flag
+    expect(wrapper.vm.$data.isAddingPutBackOn).toBeTruthy()
+
+    // verify modal title
+    expect(wrapper.find('#dialog-title').text()).toContain('Correction - Put Back On')
+
+    // verify textarea label
+    expect(wrapper.find('#notation-form .notation-textarea .v-label').text()).toBe('Add Detail')
+
+    // click Cancel button
+    await wrapper.find('#dialog-cancel-button').trigger('click')
+    await Vue.nextTick() // need to wait longer here
+    expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeFalsy()
+
+    // verify Close event
+    expect(wrapper.emitted('close').pop()).toEqual([false])
+
+    wrapper.destroy()
+  })
 
   it('renders the staff notation dialog for Admin Freeze', async () => {
     const wrapper = mount(StaffNotation, { vuetify })
