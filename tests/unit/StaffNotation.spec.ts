@@ -336,6 +336,7 @@ describe('StaffNotation', () => {
   it('renders drop down menu correctly - historical', async () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
       if (flag === 'supported-restoration-entities') return 'SP'
+      if (flag === 'supported-put-back-on-entities') return 'SP'
       return null
     })
     businessStore.setState(EntityState.HISTORICAL)
@@ -365,6 +366,11 @@ describe('StaffNotation', () => {
       {
         type: 'record-conversion',
         label: 'Record Conversion',
+        disabled: false
+      },
+      {
+        type: 'put-back-on',
+        label: 'Put Back On',
         disabled: false
       },
       {
@@ -485,7 +491,7 @@ describe('StaffNotation', () => {
     })
   }
 
-  it('renders the staff notation dialog correction for Put Back Onaa', async () => {
+  it('renders the staff notation dialog correction for Put Back On', async () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
       if (flag === 'supported-put-back-on-entities') return 'SP'
       return null
