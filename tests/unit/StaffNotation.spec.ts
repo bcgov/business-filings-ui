@@ -26,7 +26,88 @@ document.body.setAttribute('data-app', 'true')
 
 // Prevent the warning "[Vuetify] Unable to locate target #staff-notation"
 document.body.setAttribute('id', 'staff-notation')
+describe('StaffNotation - Put Back On', () => {
+  const { assign } = window.location
 
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: vi.fn() } as any
+
+    const configuration = {
+      VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/',
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  beforeEach(() => {
+    // allow all filings referenced in this component
+    // some of these are normally mutually exclusive, but that's OK for testing
+    businessStore.setAllowedActions({
+      digitalBusinessCard: false,
+      filing: {
+        filingTypes: [
+          { name: FilingTypes.REGISTRARS_NOTATION },
+          { name: FilingTypes.REGISTRARS_ORDER },
+          { name: FilingTypes.COURT_ORDER },
+          { name: FilingTypes.CONVERSION },
+          { name: FilingTypes.DISSOLUTION }, // FUTURE: add dissolution type
+          { name: FilingTypes.RESTORATION, type: FilingSubTypes.FULL_RESTORATION },
+          { name: FilingTypes.PUT_BACK_ON },
+          { name: FilingTypes.ADMIN_FREEZE },
+          { name: FilingTypes.CONSENT_CONTINUATION_OUT },
+          { name: FilingTypes.RESTORATION, type: FilingSubTypes.LIMITED_RESTORATION_EXTENSION },
+          { name: FilingTypes.RESTORATION, type: FilingSubTypes.LIMITED_RESTORATION_TO_FULL }
+        ]
+      } as any
+    })
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP) // firm
+    businessStore.setState(EntityState.HISTORICAL) // not active
+    businessStore.setAdminFreeze(false) // not frozen
+    businessStore.setIdentifier('SP1234567') // business id
+  })
+
+  it('renders the staff notation dialog correction for Put Back On', async () => {
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-put-back-on-entities') return 'SP'
+      return null
+    })
+    const wrapper = mount(StaffNotation, { vuetify })
+    // open menu
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.vm.$data.expand).toBe(true)
+
+    // find and click respective item
+    await wrapper.find('.v-list-item[data-type="put-back-on"]').trigger('click')
+    await Vue.nextTick()
+
+    // verify flag
+    expect(wrapper.vm.$data.isAddingPutBackOn).toBeTruthy()
+
+    // verify modal title
+    expect(wrapper.find('#dialog-title').text()).toContain('Correction - Put Back On')
+
+    // verify textarea label
+    expect(wrapper.find('#notation-form .notation-textarea .v-label').text()).toBe('Add Detail')
+
+    // click Cancel button
+    await wrapper.find('#dialog-cancel-button').trigger('click')
+    await Vue.nextTick() // need to wait longer here
+    expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeFalsy()
+
+    // verify Close event
+    expect(wrapper.emitted('close').pop()).toEqual([false])
+
+    wrapper.destroy()
+  })
+})
 describe('StaffNotation', () => {
   const { assign } = window.location
 
@@ -86,7 +167,6 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - full list, all allowed actions', async () => {
     const wrapper = mount(StaffNotation, { vuetify })
-
     // open menu
     await wrapper.find('.menu-btn').trigger('click')
     expect(wrapper.vm.$data.expand).toBe(true)
@@ -114,13 +194,13 @@ describe('StaffNotation', () => {
         disabled: false
       },
       {
-        type: 'administrative-dissolution',
-        label: 'Administrative Dissolution',
+        type: 'put-back-on',
+        label: 'Put Back On',
         disabled: false
       },
       {
-        type: 'put-back-on',
-        label: 'Put Back On',
+        type: 'administrative-dissolution',
+        label: 'Administrative Dissolution',
         disabled: false
       },
       {
@@ -179,7 +259,6 @@ describe('StaffNotation', () => {
 
     // verify item
     expect(wrapper.find('[data-type="administrative-dissolution"]').exists()).toBe(false)
-
     wrapper.destroy()
   })
 
@@ -291,11 +370,6 @@ describe('StaffNotation', () => {
       {
         type: 'record-conversion',
         label: 'Record Conversion',
-        disabled: false
-      },
-      {
-        type: 'put-back-on',
-        label: 'Put Back On',
         disabled: false
       },
       {
@@ -415,37 +489,6 @@ describe('StaffNotation', () => {
       wrapper.destroy()
     })
   }
-
-  it('renders the staff notation dialog correction for Put Back On', async () => {
-    const wrapper = mount(StaffNotation, { vuetify })
-
-    // open menu
-    await wrapper.find('.menu-btn').trigger('click')
-    expect(wrapper.vm.$data.expand).toBe(true)
-
-    // find and click respective item
-    await wrapper.find('.v-list-item[data-type="put-back-on"]').trigger('click')
-    await Vue.nextTick()
-
-    // verify flag
-    expect(wrapper.vm.$data.isAddingPutBackOn).toBeTruthy()
-
-    // verify modal title
-    expect(wrapper.find('#dialog-title').text()).toContain('Correction - Put Back On')
-
-    // verify textarea label
-    expect(wrapper.find('#notation-form .notation-textarea .v-label').text()).toBe('Add Detail')
-
-    // click Cancel button
-    await wrapper.find('#dialog-cancel-button').trigger('click')
-    await Vue.nextTick() // need to wait longer here
-    expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeFalsy()
-
-    // verify Close event
-    expect(wrapper.emitted('close').pop()).toEqual([false])
-
-    wrapper.destroy()
-  })
 
   it('renders the staff notation dialog for Admin Freeze', async () => {
     const wrapper = mount(StaffNotation, { vuetify })
