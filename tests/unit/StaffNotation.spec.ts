@@ -26,6 +26,7 @@ document.body.setAttribute('data-app', 'true')
 
 // Prevent the warning "[Vuetify] Unable to locate target #staff-notation"
 document.body.setAttribute('id', 'staff-notation')
+
 describe('StaffNotation - Put Back On', () => {
   const { assign } = window.location
 
@@ -162,6 +163,7 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - full list, all allowed actions', async () => {
     const wrapper = mount(StaffNotation, { vuetify })
+
     // open menu
     await wrapper.find('.menu-btn').trigger('click')
     expect(wrapper.vm.$data.expand).toBe(true)
@@ -254,6 +256,7 @@ describe('StaffNotation', () => {
 
     // verify item
     expect(wrapper.find('[data-type="administrative-dissolution"]').exists()).toBe(false)
+
     wrapper.destroy()
   })
 
