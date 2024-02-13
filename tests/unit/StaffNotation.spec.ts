@@ -189,13 +189,13 @@ describe('StaffNotation', () => {
         disabled: false
       },
       {
-        type: 'put-back-on',
-        label: 'Put Back On',
+        type: 'administrative-dissolution',
+        label: 'Administrative Dissolution',
         disabled: false
       },
       {
-        type: 'administrative-dissolution',
-        label: 'Administrative Dissolution',
+        type: 'put-back-on',
+        label: 'Put Back On',
         disabled: false
       },
       {
