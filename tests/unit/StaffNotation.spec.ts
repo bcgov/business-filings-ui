@@ -54,17 +54,7 @@ describe('StaffNotation - Put Back On', () => {
       digitalBusinessCard: false,
       filing: {
         filingTypes: [
-          { name: FilingTypes.REGISTRARS_NOTATION },
-          { name: FilingTypes.REGISTRARS_ORDER },
-          { name: FilingTypes.COURT_ORDER },
-          { name: FilingTypes.CONVERSION },
-          { name: FilingTypes.DISSOLUTION }, // FUTURE: add dissolution type
-          { name: FilingTypes.RESTORATION, type: FilingSubTypes.FULL_RESTORATION },
-          { name: FilingTypes.PUT_BACK_ON },
-          { name: FilingTypes.ADMIN_FREEZE },
-          { name: FilingTypes.CONSENT_CONTINUATION_OUT },
-          { name: FilingTypes.RESTORATION, type: FilingSubTypes.LIMITED_RESTORATION_EXTENSION },
-          { name: FilingTypes.RESTORATION, type: FilingSubTypes.LIMITED_RESTORATION_TO_FULL }
+          { name: FilingTypes.PUT_BACK_ON }
         ]
       } as any
     })
