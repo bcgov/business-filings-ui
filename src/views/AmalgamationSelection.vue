@@ -203,16 +203,14 @@ export default class AmalgamationSelection extends Vue {
       // show spinner since this is a network call
       this.setStartingAmalgamationSpinner(true)
       const businessId = await this.createBusinessAA(amalgamationType)
-      const route =
-        amalgamationType === AmalgamationTypes.HORIZONTAL ||
-        amalgamationType === AmalgamationTypes.VERTICAL
-          ? 'amalg-short-information'
-          : 'amalg-reg-information'
+      const route = this.isShortFormAmalgamation(amalgamationType)
+        ? 'amalg-short-information'
+        : 'amalg-reg-information'
       const amalgamationUrl = `${this.getCreateUrl}${route}?id=${businessId}`
       navigate(amalgamationUrl)
       return
     } catch (error) {
-      console.log('Error: unable to amalgamate now =', error)
+      console.log('Error - unable to amalgamate now =', error)
       this.setStartingAmalgamationSpinner(false)
       this.showErrorDialog = true
     }
@@ -225,20 +223,13 @@ export default class AmalgamationSelection extends Vue {
    */
   private async createBusinessAA (type: AmalgamationTypes): Promise<string> {
     const accountId = +JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id || 0
-    const legalType = this.getLegalType
-    const email = type === AmalgamationTypes.HORIZONTAL ||
-      type === AmalgamationTypes.VERTICAL ? this.getBusinessEmail : ''
-    const phone = type === AmalgamationTypes.HORIZONTAL ||
-      type === AmalgamationTypes.VERTICAL ? this.getFullPhoneNumber : ''
-    const correctNameOption =
-      type === AmalgamationTypes.HORIZONTAL ||
-      type === AmalgamationTypes.VERTICAL
-        ? CorrectNameOptions.CORRECT_AML_ADOPT
-        : null
-    const legalName =
-      correctNameOption === CorrectNameOptions.CORRECT_AML_ADOPT
-        ? this.getLegalName
-        : null
+    const email = this.isShortFormAmalgamation(type) ? this.getBusinessEmail : ''
+    const phone = this.isShortFormAmalgamation(type) ? this.getFullPhoneNumber : ''
+    const legalName = this.isShortFormAmalgamation(type) ? this.getLegalName : ''
+    const correctNameOption = this.isShortFormAmalgamation(type)
+      ? CorrectNameOptions.CORRECT_AML_ADOPT
+      : CorrectNameOptions.CORRECT_AML_NUMBERED
+
     const draftAmalgamationApplication = {
       filing: {
         header: {
@@ -246,24 +237,24 @@ export default class AmalgamationSelection extends Vue {
           accountId
         },
         business: {
-          legalType
+          legalType: this.getLegalType
         },
         amalgamationApplication: {
           nameRequest: {
-            legalName: legalName,
-            legalType,
-            correctNameOption: correctNameOption
+            legalName,
+            legalType: this.getLegalType,
+            correctNameOption
           },
           type,
           contactPoint: {
-            email: email,
-            phone: phone
+            email,
+            phone
           }
         }
       }
     } as any
 
-    // For Horizontal amalgamation, set current business as Primary company
+    // For Horizontal amalgamation, set current business as the Primary business.
     if (type === AmalgamationTypes.HORIZONTAL) {
       draftAmalgamationApplication.filing.amalgamationApplication.amalgamatingBusinesses = [
         {
@@ -274,7 +265,7 @@ export default class AmalgamationSelection extends Vue {
       ]
     }
 
-    // For Vertical amalgamation, set current business as Holding company
+    // For Vertical amalgamation, set current business as the Holding business.
     if (type === AmalgamationTypes.VERTICAL) {
       draftAmalgamationApplication.filing.amalgamationApplication.amalgamatingBusinesses = [
         {
@@ -285,7 +276,7 @@ export default class AmalgamationSelection extends Vue {
       ]
     }
 
-    // For Regular amalgamation, pre-populate the current business as a TING
+    // For Regular amalgamation, set the current business as an amalgamating business.
     if (type === AmalgamationTypes.REGULAR) {
       draftAmalgamationApplication.filing.amalgamationApplication.amalgamatingBusinesses = [
         {
@@ -304,6 +295,11 @@ export default class AmalgamationSelection extends Vue {
     const identifier = filing?.business?.identifier as string
     if (!identifier) throw new Error('Invalid business identifier')
     return identifier
+  }
+
+  /** Returns True if specified type is a short-form amalgamation. */
+  private isShortFormAmalgamation (type: AmalgamationTypes): boolean {
+    return (type === AmalgamationTypes.HORIZONTAL || type === AmalgamationTypes.VERTICAL)
   }
 }
 </script>
