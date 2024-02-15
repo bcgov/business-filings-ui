@@ -525,6 +525,7 @@ describe('Filing History List - misc functionality', () => {
     expect(vm.disableCorrection({})).toBe(true)
   })
 
+  // *** FUTURE: this needs to be refactored to work for HeaderActions.vue
   it.skip('returns correct values for disableCorrection()', async () => {
     filingHistoryListStore.setFilings([])
 
@@ -559,25 +560,31 @@ describe('Filing History List - misc functionality', () => {
     // conditions[3]: IA as a BEN/BC/CC/ULC
     for (const entityType of ['BEN', 'BC', 'CC', 'ULC']) {
       businessStore.setLegalType(entityType as any)
-      expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(false)
+      expect(vm.disableCorrection({ ...item, name: FilingTypes.INCORPORATION_APPLICATION })).toBe(false)
     }
 
     // conditions[4]: Change of Registration as a firm
     for (const entityType of ['SP', 'GP']) {
       businessStore.setLegalType(entityType as any)
-      expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(false)
+      expect(vm.disableCorrection({ ...item, name: FilingTypes.CHANGE_OF_REGISTRATION })).toBe(false)
     }
 
     // conditions[5]: Correction as a firm or BEN/BC/CC/ULC
     for (const entityType of ['SP', 'GP', 'BEN', 'BC', 'CC', 'ULC']) {
       businessStore.setLegalType(entityType as any)
-      expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
+      expect(vm.disableCorrection({ ...item, name: FilingTypes.CORRECTION })).toBe(false)
     }
 
     // conditions[6]: Registration as a firm
     for (const entityType of ['SP', 'GP']) {
       businessStore.setLegalType(entityType as any)
-      expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(false)
+      expect(vm.disableCorrection({ ...item, name: FilingTypes.REGISTRATION })).toBe(false)
+    }
+
+    // conditions[7]: Amalgamation as a BEN/BC/CC/ULC
+    for (const entityType of ['BEN', 'BC', 'CC', 'ULC']) {
+      businessStore.setLegalType(entityType as any)
+      expect(vm.disableCorrection({ ...item, name: FilingTypes.AMALGAMATION_APPLICATION })).toBe(false)
     }
 
     // Annual Report, Alteration, Change of Address, Change of Directors, Conversion
@@ -603,19 +610,23 @@ describe('Filing History List - misc functionality', () => {
 
     // only conditions[3]: IA as not a BEN/BC/CC/ULC
     businessStore.setLegalType(CorpTypeCd.COOP)
-    expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(true)
+    expect(vm.disableCorrection({ ...item, name: FilingTypes.INCORPORATION_APPLICATION })).toBe(true)
 
     // only conditions[4]: Change of Registration as not a firm
     businessStore.setLegalType(CorpTypeCd.COOP)
-    expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(true)
+    expect(vm.disableCorrection({ ...item, name: FilingTypes.CHANGE_OF_REGISTRATION })).toBe(true)
 
     // only conditions[5]: Correction as not a firm nor BEN/BC/CC/ULC
     businessStore.setLegalType(CorpTypeCd.COOP)
-    expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(true)
+    expect(vm.disableCorrection({ ...item, name: FilingTypes.CORRECTION })).toBe(true)
 
     // only conditions[6]: Registration as not a firm
     businessStore.setLegalType(CorpTypeCd.COOP)
-    expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(true)
+    expect(vm.disableCorrection({ ...item, name: FilingTypes.REGISTRATION })).toBe(true)
+
+    // only conditions[7]: Amalgamation as not a BEN/BC/CC/ULC
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    expect(vm.disableCorrection({ ...item, name: FilingTypes.AMALGAMATION_APPLICATION })).toBe(true)
   })
 
   it('displays multiple filing items, and remove the filing that displayLedger is false', async () => {
