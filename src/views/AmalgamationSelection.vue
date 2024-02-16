@@ -226,9 +226,7 @@ export default class AmalgamationSelection extends Vue {
     const email = this.isShortFormAmalgamation(type) ? this.getBusinessEmail : ''
     const phone = this.isShortFormAmalgamation(type) ? this.getFullPhoneNumber : ''
     const legalName = this.isShortFormAmalgamation(type) ? this.getLegalName : ''
-    const correctNameOption = this.isShortFormAmalgamation(type)
-      ? CorrectNameOptions.CORRECT_AML_ADOPT
-      : CorrectNameOptions.CORRECT_AML_NUMBERED
+    const correctNameOption = this.isShortFormAmalgamation(type) ? CorrectNameOptions.CORRECT_AML_ADOPT : null
 
     const draftAmalgamationApplication = {
       filing: {
