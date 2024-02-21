@@ -81,21 +81,28 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import ResourceLookupMixin from '@/mixins/resource-lookup-mixin'
-import { useRootStore } from '@/stores'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class LegalObligation extends Mixins(ResourceLookupMixin) {
+  @Getter(useBusinessStore) isActive!: boolean
   @Getter(useRootStore) isBusinessWithNoMaintenanceFilings!: boolean
 
   readMoreFlag = false
-  showLegalObligation = true
+  showLegalObligation = null as boolean
 
   /** Whether this entity is a business (and not a temporary registration). */
   get isBusiness (): boolean {
     return !!sessionStorage.getItem('BUSINESS_ID')
+  }
+
+  /** Sets initial value of showLegalObligation (and any changes). */
+  @Watch('isActive', { immediate: true })
+  onIsActiveChanged () {
+    this.showLegalObligation = this.isActive
   }
 }
 </script>
