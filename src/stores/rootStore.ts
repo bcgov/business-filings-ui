@@ -167,15 +167,16 @@ export const useRootStore = defineStore('root', {
 
     /**
      * This is used to show Legal Obligations only for a new business
-     * that has no tasks and hasn't filed anything yet (except their IA).
+     * that has no tasks and hasn't filed anything yet (except their application).
      **/
     isBusinessWithNoMaintenanceFilings (state: RootStateIF): boolean {
       const filingHistoryListStore = useFilingHistoryListStore()
       return (
         // no todo items
         (state.tasks.length === 0) &&
-        // only the IA or Registraion filing history item
+        // only the Amalgamation or IA or Registration filing history item
         (filingHistoryListStore.getFilings.length === 1) && (
+          EnumUtilities.isTypeAmalgamation(filingHistoryListStore.getFilings[0]) ||
           EnumUtilities.isTypeIncorporationApplication(filingHistoryListStore.getFilings[0]) ||
           EnumUtilities.isTypeRegistration(filingHistoryListStore.getFilings[0])
         )
