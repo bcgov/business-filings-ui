@@ -1378,57 +1378,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
       // NB: incorporationApplication may be undefined
       const haveData = Boolean(
-        amalgamation?.amalgamatingBusinesses ||
-        amalgamation?.offices ||
-        amalgamation?.contactPoint ||
-        amalgamation?.parties ||
-        amalgamation?.shareStructure?.shareClasses
-      )
-
-      const item: TodoItemIF = {
-        name: FilingTypes.AMALGAMATION_APPLICATION,
-        filingId: header.filingId,
-        title: filing.displayName,
-        subtitle,
-        draftTitle: FilingNames.AMALGAMATION_APPLICATION,
-        status: header.status,
-        enabled: task.enabled,
-        order: task.order,
-        paymentMethod: header.paymentMethod || null,
-        paymentToken: header.paymentToken || null,
-        payErrorObj,
-        isEmptyFiling: !haveData,
-        nameRequest: this.getNameRequest
-      }
-      this.todoItems.push(item)
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('ERROR - invalid header or amalgamation in filing =', filing)
-    }
-  }
-
-  async loadIncorporationApplication (task: ApiTaskIF): Promise<void> {
-    const filing = task.task.filing
-    const header = filing.header
-    const incorporationApplication = filing.incorporationApplication
-
-    // NB: don't check "incorporationApplication" as it may be empty
-    if (header) {
-      // set subtitle only if DRAFT IA
-      let subtitle: string = null
-      if (this.isStatusDraft(header)) {
-        if (this.getNameRequest) {
-          subtitle = `NR APPROVED - ${this.expiresText(this.getNameRequest)}`
-        } else {
-          subtitle = 'DRAFT'
-        }
-      }
-
-      const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
-
-      // NB: incorporationApplication may be undefined
-      const haveData = Boolean(
         incorporationApplication?.offices ||
         incorporationApplication?.contactPoint ||
         incorporationApplication?.parties ||
