@@ -11,3 +11,9 @@ import Vuetify from 'vuetify'
 Vue.use(Vue2Filters) // needed by SbcFeeSummary
 Vue.use(Vuelidate) // needed by BaseAddress
 Vue.use(Vuetify)
+
+// mock global Vuex store and attach to Vue instance
+Vue.prototype.$store = {
+  getters: {},
+  state: {}
+}

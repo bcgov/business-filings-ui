@@ -10,7 +10,7 @@ export const useAuthenticationStore = defineStore('authentication', {
      * @remarks This isn't set right away - may need to wait 200ms or more after login.
      */
     getCurrentAccount (): CurrentAccountIF {
-      return Vue.prototype.$store?.state.account?.currentAccount
+      return Vue.prototype.$store.state.account?.currentAccount
     },
 
     /**
@@ -18,12 +18,12 @@ export const useAuthenticationStore = defineStore('authentication', {
      * @remarks This isn't set right away - may need to wait 200ms or more after login.
      */
     getCurrentUser (): CurrentUserIF {
-      return Vue.prototype.$store?.state.account?.currentUser
+      return Vue.prototype.$store.state.account?.currentUser
     },
 
     /** The user's Keycloak GUID. */
     getKeycloakGuid (): string {
-      return Vue.prototype.$store?.getters['auth/keycloakGuid']
+      return Vue.prototype.$store.getters['auth/keycloakGuid']
     },
 
     /** The user's Keycloak roles. */
@@ -33,12 +33,12 @@ export const useAuthenticationStore = defineStore('authentication', {
 
     /** The user's Keycloak bearer token. */
     getKeycloakToken (): string {
-      return Vue.prototype.$store?.state.auth?.token
+      return Vue.prototype.$store.state.auth?.token
     },
 
     /** True if the user is (Keycloak) authenticated. */
     isAuthenticated (): boolean {
-      return Vue.prototype.$store?.getters['auth/isAuthenticated'] || false
+      return Vue.prototype.$store.getters['auth/isAuthenticated'] || false
     },
 
     /** True if the current account is a premium account. */
