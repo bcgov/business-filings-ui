@@ -429,7 +429,7 @@ import { LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -470,7 +470,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useBusinessStore) isCoop!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   // variables for AgmDate component
   newAgmDate = null // for resuming draft

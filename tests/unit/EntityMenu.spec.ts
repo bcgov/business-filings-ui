@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import { mount, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import EntityMenu from '@/components/EntityInfo/EntityMenu.vue'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import mockRouter from './mockRouter'
@@ -15,6 +15,7 @@ Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
+const authenticationStore = useAuthenticationStore()
 const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
@@ -32,7 +33,7 @@ describe('Entity Menu - entities', () => {
     businessStore.setLegalType(null)
     rootStore.entityStatus = null
     businessStore.setState(null)
-    rootStore.keycloakRoles = []
+    authenticationStore.getCurrentUser.roles = []
 
     const wrapper = mount(EntityMenu, {
       vuetify,
@@ -56,7 +57,7 @@ describe('Entity Menu - entities', () => {
     businessStore.setGoodStanding(true)
     businessStore.setLegalName('My Business')
     businessStore.setLegalType(CorpTypeCd.COOP)
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
 
     // mock isAllowed mixin method
     function isAllowed (action: AllowableActions): boolean {
@@ -91,7 +92,7 @@ describe('Entity Menu - entities', () => {
     businessStore.setLegalName('My Named Company')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
 
     // mock isAllowed mixin method
     function isAllowed (action: AllowableActions): boolean {
@@ -125,7 +126,7 @@ describe('Entity Menu - entities', () => {
     businessStore.setLegalName('My Future Company')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     rootStore.entityStatus = EntityStatus.FILED_INCORP_APP
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
 
     // mock isAllowed mixin method
     function isAllowed (action: AllowableActions): boolean {

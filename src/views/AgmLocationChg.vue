@@ -281,7 +281,7 @@ import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons } from '@/enums'
 import { ConfirmDialogType } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import AgmLocation from '@/components/AgmLocationChange/AgmLocation.vue'
 import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 
@@ -309,7 +309,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getUserInfo!: any
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes

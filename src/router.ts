@@ -27,6 +27,7 @@ export function getVueRouter () {
 
   router.beforeEach((to, from, next) => {
     // check if we need to authenticate
+    // NB: can't get value from store here
     if (requiresAuth(to) && !isAuthenticated()) {
       next({ name: Routes.SIGNIN })
     } else if (isRedirectDigitalCredentialRoute(to)) {

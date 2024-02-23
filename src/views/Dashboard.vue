@@ -251,7 +251,8 @@ import { CoaWarningDialog } from '@/components/dialogs'
 import { Routes, AllowableActions, Roles } from '@/enums'
 import { PartyIF } from '@/interfaces'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
-import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore }
+  from '@/stores'
 
 export default {
   name: 'Dashboard',
@@ -291,39 +292,38 @@ export default {
   },
 
   computed: {
-    ...mapState(useBusinessStore,
-      [
-        'getIdentifier',
-        'hasComplianceWarning',
-        'hasMissingInfoWarning',
-        'isAdminFrozen',
-        'isBenBcCccUlc',
-        'isFirm',
-        'isFutureEffectiveAmalgamation',
-        'isGoodStanding',
-        'isHistorical',
-        'isPartnership',
-        'isSoleProp'
-      ]),
+    ...mapState(useAuthenticationStore, [
+      'isRoleStaff'
+    ]),
 
-    ...mapState(useConfigurationStore,
-      [
-        'getEditUrl'
-      ]),
+    ...mapState(useBusinessStore, [
+      'getIdentifier',
+      'hasComplianceWarning',
+      'hasMissingInfoWarning',
+      'isAdminFrozen',
+      'isBenBcCccUlc',
+      'isFirm',
+      'isFutureEffectiveAmalgamation',
+      'isGoodStanding',
+      'isHistorical',
+      'isPartnership',
+      'isSoleProp'
+    ]),
 
-    ...mapState(useFilingHistoryListStore,
-      [
-        'getHistoryCount',
-        'getPendingCoa'
-      ]),
+    ...mapState(useConfigurationStore, [
+      'getEditUrl'
+    ]),
 
-    ...mapState(useRootStore,
-      [
-        'getParties',
-        'isAppFiling',
-        'isAppTask',
-        'isRoleStaff'
-      ]),
+    ...mapState(useFilingHistoryListStore, [
+      'getHistoryCount',
+      'getPendingCoa'
+    ]),
+
+    ...mapState(useRootStore, [
+      'getParties',
+      'isAppFiling',
+      'isAppTask'
+    ]),
 
     /** Whether a COA is pending. */
     isCoaPending (): boolean {

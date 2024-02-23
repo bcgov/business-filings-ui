@@ -618,7 +618,8 @@ import {
   TodoListResourceIF
 } from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
-import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore }
+  from '@/stores'
 import GenericErrorDialog from '@/components/dialogs/GenericErrorDialog.vue'
 
 @Component({
@@ -670,6 +671,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   @Getter(useConfigurationStore) getAuthApiUrl!: string
   @Getter(useBusinessStore) getBusinessWarnings!: Array<BusinessWarningIF>
   @Getter(useConfigurationStore) getCreateUrl!: string
+  @Getter(useAuthenticationStore) getCurrentAccountId!: number
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useRootStore) getNameRequest!: any
@@ -678,6 +680,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   @Getter(useRootStore) getTasks!: Array<ApiTaskIF>
   @Getter(useRootStore) getTodoListResource!: TodoListResourceIF
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  // @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   @Action(useRootStore) setARFilingYear!: (x: number) => void
   @Action(useRootStore) setArMinDate!: (x: string) => void
@@ -963,9 +966,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     }
 
     // load all the invitations here and push them into todo items
-    this.accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const response =
-      await AuthServices.fetchAffiliationInvitations(this.getAuthApiUrl, this.getIdentifier, this.accountId)
+      await AuthServices.fetchAffiliationInvitations(this.getAuthApiUrl, this.getIdentifier, this.getCurrentAccountId)
         .catch((err) => {
           console.log('Error fetching affiliation invitations for todo', err) // eslint-disable-line no-console
           this.fetchAffiliationInvitationsErrorDialog = true

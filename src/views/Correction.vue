@@ -244,7 +244,7 @@ import { EnumUtilities, LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
@@ -270,7 +270,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes

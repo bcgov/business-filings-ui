@@ -31,8 +31,8 @@ describe('testing current account module', () => {
       shallowMount(SbcHeader, { store, localVue })
 
       store.commit('account/setCurrentAccount', dummyAccount('PREMIUM'), { root: true })
-      expect(authenticationStore.isPremiumAccount).toBe(true)
-      expect(authenticationStore.isSbcStaff).toBe(false)
+      expect(authenticationStore.isAccountSbcStaff).toBe(true)
+      expect(authenticationStore.isAccountSbcStaff).toBe(false)
     })
   })
 
@@ -43,8 +43,8 @@ describe('testing current account module', () => {
       shallowMount(SbcHeader, { store, localVue })
 
       store.commit('account/setCurrentAccount', dummyAccount('SBC_STAFF'), { root: true })
-      expect(authenticationStore.isPremiumAccount).toBe(false)
-      expect(authenticationStore.isSbcStaff).toBe(true)
+      expect(authenticationStore.isAccountSbcStaff).toBe(false)
+      expect(authenticationStore.isAccountSbcStaff).toBe(true)
     })
   })
 })

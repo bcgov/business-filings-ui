@@ -2,20 +2,19 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores'
+import { useAuthenticationStore } from '@/stores'
 import TechnicalErrorDialog from '@/components/dialogs/TechnicalErrorDialog.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
-const rootStore = useRootStore()
+const authenticationStore = useAuthenticationStore()
 
 describe('TechnicalErrorDialog', () => {
   it('displays everything for normal users', () => {
     // init store
-    rootStore.keycloakRoles = ['']
+    authenticationStore.getCurrentUser.roles = ['']
 
     const wrapper = mount(TechnicalErrorDialog, { propsData: { dialog: true }, vuetify })
 
@@ -32,7 +31,7 @@ describe('TechnicalErrorDialog', () => {
 
   it('does not display contact info for staff users', () => {
     // init store
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
 
     const wrapper = mount(TechnicalErrorDialog, { propsData: { dialog: true }, vuetify })
 

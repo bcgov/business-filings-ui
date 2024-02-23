@@ -176,7 +176,8 @@ import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } f
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons } from '@/enums'
 import { AgmExtEvalIF, ConfirmDialogType, EmptyAgmExtEval } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore }
+  from '@/stores'
 
 @Component({
   components: {
@@ -205,7 +206,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getUserInfo!: any
   @Getter(useBusinessStore) isGoodStanding!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
   @Getter(useFilingHistoryListStore) getTotalAgmExtensionDuration!: (year: number) => number;
   // enum for template
   readonly FilingCodes = FilingCodes

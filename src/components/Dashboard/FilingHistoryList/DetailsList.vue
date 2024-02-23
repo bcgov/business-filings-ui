@@ -47,7 +47,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities } from '@/services'
-import { useFilingHistoryListStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useFilingHistoryListStore } from '@/stores'
 
 @Component({})
 export default class DetailsList extends Vue {
@@ -63,7 +63,7 @@ export default class DetailsList extends Vue {
   readonly filing!: ApiFilingIF
 
   /** Whether current user has staff role. */
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: (x: ApiFilingIF) => void
 }

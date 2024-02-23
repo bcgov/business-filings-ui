@@ -92,6 +92,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
   @Prop({ required: true }) readonly index!: number
 
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  // @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: (x: ApiFilingIF) => void
   @Action(useFilingHistoryListStore) setCurrentFiling!: (x: ApiFilingIF) => void

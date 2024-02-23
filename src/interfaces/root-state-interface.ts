@@ -14,13 +14,10 @@ export interface StateFilingIF {
 /** The state model interface for the Root Store. */
 export interface RootStateIF {
   // tombstone data
-  authRoles: Array<string>
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
   currentJsDate: Date // 'now' as of dashboard loading in UTC
   entityStatus: EntityStatus // for amalgamations/applications/registrations only
-  keycloakRoles: Array<string>
   stateFiling: StateFilingIF
-  userKeycloakGuid: string
 
   // entity info from auth db
   businessEmail: string

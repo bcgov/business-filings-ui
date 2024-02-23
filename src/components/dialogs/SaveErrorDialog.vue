@@ -120,14 +120,14 @@
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
-import { useRootStore } from '@/stores/rootStore'
+import { useAuthenticationStore } from '@/stores'
 
 @Component({
   components: { ContactInfo }
 })
 export default class SaveErrorDialog extends Vue {
   // Getter to check if logged in user is Staff.
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   /** Prop containing filing name. */
   @Prop({ default: 'Filing' }) readonly filingName!: string

@@ -95,14 +95,14 @@ import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
 import { NameRequestStates } from '@/enums'
-import { useRootStore } from '@/stores'
+import { useAuthenticationStore } from '@/stores'
 
 @Component({
   components: { ContactInfo }
 })
 export default class NameRequestInvalidDialog extends Vue {
   // Getter definition for static type checking.
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   // Enum definition for use in template.
   NameRequestStates = NameRequestStates

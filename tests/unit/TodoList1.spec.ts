@@ -7,7 +7,7 @@ import axios from '@/axios-auth'
 import sinon from 'sinon'
 import mockRouter from './mockRouter'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import flushPromises from 'flush-promises'
 
 // Components
@@ -27,9 +27,9 @@ Vue.config.silent = true
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
-
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
+const authenticationStore = useAuthenticationStore()
 const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
@@ -439,7 +439,7 @@ describe('TodoList - UI', () => {
       }
     ]
     // Only staff may resume drafts
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
 
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
@@ -497,7 +497,7 @@ describe('TodoList - UI', () => {
     ]
 
     // Only staff may resume drafts
-    rootStore.keycloakRoles = ['user']
+    authenticationStore.getCurrentUser.roles = ['user']
 
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
@@ -2702,7 +2702,7 @@ describe('TodoList - Click Tests - Corrections', () => {
           order: 1
         }
       ]
-      rootStore.keycloakRoles = ['staff'] // only staff may resume draft corrections
+      authenticationStore.getCurrentUser.roles = ['staff'] // only staff may resume draft corrections
 
       const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
       const vm = wrapper.vm as any
@@ -2751,7 +2751,7 @@ describe('TodoList - Click Tests - Corrections', () => {
           order: 1
         }
       ]
-      rootStore.keycloakRoles = ['staff'] // only staff may resume draft corrections
+      authenticationStore.getCurrentUser.roles = ['staff'] // only staff may resume draft corrections
 
       const localVue = createLocalVue()
       localVue.use(VueRouter)
@@ -2832,7 +2832,7 @@ describe('TodoList - Click Tests - Alterations', () => {
         order: 1
       }
     ]
-    rootStore.keycloakRoles = ['staff'] // only staff may resume draft alterations
+    authenticationStore.getCurrentUser.roles = ['staff'] // only staff may resume draft alterations
 
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
@@ -3261,7 +3261,7 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
         }
       ]
 
-      rootStore.keycloakRoles = ['staff']
+      authenticationStore.getCurrentUser.roles = ['staff']
       rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
 
       const wrapper = mount(TodoList, { vuetify })
@@ -3343,7 +3343,7 @@ describe('TodoList - Click Tests - Extension and Coversion Restoration', () => {
         }
       ]
 
-      rootStore.keycloakRoles = ['staff']
+      authenticationStore.getCurrentUser.roles = ['staff']
       rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
 
       const wrapper = mount(TodoList, { vuetify })

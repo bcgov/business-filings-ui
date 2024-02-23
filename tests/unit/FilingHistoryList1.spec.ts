@@ -3,7 +3,8 @@ import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore }
+  from '@/stores'
 import flushPromises from 'flush-promises'
 import axios from '@/axios-auth'
 import sinon from 'sinon'
@@ -32,6 +33,7 @@ Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
+const authenticationStore = useAuthenticationStore()
 const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
 const filingHistoryListStore = useFilingHistoryListStore()
@@ -988,7 +990,7 @@ describe('Filing History List - redirections', () => {
     businessStore.setLegalType(CorpTypeCd.COOP)
     sessionStorage.setItem('BUSINESS_ID', 'CP1002587')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2816" }')
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
     filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
@@ -1060,7 +1062,7 @@ describe('Filing History List - redirections', () => {
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
     businessStore.setIdentifier('BC1234567')
     filingHistoryListStore.setFilings([
       {
@@ -1131,7 +1133,7 @@ describe('Filing History List - redirections', () => {
     expect(sessionStorage.getItem('BUSINESS_ID')).toEqual('CP1002587')
     expect(sessionStorage.getItem('CURRENT_ACCOUNT')).toEqual('{ "id": "2288" }')
     businessStore.setLegalType(CorpTypeCd.COOP)
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
     businessStore.setIdentifier('CP1002587')
     filingHistoryListStore.setFilings([
       {

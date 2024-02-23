@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores'
+import { useAuthenticationStore } from '@/stores'
 import { NotEligibleExtensionDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
 
@@ -10,12 +10,12 @@ Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
-const rootStore = useRootStore()
+const authenticationStore = useAuthenticationStore()
 
 describe('NotEligibleExtensionDialog', () => {
   it('displays everything for normal users', () => {
     // init store
-    rootStore.keycloakRoles = ['']
+    authenticationStore.getCurrentUser.roles = ['']
 
     const wrapper = mount(NotEligibleExtensionDialog, { propsData: { dialog: true }, vuetify })
 
@@ -30,7 +30,7 @@ describe('NotEligibleExtensionDialog', () => {
 
   it('does not display contact info for staff users', () => {
     // init store
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
 
     const wrapper = mount(NotEligibleExtensionDialog, { propsData: { dialog: true }, vuetify })
 

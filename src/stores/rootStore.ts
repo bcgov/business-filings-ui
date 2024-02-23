@@ -8,13 +8,10 @@ import { useFilingHistoryListStore } from './filingHistoryListStore'
 
 export const useRootStore = defineStore('root', {
   state: (): RootStateIF => ({
-    authRoles: [],
     currentDate: null,
     currentJsDate: null,
     entityStatus: null,
-    keycloakRoles: [],
     stateFiling: null,
-    userKeycloakGuid: null,
     businessEmail: null,
     businessPhone: null,
     businessPhoneExtension: null,
@@ -78,29 +75,6 @@ export const useRootStore = defineStore('root', {
         return (phone + `${ext ? (' x' + ext) : ''}`)
       }
       return null
-    },
-
-    /** The roles from the Keycloak token (JWT). */
-    getKeycloakRoles (state: RootStateIF): Array<string> {
-      return state.keycloakRoles
-    },
-
-    /**
-     * Is True if Staff role is set.
-     * DEPRECATED - use authentication/isKeycloakRoleStaff() instead
-     */
-    isRoleStaff (state: RootStateIF): boolean {
-      return state.keycloakRoles.includes('staff')
-    },
-
-    /** Is True if app permissions includes Edit role. */
-    isRoleEdit (state: RootStateIF): boolean {
-      return state.authRoles.includes('edit')
-    },
-
-    /** Is True if app permission includes View role. */
-    isRoleView (state: RootStateIF): boolean {
-      return state.authRoles.includes('view')
     },
 
     /** Is True if business is pending dissolution. */
@@ -333,22 +307,8 @@ export const useRootStore = defineStore('root', {
       this.stateFiling = stateFilingResponse
     },
 
-    /** Set the roles from the Keycloak token (JWT). */
-    setKeycloakRoles (keycloakRoles: Array<string>) {
-      this.keycloakRoles = keycloakRoles
-    },
-
-    setUserKeycloakGuid (userKeycloakGuid: string) {
-      this.userKeycloakGuid = userKeycloakGuid
-    },
-
     setUserInfo (val: any) {
       this.userInfo = val
-    },
-
-    /** Set the app permissions. */
-    setAuthRoles (authRoles: Array<string>) {
-      this.authRoles = authRoles
     },
 
     setCurrentJsDate (currentJsDate: Date) {

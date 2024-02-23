@@ -1,13 +1,10 @@
 import { RootStateIF } from '@/interfaces'
 
 export const state: RootStateIF = {
-  authRoles: [],
   currentDate: null,
   currentJsDate: null,
   entityStatus: null,
-  keycloakRoles: [],
   stateFiling: null,
-  userKeycloakGuid: null,
 
   businessEmail: null,
   businessPhone: null,
@@ -22,6 +19,7 @@ export const state: RootStateIF = {
   businessAddress: null,
   configObject: null,
   fetchingDataSpinner: false,
+  startingAmalgamationSpinner: false,
   filingData: [],
   nameRequest: null,
   parties: [],

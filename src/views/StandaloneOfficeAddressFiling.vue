@@ -252,7 +252,7 @@ import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixi
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
@@ -279,7 +279,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useBusinessStore) isCoop!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   // local variables
   updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }

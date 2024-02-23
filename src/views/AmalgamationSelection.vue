@@ -144,7 +144,7 @@
 </template>
 
 <script lang="ts">
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import { Action, Getter } from 'pinia-class'
 import { Component, Vue } from 'vue-property-decorator'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
@@ -162,6 +162,7 @@ import { TechnicalErrorDialog } from '@/components/dialogs'
 export default class AmalgamationSelection extends Vue {
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
+  @Getter(useAuthenticationStore) getCurrentAccountId!: number
   @Getter(useRootStore) getFullPhoneNumber!: string
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLegalName!: string
@@ -222,7 +223,7 @@ export default class AmalgamationSelection extends Vue {
    * @returns the business identifier of the newly created amalgamation application
    */
   private async createBusinessAA (type: AmalgamationTypes): Promise<string> {
-    const accountId = +JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id || 0
+    const accountId = this.getCurrentAccountId
     const email = this.isShortFormAmalgamation(type) ? this.getBusinessEmail : ''
     const phone = this.isShortFormAmalgamation(type) ? this.getFullPhoneNumber : ''
     const legalName = this.isShortFormAmalgamation(type) ? this.getLegalName : ''

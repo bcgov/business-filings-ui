@@ -2,14 +2,14 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores'
+import { useAuthenticationStore } from '@/stores'
 import { CancelPaymentErrorDialog } from '@/components/dialogs'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
-const rootStore = useRootStore()
+const authenticationStore = useAuthenticationStore()
 
 describe('CancelPaymentErrorDialog - Displays Error/Warning messages', () => {
   it('displays generic message for normal users', () => {
@@ -32,7 +32,7 @@ describe('CancelPaymentErrorDialog - Displays Error/Warning messages', () => {
 
   it('displays generic message for staff', () => {
     // init store
-    rootStore.keycloakRoles.push('staff')
+    authenticationStore.getCurrentUser.roles.push('staff')
 
     const wrapper = shallowMount(CancelPaymentErrorDialog,
       {

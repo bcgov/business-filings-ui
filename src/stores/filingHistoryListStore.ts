@@ -2,6 +2,7 @@ import { ApiFilingIF, CommentIF, DocumentIF, FilingHistoryListStateIF } from '@/
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { defineStore } from 'pinia'
+import { useAuthenticationStore } from './authenticationStore'
 import { useBusinessStore } from './businessStore'
 import { useRootStore } from './rootStore'
 
@@ -282,7 +283,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
     /** Loads the documents for this history item. */
     async loadDocuments (filing: ApiFilingIF): Promise<void> {
       const businessStore = useBusinessStore()
-      const rootStore = useRootStore()
+      const authenticationStore = useAuthenticationStore()
       try {
         // fetch documents object from API
         const documents = await LegalServices.fetchDocuments(filing.documentsLink)
@@ -290,7 +291,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
         filing.documents = []
         // Get identifier and if current user is staff then store in local variables
         const identifier = businessStore.getIdentifier
-        const isStaff = rootStore.isRoleStaff
+        const isStaff = authenticationStore.isRoleStaff
         // iterate over documents properties
         for (const prop in documents) {
           if (prop === 'legalFilings' && Array.isArray(documents.legalFilings)) {

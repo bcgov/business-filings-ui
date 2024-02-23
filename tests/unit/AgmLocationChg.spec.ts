@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import AgmLocationChg from '@/views/AgmLocationChg.vue'
 import { Certify } from '@/components/common'
 import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
@@ -25,6 +25,7 @@ const vuetify = new Vuetify({})
 const localVue = createLocalVue()
 localVue.use(VueRouter)
 setActivePinia(createPinia())
+const authenticationStore = useAuthenticationStore()
 const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
@@ -59,7 +60,7 @@ describe('AGM Location Chg view', () => {
     businessStore.setIdentifier('BC0007291')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['user']
+    authenticationStore.getCurrentUser.roles = ['user']
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon

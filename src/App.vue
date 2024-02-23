@@ -171,8 +171,9 @@ import {
   Routes
 } from '@/enums'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from './stores'
+import {
+  useAuthenticationStore, useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore
+} from './stores'
 
 export default {
   name: 'App',
@@ -228,31 +229,32 @@ export default {
   },
 
   computed: {
-    ...mapState(useConfigurationStore,
-      [
-        'getAuthApiUrl',
-        'getBusinessUrl',
-        'getCreateUrl',
-        'getRegHomeUrl'
-      ]),
+    ...mapState(useAuthenticationStore, [
+      'getKeycloakRoles',
+      'isAuthenticated',
+      'isRoleStaff'
+    ]),
 
-    ...mapState(useBusinessStore,
-      [
-        'getEntityName',
-        'getLegalType',
-        'getIdentifier',
-        'isSoleProp'
-      ]),
+    ...mapState(useConfigurationStore, [
+      'getAuthApiUrl',
+      'getBusinessUrl',
+      'getCreateUrl',
+      'getRegHomeUrl'
+    ]),
 
-    ...mapState(useRootStore,
-      [
-        'getKeycloakRoles',
-        'isAppFiling',
-        'isAppTask',
-        'isRoleStaff',
-        'showFetchingDataSpinner',
-        'showStartingAmalgamationSpinner'
-      ]),
+    ...mapState(useBusinessStore, [
+      'getEntityName',
+      'getLegalType',
+      'getIdentifier',
+      'isSoleProp'
+    ]),
+
+    ...mapState(useRootStore, [
+      'isAppFiling',
+      'isAppTask',
+      'showFetchingDataSpinner',
+      'showStartingAmalgamationSpinner'
+    ]),
 
     /** The Business ID string. */
     businessId (): string {
@@ -283,13 +285,6 @@ export default {
     /** True if route is Signout. */
     isSignoutRoute (): boolean {
       return (this.$route.name === Routes.SIGNOUT)
-    },
-
-    /** True if user is authenticated. */
-    isAuthenticated (): boolean {
-      const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
-      // FUTURE: also check that token isn't expired!
-      return !!keycloakToken
     },
 
     /** Is true if this is the amalgamation selection panel page. */
@@ -395,7 +390,6 @@ export default {
     ...mapActions(useRootStore,
       [
         'loadStateFiling',
-        'setAuthRoles',
         'setBusinessAddress',
         'setBusinessEmail',
         'setBusinessPhone',
@@ -406,14 +400,12 @@ export default {
         'setCurrentJsDate',
         'setEntityStatus',
         'setFetchingDataSpinner',
-        'setKeycloakRoles',
         'setNameRequest',
         'setParties',
         'setRecordsAddress',
         'setRegisteredAddress',
         'setTasks',
-        'setUserInfo',
-        'setUserKeycloakGuid'
+        'setUserInfo'
       ]),
 
     /** Fetches business data / incorp app data. */
@@ -429,37 +421,21 @@ export default {
       this.setCurrentJsDate(jsDate)
       this.setCurrentDate(this.dateToYyyyMmDd(jsDate))
 
-      // check authorizations
-      try {
-        // get Keycloak roles
-        const jwt = this.getJWT()
-        const keycloakRoles = this.fetchKeycloakRoles(jwt)
-        this.setKeycloakRoles(keycloakRoles)
-
-        // safety check
-        if (!this.businessId && !this.tempRegNumber) {
-          throw new Error('Missing Business ID or Temporary Registration Number')
-        }
-
-        // check if current user is authorized
-        const response = await AuthServices.fetchAuthorizations(
-          this.getAuthApiUrl, this.businessId || this.tempRegNumber
-        )
-        this.storeAuthorizations(response) // throws if no role
-      } catch (error) {
-        console.log(error) // eslint-disable-line no-console
+      // safety check
+      if (!this.businessId && !this.tempRegNumber) {
+        // eslint-disable-next-line no-console
+        console.log('Missing Business ID or Temporary Registration Number')
         if (this.businessId) this.businessAuthErrorDialog = true
         if (this.tempRegNumber) this.nameRequestAuthErrorDialog = true
         return // do not execute remaining code
       }
 
       // fetch user info and update Launch Darkly
-      // and save user's Keycloak GUID
       try {
+        // *** TODO: check if we have this already via Vuex store
         const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl)
         this.setUserInfo(userInfo)
         await this.updateLaunchDarkly(userInfo)
-        this.setUserKeycloakGuid(userInfo.keycloakGuid)
       } catch (error) {
         // just log the error -- no need to halt app
         // eslint-disable-next-line no-console
@@ -551,47 +527,6 @@ export default {
       if (this.isAppTask && this.localNrNumber) {
         const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
         this.storeNrData(nr, application)
-      }
-    },
-
-    /** Gets Keycloak JWT and parses it. */
-    getJWT (): any {
-      const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
-      if (keycloakToken) {
-        return this.parseKcToken(keycloakToken)
-      }
-      throw new Error('Error getting Keycloak token')
-    },
-
-    /** Decodes and parses Keycloak token. */
-    parseKcToken (token: string): any {
-      try {
-        const base64Url = token.split('.')[1]
-        const base64 = decodeURIComponent(window.atob(base64Url).split('').map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        }).join(''))
-        return JSON.parse(base64)
-      } catch (error) {
-        throw new Error('Error parsing token - ' + error)
-      }
-    },
-
-    /** Fetches Keycloak roles from JWT. */
-    fetchKeycloakRoles (jwt: any): Array<string> {
-      const keycloakRoles = jwt.roles
-      if (keycloakRoles && keycloakRoles.length > 0) {
-        return keycloakRoles
-      }
-      throw new Error('Error getting Keycloak roles')
-    },
-
-    storeAuthorizations (response: any): void {
-      // NB: roles array may contain 'view', 'edit' or nothing
-      const authRoles = response?.data?.roles
-      if (authRoles && authRoles.length > 0) {
-        this.setAuthRoles(authRoles)
-      } else {
-        throw new Error('Invalid auth roles')
       }
     },
 

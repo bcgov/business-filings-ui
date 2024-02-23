@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores'
+import { useAuthenticationStore } from '@/stores'
 import { shallowMount } from '@vue/test-utils'
 import DetailsList from '@/components/Dashboard/FilingHistoryList/DetailsList.vue'
 
@@ -11,7 +11,7 @@ Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
-const rootStore = useRootStore()
+const authenticationStore = useAuthenticationStore()
 
 describe('Details List', () => {
   const mockFilingNoComments = {
@@ -126,7 +126,7 @@ describe('Details List', () => {
   })
 
   it('Does NOT display the add detail btn when the user is NOT staff', () => {
-    rootStore.keycloakRoles = ['user']
+    authenticationStore.getCurrentUser.roles = ['user']
 
     const wrapper = shallowMount(DetailsList, {
       propsData: { filing: mockFilingOneComment }
@@ -138,7 +138,7 @@ describe('Details List', () => {
   })
 
   it('Displays the Add Detail button if staff user and NOT a task item', () => {
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
 
     const wrapper = shallowMount(DetailsList, {
       propsData: { filing: mockFilingOneComment }
@@ -150,7 +150,7 @@ describe('Details List', () => {
   })
 
   it('Displays the correct filing data if NOT staff user', () => {
-    rootStore.keycloakRoles = ['user']
+    authenticationStore.getCurrentUser.roles = ['user']
 
     const wrapper = shallowMount(DetailsList, {
       propsData: { filing: mockFilingOneComment }
@@ -166,7 +166,7 @@ describe('Details List', () => {
   })
 
   it('Displays the correct filing data if staff user', async () => {
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
 
     const wrapper = shallowMount(DetailsList, {
       vuetify,

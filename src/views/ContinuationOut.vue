@@ -356,7 +356,7 @@ import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, Sav
 import { ConfirmDialogType } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -389,7 +389,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes

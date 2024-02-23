@@ -3,7 +3,7 @@ import { Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore } from '@/stores'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {
@@ -13,7 +13,7 @@ export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) isSoleProp!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   /**
    * Returns True if the specified action is allowed, else False.

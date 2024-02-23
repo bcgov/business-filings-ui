@@ -111,14 +111,14 @@
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
-import { useRootStore } from '@/stores'
+import { useAuthenticationStore } from '@/stores'
 
 @Component({
   components: { ContactInfo }
 })
 export default class PaymentErrorDialog extends Vue {
   // Getter to check if logged in user is Staff.
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog!: boolean
@@ -136,7 +136,7 @@ export default class PaymentErrorDialog extends Vue {
   @Prop({ default: () => [] }) readonly warnings!: any[]
 
   /** Pass click event to parent. */
-  @Emit() protected exit () {}
+  @Emit() exit () {}
 
   /** The number of errors in the passed-in array. */
   get numErrors (): number {

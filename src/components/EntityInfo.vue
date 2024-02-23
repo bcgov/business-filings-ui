@@ -48,7 +48,7 @@ import { NigsMessage } from '@/enums'
 import EntityDefinitions from './EntityInfo/EntityDefinitions.vue'
 import EntityHeader from './EntityInfo/EntityHeader.vue'
 import EntityMenu from './EntityInfo/EntityMenu.vue'
-import { useRootStore } from '@/stores'
+import { useAuthenticationStore } from '@/stores'
 import { Routes, DCRoutes } from '@/enums/routes'
 
 @Component({
@@ -59,7 +59,7 @@ import { Routes, DCRoutes } from '@/enums/routes'
   }
 })
 export default class EntityInfo extends Vue {
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   /** Whether to show the hover style. */
   showHoverStyle = false

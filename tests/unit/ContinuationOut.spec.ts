@@ -2,11 +2,12 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useRootStore } from '@/stores'
 import ContinuationOut from '@/views/ContinuationOut.vue'
 import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
-import { BusinessNameForeign, EffectiveDate, Certify, DetailComment, ForeignJurisdiction } from '@/components/common'
+import { BusinessNameForeign, EffectiveDate, Certify, DetailComment, ForeignJurisdiction }
+  from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { LegalServices } from '@/services'
@@ -27,6 +28,7 @@ Vue.use(Vuetify)
 const localVue = createLocalVue()
 localVue.use(VueRouter)
 setActivePinia(createPinia())
+const authenticationStore = useAuthenticationStore()
 const businessStore = useBusinessStore()
 const rootStore = useRootStore()
 
@@ -39,7 +41,7 @@ describe('Continuation Out view', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['staff'] // continuation outs currently apply to staff only
+    authenticationStore.getCurrentUser.roles = ['staff'] // continuation outs currently apply to staff only
   })
 
   it('mounts the sub-components properly', async () => {

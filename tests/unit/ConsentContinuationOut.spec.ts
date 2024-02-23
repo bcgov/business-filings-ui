@@ -4,7 +4,7 @@ import Vuetify from 'vuetify'
 import axios from '@/axios-auth'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
@@ -29,6 +29,7 @@ const vuetify = new Vuetify({})
 const localVue = createLocalVue()
 localVue.use(VueRouter)
 setActivePinia(createPinia())
+const authenticationStore = useAuthenticationStore()
 const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
@@ -45,7 +46,7 @@ describe('Consent to Continuation Out view', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['staff'] // consent to continuation outs currently apply to staff only
+    authenticationStore.getCurrentUser.roles = ['staff'] // consent to continuation outs currently apply to staff only
   })
 
   it('mounts the sub-components properly', async () => {
@@ -313,7 +314,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     businessStore.setIdentifier('BC0007291')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['user']
+    authenticationStore.getCurrentUser.roles = ['user']
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon

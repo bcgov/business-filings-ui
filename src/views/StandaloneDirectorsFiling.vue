@@ -378,7 +378,7 @@ import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixi
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
@@ -406,7 +406,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   // variables
   updatedDirectors = []

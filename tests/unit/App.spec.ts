@@ -9,7 +9,8 @@ import mockRouter from './mockRouter'
 import axios from '@/axios-auth'
 import { AuthServices, LegalServices } from '@/services'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useFilingHistoryListStore, useRootStore }
+  from '@/stores'
 import App from '@/App.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { AmalgamationTypes, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
@@ -30,6 +31,7 @@ Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
+const authenticationStore = useAuthenticationStore()
 const businessStore = useBusinessStore()
 const filingHistoryListStore = useFilingHistoryListStore()
 const rootStore = useRootStore()
@@ -576,9 +578,9 @@ describe('App as a COOP', () => {
   })
 
   it('gets Keycloak Roles and Auth Roles properly', () => {
-    expect(rootStore.isRoleStaff).toBe(true)
-    expect(rootStore.isRoleEdit).toBe(true)
-    expect(rootStore.isRoleView).toBe(true)
+    expect(authenticationStore.isRoleStaff).toBe(true)
+    expect(authenticationStore.isRoleEdit).toBe(true)
+    expect(authenticationStore.isRoleView).toBe(true)
   })
 
   it('fetches Entity Info properly', () => {
@@ -824,9 +826,9 @@ describe('App as a BCOMP', () => {
   })
 
   it('gets Keycloak Roles and Auth Roles properly', () => {
-    expect(rootStore.isRoleStaff).toBe(false)
-    expect(rootStore.isRoleEdit).toBe(true)
-    expect(rootStore.isRoleView).toBe(true)
+    expect(authenticationStore.isRoleStaff).toBe(false)
+    expect(authenticationStore.isRoleEdit).toBe(true)
+    expect(authenticationStore.isRoleView).toBe(true)
   })
 
   it('fetches Entity Info properly', () => {

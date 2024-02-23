@@ -1,9 +1,14 @@
 import { BreadcrumbIF } from '@/interfaces'
 import { Routes } from '@/enums'
+import { createPinia, setActivePinia } from 'pinia'
+import { useAuthenticationStore } from '@/stores'
+
+setActivePinia(createPinia())
+const authenticationStore = useAuthenticationStore()
 
 /** Returns URL param string with Account ID if present, else empty string. */
 function getParams (): string {
-  const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+  const accountId = authenticationStore.getCurrentAccountId
   return accountId ? `?accountid=${accountId}` : ''
 }
 

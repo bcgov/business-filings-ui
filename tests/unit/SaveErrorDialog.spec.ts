@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores'
+import { useAuthenticationStore } from '@/stores'
 import { SaveErrorDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
 
@@ -10,7 +10,7 @@ Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
-const rootStore = useRootStore()
+const authenticationStore = useAuthenticationStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -18,7 +18,7 @@ document.body.setAttribute('data-app', 'true')
 describe('Save Error Dialog', () => {
   it('displays generic message for normal users', async () => {
     // init store
-    rootStore.keycloakRoles = []
+    authenticationStore.getCurrentUser.roles = []
 
     const wrapper = shallowMount(SaveErrorDialog,
       {
@@ -45,7 +45,7 @@ describe('Save Error Dialog', () => {
 
   it('displays generic message for staff', () => {
     // init store
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
 
     const wrapper = shallowMount(SaveErrorDialog,
       {
@@ -69,7 +69,7 @@ describe('Save Error Dialog', () => {
 
   it('displays errors', () => {
     // init store
-    rootStore.keycloakRoles = []
+    authenticationStore.getCurrentUser.roles = []
 
     const wrapper = shallowMount(SaveErrorDialog,
       {
@@ -93,7 +93,7 @@ describe('Save Error Dialog', () => {
 
   it('displays warnings', () => {
     // init store
-    rootStore.keycloakRoles = []
+    authenticationStore.getCurrentUser.roles = []
 
     const wrapper = shallowMount(SaveErrorDialog,
       {
@@ -116,7 +116,7 @@ describe('Save Error Dialog', () => {
 
   it('emits an event when Exit button is clicked', async () => {
     // init store
-    rootStore.keycloakRoles = []
+    authenticationStore.getCurrentUser.roles = []
 
     const wrapper = mount(SaveErrorDialog,
       {

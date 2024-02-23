@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores'
+import { useAuthenticationStore } from '@/stores'
 import { FetchErrorDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
 
@@ -10,12 +10,12 @@ Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
-const rootStore = useRootStore()
+const authenticationStore = useAuthenticationStore()
 
 describe('FetchErrorDialog', () => {
   it('displays everything for normal users', () => {
     // init store
-    rootStore.keycloakRoles = ['']
+    authenticationStore.getCurrentUser.roles = ['']
 
     const wrapper = shallowMount(FetchErrorDialog, { propsData: { dialog: true }, vuetify })
 
@@ -32,7 +32,7 @@ describe('FetchErrorDialog', () => {
 
   it('does not display contact info for staff users', () => {
     // init store
-    rootStore.keycloakRoles = ['staff']
+    authenticationStore.getCurrentUser.roles = ['staff']
 
     const wrapper = shallowMount(FetchErrorDialog, { propsData: { dialog: true }, vuetify })
 

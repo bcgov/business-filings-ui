@@ -5,7 +5,7 @@ import VueRouter from 'vue-router'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useRootStore } from '@/stores'
 import { shallowMount, createLocalVue, mount } from '@vue/test-utils'
 import mockRouter from './mockRouter'
 import flushPromises from 'flush-promises'
@@ -26,6 +26,7 @@ Vue.config.silent = true
 Vue.use(Vuetify)
 
 setActivePinia(createPinia())
+const authenticationStore = useAuthenticationStore()
 const businessStore = useBusinessStore()
 const rootStore = useRootStore()
 
@@ -66,7 +67,7 @@ describe('Correction - UI', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['staff'] // consent to continuation outs currently apply to staff only
+    authenticationStore.getCurrentUser.roles = ['staff'] // consent to continuation outs currently apply to staff only
   })
 
   afterEach(() => {

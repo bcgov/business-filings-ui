@@ -1,56 +1,79 @@
+import Vue from 'vue'
 import { AccountTypes } from '@bcrs-shared-components/enums'
-import { AuthenticationStateIF } from '@/interfaces'
+import { AuthenticationStateIF, CurrentAccountIF, CurrentUserIF } from '@/interfaces'
 import { defineStore } from 'pinia'
-import { useRootStore } from './rootStore'
 
-export const useAuthenticationStore = defineStore('authentication', {
+export const useAuthenticationStore = defineStore('auth', {
   getters: {
-    /** Whether the current account is a premium account. */
-    isPremiumAccount (state: AuthenticationStateIF): boolean {
-      return (state.account.currentAccount.accountType === AccountTypes.PREMIUM)
+    /** The current account the Keycloak user (login) has selected. */
+    getCurrentAccount (): CurrentAccountIF {
+      return this.getVuexState.account?.currentAccount
     },
 
-    /** Whether the user is ServiceBC Staff (which is not the same as Staff). */
-    isSbcStaff (state: AuthenticationStateIF): boolean {
-      return (state.account.currentAccount.accountType === AccountTypes.SBC_STAFF)
+    /** The current account id. */
+    getCurrentAccountId (): number {
+      return (this.getCurrentAccount?.id || 0)
     },
 
-    /** The user's Keycloak GUID. */
+    /** The current Keycloak user object. */
+    getCurrentUser (): CurrentUserIF {
+      return this.getVuexState.account?.currentUser
+    },
+
+    /** The Keycloak GUID. */
     getKeycloakGuid (): string {
-      return useRootStore().userKeycloakGuid
+      return this.getVuexGetters['auth/keycloakGuid']
     },
 
-    /** The user's Keycloak Bearer Token. */
-    getKeycloakToken (state: AuthenticationStateIF): string {
-      return state.auth.token
+    /** The Keycloak user roles. */
+    getKeycloakRoles (): Array<string> {
+      return this.getCurrentUser?.roles
     },
 
-    /** Returns true is the user is Keycloak authenticated. */
-    isKeycloakAuthenticated (rootGetters): boolean {
-      return rootGetters['auth/isAuthenticated']
+    /** The Keycloak bearer token. */
+    getKeycloakToken (): string {
+      return this.getVuexState.auth?.token
     },
 
-    /** Returns the Keycloak user object. */
-    getKeycloakUser (state: AuthenticationStateIF): any {
-      return state.account.currentUser
+    /** The global Vuex store getters. See also main.ts. */
+    getVuexGetters (): any {
+      return Vue.prototype.$store.getters
     },
 
-    /** Each Keycloak user can have many accounts.
-     * This getter returns the account the user
-     * has selected
-     */
-    getCurrentAccount (state: AuthenticationStateIF): any {
-      return state.account.currentAccount
+    /** The global Vuex store state. See also main.ts */
+    getVuexState (): AuthenticationStateIF {
+      console.log('*** vuex store =', Vue.prototype.$store)
+      return Vue.prototype.$store.state
     },
 
-    /** Returns the Keycloak roles. */
-    getKeycloakRoles (state: AuthenticationStateIF): Array<string> {
-      return state.account.currentUser.roles
+    /** True if the user is authenticated. */
+    isAuthenticated (): boolean {
+      return (this.getVuexGetters['auth/isAuthenticated'] || false)
     },
 
-    /** Is True if Keycloak Staff role is set. */
-    isKeycloakRoleStaff (state: AuthenticationStateIF): boolean {
-      return state.account.currentUser.roles.includes('staff')
+    /** True if the current account is a premium account. */
+    isAccountPremium (): boolean {
+      return (this.getCurrentAccount?.accountType === AccountTypes.PREMIUM)
+    },
+
+    /** True if the current account is a SBC staff account. */
+    isAccountSbcStaff (): boolean {
+      return (this.getCurrentAccount?.accountType === AccountTypes.SBC_STAFF)
+    },
+
+    /** True if current user has Edit role. */
+    isRoleEdit (): boolean {
+      return this.getKeycloakRoles?.includes('edit') || false
+    },
+
+    /** True if current user has Staff role. */
+    isRoleStaff (): boolean {
+      return this.getKeycloakRoles?.includes('staff') || false
+    },
+
+    /** True if current user has View role. */
+    isRoleView (): boolean {
+      return this.getKeycloakRoles?.includes('view') || false
     }
   }
 })

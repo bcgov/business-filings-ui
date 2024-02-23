@@ -28,11 +28,13 @@ Vue.use(Vuelidate)
 Vue.use(Affix)
 Vue.use(Vue2Filters) // needed by SbcFeeSummary
 
-const store = getVuexStore()
+const vuex = getVuexStore()
 const pinia = getPiniaStore()
 
-// Needed to fix "getActivePinia was called with no active Pinia" error
-// Type assertion to turn off type checking
+// attach Vuex store to Vue instance
+Vue.prototype.$store = vuex
+
+// This is needed to fix "getActivePinia was called with no active Pinia" error.
 // Ref: https://stackoverflow.com/questions/74865884/cant-access-pinia-store-in-beforeenter-in-vue-2-app
 Vue.use(pinia as any)
 
@@ -116,7 +118,6 @@ async function start () {
       }
     }),
     router,
-    store,
     pinia,
     render: h => h(App)
   }).$mount('#app')
