@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import Vuetify from 'vuetify'
-import GenericErrorDialog from '@/dialogs/GenericErrorDialog.vue'
-import RegistriesContactInfo from '@/components/common/RegistriesContactInfo.vue'
+import GenericErrorDialog from '@/components/dialogs/GenericErrorDialog.vue'
+import ContactInfo from '@/components/common/ContactInfo.vue'
 
 const vuetify = new Vuetify({})
 
@@ -25,7 +25,7 @@ describe('GenericErrorDialog.vue', () => {
     expect(wrapper.find('div[role="dialog"]').exists()).toBe(true)
     expect(wrapper.find('.v-card__title').text()).toBe('An error occurred')
     expect(wrapper.find('.v-card__text > div').text()).toBe('Please contact us:')
-    expect(wrapper.find('.v-card__text').findComponent(RegistriesContactInfo).exists()).toBe(true)
+    expect(wrapper.find('.v-card__text').findComponent(ContactInfo).exists()).toBe(true)
     expect(wrapper.find('.v-card__actions').text()).toBe('Close')
 
     wrapper.destroy()
@@ -40,7 +40,7 @@ describe('GenericErrorDialog.vue', () => {
     expect(wrapper.find('div[role="dialog"]').exists()).toBe(true)
     expect(wrapper.find('.v-card__title').text()).toBe('Custom title')
     expect(wrapper.find('.v-card__text > div').text()).toBe('Custom text')
-    expect(wrapper.find('.v-card__text').findComponent(RegistriesContactInfo).exists()).toBe(true)
+    expect(wrapper.find('.v-card__text').findComponent(ContactInfo).exists()).toBe(true)
     expect(wrapper.find('.v-card__actions').text()).toBe('Close')
 
     wrapper.destroy()
