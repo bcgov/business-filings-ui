@@ -1,4 +1,4 @@
-/** The Current User (aka: Keycloak) interface. */
+/** The current user (aka: Keycloak) interface. */
 export interface CurrentUserIF {
   email: string
   firstName: string

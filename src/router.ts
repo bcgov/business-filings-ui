@@ -42,6 +42,7 @@ export function getVueRouter () {
   }
 
   /** Returns True if user is authenticated, else False. */
+  // FUTURE: use `authenticationStore.isAuthenticated` instead?
   function isAuthenticated (): boolean {
     // FUTURE: also check that token isn't expired!
     return !!sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)

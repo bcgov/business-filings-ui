@@ -8,20 +8,18 @@ export const state: RootStateIF = {
   keycloakRoles: [],
   stateFiling: null,
   userKeycloakGuid: null,
-
   businessEmail: null,
   businessPhone: null,
   businessPhoneExtension: null,
   corpTypeCd: null,
-
   ARFilingYear: null,
   arMaxDate: null,
   arMinDate: null,
   nextARDate: null,
-
   businessAddress: null,
   configObject: null,
   fetchingDataSpinner: false,
+  startingAmalgamationSpinner: false,
   filingData: [],
   nameRequest: null,
   parties: [],

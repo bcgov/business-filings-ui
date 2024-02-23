@@ -80,14 +80,17 @@ export const useRootStore = defineStore('root', {
       return null
     },
 
-    /** The roles from the Keycloak token (JWT). */
+    /**
+     * The roles from the Keycloak token (JWT).
+     * @deprecated Use `authenticationStore.getKeycloakRoles` instead.
+     */
     getKeycloakRoles (state: RootStateIF): Array<string> {
       return state.keycloakRoles
     },
 
     /**
      * Is True if Staff role is set.
-     * DEPRECATED - use authentication/isKeycloakRoleStaff() instead
+     * @deprecated Use `authenticationStore.isRoleStaff` instead.
      */
     isRoleStaff (state: RootStateIF): boolean {
       return state.keycloakRoles.includes('staff')
