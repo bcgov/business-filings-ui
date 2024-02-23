@@ -110,7 +110,6 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useBusinessStore) hasCourtOrders!: boolean
   @Getter(useFilingHistoryListStore) isAddCommentDialog!: boolean
   @Getter(useFilingHistoryListStore) isDownloadErrorDialog!: boolean

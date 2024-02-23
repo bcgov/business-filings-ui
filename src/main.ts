@@ -7,7 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { GetFeatureFlag, InitLdClient, navigate, setBaseRouteAndBusinessId } from '@/utils'
+import { GetFeatureFlag, InitLdClient, navigate, setBaseRouteAndBusinessId, sleep } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getPiniaStore, getVuexStore } from '@/stores'
 import '@/assets/styles/base.scss'
@@ -31,8 +31,11 @@ Vue.use(Vue2Filters) // needed by SbcFeeSummary
 const store = getVuexStore()
 const pinia = getPiniaStore()
 
-// Needed to fix "getActivePinia was called with no active Pinia" error
-// Type assertion to turn off type checking
+// attach global Vuex store to Vue instance
+Vue.prototype.$store = store
+
+// This is needed to fix "getActivePinia was called with no active Pinia" error.
+// Type assertion is to turn off type checking.
 // Ref: https://stackoverflow.com/questions/74865884/cant-access-pinia-store-in-beforeenter-in-vue-2-app
 Vue.use(pinia as any)
 
@@ -123,12 +126,18 @@ async function start () {
 }
 
 // execution and error handling
-start().catch(error => {
+start().catch(async (error) => {
   // Log any error after configuring sentry.
   // It helps to identify configuration issues specific to the environment.
   // Note that it won't log anything related to `fetchConfig()` since sentry is depending on a config value.
   Sentry.captureException(error)
-  alert(error)
+
+  console.error(error) // eslint-disable-line no-console
+  await sleep(100) // wait for console error to be shown before alert
+
+  alert('There was an error starting this page. (See console for details.)\n' +
+    'Please try again later.')
+
   // try to navigate to Business Registry home page
   navigate(sessionStorage.getItem('BUSINESSES_URL'))
 })

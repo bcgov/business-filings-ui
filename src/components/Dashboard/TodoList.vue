@@ -678,6 +678,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   @Getter(useRootStore) getTasks!: Array<ApiTaskIF>
   @Getter(useRootStore) getTodoListResource!: TodoListResourceIF
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  // @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   @Action(useRootStore) setARFilingYear!: (x: number) => void
   @Action(useRootStore) setArMinDate!: (x: string) => void

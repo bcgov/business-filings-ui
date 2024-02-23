@@ -1,56 +1,59 @@
+import Vue from 'vue'
 import { AccountTypes } from '@bcrs-shared-components/enums'
-import { AuthenticationStateIF } from '@/interfaces'
+import { CurrentAccountIF, CurrentUserIF } from '@/interfaces'
 import { defineStore } from 'pinia'
-import { useRootStore } from './rootStore'
 
 export const useAuthenticationStore = defineStore('authentication', {
   getters: {
-    /** Whether the current account is a premium account. */
-    isPremiumAccount (state: AuthenticationStateIF): boolean {
-      return (state.account.currentAccount.accountType === AccountTypes.PREMIUM)
+    /**
+     * The (Keycloak) current account object.
+     * @remarks This isn't set right away - may need to wait 200ms or more after login.
+     */
+    getCurrentAccount (): CurrentAccountIF {
+      return Vue.prototype.$store?.state.account?.currentAccount
     },
 
-    /** Whether the user is ServiceBC Staff (which is not the same as Staff). */
-    isSbcStaff (state: AuthenticationStateIF): boolean {
-      return (state.account.currentAccount.accountType === AccountTypes.SBC_STAFF)
+    /**
+     * The (Keycloak) current user object.
+     * @remarks This isn't set right away - may need to wait 200ms or more after login.
+     */
+    getCurrentUser (): CurrentUserIF {
+      return Vue.prototype.$store?.state.account?.currentUser
     },
 
     /** The user's Keycloak GUID. */
     getKeycloakGuid (): string {
-      return useRootStore().userKeycloakGuid
+      return Vue.prototype.$store?.getters['auth/keycloakGuid']
     },
 
-    /** The user's Keycloak Bearer Token. */
-    getKeycloakToken (state: AuthenticationStateIF): string {
-      return state.auth.token
+    /** The user's Keycloak roles. */
+    getKeycloakRoles (): Array<string> {
+      return this.getCurrentUser?.roles || []
     },
 
-    /** Returns true is the user is Keycloak authenticated. */
-    isKeycloakAuthenticated (rootGetters): boolean {
-      return rootGetters['auth/isAuthenticated']
+    /** The user's Keycloak bearer token. */
+    getKeycloakToken (): string {
+      return Vue.prototype.$store?.state.auth?.token
     },
 
-    /** Returns the Keycloak user object. */
-    getKeycloakUser (state: AuthenticationStateIF): any {
-      return state.account.currentUser
+    /** True if the user is (Keycloak) authenticated. */
+    isAuthenticated (): boolean {
+      return Vue.prototype.$store?.getters['auth/isAuthenticated'] || false
     },
 
-    /** Each Keycloak user can have many accounts.
-     * This getter returns the account the user
-     * has selected
-     */
-    getCurrentAccount (state: AuthenticationStateIF): any {
-      return state.account.currentAccount
+    /** True if the current account is a premium account. */
+    isPremiumAccount (): boolean {
+      return (this.getCurrentAccount?.accountType === AccountTypes.PREMIUM)
     },
 
-    /** Returns the Keycloak roles. */
-    getKeycloakRoles (state: AuthenticationStateIF): Array<string> {
-      return state.account.currentUser.roles
+    /** True if the current account is a SBC staff account (which is not the same as Staff). */
+    isSbcStaff (): boolean {
+      return (this.getCurrentAccount?.accountType === AccountTypes.SBC_STAFF)
     },
 
-    /** Is True if Keycloak Staff role is set. */
-    isKeycloakRoleStaff (state: AuthenticationStateIF): boolean {
-      return state.account.currentUser.roles.includes('staff')
+    /** True if the current user has Staff role. */
+    isRoleStaff (): boolean {
+      return (this.getKeycloakRoles?.includes('staff') || false)
     }
   }
 })

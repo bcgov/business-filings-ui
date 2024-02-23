@@ -1,8 +1,12 @@
-/** The current account interface.
- * A logged-in user can select between multiple accounts */
+import { AccountTypes } from '@bcrs-shared-components/enums'
+
+/**
+ * The current account interface.
+ * (Each Keycloak user (login) can have several accounts.)
+ */
 export interface CurrentAccountIF {
   accountStatus: string
-  accountType: string
+  accountType: AccountTypes
   additionalLabel: string
   id: number
   label: string

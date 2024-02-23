@@ -156,12 +156,12 @@ import { AuthServices, EnumUtilities, LegalServices } from '@/services/'
 import {
   ApiFilingIF,
   ApiTaskIF,
-  BreadcrumbIF,
   DocumentIF,
   NameRequestIF,
   PartyIF,
   TaskTodoIF
 } from '@/interfaces'
+import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
 import {
   EntityStatus,
   FilingStatus,
@@ -228,31 +228,28 @@ export default {
   },
 
   computed: {
-    ...mapState(useConfigurationStore,
-      [
-        'getAuthApiUrl',
-        'getBusinessUrl',
-        'getCreateUrl',
-        'getRegHomeUrl'
-      ]),
+    ...mapState(useBusinessStore, [
+      'getEntityName',
+      'getLegalType',
+      'getIdentifier',
+      'isSoleProp'
+    ]),
 
-    ...mapState(useBusinessStore,
-      [
-        'getEntityName',
-        'getLegalType',
-        'getIdentifier',
-        'isSoleProp'
-      ]),
+    ...mapState(useConfigurationStore, [
+      'getAuthApiUrl',
+      'getBusinessUrl',
+      'getCreateUrl',
+      'getRegHomeUrl'
+    ]),
 
-    ...mapState(useRootStore,
-      [
-        'getKeycloakRoles',
-        'isAppFiling',
-        'isAppTask',
-        'isRoleStaff',
-        'showFetchingDataSpinner',
-        'showStartingAmalgamationSpinner'
-      ]),
+    ...mapState(useRootStore, [
+      'getKeycloakRoles',
+      'isAppFiling',
+      'isAppTask',
+      'isRoleStaff',
+      'showFetchingDataSpinner',
+      'showStartingAmalgamationSpinner'
+    ]),
 
     /** The Business ID string. */
     businessId (): string {
@@ -286,6 +283,7 @@ export default {
     },
 
     /** True if user is authenticated. */
+    // FUTURE: use `authenticationStore.isAuthenticated` instead?
     isAuthenticated (): boolean {
       const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
       // FUTURE: also check that token isn't expired!

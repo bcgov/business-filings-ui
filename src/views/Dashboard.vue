@@ -291,39 +291,35 @@ export default {
   },
 
   computed: {
-    ...mapState(useBusinessStore,
-      [
-        'getIdentifier',
-        'hasComplianceWarning',
-        'hasMissingInfoWarning',
-        'isAdminFrozen',
-        'isBenBcCccUlc',
-        'isFirm',
-        'isFutureEffectiveAmalgamation',
-        'isGoodStanding',
-        'isHistorical',
-        'isPartnership',
-        'isSoleProp'
-      ]),
+    ...mapState(useBusinessStore, [
+      'getIdentifier',
+      'hasComplianceWarning',
+      'hasMissingInfoWarning',
+      'isAdminFrozen',
+      'isBenBcCccUlc',
+      'isFirm',
+      'isFutureEffectiveAmalgamation',
+      'isGoodStanding',
+      'isHistorical',
+      'isPartnership',
+      'isSoleProp'
+    ]),
 
-    ...mapState(useConfigurationStore,
-      [
-        'getEditUrl'
-      ]),
+    ...mapState(useConfigurationStore, [
+      'getEditUrl'
+    ]),
 
-    ...mapState(useFilingHistoryListStore,
-      [
-        'getHistoryCount',
-        'getPendingCoa'
-      ]),
+    ...mapState(useFilingHistoryListStore, [
+      'getHistoryCount',
+      'getPendingCoa'
+    ]),
 
-    ...mapState(useRootStore,
-      [
-        'getParties',
-        'isAppFiling',
-        'isAppTask',
-        'isRoleStaff'
-      ]),
+    ...mapState(useRootStore, [
+      'getParties',
+      'isAppFiling',
+      'isAppTask',
+      'isRoleStaff'
+    ]),
 
     /** Whether a COA is pending. */
     isCoaPending (): boolean {
