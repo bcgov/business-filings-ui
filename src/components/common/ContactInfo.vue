@@ -10,7 +10,7 @@
       >
         mdi-phone
       </v-icon>
-      <span class="px-2">Canada and U.S. Toll Free:</span>
+      <span class="px-2 font-weight-bold">Canada and U.S. Toll Free:</span>
       <a
         href="tel:+1-877-526-1526"
         class="contact-value"
@@ -26,7 +26,7 @@
       >
         mdi-phone
       </v-icon>
-      <span class="px-2">Victoria Office:</span>
+      <span class="px-2 font-weight-bold">Victoria Office:</span>
       <a
         href="tel:+1-250-387-7848"
         class="contact-value"
@@ -42,7 +42,7 @@
       >
         mdi-email
       </v-icon>
-      <span class="px-2">Email:</span>
+      <span class="px-2 font-weight-bold">Email:</span>
       <a
         href="mailto:BCRegistries@gov.bc.ca"
         class="contact-value"

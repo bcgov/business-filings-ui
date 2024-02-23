@@ -5,91 +5,57 @@
     persistent
     :attach="attach"
     content-class="generic-error-dialog"
+    @keydown.esc="close()"
   >
     <v-card>
-      <v-container>
-        <v-row justify="center">
-          <v-col cols="2" />
-          <v-col
-            cols="8"
-            lg="8"
-            class="text-center"
-          >
-            <v-icon
-              size="48"
-              :color="iconColor"
-              class="mb-6"
-            >
-              {{ icon }}
-            </v-icon>
-          </v-col>
-          <v-col cols="2">
-            <v-icon
-              color="primary"
-              class="mb-6 float-right"
-              @click="okay()"
-            >
-              mdi-close
-            </v-icon>
-          </v-col>
-        </v-row>
-        <v-row justify="center">
-          <v-col
-            cols="12"
-            lg="8"
-            class="text-center"
-          >
-            <h1
-              class="mb-5"
-              style="font-size: 24px"
-            >
-              {{ summary }}
-            </h1>
-            <p
-              class="mb-9"
-              style="font-size: 16px"
-            >
-              <slot name="description">
-                {{ description }}
-              </slot>
-            </p>
-            <slot name="actions">
-              <v-btn
-                large
-                link
-                color="primary"
-                @click="okay()"
-              >
-                OK
-              </v-btn>
-            </slot>
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-card-title>{{ title }}</v-card-title>
+
+      <v-card-text class="pre-wrap">
+        <div
+          v-show="!!text"
+          class="font-15"
+          v-html="text"
+        />
+
+        <ContactInfo class="mt-6" />
+      </v-card-text>
+
+      <v-card-actions class="justify-center pt-0 pb-9">
+        <v-btn
+          color="primary"
+          large
+          @click="close()"
+        >
+          Close
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import ContactInfo from '@/components/common/ContactInfo.vue'
 
 @Component({
-  components: {}
+  components: {
+    ContactInfo
+  }
 })
 export default class GenericErrorDialog extends Vue {
-  @Prop({ default: '' }) private summary: string
-  @Prop({ default: '' }) private description: string
-  @Prop({ default: 'mdi-information-outline' }) private icon: string
-  @Prop({ default: 'primary' }) private iconColor: string
-
-  /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog!: boolean
-
-  /** Prop to provide attachment selector. */
   @Prop({ default: '' }) readonly attach!: string
+  @Prop({ default: false }) readonly dialog!: boolean
+  @Prop({ default: 'Please contact us:' }) readonly text!: string
+  @Prop({ default: 'An error occurred' }) readonly title!: string
 
-  // Pass click event to parent.
-  @Emit() okay () {
-  }
+  @Emit() close (): void {}
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
+.v-card__text {
+  color: $gray7 !important;
+}
+</style>

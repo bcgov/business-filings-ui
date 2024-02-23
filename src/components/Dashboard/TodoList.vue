@@ -5,7 +5,7 @@
       attach="#todo-list"
     />
 
-    <GenericErrorDialog
+    <AffiliationErrorDialog
       :dialog="fetchAffiliationInvitationsErrorDialog"
       attach="#todo-list"
       icon-color="error"
@@ -18,9 +18,9 @@
           <br> Please try again later.
         </div>
       </template>
-    </GenericErrorDialog>
+    </AffiliationErrorDialog>
 
-    <GenericErrorDialog
+    <AffiliationErrorDialog
       :dialog="authorizeAffiliationInvitationErrorDialog"
       attach="#todo-list"
       icon-color="error"
@@ -33,7 +33,7 @@
           <br> Please try again later.
         </div>
       </template>
-    </GenericErrorDialog>
+    </AffiliationErrorDialog>
 
     <DeleteErrorDialog
       :dialog="deleteErrorDialog"
@@ -584,7 +584,8 @@ import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { GetFeatureFlag, navigate } from '@/utils'
-import { CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
+import { AffiliationErrorDialog, CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog }
+  from '@/components/dialogs'
 import { ContactInfo, NameRequestInfo } from '@/components/common'
 import AffiliationInvitationDetails from './TodoList/AffiliationInvitationDetails.vue'
 import ConversionDetails from './TodoList/ConversionDetails.vue'
@@ -619,15 +620,14 @@ import {
 } from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
-import GenericErrorDialog from '@/components/dialogs/GenericErrorDialog.vue'
 
 @Component({
   components: {
     // dialogs
+    AffiliationErrorDialog,
     CancelPaymentErrorDialog,
     ConfirmDialog,
     DeleteErrorDialog,
-    GenericErrorDialog,
     // components
     AffiliationInvitationDetails,
     ConversionDetails,
