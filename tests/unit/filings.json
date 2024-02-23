@@ -591,7 +591,7 @@
         ]
       },
       "displayLedger": true,
-      "displayName": "Amalgamation Application - Regular",
+      "displayName": "Amalgamation Application (Regular)",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/documents",
       "effectiveDate": "Fri, 03 Feb 2023 18:52:00 GMT",
       "filingId": 112751,
@@ -618,7 +618,7 @@
         ]
       },
       "displayLedger": true,
-      "displayName": "Amalgamation Application - Horizontal",
+      "displayName": "Amalgamation Application Short-form (Horizontal)",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/documents",
       "effectiveDate": "Fri, 03 Feb 2023 18:52:00 GMT",
       "filingId": 112751,
@@ -645,7 +645,7 @@
         ]
       },
       "displayLedger": true,
-      "displayName": "Amalgamation Application - Vertical",
+      "displayName": "Amalgamation Application Short-form (Vertical)",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/BC1234567/filings/112751/documents",
       "effectiveDate": "Fri, 03 Feb 2023 18:52:00 GMT",
       "filingId": 112751,
