@@ -45,7 +45,7 @@ describe('Consent to Continuation Out view', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['staff'] // consent to continuation outs currently apply to staff only
+    rootStore.keycloakRoles = ['staff']
   })
 
   it('mounts the sub-components properly', async () => {
@@ -384,7 +384,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     // verify sub-components
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
     expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
-    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
+    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(false) // staff only
     expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
     expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
     expect(wrapper.findComponent(ForeignJurisdiction).exists()).toBe(true)

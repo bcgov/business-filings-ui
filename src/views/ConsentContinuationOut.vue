@@ -5,6 +5,14 @@
       attach="#consent-continuation-out"
     />
 
+    <GenericErrorDialog
+      attach="#consent-continuation-out"
+      :dialog="courtOrderDialog"
+      :text="courtOrderDialogText"
+      :title="courtOrderDialogTitle"
+      @close="courtOrderDialog=false; goToDashboard()"
+    />
+
     <PaymentErrorDialog
       attach="#consent-continuation-out"
       filingName="Consent to Continuation Out"
@@ -202,7 +210,7 @@
             </section>
 
             <!-- Court Order and Plan of Arrangement -->
-            <section>
+            <section v-if="isRoleStaff">
               <header>
                 <h2>Court Order and Plan of Arrangement</h2>
                 <p class="grey-text">
@@ -327,8 +335,8 @@ import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, DetailComment, ForeignJurisdiction } from '@/components/common'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
-  from '@/components/dialogs'
+import { ConfirmDialog, GenericErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
+  StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
 import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
@@ -346,6 +354,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     DetailComment,
     DocumentDelivery,
     ForeignJurisdiction,
+    GenericErrorDialog,
     PaymentErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
@@ -368,6 +377,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getUserInfo!: any
+  @Getter(useBusinessStore) hasCourtOrders!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
@@ -403,9 +413,13 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   staffPaymentDialog = false
 
   // variables for displaying dialogs
+  courtOrderDialog = false
   resumeErrorDialog = false
-  saveErrorReason: SaveErrorReasons = null
+  saveErrorReason = null as SaveErrorReasons
   paymentErrorDialog = false
+  courtOrderDialogText = 'This business has a court order in its ledger. Please contact BC ' +
+    'Registries to submit a Consent to Continue Out.'
+  courtOrderDialogTitle = 'Please contact BC Registries'
 
   // other variables
   totalFee = 0
@@ -491,6 +505,13 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     // wait until entire view is rendered (including all child components)
     // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
     await this.$nextTick()
+
+    // block regular user if business has a court order filing
+    if (!this.isRoleStaff && this.hasCourtOrders) {
+      this.dataLoaded = true
+      this.courtOrderDialog = true
+      return
+    }
 
     if (this.filingId > 0) {
       this.loadingMessage = `Resuming Your Consent to Continuation Out`

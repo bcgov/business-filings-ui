@@ -1,5 +1,6 @@
 import AddCommentDialog from './AddCommentDialog.vue'
 import AddStaffNotationDialog from './AddStaffNotationDialog.vue'
+import AffiliationErrorDialog from './AffiliationErrorDialog.vue'
 import BusinessAuthErrorDialog from './BusinessAuthErrorDialog.vue'
 import CancelPaymentErrorDialog from './CancelPaymentErrorDialog.vue'
 import CoaWarningDialog from './CoaWarningDialog.vue'
@@ -10,6 +11,7 @@ import DeleteErrorDialog from './DeleteErrorDialog.vue'
 import DownloadErrorDialog from './DownloadErrorDialog.vue'
 import FetchErrorDialog from './FetchErrorDialog.vue'
 import FileCorrectionDialog from './FileCorrectionDialog.vue'
+import GenericErrorDialog from './GenericErrorDialog.vue'
 import LoadCorrectionDialog from './LoadCorrectionDialog.vue'
 import NameRequestAuthErrorDialog from './NameRequestAuthErrorDialog.vue'
 import NameRequestInvalidDialog from './NameRequestInvalidDialog.vue'
@@ -24,6 +26,7 @@ import TechnicalErrorDialog from './TechnicalErrorDialog.vue'
 export {
   AddCommentDialog,
   AddStaffNotationDialog,
+  AffiliationErrorDialog,
   BusinessAuthErrorDialog,
   CancelPaymentErrorDialog,
   CoaWarningDialog,
@@ -34,6 +37,7 @@ export {
   DownloadErrorDialog,
   FetchErrorDialog,
   FileCorrectionDialog,
+  GenericErrorDialog,
   LoadCorrectionDialog,
   NameRequestAuthErrorDialog,
   NameRequestInvalidDialog,

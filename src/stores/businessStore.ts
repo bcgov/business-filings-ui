@@ -116,7 +116,7 @@ export const useBusinessStore = defineStore('business', {
       return state.businessInfo.stateFiling
     },
 
-    /** Is true of the business has a court order filing */
+    /** Is true of the business has a court order filing. */
     hasCourtOrders (state: BusinessStateIF): boolean {
       return state.businessInfo.hasCourtOrders
     },
