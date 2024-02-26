@@ -42,7 +42,7 @@ describe('Display ContinuationOut component', () => {
     expect(wrapper.find('.continuation-out').text()).toContain('FILED AND PAID  (filed by  on [unknown])')
     expect(wrapper.find('.continuation-out').text()).toContain('EFFECTIVE as of [unknown]')
     expect(wrapper.find('.expand-btn').text()).toContain('View Documents')
-    expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(false)
+    expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(true)
     expect(vm.continuationOutDate).toEqual('Jun 10, 2023')
     expect(vm.legalName).toBe('North Shore Toys LTD.')
     wrapper.destroy()

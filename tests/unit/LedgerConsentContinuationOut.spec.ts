@@ -36,7 +36,7 @@ describe('Display ConsentContinuationOut component', () => {
     expect(wrapper.find('.consent-continuation-out').text()).toContain('FILED AND PAID  (filed by  on [unknown])')
     expect(wrapper.find('.consent-continuation-out').text()).toContain('EFFECTIVE as of [unknown]')
     expect(wrapper.find('.expand-btn').text()).toContain('View Documents')
-    expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(false)
+    expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(true)
     expect(vm.expiry).toEqual('August 17, 2023 at 11:59 pm Pacific time')
     wrapper.destroy()
   })

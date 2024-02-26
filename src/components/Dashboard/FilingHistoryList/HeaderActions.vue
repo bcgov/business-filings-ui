@@ -128,10 +128,10 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
     conditions[3] = () => (EnumUtilities.isTypeIncorporationApplication(this.filing) &&
       !this.isBenBcCccUlc && !this.isCoop)
     conditions[4] = () => (EnumUtilities.isTypeChangeOfRegistration(this.filing) && !this.isFirm)
-    conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) &&
-      !this.isFirm && !this.isBenBcCccUlc &&
-      !this.isCoop)
+    conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) && !this.isFirm &&
+      !this.isBenBcCccUlc && !this.isCoop)
     conditions[6] = () => (EnumUtilities.isTypeRegistration(this.filing) && !this.isFirm)
+    conditions[7] = () => (EnumUtilities.isTypeAmalgamation(this.filing) && !this.isBenBcCccUlc)
 
     // check if any condition is True
     return conditions.some(condition => condition())
@@ -142,6 +142,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
     // see also TodoList.vue:doResumeFiling()
     switch (filing?.name) {
       case FilingTypes.ALTERATION:
+      case FilingTypes.AMALGAMATION_APPLICATION:
       case FilingTypes.CHANGE_OF_REGISTRATION:
       case FilingTypes.CORRECTION:
       case FilingTypes.INCORPORATION_APPLICATION:

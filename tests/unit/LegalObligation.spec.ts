@@ -5,7 +5,7 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import { ConfigJson } from '@/resources'
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd, EntityState, FilingTypes } from '@/enums'
 
 // Components
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
@@ -24,10 +24,25 @@ const newIncorporationFiling = [
     availableOnPaperOnly: false,
     displayLedger: true,
     displayName: 'Incorporation Application',
+    effectiveDate: '2024-02-21 12:00:00 GMT',
+    filingId: 123,
+    isFutureEffective: false,
+    name: FilingTypes.AMALGAMATION_APPLICATION,
+    status: 'PAID',
+    submittedDate: '2024-02-21 12:00:00 GMT',
+    submitter: 'Full Name 1'
+  }
+]
+
+const newAmalgamationFiling = [
+  {
+    availableOnPaperOnly: false,
+    displayLedger: true,
+    displayName: 'Amalgamation Application (Regular)',
     effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 123,
     isFutureEffective: false,
-    name: 'incorporationApplication',
+    name: FilingTypes.INCORPORATION_APPLICATION,
     status: 'PAID',
     submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT',
     submitter: 'Full Name 1'
@@ -42,7 +57,7 @@ const newRegistrationFiling = [
     effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 123,
     isFutureEffective: false,
-    name: 'registration',
+    name: FilingTypes.REGISTRATION,
     status: 'PAID',
     submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT',
     submitter: 'Full Name 1'
@@ -57,7 +72,7 @@ const businessWithMaintenanceFiling = [
     effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 123,
     isFutureEffective: false,
-    name: 'incorporationApplication',
+    name: FilingTypes.INCORPORATION_APPLICATION,
     status: 'PAID',
     submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT',
     submitter: 'Full Name 1'
@@ -69,7 +84,7 @@ const businessWithMaintenanceFiling = [
     effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 456,
     isFutureEffective: false,
-    name: 'annualReport',
+    name: FilingTypes.ANNUAL_REPORT,
     status: 'PAID',
     submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT',
     submitter: 'Full Name 1'
@@ -81,7 +96,7 @@ const taskList = [
     task: {
       filing: {
         header: {
-          name: 'annualReport',
+          name: FilingTypes.ANNUAL_REPORT,
           ARFilingYear: 2019,
           status: 'ERROR',
           filingId: 789
@@ -106,6 +121,13 @@ const obligationTestCases = [
     displaysObligations: true,
     configKey: 0,
     filingBody: newIncorporationFiling
+  },
+  {
+    entityType: CorpTypeCd.BENEFIT_COMPANY,
+    identifier: 'BC1232134',
+    displaysObligations: true,
+    configKey: 0,
+    filingBody: newAmalgamationFiling
   },
   {
     entityType: CorpTypeCd.COOP,
@@ -136,6 +158,7 @@ for (const test of obligationTestCases) {
       sessionStorage.setItem('BUSINESS_ID', test.identifier)
       businessStore.setLegalType(test.entityType)
       businessStore.setIdentifier(test.identifier)
+      businessStore.setState(EntityState.ACTIVE)
       rootStore.configObject = ConfigJson[test.configKey]
     })
 

@@ -1606,7 +1606,7 @@ describe('TodoList - UI - Amalgamation Applications', () => {
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
   })
 
-  it('displays a DRAFT numbered amalgamation application', async () => {
+  it('displays a DRAFT numbered regular amalgamation application', async () => {
     // init store
     rootStore.nameRequest = null
     rootStore.tasks = [
@@ -1645,7 +1645,7 @@ describe('TodoList - UI - Amalgamation Applications', () => {
     wrapper.destroy()
   })
 
-  it('displays a DRAFT named amalgamation application', async () => {
+  it('displays a DRAFT named regular amalgamation application', async () => {
     // init store
     rootStore.nameRequest = {}
     rootStore.tasks = [
@@ -1678,6 +1678,166 @@ describe('TodoList - UI - Amalgamation Applications', () => {
 
     const item = wrapper.find('.list-item')
     expect(item.find('.list-item__title').text()).toContain('My Amalgamated Company Amalgamation Application - Regular')
+    expect(item.find('.expand-btn').text()).toBe('View Details')
+    expect(item.find('.list-item__subtitle').text()).toContain('NR APPROVED')
+    expect(item.find('.btn-draft-resume').text()).toBe('Fill out Amalgamation Application')
+
+    wrapper.destroy()
+  })
+
+  it('displays a DRAFT numbered short form horizontal amalgamation application', async () => {
+    // init store
+    rootStore.nameRequest = null
+    rootStore.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: FilingTypes.AMALGAMATION_APPLICATION,
+              status: FilingStatus.DRAFT
+            },
+            amalgamationApplication: {
+              type: AmalgamationTypes.HORIZONTAL
+            },
+            displayName: 'BC Limited Company Amalgamation Application - Horizontal'
+          } as any
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { vuetify })
+    const vm = wrapper.vm as any
+    await flushPromises()
+
+    expect(vm.todoItems.length).toEqual(1)
+    expect(wrapper.findAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    const item = wrapper.find('.list-item')
+    expect(item.find('.list-item__title').text()).toContain('BC Limited Company Amalgamation Application - Horizontal')
+    expect(item.find('.list-item__subtitle').text()).toBe('DRAFT')
+    expect(item.find('.btn-draft-resume').text()).toBe('Fill out Amalgamation Application')
+
+    wrapper.destroy()
+  })
+
+  it('displays a DRAFT named short form horizontal amalgamation application', async () => {
+    // init store
+    rootStore.nameRequest = {}
+    rootStore.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: FilingTypes.AMALGAMATION_APPLICATION,
+              status: FilingStatus.DRAFT
+            },
+            amalgamationApplication: {
+              type: AmalgamationTypes.HORIZONTAL
+            },
+            displayName: 'My Amalgamated Company Amalgamation Application - Horizontal'
+          } as any
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { vuetify })
+    const vm = wrapper.vm as any
+    await flushPromises()
+
+    expect(vm.todoItems.length).toEqual(1)
+    expect(wrapper.findAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    const item = wrapper.find('.list-item')
+    expect(item.find('.list-item__title').text())
+      .toContain('My Amalgamated Company Amalgamation Application - Horizontal')
+    expect(item.find('.expand-btn').text()).toBe('View Details')
+    expect(item.find('.list-item__subtitle').text()).toContain('NR APPROVED')
+    expect(item.find('.btn-draft-resume').text()).toBe('Fill out Amalgamation Application')
+
+    wrapper.destroy()
+  })
+
+  it('displays a DRAFT numbered short form vertical amalgamation application', async () => {
+    // init store
+    rootStore.nameRequest = null
+    rootStore.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: FilingTypes.AMALGAMATION_APPLICATION,
+              status: FilingStatus.DRAFT
+            },
+            amalgamationApplication: {
+              type: AmalgamationTypes.VERTICAL
+            },
+            displayName: 'BC Limited Company Amalgamation Application - Vertical'
+          } as any
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { vuetify })
+    const vm = wrapper.vm as any
+    await flushPromises()
+
+    expect(vm.todoItems.length).toEqual(1)
+    expect(wrapper.findAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    const item = wrapper.find('.list-item')
+    expect(item.find('.list-item__title').text()).toContain('BC Limited Company Amalgamation Application - Vertical')
+    expect(item.find('.list-item__subtitle').text()).toBe('DRAFT')
+    expect(item.find('.btn-draft-resume').text()).toBe('Fill out Amalgamation Application')
+
+    wrapper.destroy()
+  })
+
+  it('displays a DRAFT named short form vertical amalgamation application', async () => {
+    // init store
+    rootStore.nameRequest = {}
+    rootStore.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: FilingTypes.AMALGAMATION_APPLICATION,
+              status: FilingStatus.DRAFT
+            },
+            amalgamationApplication: {
+              type: AmalgamationTypes.VERTICAL
+            },
+            displayName: 'My Amalgamated Company Amalgamation Application - Vertical'
+          } as any
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { vuetify })
+    const vm = wrapper.vm as any
+    await flushPromises()
+
+    expect(vm.todoItems.length).toEqual(1)
+    expect(wrapper.findAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    const item = wrapper.find('.list-item')
+    expect(item.find('.list-item__title').text())
+      .toContain('My Amalgamated Company Amalgamation Application - Vertical')
     expect(item.find('.expand-btn').text()).toBe('View Details')
     expect(item.find('.list-item__subtitle').text()).toContain('NR APPROVED')
     expect(item.find('.btn-draft-resume').text()).toBe('Fill out Amalgamation Application')

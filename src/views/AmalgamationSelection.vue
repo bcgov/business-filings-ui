@@ -51,12 +51,11 @@
             <br>
             <p>Shareholders of the amalgamating corporations do not need to approve the amalgamation.</p>
             <div class="btn-div">
-              <!-- TODO: Remove disabled when doing short form amalgamations -->
               <v-btn
                 id="horizontal-short-form-btn"
-                disabled
                 color="primary"
                 large
+                @click="startAmalgamation(AmalgamationTypes.HORIZONTAL)"
               >
                 <strong>Start Horizontal Short-form</strong>
               </v-btn>
@@ -87,12 +86,11 @@
             <br>
             <p>Shareholders of the amalgamating corporations do not need to approve the amalgamation.</p>
             <div class="btn-div">
-              <!-- TODO: Remove disabled when doing short form amalgamations -->
               <v-btn
                 id="vertical-short-form-btn"
-                disabled
                 color="primary"
                 large
+                @click="startAmalgamation(AmalgamationTypes.VERTICAL)"
               >
                 <strong>Start Vertical Short-form</strong>
               </v-btn>
@@ -133,7 +131,7 @@
                 id="regular-long-form-btn"
                 color="primary"
                 large
-                @click="startRegularAmalgamation()"
+                @click="startAmalgamation(AmalgamationTypes.REGULAR)"
               >
                 <strong>Start Regular Long-form</strong>
               </v-btn>
@@ -150,7 +148,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import { Action, Getter } from 'pinia-class'
 import { Component, Vue } from 'vue-property-decorator'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
+import { AmalgamationTypes, CorrectNameOptions, FilingTypes } from '@bcrs-shared-components/enums'
 import { AmlRoles, AmlTypes, Routes } from '@/enums'
 import { LegalServices } from '@/services'
 import { navigate } from '@/utils'
@@ -163,7 +161,10 @@ import { TechnicalErrorDialog } from '@/components/dialogs'
 })
 export default class AmalgamationSelection extends Vue {
   @Getter(useConfigurationStore) getCreateUrl!: string
+  @Getter(useRootStore) getBusinessEmail!: string
+  @Getter(useRootStore) getFullPhoneNumber!: string
   @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useBusinessStore) isBComp!: boolean
   @Getter(useBusinessStore) isBcCompany!: boolean
@@ -171,6 +172,9 @@ export default class AmalgamationSelection extends Vue {
   @Getter(useBusinessStore) isUlc!: boolean
 
   @Action(useRootStore) setStartingAmalgamationSpinner!: (x: boolean) => void
+
+  // enum for template
+  readonly AmalgamationTypes = AmalgamationTypes
 
   showErrorDialog = false
 
@@ -192,18 +196,21 @@ export default class AmalgamationSelection extends Vue {
     return 'Unknown'
   }
 
-  /** Called when Start Regular Long-form button is clicked. */
-  async startRegularAmalgamation (): Promise<any> {
+  /** Called when Start amalgamtion (regular, horizontal and vertical) button is clicked. */
+  async startAmalgamation (amalgamationType: AmalgamationTypes): Promise<any> {
     // Create a draft amalgamation application then redirect to Create UI.
     try {
       // show spinner since this is a network call
       this.setStartingAmalgamationSpinner(true)
-      const businessId = await this.createBusinessAA(AmalgamationTypes.REGULAR)
-      const amalgamationUrl = `${this.getCreateUrl}?id=${businessId}`
+      const businessId = await this.createBusinessAA(amalgamationType)
+      const route = this.isShortFormAmalgamation(amalgamationType)
+        ? 'amalg-short-information'
+        : 'amalg-reg-information'
+      const amalgamationUrl = `${this.getCreateUrl}${route}?id=${businessId}`
       navigate(amalgamationUrl)
       return
     } catch (error) {
-      console.log('Error: unable to amalgamate now =', error)
+      console.log('Error - unable to amalgamate now =', error)
       this.setStartingAmalgamationSpinner(false)
       this.showErrorDialog = true
     }
@@ -216,7 +223,10 @@ export default class AmalgamationSelection extends Vue {
    */
   private async createBusinessAA (type: AmalgamationTypes): Promise<string> {
     const accountId = +JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id || 0
-    const legalType = this.getLegalType
+    const email = this.isShortFormAmalgamation(type) ? this.getBusinessEmail : ''
+    const phone = this.isShortFormAmalgamation(type) ? this.getFullPhoneNumber : ''
+    const legalName = this.isShortFormAmalgamation(type) ? this.getLegalName : ''
+    const correctNameOption = this.isShortFormAmalgamation(type) ? CorrectNameOptions.CORRECT_AML_ADOPT : null
 
     const draftAmalgamationApplication = {
       filing: {
@@ -225,18 +235,46 @@ export default class AmalgamationSelection extends Vue {
           accountId
         },
         business: {
-          legalType
+          legalType: this.getLegalType
         },
         amalgamationApplication: {
           nameRequest: {
-            legalType
+            legalName,
+            legalType: this.getLegalType,
+            correctNameOption
           },
-          type
+          type,
+          contactPoint: {
+            email,
+            phone
+          }
         }
       }
     } as any
 
-    // if this is a regular amalgamation, pre-populate the current business as a TING
+    // For Horizontal amalgamation, set current business as the Primary business.
+    if (type === AmalgamationTypes.HORIZONTAL) {
+      draftAmalgamationApplication.filing.amalgamationApplication.amalgamatingBusinesses = [
+        {
+          type: AmlTypes.LEAR,
+          role: AmlRoles.PRIMARY,
+          identifier: this.getIdentifier
+        }
+      ]
+    }
+
+    // For Vertical amalgamation, set current business as the Holding business.
+    if (type === AmalgamationTypes.VERTICAL) {
+      draftAmalgamationApplication.filing.amalgamationApplication.amalgamatingBusinesses = [
+        {
+          type: AmlTypes.LEAR,
+          role: AmlRoles.HOLDING,
+          identifier: this.getIdentifier
+        }
+      ]
+    }
+
+    // For Regular amalgamation, set the current business as an amalgamating business.
     if (type === AmalgamationTypes.REGULAR) {
       draftAmalgamationApplication.filing.amalgamationApplication.amalgamatingBusinesses = [
         {
@@ -248,13 +286,18 @@ export default class AmalgamationSelection extends Vue {
     }
 
     // create the draft business record
-    // (throws an exception on error, which startRegularAmalgamation() will handle)
+    // (throws an exception on error, which startAmalgamation() will handle)
     const filing = await LegalServices.createDraftBusiness(draftAmalgamationApplication)
 
     // validate and return the identifier
     const identifier = filing?.business?.identifier as string
     if (!identifier) throw new Error('Invalid business identifier')
     return identifier
+  }
+
+  /** Returns True if specified type is a short-form amalgamation. */
+  private isShortFormAmalgamation (type: AmalgamationTypes): boolean {
+    return (type === AmalgamationTypes.HORIZONTAL || type === AmalgamationTypes.VERTICAL)
   }
 }
 </script>
