@@ -245,8 +245,8 @@ export default class AmalgamationSelection extends Vue {
           },
           type,
           contactPoint: {
-            email,
-            phone
+            email: email || '',
+            phone: phone || ''
           }
         }
       }
