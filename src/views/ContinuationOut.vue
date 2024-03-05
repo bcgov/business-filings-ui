@@ -787,7 +787,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       header: {
         name: FilingTypes.CONTINUATION_OUT,
         certifiedBy: this.certifiedBy || '',
-        email: this.getBusinessEmail,
+        email: this.getBusinessEmail || '',
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
       }
     }
