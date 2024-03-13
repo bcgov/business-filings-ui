@@ -584,6 +584,7 @@ describe('StaffNotation', () => {
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY) // corp
     businessStore.setIdentifier('BC1234567')
     businessStore.setState(EntityState.HISTORICAL)
+
     // stub "create draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/BC1234567/filings?draft=true').returns(
       new Promise(resolve =>
@@ -620,10 +621,16 @@ describe('StaffNotation', () => {
   })
 
   it('goes to limited restoration extension filing', async () => {
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-restoration-entities') return 'BC'
+      return null
+    })
+
     // set store specifically for this test
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     businessStore.setIdentifier('BC1234567')
-    businessStore.setState(EntityState.HISTORICAL)
+    businessStore.setState(EntityState.ACTIVE)
+
     // stub "create draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/BC1234567/filings?draft=true').returns(
       new Promise(resolve =>
@@ -663,11 +670,16 @@ describe('StaffNotation', () => {
   })
 
   it('goes to limited restoration conversion filing', async () => {
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-restoration-entities') return 'BEN'
+      return null
+    })
+
     // set store specifically for this test
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setIdentifier('BC1234567')
     rootStore.currentDate = '2022-12-31'
-    businessStore.setState(EntityState.HISTORICAL)
+    businessStore.setState(EntityState.ACTIVE)
     rootStore.setStateFiling({
       business: {
         state: 'ACTIVE'
