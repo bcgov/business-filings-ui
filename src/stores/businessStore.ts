@@ -220,6 +220,35 @@ export const useBusinessStore = defineStore('business', {
     /** Is True if business is in liquidation. */
     isLiquidation (): boolean {
       return (this.getBusinessState === EntityState.LIQUIDATION)
+    },
+
+    //
+    // Alerts getters
+    //
+
+    /** Whether to show Amalgamation alert. */
+    isAmalgamationAlert (): boolean {
+      return this.isFutureEffectiveAmalgamation
+    },
+
+    /** Whether to show Frozen Information alert. */
+    isFrozenInformationAlert (): boolean {
+      return this.isAdminFrozen
+    },
+
+    /** Whether to show Missing Information alert. */
+    isMissingInformationAlert (): boolean {
+      return this.hasMissingInfoWarning
+    },
+
+    /** Whether to show Not In Compliance alert. */
+    isNotInComplianceAlert (): boolean {
+      return this.hasComplianceWarning
+    },
+
+    /** Whether to show Not In Good Standing alert. */
+    isNotInGoodStandingAlert (): boolean {
+      return !this.isGoodStanding
     }
   },
 

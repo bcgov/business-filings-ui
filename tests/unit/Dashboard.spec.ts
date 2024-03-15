@@ -17,13 +17,6 @@ import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 
-// Alerts
-import Amalgamation from '@/components/Dashboard/Alerts/Amalgamation.vue'
-import FrozenInformation from '@/components/Dashboard/Alerts/FrozenInformation.vue'
-import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
-import NotInCompliance from '@/components/Dashboard/Alerts/NotInCompliance.vue'
-import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.vue'
-
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
@@ -88,9 +81,6 @@ describe('Dashboard - UI', () => {
     expect(wrapper.findComponent(FilingHistoryList).exists()).toBe(true)
     expect(wrapper.findComponent(AddressListSm).exists()).toBe(true)
     expect(wrapper.findComponent(DirectorListSm).exists()).toBe(true)
-
-    // verify no alerts are displayed
-    expect(wrapper.find('#dashboard-alerts-section').exists()).toBe(false)
   })
 
   it('identifies app tasks vs app filings', () => {
@@ -191,66 +181,6 @@ describe('Dashboard - UI', () => {
 
     expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
-  })
-
-  it('displays the Amalgamation alert', async () => {
-    // verify initially hidden
-    expect(wrapper.findComponent(Amalgamation).exists()).toBe(false)
-
-    // enable and verify displayed
-    await wrapper.setData({ isFutureEffectiveAmalgamation: true })
-    expect(wrapper.findComponent(Amalgamation).exists()).toBe(true)
-
-    // cleanup
-    await wrapper.setData({ isFutureEffectiveAmalgamation: false })
-  })
-
-  it('displays the Frozen Information alert', async () => {
-    // verify initially hidden
-    expect(wrapper.findComponent(FrozenInformation).exists()).toBe(false)
-
-    // enable and verify displayed
-    await wrapper.setData({ isAdminFrozen: true })
-    expect(wrapper.findComponent(FrozenInformation).exists()).toBe(true)
-
-    // cleanup
-    await wrapper.setData({ isAdminFrozen: false })
-  })
-
-  it('displays the Missing Information alert', async () => {
-    // verify initially hidden
-    expect(wrapper.findComponent(MissingInformation).exists()).toBe(false)
-
-    // enable and verify displayed
-    await wrapper.setData({ hasMissingInfoWarning: true })
-    expect(wrapper.findComponent(MissingInformation).exists()).toBe(true)
-
-    // cleanup
-    await wrapper.setData({ hasMissingInfoWarning: false })
-  })
-
-  it('displays the Not In Compliance alert', async () => {
-    // verify initially hidden
-    expect(wrapper.findComponent(NotInCompliance).exists()).toBe(false)
-
-    // enable and verify displayed
-    await wrapper.setData({ hasComplianceWarning: true })
-    expect(wrapper.findComponent(NotInCompliance).exists()).toBe(true)
-
-    // cleanup
-    await wrapper.setData({ hasComplianceWarning: false })
-  })
-
-  it('displays the Not In Good Standing alert', async () => {
-    // verify initially hidden
-    expect(wrapper.findComponent(NotInGoodStanding).exists()).toBe(false)
-
-    // enable and verify displayed
-    await wrapper.setData({ isGoodStanding: false })
-    expect(wrapper.findComponent(NotInGoodStanding).exists()).toBe(true)
-
-    // cleanup
-    await wrapper.setData({ isGoodStanding: true })
   })
 })
 

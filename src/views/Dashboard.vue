@@ -19,21 +19,15 @@
           >
             <!-- Alerts section-->
             <section
-              v-if="alertCount > 0"
-              id="dashboard-alerts-section"
-              class="mb-n6"
+              v-show="alertCount > 0"
+              id="alerts-section"
             >
               <header>
                 <h2 class="mb-3">
                   <span>Alerts</span>&nbsp;<span class="section-count">({{ alertCount }})</span>
                 </h2>
               </header>
-              <!-- FUTURE: move these to a new Alerts component and inside one expansion panel -->
-              <Amalgamation v-if="isAmalgamationAlert" />
-              <FrozenInformation v-if="isFrozenInformationAlert" />
-              <MissingInformation v-if="isMissingInformationAlert" />
-              <NotInCompliance v-if="isNotInComplianceAlert" />
-              <NotInGoodStanding v-if="isNotInGoodStandingAlert" />
+              <Alerts @count="alertCount = $event" />
             </section>
 
             <!-- To Do section-->
@@ -235,14 +229,10 @@
 import { mapState } from 'pinia'
 import { navigate } from '@/utils'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
+import Alerts from '@/components/Dashboard/Alerts.vue'
 import CustodianListSm from '@/components/Dashboard/CustodianListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
-import Amalgamation from '@/components/Dashboard/Alerts/Amalgamation.vue'
-import FrozenInformation from '@/components/Dashboard/Alerts/FrozenInformation.vue'
-import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
-import NotInCompliance from '@/components/Dashboard/Alerts/NotInCompliance.vue'
-import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 import ProprietorPartnersListSm from '@/components/Dashboard/ProprietorPartnersListSm.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
@@ -258,16 +248,12 @@ export default {
 
   components: {
     AddressListSm,
-    Amalgamation,
+    Alerts,
     CoaWarningDialog,
     CustodianListSm,
     DirectorListSm,
     FilingHistoryList,
-    FrozenInformation,
     LegalObligation,
-    MissingInformation,
-    NotInCompliance,
-    NotInGoodStanding,
     ProprietorPartnersListSm,
     StaffNotation,
     TodoList
@@ -284,6 +270,7 @@ export default {
     return {
       todoCount: 0,
       coaWarningDialog: false,
+      alertCount: 0,
 
       // enum in template
       AllowableActions
@@ -293,13 +280,8 @@ export default {
   computed: {
     ...mapState(useBusinessStore, [
       'getIdentifier',
-      'hasComplianceWarning',
-      'hasMissingInfoWarning',
-      'isAdminFrozen',
       'isBenBcCccUlc',
       'isFirm',
-      'isFutureEffectiveAmalgamation',
-      'isGoodStanding',
       'isHistorical',
       'isPartnership',
       'isSoleProp'
@@ -346,42 +328,6 @@ export default {
     filingId (): number {
       // NB: use unary plus operator to cast string to number
       return +this.$route.query.filing_id
-    },
-
-    /** Whether to show Amalgamation alert. */
-    isAmalgamationAlert (): boolean {
-      return this.isFutureEffectiveAmalgamation
-    },
-
-    /** Whether to show Missing Information alert. */
-    isFrozenInformationAlert (): boolean {
-      return this.isAdminFrozen
-    },
-
-    /** Whether to show Missing Information alert. */
-    isMissingInformationAlert (): boolean {
-      return this.hasMissingInfoWarning
-    },
-
-    /** Whether to show Not In Compliance alert. */
-    isNotInComplianceAlert (): boolean {
-      return this.hasComplianceWarning
-    },
-
-    /** Whether to show Not In Good Standing alert. */
-    isNotInGoodStandingAlert (): boolean {
-      return !this.isGoodStanding
-    },
-
-    /** The number of alerts. */
-    alertCount (): number {
-      let count = 0
-      if (this.isAmalgamationAlert) count++
-      if (this.isFrozenInformationAlert) count++
-      if (this.isMissingInformationAlert) count++
-      if (this.isNotInComplianceAlert) count++
-      if (this.isNotInGoodStandingAlert) count++
-      return count
     },
 
     custodians (): PartyIF[] {
