@@ -70,7 +70,7 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
     return null
   }
 
-  /** Check if Consent is Expired. */
+  /** Check if Consent is Expired. (Assumes expiry is not empty.) */
   get isConsentExpired (): boolean {
     const expiry = this.filing.data?.consentContinuationOut?.expiry
     if (expiry) {
