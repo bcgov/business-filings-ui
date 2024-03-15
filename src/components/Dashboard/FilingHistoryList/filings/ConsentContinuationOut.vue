@@ -7,13 +7,13 @@
     <template #body>
       <div>
         <p
-          v-if="isFilingComplete && !isConsentExpired"
+          v-if="expiry && !isConsentExpired"
           class="mt-4"
         >
           This consent to continue out to {{ foreignJurisdiction }} is valid <strong>until {{ expiry }}</strong>.
         </p>
         <p
-          v-if="isConsentExpired"
+          v-if="expiry && isConsentExpired"
           class="mt-4"
         >
           <v-icon
@@ -52,7 +52,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { ApiFilingIF } from '@/interfaces'
 import FilingTemplate from '../FilingTemplate.vue'
-import { DateUtilities, EnumUtilities } from '@/services'
+import { DateUtilities } from '@/services'
 import { CountriesProvincesMixin } from '@/mixins'
 
 @Component({
@@ -67,15 +67,18 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
     if (expiry) {
       return DateUtilities.apiToPacificDateTime(expiry, true)
     }
-    return '[unknown]'
+    return null
   }
 
   /** Check if Consent is Expired. */
   get isConsentExpired (): boolean {
-    const date = DateUtilities.apiToDate(this.filing.data?.consentContinuationOut?.expiry)
-    const daysToExpire = DateUtilities.daysBetweenTwoDates(new Date(), date)
-    if (isNaN(daysToExpire) || daysToExpire < 0) {
-      return true
+    const expiry = this.filing.data?.consentContinuationOut?.expiry
+    if (expiry) {
+      const date = DateUtilities.apiToDate(expiry)
+      const daysToExpire = DateUtilities.daysBetweenTwoDates(new Date(), date)
+      if (daysToExpire < 0) {
+        return true
+      }
     }
     return false
   }
@@ -104,11 +107,6 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
     } else {
       return country
     }
-  }
-
-  /** Whether the filing is complete. */
-  get isFilingComplete (): boolean {
-    return EnumUtilities.isStatusCompleted(this.filing)
   }
 
   private getRegionNameFromCode (short: string): string {
@@ -143,6 +141,6 @@ p {
 }
 
 .warn-icon {
-    margin-bottom: 6px;
+  margin-bottom: 6px;
 }
 </style>
