@@ -87,12 +87,9 @@ export interface ApiFilingIF {
 
     // consent to continuation out filings only
     consentContinuationOut?: {
+      country: string
       expiry: IsoDatePacific
-      orderDetails: string
-      foreignJurisdiction: {
-        country: string
-        region?: string
-      }
+      region: string // may be null
     }
 
     // continuation out filings only
@@ -110,10 +107,10 @@ export interface ApiFilingIF {
     // conversion filings only
     conversion?: any // some object
 
-    // staff filings only
+    // staff filings and others (eg, consent cont out)
     order?: {
-      effectOfOrder: EffectOfOrderTypes
-      fileNumber: string
+      effectOfOrder?: EffectOfOrderTypes
+      fileNumber: string // may be null
       orderDate?: string // FUTURE: use date type here
       orderDetails: string
     }
