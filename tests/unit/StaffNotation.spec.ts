@@ -140,6 +140,7 @@ describe('StaffNotation', () => {
           { name: FilingTypes.RESTORATION, type: FilingSubTypes.FULL_RESTORATION },
           { name: FilingTypes.PUT_BACK_ON },
           { name: FilingTypes.ADMIN_FREEZE },
+          { name: FilingTypes.CONSENT_AMALGAMATION_OUT },
           { name: FilingTypes.CONSENT_CONTINUATION_OUT },
           { name: FilingTypes.RESTORATION, type: FilingSubTypes.LIMITED_RESTORATION_EXTENSION },
           { name: FilingTypes.RESTORATION, type: FilingSubTypes.LIMITED_RESTORATION_TO_FULL }
@@ -207,6 +208,11 @@ describe('StaffNotation', () => {
       }
       // only displayed for corps and coops (not firms)
       // {
+      //   type: 'consent-amalgamate-out',
+      //   label: 'Consent to Amalgamation Out',
+      //   disabled: false
+      // },
+      // {
       //   type: 'consent-continue-out',
       //   label: 'Consent to Continuation Out',
       //   disabled: false
@@ -238,8 +244,11 @@ describe('StaffNotation', () => {
     await wrapper.find('.menu-btn').trigger('click')
     expect(wrapper.vm.$data.expand).toBe(true)
 
-    // verify item
+    // verify items
     expect(wrapper.find('[data-type="record-conversion"]').exists()).toBe(false)
+    expect(wrapper.find('[data-type="consent-amalgamate-out"]').exists()).toBe(true)
+    expect(wrapper.find('[data-type="consent-continue-out"]').exists()).toBe(true)
+    expect(wrapper.find('[data-type="continue-out"]').exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -313,12 +322,17 @@ describe('StaffNotation', () => {
         label: 'Administrative Dissolution',
         disabled: true
       }
-      // only displayed for corps and coops (not firms
+      // only displayed for corps and coops (not firms)
+      // {
+      //   type: 'consent-amalgamate-out',
+      //   label: 'Consent to Amalgamation Out',
+      //   disabled: true
+      // },
       // {
       //   type: 'consent-continue-out',
       //   label: 'Consent to Continuation Out',
       //   disabled: true
-      // }
+      // },
     ]
 
     // verify menu items

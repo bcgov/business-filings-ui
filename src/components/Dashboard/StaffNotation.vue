@@ -166,6 +166,17 @@
 
             <v-list-item
               v-if="!isHistorical && (isBenBcCccUlc || isCoop)"
+              data-type="consent-amalgamate-out"
+              :disabled="!isAllowed(AllowableActions.CONSENT_AMALGAMATION_OUT)"
+              @click="goToConsentAmalgamationOutFiling()"
+            >
+              <v-list-item-title>
+                <span class="app-blue">Consent to Amalgamate Out</span>
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              v-if="!isHistorical && (isBenBcCccUlc || isCoop)"
               data-type="consent-continue-out"
               :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
               @click="goToConsentContinuationOutFiling()"
@@ -298,6 +309,11 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
   hideAdministrativeDissolutionDialog (needReload: boolean): void {
     this.isAddingAdministrativeDissolution = false
     this.close(needReload)
+  }
+
+  goToConsentAmalgamationOutFiling (): void {
+    // 0 means "new filing"
+    this.$router.push({ name: Routes.CONSENT_AMALGAMATION_OUT, params: { filingId: '0' } })
   }
 
   goToConsentContinuationOutFiling (): void {
