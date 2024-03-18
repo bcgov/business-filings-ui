@@ -493,9 +493,9 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     await this.$nextTick()
 
     if (this.filingId > 0) {
-      this.loadingMessage = `Resuming Your Consent to Continuation Out`
+      this.loadingMessage = 'Resuming Your Consent to Continuation Out'
     } else {
-      this.loadingMessage = `Preparing Your Consent to Continuation Out`
+      this.loadingMessage = 'Preparing Your Consent to Continuation Out'
     }
 
     // fetch draft (which may overwrite some properties)

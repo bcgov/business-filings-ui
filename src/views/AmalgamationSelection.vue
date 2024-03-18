@@ -180,10 +180,8 @@ export default class AmalgamationSelection extends Vue {
 
   /** Called when component is created. */
   created (): void {
-    const filingId = +this.$route.params.filingId // id param of this selection panel route, must be 0
-
     // if required data isn't set, go back to dashboard
-    if (!this.getIdentifier || filingId !== 0) {
+    if (!this.getIdentifier) {
       this.$router.push({ name: Routes.DASHBOARD })
     }
   }

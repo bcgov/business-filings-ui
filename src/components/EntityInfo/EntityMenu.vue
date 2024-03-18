@@ -141,6 +141,27 @@
                 and it will be struck from the corporate registry.
               </v-tooltip>
 
+              <!-- Consent to Amalgamate Out -->
+              <v-tooltip
+                right
+                content-class="right-tooltip"
+              >
+                <template #activator="{ on }">
+                  <v-list-item
+                    v-if="showConsentAmalgamationOut"
+                    id="consent-amalgamate-out-list-item"
+                    :disabled="!isAllowed(AllowableActions.CONSENT_AMALGAMATION_OUT)"
+                    v-on="on"
+                    @click="goToConsentAmalgamationOutFiling()"
+                  >
+                    <v-list-item-title>
+                      <span class="app-blue">Consent to Amalgamate Out</span>
+                    </v-list-item-title>
+                  </v-list-item>
+                </template>
+                Submit a Consent to Amalgamate Out of the province of B.C.
+              </v-tooltip>
+
               <!-- Consent to Continue Out -->
               <v-tooltip
                 right
@@ -148,8 +169,8 @@
               >
                 <template #activator="{ on }">
                   <v-list-item
-                    v-if="isBenBcCccUlc || isCoop"
-                    id="cco-list-item"
+                    v-if="showConsentContinueOut"
+                    id="consent-continue-out-list-item"
                     :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
                     v-on="on"
                     @click="goToConsentContinuationOutFiling()"
@@ -300,6 +321,20 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     return !!GetFeatureFlag('supported-amalgamation-entities').includes(this.getLegalType)
   }
 
+  get showConsentAmalgamationOut (): boolean {
+    return (
+      (this.isBenBcCccUlc || this.isCoop) &&
+      !!GetFeatureFlag('supported-consent-amalgamation-out-entities').includes(this.getLegalType)
+    )
+  }
+
+  get showConsentContinueOut (): boolean {
+    return (
+      (this.isBenBcCccUlc || this.isCoop) &&
+      !!GetFeatureFlag('supported-consent-continuation-out-entities').includes(this.getLegalType)
+    )
+  }
+
   /** The tooltip text for AGM Extension list item. Text is different if action item is disabled. */
   get agmExtensionToolTipText (): string {
     if (!this.isAllowed(AllowableActions.AGM_EXTENSION)) {
@@ -352,13 +387,18 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   promptDissolve (): void {
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.DISSOLVE)
-      return
+    } else {
+      this.emitConfirmDissolution()
     }
-    this.emitConfirmDissolution()
   }
 
   goToAmalgamationSelection (): void {
-    this.$router.push({ name: Routes.AMALGAMATION_SELECTION, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.AMALGAMATION_SELECTION })
+  }
+
+  goToConsentAmalgamationOutFiling (): void {
+    // 0 means "new filing"
+    this.$router.push({ name: Routes.CONSENT_AMALGAMATION_OUT, params: { filingId: '0' } })
   }
 
   goToConsentContinuationOutFiling (): void {

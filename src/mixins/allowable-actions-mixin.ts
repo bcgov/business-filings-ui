@@ -35,10 +35,6 @@ export default class AllowableActionsMixin extends Vue {
         return this.isAllowedFiling(FilingTypes.DISSOLUTION)
       }
 
-      case AllowableActions.ANNUAL_REPORT: {
-        return this.isAllowedFiling(FilingTypes.ANNUAL_REPORT)
-      }
-
       case AllowableActions.AGM_EXTENSION: {
         return this.isAllowedFiling(FilingTypes.AGM_EXTENSION)
       }
@@ -49,6 +45,15 @@ export default class AllowableActionsMixin extends Vue {
 
       case AllowableActions.AMALGAMATION: {
         return this.isAllowedFiling(FilingTypes.AMALGAMATION_APPLICATION)
+      }
+
+      case AllowableActions.AMALGAMATION_OUT: {
+        const ff = !!GetFeatureFlag('supported-amalgamation-out-entities')?.includes(this.getLegalType)
+        return (ff && this.isAllowedFiling(FilingTypes.AMALGAMATION_OUT))
+      }
+
+      case AllowableActions.ANNUAL_REPORT: {
+        return this.isAllowedFiling(FilingTypes.ANNUAL_REPORT)
       }
 
       case AllowableActions.BUSINESS_INFORMATION: {
@@ -69,9 +74,12 @@ export default class AllowableActionsMixin extends Vue {
         return (ff && isBusiness)
       }
 
+      case AllowableActions.CONSENT_AMALGAMATION_OUT: {
+        return this.isAllowedFiling(FilingTypes.CONSENT_AMALGAMATION_OUT)
+      }
+
       case AllowableActions.CONSENT_CONTINUATION_OUT: {
-        const ff = !!GetFeatureFlag('supported-consent-continuation-out-entities')?.includes(this.getLegalType)
-        return (ff && this.isAllowedFiling(FilingTypes.CONSENT_CONTINUATION_OUT))
+        return this.isAllowedFiling(FilingTypes.CONSENT_CONTINUATION_OUT)
       }
 
       case AllowableActions.CONTINUATION_OUT: {

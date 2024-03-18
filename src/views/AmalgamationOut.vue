@@ -1,19 +1,19 @@
 <template>
-  <div id="continuation-out">
+  <div id="amalgamation-out">
     <ConfirmDialog
       ref="confirm"
-      attach="#continuation-out"
+      attach="#amalgamation-out"
     />
 
     <ResumeErrorDialog
-      attach="#continuation-out"
+      attach="#amalgamation-out"
       :dialog="resumeErrorDialog"
       @exit="goToDashboard(true)"
     />
 
     <SaveErrorDialog
-      attach="#continuation-out"
-      filingName="Continuation Out"
+      attach="#amalgamation-out"
+      filingName="Amalgamation Out"
       :dialog="!!saveErrorReason"
       :disableRetry="busySaving"
       :errors="saveErrors"
@@ -57,7 +57,7 @@
             <!-- Page Title -->
             <header>
               <h1 id="continue-out-header">
-                Continuation Out
+                Amalgamation Out
               </h1>
             </header>
 
@@ -105,10 +105,10 @@
               </div>
             </section>
 
-            <!-- Effective Date of Continuation -->
+            <!-- Effective Date of Amalgamation -->
             <section>
               <header>
-                <h2>Effective Date of Continuation</h2>
+                <h2>Effective Date of Amalgamation</h2>
               </header>
               <div
                 id="effective-date-section"
@@ -216,7 +216,7 @@
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-component': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
-                  :message="certifyText(FilingCodes.CONTINUATION_OUT)"
+                  :message="certifyText(FilingCodes.AMALGANATION_OUT)"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -373,7 +373,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     SbcFeeSummary
   }
 })
-export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
+export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin,
   EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
@@ -437,7 +437,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   totalFee = 0
   dataLoaded = false
   loadingMessage = ''
-  filingId = 0 // id of this Continuation Out filing
+  filingId = 0 // id of this Amalgamation Out filing
   savedFiling: any = null // filing during save
   saving = false // true only when saving
   savingResuming = false // true only when saving and resuming
@@ -456,7 +456,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   /** Default comment (ie, the first line of the detail comment). */
   get defaultComment (): string {
-    return 'Continuation Out'
+    return 'Amalgamation Out'
   }
 
   /** Maximum length of detail comment. */
@@ -491,7 +491,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   /** Called when component is created. */
   created (): void {
-    // Safety check to make sure Staff is filing the Continuation Out.
+    // Safety check to make sure Staff is filing the Amalgamation Out.
     if (!this.isRoleStaff) {
       this.resumeErrorDialog = true
       throw new Error('This is a Staff only Filing.')
@@ -527,9 +527,9 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     await this.$nextTick()
 
     if (this.filingId > 0) {
-      this.loadingMessage = 'Resuming Your Continuation Out'
+      this.loadingMessage = 'Resuming Your Amalgamation Out'
     } else {
-      this.loadingMessage = 'Preparing Your Continuation Out'
+      this.loadingMessage = 'Preparing Your Amalgamation Out'
       this.initialBusinessName = this.getLegalName
     }
 
@@ -542,10 +542,10 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
     // always include continue out code
     // clear Priority flag and set the Waive Fees flag to true
-    this.updateFilingData('add', FilingCodes.CONTINUATION_OUT, undefined, true)
+    this.updateFilingData('add', FilingCodes.AMALGAMATION_OUT, undefined, true)
   }
 
-  /** Fetches the draft continuation out filing. */
+  /** Fetches the draft amalgamation out filing. */
   async fetchDraftFiling (): Promise<void> {
     const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
     await LegalServices.fetchFiling(url).then(filing => {
@@ -553,8 +553,8 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       if (!filing) throw new Error('Missing filing')
       if (!filing.header) throw new Error('Missing header')
       if (!filing.business) throw new Error('Missing business')
-      if (!filing.continuationOut) throw new Error('Missing continuation out object')
-      if (filing.header.name !== FilingTypes.CONTINUATION_OUT) throw new Error('Invalid filing type')
+      if (!filing.amalgamationOut) throw new Error('Missing amalgamation out object')
+      if (filing.header.name !== FilingTypes.AMALGAMATION_OUT) throw new Error('Invalid filing type')
       if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
       if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
       if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
@@ -563,21 +563,21 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       this.certifiedBy = filing.header.certifiedBy
 
       // load Detail Comment, removing the first line (default comment)
-      const comment: string = filing.continuationOut.details || ''
+      const comment: string = filing.amalgamationOutOut.details || ''
       this.detailComment = comment.split('\n').slice(1).join('\n')
 
-      const courtOrder = filing.continuationOut.courtOrder
+      const courtOrder = filing.amalgamationOut.courtOrder
       if (courtOrder) {
         this.fileNumber = courtOrder.fileNumber
         this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
       }
 
-      const continuationOutDate = filing.continuationOut.continuationOutDate
-      if (continuationOutDate) {
-        this.initialEffectiveDate = continuationOutDate
+      const amalgamationOutDate = filing.amalgamationOut.amalgamationOutDate
+      if (amalgamationOutDate) {
+        this.initialEffectiveDate = amalgamationOutDate
       }
 
-      const foreignJurisdiction = filing.continuationOut.foreignJurisdiction
+      const foreignJurisdiction = filing.amalgamationOut.foreignJurisdiction
       if (foreignJurisdiction) {
         this.initialCountry = foreignJurisdiction.country
         if (foreignJurisdiction.region) {
@@ -585,7 +585,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
         }
       }
 
-      const legalName = filing.continuationOut.legalName
+      const legalName = filing.amalgamationOut.legalName
       if (legalName) {
         this.initialBusinessName = legalName
       }
@@ -785,7 +785,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
     const header: any = {
       header: {
-        name: FilingTypes.CONTINUATION_OUT,
+        name: FilingTypes.AMALGAMATION_OUT,
         certifiedBy: this.certifiedBy || '',
         email: this.getBusinessEmail || '',
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
@@ -808,9 +808,9 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     }
 
     const data: any = {
-      [FilingTypes.CONTINUATION_OUT]: {
+      [FilingTypes.AMALGAMATION_OUT]: {
         details: `${this.defaultComment}\n${this.detailComment}`,
-        continuationOutDate: this.effectiveDate,
+        amalgamationOutDate: this.effectiveDate,
         foreignJurisdiction: {
           country: this.selectedCountry,
           region: this.selectedRegion
@@ -820,7 +820,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     }
 
     if (this.fileNumber !== '') {
-      data[FilingTypes.CONTINUATION_OUT].courtOrder = {
+      data[FilingTypes.AMALGAMATION_OUT].courtOrder = {
         fileNumber: this.fileNumber,
         effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string
       }
@@ -963,7 +963,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-#continuation-out {
+#amalgamation-out {
   /* Set "header-counter" to 0 */
   counter-reset: header-counter;
 }
