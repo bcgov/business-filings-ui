@@ -13,7 +13,7 @@ const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 
-describe('Missing Information alert', () => {
+describe('Not In Compliance alert', () => {
   beforeAll(() => {
     businessStore.$state.businessInfo.goodStanding = true
     businessStore.$state.businessInfo.legalType = CorpTypeCd.SOLE_PROP
@@ -21,7 +21,7 @@ describe('Missing Information alert', () => {
       {
         code: null,
         message: null,
-        warningType: 'MISSING_REQUIRED_BUSINESS_INFO'
+        warningType: 'COMPLIANCE'
       }
     ]
   })
@@ -31,8 +31,8 @@ describe('Missing Information alert', () => {
 
     // verify content
     expect(wrapper.findAll('.v-expansion-panel').length).toBe(1)
-    expect(wrapper.find('.v-expansion-panel').attributes('id')).toBe('missing-information-panel')
-    expect(wrapper.find('h3').text()).toBe('Missing information')
+    expect(wrapper.find('.v-expansion-panel').attributes('id')).toBe('not-in-compliance-panel')
+    expect(wrapper.find('h3').text()).toBe('This business is not in compliance')
     expect(wrapper.find('button.details-btn').text()).toBe('View Details')
 
     wrapper.destroy()
@@ -46,11 +46,10 @@ describe('Missing Information alert', () => {
 
     // verify content
     expect(wrapper.findAll('.v-expansion-panel').length).toBe(1)
-    expect(wrapper.find('.v-expansion-panel').attributes('id')).toBe('missing-information-panel')
-    expect(wrapper.find('h3').text()).toBe('Missing information')
+    expect(wrapper.find('.v-expansion-panel').attributes('id')).toBe('not-in-compliance-panel')
+    expect(wrapper.find('h3').text()).toBe('This business is not in compliance')
     expect(wrapper.find('button.details-btn').text()).toBe('Hide Details')
-    expect(wrapper.findAll('.v-expansion-panel-content p').at(0).text()).toContain('BC Registries is missing')
-    expect(wrapper.findAll('.v-expansion-panel-content p').at(1).text()).toContain('If further action is required')
+    expect(wrapper.find('.v-expansion-panel-content p').text()).toContain('To resolve this issue, you MUST')
     expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()

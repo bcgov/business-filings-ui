@@ -3,9 +3,8 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore } from '@/stores'
-import Amalgamation from '@/components/Dashboard/Alerts/Amalgamation.vue'
+import Alerts from '@/components/Dashboard/Alerts.vue'
 import { ContactInfo } from '@/components/common'
-import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -13,48 +12,47 @@ const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 
-describe('Amalgamation component', () => {
+describe('Amalgamation alert', () => {
   beforeAll(() => {
+    businessStore.$state.businessInfo.goodStanding = true
     businessStore.$state.businessInfo.warnings = [
       {
-        code: 'AMALGAMATING_BUSINESS',
-        message: 'This business is part of a future effective amalgamation.',
+        code: null,
+        message: null,
         warningType: 'FUTURE_EFFECTIVE_AMALGAMATION',
-        data: {
-          amalgamationDate: '2024-01-31T08:00:00+00:00'
-        }
+        data: { amalgamationDate: '2024-01-31T08:00:00+00:00' }
       }
     ]
   })
 
   it('Displays expansion panel closed', () => {
-    const wrapper = mount(Amalgamation, { vuetify })
+    const wrapper = mount(Alerts, { vuetify })
 
     // verify content
+    expect(wrapper.findAll('.v-expansion-panel').length).toBe(1)
+    expect(wrapper.find('.v-expansion-panel').attributes('id')).toBe('amalgamation-panel')
     expect(wrapper.find('h3').text()).toContain('This corporation is part of an amalgamation')
-    expect(wrapper.find('h3').text()).toContain('January 31, 2024')
-    expect(wrapper.find('.details-btn').text()).toBe('View Details')
-    expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(false)
+    expect(wrapper.find('h3').text()).toContain('historical on January 31, 2024')
+    expect(wrapper.find('button.details-btn').text()).toBe('View Details')
 
     wrapper.destroy()
   })
 
-  it('Displays expansion panel open', async () => {
-    const wrapper = mount(Amalgamation, { vuetify })
+  it('Displays expansion panel opened', async () => {
+    const wrapper = mount(Alerts, { vuetify })
 
     // click the button
     await wrapper.find('.details-btn').trigger('click')
-    await flushPromises() // wait for expansion transition
 
     // verify content
+    expect(wrapper.findAll('.v-expansion-panel').length).toBe(1)
+    expect(wrapper.find('.v-expansion-panel').attributes('id')).toBe('amalgamation-panel')
     expect(wrapper.find('h3').text()).toContain('This corporation is part of an amalgamation')
-    expect(wrapper.find('h3').text()).toContain('January 31, 2024')
-    expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(true)
-    expect(wrapper.find('.v-expansion-panel-content__wrap').text()).toContain('If you have any questions')
+    expect(wrapper.find('h3').text()).toContain('historical on January 31, 2024')
+    expect(wrapper.find('button.details-btn').text()).toBe('Hide Details')
+    expect(wrapper.find('.v-expansion-panel-content p').text()).toContain('If you have any questions')
     expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })
-
-  // FUTURE: add a text to verify hidePhoneNumbers()
 })

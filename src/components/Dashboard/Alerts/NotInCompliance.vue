@@ -1,64 +1,58 @@
 <template>
-  <v-expansion-panels
-    id="not-in-good-standing-container"
-    v-model="panel"
-  >
-    <v-expansion-panel class="mb-6">
-      <v-expansion-panel-header
-        hide-actions
-        class="d-flex justify-space-between px-6 py-5"
-      >
-        <h3>
-          <v-icon
-            left
-            color="orange darken-2"
-          >
-            mdi-alert
-          </v-icon>
-          <span>This business is not in compliance</span>
-        </h3>
-        <v-btn
-          text
-          color="primary"
-          class="details-btn my-n1"
-          @click.stop="togglePanel()"
+  <v-expansion-panel id="not-in-compliance-panel">
+    <v-expansion-panel-header
+      hide-actions
+      class="d-flex justify-space-between px-6 py-5"
+    >
+      <h3>
+        <v-icon
+          left
+          color="orange darken-2"
         >
-          <span color="primary">{{ panel === 0 ? "Hide Details" : "View Details" }}</span>
-          <v-icon
-            right
-            color="primary"
-          >
-            {{ panel === 0 ? "mdi-chevron-up" : "mdi-chevron-down" }}
-          </v-icon>
-        </v-btn>
-      </v-expansion-panel-header>
+          mdi-alert
+        </v-icon>
+        <span>This business is not in compliance</span>
+      </h3>
+      <v-btn
+        text
+        color="primary"
+        class="details-btn my-n1"
+        @click.stop="togglePanel()"
+      >
+        <span color="primary">{{ showPanel ? "Hide Details" : "View Details" }}</span>
+        <v-icon
+          right
+          color="primary"
+        >
+          {{ showPanel ? "mdi-chevron-up" : "mdi-chevron-down" }}
+        </v-icon>
+      </v-btn>
+    </v-expansion-panel-header>
 
-      <v-expansion-panel-content>
-        <!--
-          FUTURE: Add helpful text here. See NotInGoodStanding.vue for sample layout.
-        -->
-        <p class="mb-0">
-          To resolve this issue, you MUST contact BC Registries staff:
-        </p>
-        <ContactInfo class="pt-5" />
-      </v-expansion-panel-content>
-    </v-expansion-panel>
-  </v-expansion-panels>
+    <v-expansion-panel-content eager>
+      <!--
+        FUTURE: Add helpful text here. See NotInGoodStanding.vue for sample layout.
+      -->
+      <p class="mb-0">
+        To resolve this issue, you MUST contact BC Registries staff:
+      </p>
+      <ContactInfo class="pt-5" />
+    </v-expansion-panel-content>
+  </v-expansion-panel>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
 
 @Component({
   components: { ContactInfo }
 })
 export default class NotInCompliance extends Vue {
-  panel = 1
+  @Prop({ required: true }) readonly showPanel!: boolean
 
-  togglePanel (): void {
-    this.panel = (this.panel === 1 ? 0 : 1)
-  }
+  @Emit('togglePanel')
+  togglePanel (): void {}
 }
 </script>
 
