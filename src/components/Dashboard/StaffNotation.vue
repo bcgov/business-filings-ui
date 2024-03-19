@@ -165,7 +165,7 @@
             </v-list-item>
 
             <v-list-item
-              v-if="!isHistorical && (isBenBcCccUlc || isCoop)"
+              v-if="!isHistorical && showConsentAmalgamateOut"
               data-type="consent-amalgamate-out"
               :disabled="!isAllowed(AllowableActions.CONSENT_AMALGAMATION_OUT)"
               @click="goToConsentAmalgamationOutFiling()"
@@ -176,7 +176,18 @@
             </v-list-item>
 
             <v-list-item
-              v-if="!isHistorical && (isBenBcCccUlc || isCoop)"
+              v-if="!isHistorical && showAmalgamateOut"
+              data-type="amalgamate-out"
+              :disabled="!isAllowed(AllowableActions.AMALGAMATION_OUT)"
+              @click="goToAmalgamationOutFiling()"
+            >
+              <v-list-item-title>
+                <span class="app-blue">Amalgamate Out</span>
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              v-if="!isHistorical && showConsentContinueOut"
               data-type="consent-continue-out"
               :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
               @click="goToConsentContinuationOutFiling()"
@@ -187,7 +198,7 @@
             </v-list-item>
 
             <v-list-item
-              v-if="!isHistorical && (isBenBcCccUlc || isCoop)"
+              v-if="!isHistorical && showContinueOut"
               data-type="continue-out"
               :disabled="!isAllowed(AllowableActions.CONTINUATION_OUT)"
               @click="goToContinuationOutFiling()"
@@ -226,7 +237,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { navigate } from '@/utils'
+import { GetFeatureFlag, navigate } from '@/utils'
 import {
   AllowableActions,
   ApplicationTypes,
@@ -311,9 +322,42 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
     this.close(needReload)
   }
 
+  get showConsentAmalgamateOut (): boolean {
+    return (
+      (this.isBenBcCccUlc || this.isCoop) &&
+      !!GetFeatureFlag('supported-consent-amalgamation-out-entities').includes(this.getLegalType)
+    )
+  }
+
+  get showAmalgamateOut (): boolean {
+    return (
+      (this.isBenBcCccUlc || this.isCoop) &&
+      !!GetFeatureFlag('supported-amalgamation-out-entities').includes(this.getLegalType)
+    )
+  }
+
+  get showConsentContinueOut (): boolean {
+    return (
+      (this.isBenBcCccUlc || this.isCoop) &&
+      !!GetFeatureFlag('supported-consent-continuation-out-entities').includes(this.getLegalType)
+    )
+  }
+
+  get showContinueOut (): boolean {
+    return (
+      (this.isBenBcCccUlc || this.isCoop) &&
+      !!GetFeatureFlag('supported-continuation-out-entities').includes(this.getLegalType)
+    )
+  }
+
   goToConsentAmalgamationOutFiling (): void {
     // 0 means "new filing"
     this.$router.push({ name: Routes.CONSENT_AMALGAMATION_OUT, params: { filingId: '0' } })
+  }
+
+  goToAmalgamationOutFiling ():void {
+    // 0 means "new filing"
+    this.$router.push({ name: Routes.AMALGAMATION_OUT, params: { filingId: '0' } })
   }
 
   goToConsentContinuationOutFiling (): void {

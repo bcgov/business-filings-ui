@@ -100,20 +100,11 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Amalgamation Out is allowed', () => {
-    vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
-
-    // verify allowed filing type but no feature flag
-    setAllowedFilingType({ name: FilingTypes.AMALGAMATION_OUT })
-    setFeatureFlag([])
-    expect(vm.isAllowed(AllowableActions.AMALGAMATION_OUT)).toBe(false)
-
-    // verify feature flag but no allowed filing type
-    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+    // verify no allowed filing type
     setAllowedFilingType()
     expect(vm.isAllowed(AllowableActions.AMALGAMATION_OUT)).toBe(false)
 
-    // verify both feature flag and allowed filing type
-    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+    // verify allowed filing type
     setAllowedFilingType({ name: FilingTypes.AMALGAMATION_OUT })
     expect(vm.isAllowed(AllowableActions.AMALGAMATION_OUT)).toBe(true)
   })
@@ -214,20 +205,11 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Continuation Out is allowed', () => {
-    vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
-
-    // verify allowed filing type but no feature flag
-    setAllowedFilingType({ name: FilingTypes.CONTINUATION_OUT })
-    setFeatureFlag([])
-    expect(vm.isAllowed(AllowableActions.CONTINUATION_OUT)).toBe(false)
-
-    // verify feature flag but no allowed filing type
-    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+    // verify no allowed filing type
     setAllowedFilingType()
     expect(vm.isAllowed(AllowableActions.CONTINUATION_OUT)).toBe(false)
 
-    // verify both feature flag and allowed filing type
-    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+    // verify allowed filing type
     setAllowedFilingType({ name: FilingTypes.CONTINUATION_OUT })
     expect(vm.isAllowed(AllowableActions.CONTINUATION_OUT)).toBe(true)
   })

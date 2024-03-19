@@ -148,7 +148,7 @@
               >
                 <template #activator="{ on }">
                   <v-list-item
-                    v-if="showConsentAmalgamationOut"
+                    v-if="showConsentAmalgamateOut"
                     id="consent-amalgamate-out-list-item"
                     :disabled="!isAllowed(AllowableActions.CONSENT_AMALGAMATION_OUT)"
                     v-on="on"
@@ -321,7 +321,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     return !!GetFeatureFlag('supported-amalgamation-entities').includes(this.getLegalType)
   }
 
-  get showConsentAmalgamationOut (): boolean {
+  get showConsentAmalgamateOut (): boolean {
     return (
       (this.isBenBcCccUlc || this.isCoop) &&
       !!GetFeatureFlag('supported-consent-amalgamation-out-entities').includes(this.getLegalType)

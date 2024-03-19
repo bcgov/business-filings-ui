@@ -141,7 +141,9 @@ describe('StaffNotation', () => {
           { name: FilingTypes.PUT_BACK_ON },
           { name: FilingTypes.ADMIN_FREEZE },
           { name: FilingTypes.CONSENT_AMALGAMATION_OUT },
+          { name: FilingTypes.AMALGAMATION_OUT },
           { name: FilingTypes.CONSENT_CONTINUATION_OUT },
+          { name: FilingTypes.CONTINUATION_OUT },
           { name: FilingTypes.RESTORATION, type: FilingSubTypes.LIMITED_RESTORATION_EXTENSION },
           { name: FilingTypes.RESTORATION, type: FilingSubTypes.LIMITED_RESTORATION_TO_FULL }
         ]
@@ -213,8 +215,18 @@ describe('StaffNotation', () => {
       //   disabled: false
       // },
       // {
+      //   type: 'amalgamate-out',
+      //   label: 'Amalgamate Out',
+      //   disabled: false
+      // },
+      // {
       //   type: 'consent-continue-out',
       //   label: 'Consent to Continuation Out',
+      //   disabled: false
+      // },
+      // {
+      //   type: 'continue-out',
+      //   label: 'Continue Out',
       //   disabled: false
       // },
     ]
@@ -235,8 +247,17 @@ describe('StaffNotation', () => {
   })
 
   it('renders drop-down menu correctly - not firm', async () => {
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-consent-amalgamation-out-entities') return 'BC'
+      if (flag === 'supported-amalgamation-out-entities') return 'BC'
+      if (flag === 'supported-consent-continuation-out-entities') return 'BC'
+      if (flag === 'supported-continuation-out-entities') return 'BC'
+      return null
+    })
+
     // set store specifically for this test
-    businessStore.setLegalType(CorpTypeCd.BC_COMPANY) // not firm
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY) // not a firm
+    businessStore.setState(EntityState.ACTIVE)
 
     const wrapper = mount(StaffNotation, { vuetify })
 
@@ -244,9 +265,11 @@ describe('StaffNotation', () => {
     await wrapper.find('.menu-btn').trigger('click')
     expect(wrapper.vm.$data.expand).toBe(true)
 
+    console.log(wrapper.html())
     // verify items
-    expect(wrapper.find('[data-type="record-conversion"]').exists()).toBe(false)
+    expect(wrapper.find('[data-type="record-conversion"]').exists()).toBe(false) // firms only
     expect(wrapper.find('[data-type="consent-amalgamate-out"]').exists()).toBe(true)
+    expect(wrapper.find('[data-type="amalgamate-out"]').exists()).toBe(true)
     expect(wrapper.find('[data-type="consent-continue-out"]').exists()).toBe(true)
     expect(wrapper.find('[data-type="continue-out"]').exists()).toBe(true)
 
@@ -329,8 +352,18 @@ describe('StaffNotation', () => {
       //   disabled: true
       // },
       // {
+      //   type: 'amalgamate-out',
+      //   label: 'Amalgamate Out',
+      //   disabled: true
+      // },
+      // {
       //   type: 'consent-continue-out',
       //   label: 'Consent to Continuation Out',
+      //   disabled: true
+      // },
+      // {
+      //   type: 'continue-out',
+      //   label: 'Continue Out',
       //   disabled: true
       // },
     ]
@@ -637,6 +670,10 @@ describe('StaffNotation', () => {
   it('goes to limited restoration extension filing', async () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
       if (flag === 'supported-restoration-entities') return 'BC'
+      if (flag === 'supported-consent-amalgamation-out-entities') return []
+      if (flag === 'supported-amalgamation-out-entities') return []
+      if (flag === 'supported-consent-continuation-out-entities') return []
+      if (flag === 'supported-continuation-out-entities') return []
       return null
     })
 
@@ -686,6 +723,10 @@ describe('StaffNotation', () => {
   it('goes to limited restoration conversion filing', async () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
       if (flag === 'supported-restoration-entities') return 'BEN'
+      if (flag === 'supported-consent-amalgamation-out-entities') return []
+      if (flag === 'supported-amalgamation-out-entities') return []
+      if (flag === 'supported-consent-continuation-out-entities') return []
+      if (flag === 'supported-continuation-out-entities') return []
       return null
     })
 

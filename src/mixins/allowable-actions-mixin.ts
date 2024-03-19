@@ -48,8 +48,7 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.AMALGAMATION_OUT: {
-        const ff = !!GetFeatureFlag('supported-amalgamation-out-entities')?.includes(this.getLegalType)
-        return (ff && this.isAllowedFiling(FilingTypes.AMALGAMATION_OUT))
+        return this.isAllowedFiling(FilingTypes.AMALGAMATION_OUT)
       }
 
       case AllowableActions.ANNUAL_REPORT: {
@@ -58,7 +57,6 @@ export default class AllowableActionsMixin extends Vue {
 
       case AllowableActions.BUSINESS_INFORMATION: {
         if (this.isCoop) {
-          // NB: this feature is targeted via LaunchDarkly
           const ff = !!GetFeatureFlag('special-resolution-ui-enabled')
           return (ff && this.isAllowedFiling(FilingTypes.SPECIAL_RESOLUTION))
         }
@@ -83,8 +81,7 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.CONTINUATION_OUT: {
-        const ff = !!GetFeatureFlag('supported-continuation-out-entities')?.includes(this.getLegalType)
-        return (ff && this.isAllowedFiling(FilingTypes.CONTINUATION_OUT))
+        return this.isAllowedFiling(FilingTypes.CONTINUATION_OUT)
       }
 
       case AllowableActions.CORRECTION: {
