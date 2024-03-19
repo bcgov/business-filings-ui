@@ -217,8 +217,8 @@ describe('Consent to Amalgamation Out view', () => {
     // verify new Filing ID
     expect(vm.filingId).toBe(456)
 
-    // verify that detail comment is not empty
-    expect(vm.detailComment).not.toBe('')
+    // verify that detail comment from Legal API is not null
+    expect(vm.savedFiling.consentAmalgamationOut.details).toBe('test')
 
     vi.restoreAllMocks()
     wrapper.destroy()
@@ -446,8 +446,8 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     // verify new Filing ID
     expect(vm.filingId).toBe(456)
 
-    // verify that detail comment is empty
-    expect(vm.detailComment).toBe('')
+    // verify that detail comment from Legal API is null
+    expect(vm.savedFiling.consentAmalgamationOut.details).toBeNull()
 
     vi.restoreAllMocks()
     wrapper.destroy()
