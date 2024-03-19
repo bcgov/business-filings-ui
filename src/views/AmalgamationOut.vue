@@ -216,7 +216,7 @@
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-component': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
-                  :message="certifyText(FilingCodes.AMALGANATION_OUT)"
+                  :message="certifyText(FilingCodes.AMALGAMATION_OUT)"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -543,6 +543,12 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin,
     // always include continue out code
     // clear Priority flag and set the Waive Fees flag to true
     this.updateFilingData('add', FilingCodes.AMALGAMATION_OUT, undefined, true)
+  }
+
+  /** Called just before this component is destroyed. */
+  beforeDestroy (): void {
+    // remove event handler
+    window.onbeforeunload = null
   }
 
   /** Fetches the draft amalgamation out filing. */

@@ -552,6 +552,9 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   beforeDestroy (): void {
     // stop listening for custom events
     this.$root.$off('fetch-error-event')
+
+    // remove event handler
+    window.onbeforeunload = null
   }
 
   async fetchDraftFiling (): Promise<void> {

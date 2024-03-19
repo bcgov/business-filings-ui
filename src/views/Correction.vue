@@ -434,6 +434,12 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
+  /** Called just before this component is destroyed. */
+  beforeDestroy (): void {
+    // remove event handler
+    window.onbeforeunload = null
+  }
+
   /** Fetches the draft correction filing. */
   async fetchDraftFiling (): Promise<void> {
     const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`

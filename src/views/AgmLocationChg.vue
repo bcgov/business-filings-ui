@@ -427,6 +427,12 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHANGE, undefined, undefined)
   }
 
+  /** Called just before this component is destroyed. */
+  beforeDestroy (): void {
+    // remove event handler
+    window.onbeforeunload = null
+  }
+
   /**
    * Called when user clicks File and Pay button
    * or when user retries from Save Error dialog.

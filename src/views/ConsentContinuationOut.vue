@@ -521,6 +521,12 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
+  /** Called just before this component is destroyed. */
+  beforeDestroy (): void {
+    // remove event handler
+    window.onbeforeunload = null
+  }
+
   /** Fetches the draft consent filing. */
   async fetchDraftFiling (): Promise<void> {
     const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
