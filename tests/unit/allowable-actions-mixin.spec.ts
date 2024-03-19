@@ -99,6 +99,16 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.AMALGAMATION)).toBe(true)
   })
 
+  it('identifies whether Amalgamation Out is allowed', () => {
+    // verify no allowed filing type
+    setAllowedFilingType()
+    expect(vm.isAllowed(AllowableActions.AMALGAMATION_OUT)).toBe(false)
+
+    // verify allowed filing type
+    setAllowedFilingType({ name: FilingTypes.AMALGAMATION_OUT })
+    expect(vm.isAllowed(AllowableActions.AMALGAMATION_OUT)).toBe(true)
+  })
+
   it('identifies whether Annual Report is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
@@ -174,40 +184,32 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.BUSINESS_SUMMARY)).toBe(true)
   })
 
-  it('identifies whether Consent Continuation Out is allowed', () => {
-    vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
+  it('identifies whether Consent Amalgamation Out is allowed', () => {
+    // verify allowed filing type
+    setAllowedFilingType({ name: FilingTypes.CONSENT_AMALGAMATION_OUT })
+    expect(vm.isAllowed(AllowableActions.CONSENT_AMALGAMATION_OUT)).toBe(true)
 
-    // verify allowed filing type but no feature flag
-    setAllowedFilingType({ name: FilingTypes.CONSENT_CONTINUATION_OUT })
-    setFeatureFlag([])
-    expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(false)
-
-    // verify feature flag but no allowed filing type
-    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+    // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(false)
+    expect(vm.isAllowed(AllowableActions.CONSENT_AMALGAMATION_OUT)).toBe(false)
+  })
 
-    // verify both feature flag and allowed filing type
-    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+  it('identifies whether Consent Continuation Out is allowed', () => {
+    // verify allowed filing type
     setAllowedFilingType({ name: FilingTypes.CONSENT_CONTINUATION_OUT })
     expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(true)
+
+    // verify no allowed filing type
+    setAllowedFilingType()
+    expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(false)
   })
 
   it('identifies whether Continuation Out is allowed', () => {
-    vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
-
-    // verify allowed filing type but no feature flag
-    setAllowedFilingType({ name: FilingTypes.CONTINUATION_OUT })
-    setFeatureFlag([])
-    expect(vm.isAllowed(AllowableActions.CONTINUATION_OUT)).toBe(false)
-
-    // verify feature flag but no allowed filing type
-    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+    // verify no allowed filing type
     setAllowedFilingType()
     expect(vm.isAllowed(AllowableActions.CONTINUATION_OUT)).toBe(false)
 
-    // verify both feature flag and allowed filing type
-    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+    // verify allowed filing type
     setAllowedFilingType({ name: FilingTypes.CONTINUATION_OUT })
     expect(vm.isAllowed(AllowableActions.CONTINUATION_OUT)).toBe(true)
   })

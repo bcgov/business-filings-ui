@@ -5,6 +5,7 @@ import AmalgamationSelection from '@/views/AmalgamationSelection.vue'
 import AnnualReport from '@/views/AnnualReport.vue'
 import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
+import ConsentAmalgamationOut from '@/views/ConsentAmalgamationOut.vue'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
 import ContinuationOut from '@/views/ContinuationOut.vue'
 import Correction from '@/views/Correction.vue'
@@ -114,6 +115,22 @@ export default [
           disabled: false,
           exact: true,
           to: { name: Routes.STANDALONE_ADDRESSES }
+        }
+      ]
+    }
+  },
+  {
+    path: '/consent-amalgamation-out',
+    name: Routes.CONSENT_AMALGAMATION_OUT,
+    component: ConsentAmalgamationOut,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: FilingNames.CONSENT_AMALGAMATION_OUT,
+          disabled: false,
+          exact: true,
+          to: { name: Routes.CONSENT_AMALGAMATION_OUT }
         }
       ]
     }

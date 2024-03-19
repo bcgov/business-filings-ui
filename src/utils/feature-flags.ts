@@ -12,13 +12,17 @@ const defaultFlagSet: LDFlagSet = {
   'enable-digital-credentials': false,
   'sentry-enable': false, // by default, no sentry logs
   'show-alert-phone-numbers-firm': false,
-  'supported-amalgamation-entities': [],
-  'supported-business-summary-entities': [],
-  'supported-correction-entities': [],
-  'supported-dissolution-entities': [],
-  'supported-consent-continuation-out-entities': [],
   'supported-agm-extension-entities': [],
   'supported-agm-location-chg-entities': [],
+  'supported-amalgamation-entities': [],
+  'supported-amalgamation-out-entities': [],
+  'supported-business-summary-entities': [],
+  'supported-consent-amalgamation-out-entities': [],
+  'supported-consent-continuation-out-entities': [],
+  'supported-continuation-in-entities': [],
+  'supported-continuation-out-entities': [],
+  'supported-correction-entities': [],
+  'supported-dissolution-entities': [],
   'supported-put-back-on-entities': [],
   'supported-restoration-entities': []
 }

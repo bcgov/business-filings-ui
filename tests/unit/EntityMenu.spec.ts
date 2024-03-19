@@ -299,6 +299,8 @@ describe('Entity Menu - Amalgamate button tests', () => {
       if (flag === 'supported-agm-extension-entities') return ''
       if (flag === 'supported-agm-location-chg-entities') return ''
       if (flag === 'supported-amalgamation-entities') return 'BC'
+      if (flag === 'supported-consent-amalgamation-out-entities') return ''
+      if (flag === 'supported-consent-continuation-out-entities') return ''
       return null
     })
   })
@@ -541,10 +543,27 @@ it('renders More actions if historical and digital credential feature is allowed
   wrapper.destroy()
 })
 
-describe('Entity Menu - Consent to Continuation click tests', () => {
+describe('Entity Menu - Consent to Amalgamation Out click tests', () => {
   const router = mockRouter.mock()
 
-  it('displays the Consent to Continuation button', async () => {
+  beforeAll(() => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-agm-extension-entities') return ''
+      if (flag === 'supported-agm-location-chg-entities') return ''
+      if (flag === 'supported-amalgamation-entities') return ''
+      if (flag === 'supported-consent-amalgamation-out-entities') return 'BC'
+      if (flag === 'supported-consent-continuation-out-entities') return ''
+      return null
+    })
+  })
+
+  afterAll(() => {
+    // restore feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockRestore()
+  })
+
+  it('displays the Consent to Amalgamate Out button', async () => {
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     businessStore.setState(EntityState.ACTIVE)
 
@@ -558,9 +577,51 @@ describe('Entity Menu - Consent to Continuation click tests', () => {
 
     await wrapper.find('.menu-btn').trigger('click')
 
-    expect(wrapper.find('#cco-list-item').exists()).toBe(true)
-    expect(wrapper.find('#cco-list-item').text()).toBe('Consent to Continue Out')
-    expect(wrapper.find('#cco-list-item').classes()).not.toContain('v-btn--disabled') // enabled
+    expect(wrapper.find('#consent-amalgamate-out-list-item').exists()).toBe(true)
+    expect(wrapper.find('#consent-amalgamate-out-list-item').text()).toBe('Consent to Amalgamate Out')
+    expect(wrapper.find('#consent-amalgamate-out-list-item').classes()).not.toContain('v-btn--disabled') // enabled
+
+    wrapper.destroy()
+  })
+})
+
+describe('Entity Menu - Consent to Continuation Out click tests', () => {
+  const router = mockRouter.mock()
+
+  beforeAll(() => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-agm-extension-entities') return ''
+      if (flag === 'supported-agm-location-chg-entities') return ''
+      if (flag === 'supported-amalgamation-entities') return ''
+      if (flag === 'supported-consent-amalgamation-out-entities') return ''
+      if (flag === 'supported-consent-continuation-out-entities') return 'BC'
+      return null
+    })
+  })
+
+  afterAll(() => {
+    // restore feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockRestore()
+  })
+
+  it('displays the Consent to Continue Out button', async () => {
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.setState(EntityState.ACTIVE)
+
+    // mount the component and wait for everything to stabilize
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      router,
+      mixins: [{ methods: { isAllowed: () => true } }],
+      propsData: { businessId: 'BC1234567' }
+    })
+
+    await wrapper.find('.menu-btn').trigger('click')
+
+    expect(wrapper.find('#consent-continue-out-list-item').exists()).toBe(true)
+    expect(wrapper.find('#consent-continue-out-list-item').text()).toBe('Consent to Continue Out')
+    expect(wrapper.find('#consent-continue-out-list-item').classes()).not.toContain('v-btn--disabled') // enabled
 
     wrapper.destroy()
   })
@@ -575,6 +636,8 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
       if (flag === 'supported-agm-extension-entities') return 'BEN'
       if (flag === 'supported-agm-location-chg-entities') return ''
       if (flag === 'supported-amalgamation-entities') return ''
+      if (flag === 'supported-consent-amalgamation-out-entities') return ''
+      if (flag === 'supported-consent-continuation-out-entities') return ''
       return null
     })
   })
@@ -614,6 +677,8 @@ describe('Entity Menu - Request AGM Location Change click tests', () => {
       if (flag === 'supported-agm-extension-entities') return ''
       if (flag === 'supported-agm-location-chg-entities') return 'BEN'
       if (flag === 'supported-amalgamation-entities') return ''
+      if (flag === 'supported-consent-amalgamation-out-entities') return ''
+      if (flag === 'supported-consent-continuation-out-entities') return ''
       return null
     })
   })

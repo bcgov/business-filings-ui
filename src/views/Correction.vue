@@ -414,9 +414,9 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
     await this.$nextTick()
 
     if (this.filingId > 0) {
-      this.loadingMessage = `Resuming Your Correction`
+      this.loadingMessage = 'Resuming Your Correction'
     } else {
-      this.loadingMessage = `Preparing Your Correction`
+      this.loadingMessage = 'Preparing Your Correction'
     }
 
     // first fetch original filing

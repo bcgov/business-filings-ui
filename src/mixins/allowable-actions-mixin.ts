@@ -35,10 +35,6 @@ export default class AllowableActionsMixin extends Vue {
         return this.isAllowedFiling(FilingTypes.DISSOLUTION)
       }
 
-      case AllowableActions.ANNUAL_REPORT: {
-        return this.isAllowedFiling(FilingTypes.ANNUAL_REPORT)
-      }
-
       case AllowableActions.AGM_EXTENSION: {
         return this.isAllowedFiling(FilingTypes.AGM_EXTENSION)
       }
@@ -51,9 +47,16 @@ export default class AllowableActionsMixin extends Vue {
         return this.isAllowedFiling(FilingTypes.AMALGAMATION_APPLICATION)
       }
 
+      case AllowableActions.AMALGAMATION_OUT: {
+        return this.isAllowedFiling(FilingTypes.AMALGAMATION_OUT)
+      }
+
+      case AllowableActions.ANNUAL_REPORT: {
+        return this.isAllowedFiling(FilingTypes.ANNUAL_REPORT)
+      }
+
       case AllowableActions.BUSINESS_INFORMATION: {
         if (this.isCoop) {
-          // NB: this feature is targeted via LaunchDarkly
           const ff = !!GetFeatureFlag('special-resolution-ui-enabled')
           return (ff && this.isAllowedFiling(FilingTypes.SPECIAL_RESOLUTION))
         }
@@ -69,14 +72,16 @@ export default class AllowableActionsMixin extends Vue {
         return (ff && isBusiness)
       }
 
+      case AllowableActions.CONSENT_AMALGAMATION_OUT: {
+        return this.isAllowedFiling(FilingTypes.CONSENT_AMALGAMATION_OUT)
+      }
+
       case AllowableActions.CONSENT_CONTINUATION_OUT: {
-        const ff = !!GetFeatureFlag('supported-consent-continuation-out-entities')?.includes(this.getLegalType)
-        return (ff && this.isAllowedFiling(FilingTypes.CONSENT_CONTINUATION_OUT))
+        return this.isAllowedFiling(FilingTypes.CONSENT_CONTINUATION_OUT)
       }
 
       case AllowableActions.CONTINUATION_OUT: {
-        const ff = !!GetFeatureFlag('supported-continuation-out-entities')?.includes(this.getLegalType)
-        return (ff && this.isAllowedFiling(FilingTypes.CONTINUATION_OUT))
+        return this.isAllowedFiling(FilingTypes.CONTINUATION_OUT)
       }
 
       case AllowableActions.CORRECTION: {
