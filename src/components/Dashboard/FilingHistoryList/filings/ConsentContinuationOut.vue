@@ -8,10 +8,11 @@
       <div>
         <p
           v-if="expiry && !isConsentExpired"
-          class="mt-4"
+          class="mt-0"
         >
           This consent to continue out to {{ foreignJurisdiction }} is valid <strong>until {{ expiry }}</strong>.
         </p>
+
         <p
           v-if="expiry && isConsentExpired"
           class="mt-4"
@@ -26,17 +27,20 @@
           This consent is expired. Please resubmit the continue out application for authorization to become a foreign
           corporation.
         </p>
+
         <p
           v-if="orderDetails"
           class="mt-4"
           v-html="orderDetails"
         />
+
         <p
           v-if="fileNumber"
           class="mt-4 mb-0"
         >
           Court Order Number: {{ fileNumber }}
         </p>
+
         <p
           v-if="hasEffectOfOrder"
           class="mt-0"

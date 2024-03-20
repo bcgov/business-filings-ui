@@ -96,12 +96,10 @@ export interface ApiFilingIF {
     continuationOut?: {
       continuationOutDate: IsoDatePacific
       courtOrder?: any
-      details: string
-      foreignJurisdiction: {
-        country: string
-        region?: string
-      }
+      country: string
+      details?: string
       legalName: string
+      region: string // may be null
     }
 
     // conversion filings only

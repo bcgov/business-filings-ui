@@ -6,7 +6,7 @@
   >
     <template #body>
       <div v-if="isFilingComplete">
-        <p class="mt-4">
+        <p class="mt-0">
           The {{ agmYear }} AGM must be held by <strong>{{ agmDueDate }}</strong>.
         </p>
       </div>
