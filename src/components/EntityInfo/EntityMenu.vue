@@ -10,7 +10,7 @@
     </span>
 
     <!-- COLIN link button -->
-    <span v-if="!isEnableNonBenCorps && isBusiness">
+    <span v-if="isDisableNonBenCorps && isBusiness">
       <v-tooltip
         top
         content-class="top-tooltip"
@@ -22,7 +22,7 @@
             small
             text
             color="primary"
-            @click="goToColin()"
+            :href="getCorporateOnlineUrl"
             v-on="on"
           >
             <v-icon medium>mdi-file-document-edit-outline</v-icon>
@@ -34,7 +34,7 @@
     </span>
 
     <!-- View and Change Business Information -->
-    <span v-if="isEnableNonBenCorps && isBusiness && !isHistorical">
+    <span v-if="!isDisableNonBenCorps && isBusiness && !isHistorical">
       <v-btn
         id="company-information-button"
         small
@@ -66,7 +66,7 @@
     </span>
 
     <!-- Download Business Summary -->
-    <span v-if="isEnableNonBenCorps && isAllowed(AllowableActions.BUSINESS_SUMMARY)">
+    <span v-if="!isDisableNonBenCorps && isAllowed(AllowableActions.BUSINESS_SUMMARY)">
       <v-tooltip
         top
         content-class="top-tooltip"
@@ -94,7 +94,7 @@
     </span>
 
     <!-- More Actions -->
-    <span v-if="isEnableNonBenCorps && isBusiness && areMoreActionsAvailable">
+    <span v-if="!isDisableNonBenCorps && isBusiness && areMoreActionsAvailable">
       <v-menu
         v-model="expand"
         offset-y
@@ -308,14 +308,16 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   @Prop({ required: true }) readonly businessId!: string // may be null
 
+  @Getter(useConfigurationStore) getCorporateOnlineUrl!: string
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
-  @Getter(useBusinessStore) isEnableNonBenCorps!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
 
+  // local variables
   expand = false
 
   // enums for template
@@ -439,10 +441,6 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   goToAgmLocationChgFiling (): void {
     // 0 means "new filing"
     this.$router.push({ name: Routes.AGM_LOCATION_CHANGE, params: { filingId: '0' } })
-  }
-
-  goToColin (): void {
-    window.open('https://www.corporateonline.gov.bc.ca/', '_blank') // *** update this
   }
 
   /** Emits an event to confirm dissolution. */

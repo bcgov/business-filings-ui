@@ -666,7 +666,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   @Prop({ default: null }) readonly highlightId!: number
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useConfigurationStore) getBusinessUrl!: string
+  @Getter(useConfigurationStore) getBusinessesUrl!: string
   @Getter(useConfigurationStore) getAuthApiUrl!: string
   @Getter(useBusinessStore) getBusinessWarnings!: Array<BusinessWarningIF>
   @Getter(useConfigurationStore) getCreateUrl!: string
@@ -2022,7 +2022,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
           navigate(this.getAuthWebUrl)
         } else {
           // go to BCROS home page
-          navigate(this.getBusinessUrl)
+          navigate(this.getBusinessesUrl)
         }
       } else {
         // do nothing

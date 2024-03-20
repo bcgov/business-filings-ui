@@ -57,12 +57,12 @@
       </dt>
       <dd
         id="email"
-        :class="{ 'cursor-pointer': isEnableNonBenCorps }"
-        @click="isEnableNonBenCorps ? editBusinessProfile() : null"
+        :class="{ 'cursor-pointer': !isDisableNonBenCorps }"
+        @click="isDisableNonBenCorps ? null : editBusinessProfile()"
       >
         <span>{{ email }}</span>
         <v-btn
-          v-if="isEnableNonBenCorps"
+          v-if="!isDisableNonBenCorps"
           id="change-email-button"
           small
           text
@@ -83,12 +83,12 @@
       </dt>
       <dd
         id="phone"
-        :class="{ 'cursor-pointer': isEnableNonBenCorps }"
-        @click="isEnableNonBenCorps ? editBusinessProfile() : null"
+        :class="{ 'cursor-pointer': !isDisableNonBenCorps }"
+        @click="isDisableNonBenCorps ? null : editBusinessProfile()"
       >
         <span>{{ phone }}</span>
         <v-btn
-          v-if="isEnableNonBenCorps"
+          v-if="!isDisableNonBenCorps"
           id="change-phone-button"
           small
           text
@@ -122,7 +122,7 @@ export default class EntityDefinitions extends Vue {
   @Getter(useRootStore) getFullPhoneNumber!: string
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useRootStore) getNameRequest!: any
-  @Getter(useBusinessStore) isEnableNonBenCorps!: boolean
+  @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
 
   /** The registration date, if applicable. */
@@ -210,7 +210,7 @@ dd:not(:hover) > button {
 #change-email-button,
 #change-phone-button {
   height: 1.125rem;
-  padding: 0.75rem;
+  padding: 0.75rem 0.5rem;
   margin-top: -0.125rem;
   margin-left: 0.125rem;
 }

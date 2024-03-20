@@ -116,7 +116,7 @@
                 </v-scale-transition>
 
                 <v-btn
-                  v-if="!isHistorical"
+                  v-if="!isDisableNonBenCorps && !isHistorical"
                   id="standalone-addresses-button"
                   text
                   small
@@ -191,7 +191,7 @@
                   Current Directors
                 </h2>
                 <v-btn
-                  v-if="!isHistorical"
+                  v-if="!isDisableNonBenCorps && !isHistorical"
                   id="standalone-directors-button"
                   text
                   small
@@ -275,7 +275,7 @@ export default class Dashboard extends Mixins(
   // store references
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
-  @Getter(useBusinessStore) isEnableNonBenCorps!: boolean
+  @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   // @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useBusinessStore) isPartnership!: boolean

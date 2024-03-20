@@ -28,8 +28,12 @@ export const useConfigurationStore = defineStore('configuration', {
       return this.getRegHomeUrl + 'login'
     },
 
-    getBusinessUrl (state: ConfigurationStateIF): string {
+    getBusinessesUrl (state: ConfigurationStateIF): string {
       return state.configuration?.VUE_APP_BUSINESSES_URL || ''
+    },
+
+    getCorporateOnlineUrl (state: ConfigurationStateIF): string {
+      return state.configuration?.VUE_APP_CORPORATE_ONLINE_URL || ''
     },
 
     getCreateUrl (state: ConfigurationStateIF): string {

@@ -229,7 +229,7 @@ export default class App extends Mixins(
   @Getter(useBusinessStore) isSoleProp!: boolean
 
   @Getter(useConfigurationStore) getAuthApiUrl!: string
-  @Getter(useConfigurationStore) getBusinessUrl!: string
+  @Getter(useConfigurationStore) getBusinessesUrl!: string
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useConfigurationStore) getRegHomeUrl!: string
 
@@ -320,12 +320,12 @@ export default class App extends Mixins(
     // Staff don't want the home landing page and they can't access the Manage Business Dashboard
     if (this.isRoleStaff) {
       // If staff, set StaffDashboard as home crumb
-      crumbs.unshift(getStaffDashboardBreadcrumb(this.getBusinessUrl))
+      crumbs.unshift(getStaffDashboardBreadcrumb(this.getBusinessesUrl))
     } else {
       // For non-staff, set Home and Dashboard crumbs
       crumbs.unshift(
         getRegistryDashboardBreadcrumb(this.getRegHomeUrl),
-        getMyBusinessRegistryBreadcrumb(this.getBusinessUrl))
+        getMyBusinessRegistryBreadcrumb(this.getBusinessesUrl))
     }
     return crumbs
   }
@@ -847,7 +847,7 @@ export default class App extends Mixins(
 
   /** Handles Exit click event from dialogs. */
   onClickExit (): void {
-    navigate(this.getBusinessUrl)
+    navigate(this.getBusinessesUrl)
   }
 
   /** Handles Retry click event from dialogs. */

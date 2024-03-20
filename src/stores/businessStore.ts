@@ -224,13 +224,15 @@ export const useBusinessStore = defineStore('business', {
     },
 
     /**
-     * Is True if corp is a non-BEN and FF is enabled.
-     * Used to apply special pre go-live functionality.
+     * Is False for non-BEN corps if FF is enabled.
+     * Is False for BENs and other entity types.
+     * Used to apply special pre-go-live functionality.
      */
-    isEnableNonBenCorps (): boolean {
-      // const isNonBen = (this.isBcCompany || this.isCcc || this.isUlc)
-      // return (isNonBen && !!GetFeatureFlag('enable-non-ben-corps'))
-      return true
+    isDisableNonBenCorps (): boolean {
+      if (this.isBcCompany || this.isCcc || this.isUlc) {
+        return !GetFeatureFlag('enable-non-ben-corps')
+      }
+      return false
     },
 
     //
