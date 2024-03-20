@@ -90,7 +90,7 @@
               id="agm-extension-checkbox"
               v-model="agmExtension"
               hide-details
-              @change="onAgmExtensionChanged($event)"
+              @change="onAgmExtensionChanged()"
             >
               <template #label>
                 <span class="font-weight-bold">The Cooperative Association extended its Annual General Meeting

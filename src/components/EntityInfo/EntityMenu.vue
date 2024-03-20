@@ -9,8 +9,32 @@
       />
     </span>
 
+    <!-- COLIN link button -->
+    <span v-if="!isEnableNonBenCorps && isBusiness">
+      <v-tooltip
+        top
+        content-class="top-tooltip"
+        transition="fade-transition"
+      >
+        <template #activator="{ on }">
+          <v-btn
+            id="colin-link-button"
+            small
+            text
+            color="primary"
+            @click="goToColin()"
+            v-on="on"
+          >
+            <v-icon medium>mdi-file-document-edit-outline</v-icon>
+            <span class="font-13 ml-1">Manage this business in Corporate Online</span>
+          </v-btn>
+        </template>
+        BC Limited Companies are managed in Corporate Online.
+      </v-tooltip>
+    </span>
+
     <!-- View and Change Business Information -->
-    <span v-if="isBusiness && !isHistorical">
+    <span v-if="isEnableNonBenCorps && isBusiness && !isHistorical">
       <v-btn
         id="company-information-button"
         small
@@ -42,7 +66,7 @@
     </span>
 
     <!-- Download Business Summary -->
-    <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
+    <span v-if="isEnableNonBenCorps && isAllowed(AllowableActions.BUSINESS_SUMMARY)">
       <v-tooltip
         top
         content-class="top-tooltip"
@@ -70,7 +94,7 @@
     </span>
 
     <!-- More Actions -->
-    <span v-if="isBusiness && areMoreActionsAvailable">
+    <span v-if="isEnableNonBenCorps && isBusiness && areMoreActionsAvailable">
       <v-menu
         v-model="expand"
         offset-y
@@ -289,6 +313,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
+  @Getter(useBusinessStore) isEnableNonBenCorps!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
 
   expand = false
@@ -414,6 +439,10 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   goToAgmLocationChgFiling (): void {
     // 0 means "new filing"
     this.$router.push({ name: Routes.AGM_LOCATION_CHANGE, params: { filingId: '0' } })
+  }
+
+  goToColin (): void {
+    window.open('https://www.corporateonline.gov.bc.ca/', '_blank') // *** update this
   }
 
   /** Emits an event to confirm dissolution. */

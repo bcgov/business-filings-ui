@@ -207,6 +207,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useFilingHistoryListStore) getTotalAgmExtensionDuration!: (year: number) => number;
+
   // enum for template
   readonly FilingCodes = FilingCodes
 

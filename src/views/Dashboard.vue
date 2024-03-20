@@ -226,7 +226,8 @@
 </template>
 
 <script lang="ts">
-import { mapState } from 'pinia'
+import { Component, Mixins } from 'vue-property-decorator'
+import { Getter } from 'pinia-class'
 import { navigate } from '@/utils'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import Alerts from '@/components/Dashboard/Alerts.vue'
@@ -239,13 +240,11 @@ import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import { CoaWarningDialog } from '@/components/dialogs'
 import { Routes, AllowableActions, Roles } from '@/enums'
-import { PartyIF } from '@/interfaces'
+import { ApiFilingIF, PartyIF } from '@/interfaces'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
-export default {
-  name: 'Dashboard',
-
+@Component({
   components: {
     AddressListSm,
     Alerts,
@@ -257,121 +256,107 @@ export default {
     ProprietorPartnersListSm,
     StaffNotation,
     TodoList
-  },
+  }
+})
+export default class Dashboard extends Mixins(
+  AllowableActionsMixin,
+  CommonMixin,
+  DateMixin,
+  EnumMixin
+) {
+  // local variables
+  todoCount = 0
+  coaWarningDialog = false
+  alertCount = 0
 
-  mixins: [
-    AllowableActionsMixin,
-    CommonMixin,
-    DateMixin,
-    EnumMixin
-  ],
+  // enum for template
+  readonly AllowableActions = AllowableActions
 
-  data () {
-    return {
-      todoCount: 0,
-      coaWarningDialog: false,
-      alertCount: 0,
+  // store references
+  @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isEnableNonBenCorps!: boolean
+  // @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isHistorical!: boolean
+  @Getter(useBusinessStore) isPartnership!: boolean
+  // @Getter(useBusinessStore) isSoleProp!: boolean
 
-      // enum in template
-      AllowableActions
-    }
-  },
+  @Getter(useConfigurationStore) getEditUrl!: string
 
-  computed: {
-    ...mapState(useBusinessStore, [
-      'getIdentifier',
-      'isBenBcCccUlc',
-      'isFirm',
-      'isHistorical',
-      'isPartnership',
-      'isSoleProp'
-    ]),
+  @Getter(useFilingHistoryListStore) getHistoryCount!: number
+  @Getter(useFilingHistoryListStore) getPendingCoa!: ApiFilingIF
 
-    ...mapState(useConfigurationStore, [
-      'getEditUrl'
-    ]),
+  @Getter(useRootStore) getParties!: Array<PartyIF>
+  @Getter(useRootStore) isAppFiling!: boolean
+  @Getter(useRootStore) isAppTask!: boolean
+  // @Getter(useRootStore) isRoleStaff!: boolean
 
-    ...mapState(useFilingHistoryListStore, [
-      'getHistoryCount',
-      'getPendingCoa'
-    ]),
+  /** Whether a COA is pending. */
+  get isCoaPending (): boolean {
+    return !!this.getPendingCoa
+  }
 
-    ...mapState(useRootStore, [
-      'getParties',
-      'isAppFiling',
-      'isAppTask',
-      'isRoleStaff'
-    ]),
+  /** The COA effective date, if a COA is pending, else null. */
+  get coaEffectiveDate (): Date {
+    return this.getPendingCoa
+      ? new Date(this.getPendingCoa.effectiveDate)
+      : null
+  }
 
-    /** Whether a COA is pending. */
-    isCoaPending (): boolean {
-      return !!this.getPendingCoa
-    },
+  /** The Business ID string. */
+  get businessId (): string {
+    return sessionStorage.getItem('BUSINESS_ID')
+  }
 
-    /** The COA effective date, if a COA is pending, else null. */
-    coaEffectiveDate (): Date {
-      return this.getPendingCoa
-        ? new Date(this.getPendingCoa.effectiveDate)
-        : null
-    },
+  /**
+   * The Filing ID route query parameter. May be NaN (which is falsy).
+    * This is sometimes provided on the URL to highlight a filing, for example
+    * when returning from saving/filing it.
+    */
+  get filingId (): number {
+    // NB: use unary plus operator to cast string to number
+    return +this.$route.query.filing_id
+  }
 
-    /** The Business ID string. */
-    businessId (): string {
-      return sessionStorage.getItem('BUSINESS_ID')
-    },
+  get custodians (): PartyIF[] {
+    return this.getParties.filter(party => party.roles?.some(role => role.roleType === Roles.CUSTODIAN))
+  }
 
-    /**
-     * The Filing ID route query parameter. May be NaN (which is falsy).
-     * This is sometimes provided on the URL to highlight a filing, for example
-     * when returning from saving/filing it.
-     */
-    filingId (): number {
-      // NB: use unary plus operator to cast string to number
-      return +this.$route.query.filing_id
-    },
+  goToStandaloneDirectors () {
+    this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: '0' } }) // 0 means "new COD filing"
+  }
 
-    custodians (): PartyIF[] {
-      return this.getParties.filter(party => party.roles?.some(role => role.roleType === Roles.CUSTODIAN))
-    }
-  },
+  goToChangeFiling () {
+    const url = `${this.getEditUrl}${this.getIdentifier}/change`
+    navigate(url)
+  }
 
-  methods: {
-    goToStandaloneDirectors () {
-      this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: '0' } }) // 0 means "new COD filing"
-    },
+  goToStandaloneAddresses () {
+    this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: '0' } }) // 0 means "new COA filing"
+  }
 
-    goToChangeFiling () {
+  reloadDataIfNeeded (needed: boolean) {
+    if (needed) this.$root.$emit('reloadData')
+  }
+
+  /** Toggle the Change of address warning dialog. */
+  toggleCoaWarning () {
+    this.coaWarningDialog = !this.coaWarningDialog
+  }
+
+  /**
+   * If entity is a Firm then navigate to Edit UI.
+    * If entity is a BComp then display COA warning.
+    * Otherwise proceed to COA.
+    */
+  onAddressChangeClick () {
+    if (this.isFirm) {
       const url = `${this.getEditUrl}${this.getIdentifier}/change`
       navigate(url)
-    },
-
-    goToStandaloneAddresses () {
-      this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: '0' } }) // 0 means "new COA filing"
-    },
-
-    reloadDataIfNeeded (needed: boolean) {
-      if (needed) this.$root.$emit('reloadData')
-    },
-
-    /** Toggle the Change of address warning dialog. */
-    toggleCoaWarning () {
-      this.coaWarningDialog = !this.coaWarningDialog
-    },
-
-    /**
-     * If entity is a Firm then navigate to Edit UI.
-     * If entity is a BComp then display COA warning.
-     * Otherwise proceed to COA.
-     */
-    onAddressChangeClick () {
-      if (this.isFirm) {
-        const url = `${this.getEditUrl}${this.getIdentifier}/change`
-        navigate(url)
-      } else if (this.isBenBcCccUlc) {
-        this.toggleCoaWarning()
-      } else {
-        this.goToStandaloneAddresses()
-      }
+    } else if (this.isBenBcCccUlc) {
+      this.toggleCoaWarning()
+    } else {
+      this.goToStandaloneAddresses()
     }
   }
 }

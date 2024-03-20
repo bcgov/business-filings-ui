@@ -5,6 +5,7 @@ import { CorpTypeCd, EntityState } from '@/enums'
 import { DateUtilities, LegalServices } from '@/services/'
 import { GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
 import { useRootStore } from './rootStore'
+import { GetFeatureFlag } from '@/utils'
 
 export const useBusinessStore = defineStore('business', {
   state: (): BusinessStateIF => ({
@@ -220,6 +221,16 @@ export const useBusinessStore = defineStore('business', {
     /** Is True if business is in liquidation. */
     isLiquidation (): boolean {
       return (this.getBusinessState === EntityState.LIQUIDATION)
+    },
+
+    /**
+     * Is True if corp is a non-BEN and FF is enabled.
+     * Used to apply special pre go-live functionality.
+     */
+    isEnableNonBenCorps (): boolean {
+      // const isNonBen = (this.isBcCompany || this.isCcc || this.isUlc)
+      // return (isNonBen && !!GetFeatureFlag('enable-non-ben-corps'))
+      return true
     },
 
     //
