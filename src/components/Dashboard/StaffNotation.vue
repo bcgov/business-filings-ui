@@ -53,7 +53,10 @@
       @close="hideAdministerFreezeDialog($event)"
     />
 
-    <div class="staff-notation-container">
+    <div
+      v-if="!isDisableNonBenCorps"
+      class="staff-notation-container"
+    >
       <v-menu
         v-model="expand"
         offset-y
@@ -277,6 +280,7 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
 
   @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void

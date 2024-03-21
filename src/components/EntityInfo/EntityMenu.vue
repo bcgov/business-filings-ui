@@ -1,7 +1,7 @@
 <template>
   <menu id="entity-menu">
     <!-- Staff Comments -->
-    <span v-if="isAllowed(AllowableActions.STAFF_COMMENT)">
+    <span v-if="!isDisableNonBenCorps && isAllowed(AllowableActions.STAFF_COMMENT)">
       <StaffComments
         :axios="axios"
         :businessId="businessId"
