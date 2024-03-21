@@ -8,7 +8,7 @@
         <span class="ml-1">Detail{{ filing.comments.length > 1 ? "s" : "" }} ({{ filing.comments.length }})</span>
       </h4>
       <v-btn
-        v-if="isRoleStaff"
+        v-if="!isDisableNonBenCorps && isRoleStaff"
         class="add-detail-btn"
         color="primary"
         :disabled="!filing.filingId"
@@ -47,7 +47,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities } from '@/services'
-import { useFilingHistoryListStore, useRootStore } from '@/stores'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class DetailsList extends Vue {
@@ -62,7 +62,7 @@ export default class DetailsList extends Vue {
   })
   readonly filing!: ApiFilingIF
 
-  /** Whether current user has staff role. */
+  @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: (x: ApiFilingIF) => void

@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="!isDisableNonBenCorps"
     id="staff-notation"
     :class="{ 'add-scrollbar-offset': addScrollbarOffset }"
   >
@@ -53,10 +54,7 @@
       @close="hideAdministerFreezeDialog($event)"
     />
 
-    <div
-      v-if="!isDisableNonBenCorps"
-      class="staff-notation-container"
-    >
+    <div class="staff-notation-container">
       <v-menu
         v-model="expand"
         offset-y
