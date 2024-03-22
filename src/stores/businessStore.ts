@@ -224,7 +224,7 @@ export const useBusinessStore = defineStore('business', {
     },
 
     /**
-     * Is False for non-BEN corps if FF is enabled.
+     * Is True for non-BEN corps if FF is disabled.
      * Is False for BENs and other entity types.
      * Used to apply special pre-go-live functionality.
      */

@@ -20,6 +20,7 @@ import { Component, Emit, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { useBusinessStore } from '@/stores'
 import Amalgamation from '@/components/Dashboard/Alerts/Amalgamation.vue'
+import CorporateOnline from '@/components/Dashboard/Alerts/CorporateOnline.vue'
 import FrozenInformation from '@/components/Dashboard/Alerts/FrozenInformation.vue'
 import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
 import NotInCompliance from '@/components/Dashboard/Alerts/NotInCompliance.vue'
@@ -28,6 +29,7 @@ import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.v
 @Component({
   components: {
     Amalgamation,
+    CorporateOnline,
     FrozenInformation,
     MissingInformation,
     NotInCompliance,
@@ -37,6 +39,7 @@ import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.v
 export default class Alerts extends Vue {
   // store references
   @Getter(useBusinessStore) isAmalgamationAlert!: boolean
+  @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   @Getter(useBusinessStore) isFrozenInformationAlert!: boolean
   @Getter(useBusinessStore) isMissingInformationAlert!: boolean
   @Getter(useBusinessStore) isNotInComplianceAlert!: boolean
@@ -49,6 +52,7 @@ export default class Alerts extends Vue {
   get alerts (): Array<any> {
     const alerts = []
     if (this.isAmalgamationAlert) alerts.push(Amalgamation)
+    if (this.isDisableNonBenCorps) alerts.push(CorporateOnline)
     if (this.isFrozenInformationAlert) alerts.push(FrozenInformation)
     if (this.isMissingInformationAlert) alerts.push(MissingInformation)
     if (this.isNotInComplianceAlert) alerts.push(NotInCompliance)

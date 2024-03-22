@@ -7,6 +7,7 @@ import Alerts from '@/components/Dashboard/Alerts.vue'
 
 // Alerts
 import Amalgamation from '@/components/Dashboard/Alerts/Amalgamation.vue'
+import CorporateOnline from '@/components/Dashboard/Alerts/CorporateOnline.vue'
 import FrozenInformation from '@/components/Dashboard/Alerts/FrozenInformation.vue'
 import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
 import NotInCompliance from '@/components/Dashboard/Alerts/NotInCompliance.vue'
@@ -28,6 +29,7 @@ describe('Dashboard - UI', () => {
       // create local properties for use in computed object below
       data: () => ({
         _isAmalgamationAlert: false,
+        _isDisableNonBenCorps: false,
         _isFrozenInformationAlert: false,
         _isMissingInformationAlert: false,
         _isNotInComplianceAlert: false,
@@ -38,6 +40,10 @@ describe('Dashboard - UI', () => {
         isAmalgamationAlert: {
           get (): boolean { return this.$data._isAmalgamationAlert },
           set (val: boolean) { this.$data._isAmalgamationAlert = val }
+        },
+        isDisableNonBenCorps: {
+          get (): boolean { return this.$data._isDisableNonBenCorps },
+          set (val: boolean) { this.$data._isDisableNonBenCorps = val }
         },
         isFrozenInformationAlert: {
           get (): boolean { return this.$data._isFrozenInformationAlert },
@@ -81,6 +87,19 @@ describe('Dashboard - UI', () => {
 
     // cleanup
     await wrapper.setData({ isAmalgamationAlert: false })
+  })
+
+  it('displays the Corporate Online alert', async () => {
+    // verify initially hidden
+    expect(wrapper.findComponent(CorporateOnline).exists()).toBe(false)
+
+    // enable and verify displayed
+    await wrapper.setData({ isDisableNonBenCorps: true })
+    expect(wrapper.findComponent(CorporateOnline).exists()).toBe(true)
+    expect(wrapper.emitted('count').pop()[0]).toBe(1)
+
+    // cleanup
+    await wrapper.setData({ isDisableNonBenCorps: false })
   })
 
   it('displays the Frozen Information alert', async () => {

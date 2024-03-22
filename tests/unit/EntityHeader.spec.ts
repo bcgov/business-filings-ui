@@ -1,16 +1,13 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import VueRouter from 'vue-router'
 import { shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
-import mockRouter from './mockRouter'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { EntityState, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
@@ -19,8 +16,6 @@ const filingHistoryListStore = useFilingHistoryListStore()
 const rootStore = useRootStore()
 
 describe('Entity Header - data', () => {
-  const router = mockRouter.mock()
-
   it('handles empty data', async () => {
     // set store properties
     businessStore.setLegalName(null)
@@ -29,7 +24,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: null, tempRegNumber: null }
     })
     await Vue.nextTick()
@@ -47,7 +41,6 @@ describe('Entity Header - data', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: 'CP0001191', tempRegNumber: null }
     })
     await Vue.nextTick()
@@ -65,7 +58,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: null, tempRegNumber: 'T123456789' }
     })
     await Vue.nextTick()
@@ -82,7 +74,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: null, tempRegNumber: 'T123456789' }
     })
     await Vue.nextTick()
@@ -99,7 +90,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: null, tempRegNumber: 'T123456789' }
     })
     await Vue.nextTick()
@@ -126,7 +116,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: null, tempRegNumber: 'T1234567' }
     })
     await Vue.nextTick()
@@ -153,7 +142,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: null, tempRegNumber: 'T1234567' }
     })
     await Vue.nextTick()
@@ -181,7 +169,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: null, tempRegNumber: 'T1234567' }
     })
     await Vue.nextTick()
@@ -209,7 +196,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: null, tempRegNumber: 'T1234567' }
     })
     await Vue.nextTick()
@@ -237,7 +223,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: 'BC1234567', tempRegNumber: null }
     })
     await Vue.nextTick()
@@ -265,7 +250,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: 'BC1234567', tempRegNumber: null }
     })
     await Vue.nextTick()
@@ -294,7 +278,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: null, tempRegNumber: 'T1234567' }
     })
     await Vue.nextTick()
@@ -324,7 +307,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: null, tempRegNumber: 'T1234567' }
     })
     await Vue.nextTick()
@@ -354,7 +336,6 @@ describe('Entity Header - data', () => {
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
-      router,
       propsData: { businessId: 'BC1234567', tempRegNumber: null }
     })
     await Vue.nextTick()
@@ -365,8 +346,6 @@ describe('Entity Header - data', () => {
 })
 
 describe('Entity Header - HISTORICAL badge', () => {
-  const router = mockRouter.mock()
-
   const variations = [
     { // variation 0 - active business
       businessState: EntityState.ACTIVE,
@@ -428,7 +407,6 @@ describe('Entity Header - HISTORICAL badge', () => {
 
       const wrapper = shallowMount(EntityHeader, {
         vuetify,
-        router,
         propsData: { businessId: 'BC1234567', tempRegNumber: null }
       })
       await Vue.nextTick()
@@ -449,8 +427,6 @@ describe('Entity Header - HISTORICAL badge', () => {
 })
 
 describe('Entity Header - LIMITED RESTORATION badge', () => {
-  const router = mockRouter.mock()
-
   const variations = [
     { // 0
       stateFiling: null,
@@ -473,7 +449,6 @@ describe('Entity Header - LIMITED RESTORATION badge', () => {
 
       const wrapper = shallowMount(EntityHeader, {
         vuetify,
-        router,
         propsData: { businessId: 'BC1234567', tempRegNumber: null }
       })
       await Vue.nextTick()
@@ -492,8 +467,6 @@ describe('Entity Header - LIMITED RESTORATION badge', () => {
 })
 
 describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
-  const router = mockRouter.mock()
-
   const variations = [
     {
       filing: {
@@ -524,7 +497,6 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
 
       const wrapper = shallowMount(EntityHeader, {
         vuetify,
-        router,
         propsData: { businessId: 'BC1234567', tempRegNumber: null }
       })
       await Vue.nextTick()
