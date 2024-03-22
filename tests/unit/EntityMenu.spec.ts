@@ -51,7 +51,7 @@ describe('Entity Menu - entities', () => {
     wrapper.destroy()
   })
 
-  it('displays entity info properly for a business', async () => {
+  it('displays entity info properly for a coop', async () => {
     // set store properties
     businessStore.setGoodStanding(true)
     businessStore.setLegalName('My Business')
@@ -262,7 +262,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
     wrapper.destroy()
   })
 
-  it('redirects to special-resolution for Coop', async () => {
+  it('redirects to special-resolution for a coop', async () => {
     // init session storage
     sessionStorage.clear()
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2299" }')
@@ -298,7 +298,7 @@ describe('Entity Menu - Amalgamate button tests', () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
       if (flag === 'supported-agm-extension-entities') return ''
       if (flag === 'supported-agm-location-chg-entities') return ''
-      if (flag === 'supported-amalgamation-entities') return 'BC'
+      if (flag === 'supported-amalgamation-entities') return 'BEN'
       if (flag === 'supported-consent-amalgamation-out-entities') return ''
       if (flag === 'supported-consent-continuation-out-entities') return ''
       return null
@@ -311,11 +311,14 @@ describe('Entity Menu - Amalgamate button tests', () => {
   })
 
   it('displays the Amalgamate button', async () => {
-    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    const router = mockRouter.mock()
+
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.$state.businessInfo.state = EntityState.ACTIVE
 
     const wrapper = mount(EntityMenu, {
       vuetify,
+      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -329,7 +332,7 @@ describe('Entity Menu - Amalgamate button tests', () => {
   })
 
   it('amalgamate button is disabled if not allowed', async () => {
-    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.$state.businessInfo.state = EntityState.ACTIVE
 
     const wrapper = mount(EntityMenu, {
@@ -552,7 +555,7 @@ describe('Entity Menu - Consent to Amalgamation Out click tests', () => {
       if (flag === 'supported-agm-extension-entities') return ''
       if (flag === 'supported-agm-location-chg-entities') return ''
       if (flag === 'supported-amalgamation-entities') return ''
-      if (flag === 'supported-consent-amalgamation-out-entities') return 'BC'
+      if (flag === 'supported-consent-amalgamation-out-entities') return 'BEN'
       if (flag === 'supported-consent-continuation-out-entities') return ''
       return null
     })
@@ -564,7 +567,7 @@ describe('Entity Menu - Consent to Amalgamation Out click tests', () => {
   })
 
   it('displays the Consent to Amalgamate Out button', async () => {
-    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setState(EntityState.ACTIVE)
 
     // mount the component and wait for everything to stabilize
@@ -595,7 +598,7 @@ describe('Entity Menu - Consent to Continuation Out click tests', () => {
       if (flag === 'supported-agm-location-chg-entities') return ''
       if (flag === 'supported-amalgamation-entities') return ''
       if (flag === 'supported-consent-amalgamation-out-entities') return ''
-      if (flag === 'supported-consent-continuation-out-entities') return 'BC'
+      if (flag === 'supported-consent-continuation-out-entities') return 'BEN'
       return null
     })
   })
@@ -606,7 +609,7 @@ describe('Entity Menu - Consent to Continuation Out click tests', () => {
   })
 
   it('displays the Consent to Continue Out button', async () => {
-    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setState(EntityState.ACTIVE)
 
     // mount the component and wait for everything to stabilize

@@ -1,7 +1,7 @@
 <template>
   <menu id="entity-menu">
     <!-- Staff Comments -->
-    <span v-if="isAllowed(AllowableActions.STAFF_COMMENT)">
+    <span v-if="!isDisableNonBenCorps && isAllowed(AllowableActions.STAFF_COMMENT)">
       <StaffComments
         :axios="axios"
         :businessId="businessId"
@@ -9,8 +9,32 @@
       />
     </span>
 
+    <!-- COLIN link button -->
+    <span v-if="isDisableNonBenCorps && isBusiness">
+      <v-tooltip
+        top
+        content-class="top-tooltip"
+        transition="fade-transition"
+      >
+        <template #activator="{ on }">
+          <v-btn
+            id="colin-link-button"
+            small
+            text
+            color="primary"
+            :href="getCorporateOnlineUrl"
+            v-on="on"
+          >
+            <v-icon medium>mdi-file-document-edit-outline</v-icon>
+            <span class="font-13 ml-1">Manage this business in Corporate Online</span>
+          </v-btn>
+        </template>
+        BC Limited Companies are managed in Corporate Online.
+      </v-tooltip>
+    </span>
+
     <!-- View and Change Business Information -->
-    <span v-if="isBusiness && !isHistorical">
+    <span v-if="!isDisableNonBenCorps && isBusiness && !isHistorical">
       <v-btn
         id="company-information-button"
         small
@@ -42,7 +66,7 @@
     </span>
 
     <!-- Download Business Summary -->
-    <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
+    <span v-if="!isDisableNonBenCorps && isAllowed(AllowableActions.BUSINESS_SUMMARY)">
       <v-tooltip
         top
         content-class="top-tooltip"
@@ -70,7 +94,7 @@
     </span>
 
     <!-- More Actions -->
-    <span v-if="isBusiness && areMoreActionsAvailable">
+    <span v-if="!isDisableNonBenCorps && isBusiness && areMoreActionsAvailable">
       <v-menu
         v-model="expand"
         offset-y
@@ -284,13 +308,16 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   @Prop({ required: true }) readonly businessId!: string // may be null
 
+  @Getter(useConfigurationStore) getCorporateOnlineUrl!: string
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
 
+  // local variables
   expand = false
 
   // enums for template

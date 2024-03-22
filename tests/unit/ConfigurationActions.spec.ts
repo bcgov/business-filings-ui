@@ -18,6 +18,7 @@ describe('Configuration Actions', () => {
     VUE_APP_AUTH_API_VERSION: '/auth api version',
     VUE_APP_AUTH_WEB_URL: 'auth web url',
     VUE_APP_BUSINESSES_URL: 'businesses url',
+    VUE_APP_CORPORATE_ONLINE_URL: 'corporate online url',
     VUE_APP_BUSINESS_CREATE_URL: 'business create url',
     VUE_APP_BUSINESS_EDIT_URL: 'business edit url',
     VUE_APP_BUSINESS_FILING_LD_CLIENT_ID: 'business filing ld client id',
@@ -53,7 +54,8 @@ describe('Configuration Actions', () => {
     expect(configurationStore.getCreateUrl).toBe('business create url')
     expect(configurationStore.getEditUrl).toBe('business edit url')
     expect(configurationStore.getBusinessFilingLdClientId).toBe('business filing ld client id')
-    expect(configurationStore.getBusinessUrl).toBe('businesses url')
+    expect(configurationStore.getBusinessesUrl).toBe('businesses url')
+    expect(configurationStore.getCorporateOnlineUrl).toBe('corporate online url')
     expect(configurationStore.getLegalApiUrl).toBe('legal api url/legal api version 2/')
     expect(configurationStore.getPayApiUrl).toBe('pay api url/pay api version/')
     expect(configurationStore.getRegHomeUrl).toBe('registry home url')

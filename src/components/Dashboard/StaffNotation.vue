@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="!isDisableNonBenCorps"
     id="staff-notation"
     :class="{ 'add-scrollbar-offset': addScrollbarOffset }"
   >
@@ -277,6 +278,7 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
 
   @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void

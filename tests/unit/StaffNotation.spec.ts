@@ -248,15 +248,15 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - not firm', async () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-      if (flag === 'supported-consent-amalgamation-out-entities') return 'BC'
-      if (flag === 'supported-amalgamation-out-entities') return 'BC'
-      if (flag === 'supported-consent-continuation-out-entities') return 'BC'
-      if (flag === 'supported-continuation-out-entities') return 'BC'
+      if (flag === 'supported-consent-amalgamation-out-entities') return 'BEN'
+      if (flag === 'supported-amalgamation-out-entities') return 'BEN'
+      if (flag === 'supported-consent-continuation-out-entities') return 'BEN'
+      if (flag === 'supported-continuation-out-entities') return 'BEN'
       return null
     })
 
     // set store specifically for this test
-    businessStore.setLegalType(CorpTypeCd.BC_COMPANY) // not a firm
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY) // not a firm
     businessStore.setState(EntityState.ACTIVE)
 
     const wrapper = mount(StaffNotation, { vuetify })
@@ -628,7 +628,7 @@ describe('StaffNotation', () => {
 
   it('goes to restoration filing', async () => {
     // set store specifically for this test
-    businessStore.setLegalType(CorpTypeCd.BC_COMPANY) // corp
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY) // corp
     businessStore.setIdentifier('BC1234567')
     businessStore.setState(EntityState.HISTORICAL)
 
@@ -669,7 +669,7 @@ describe('StaffNotation', () => {
 
   it('goes to limited restoration extension filing', async () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-      if (flag === 'supported-restoration-entities') return 'BC'
+      if (flag === 'supported-restoration-entities') return 'BEN'
       if (flag === 'supported-consent-amalgamation-out-entities') return []
       if (flag === 'supported-amalgamation-out-entities') return []
       if (flag === 'supported-consent-continuation-out-entities') return []
@@ -678,7 +678,7 @@ describe('StaffNotation', () => {
     })
 
     // set store specifically for this test
-    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setIdentifier('BC1234567')
     businessStore.setState(EntityState.ACTIVE)
 

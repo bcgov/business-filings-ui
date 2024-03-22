@@ -24,7 +24,7 @@
 
     <!-- the drop-down menu -->
     <v-menu
-      v-if="isRoleStaff && isBusiness"
+      v-if="!isDisableNonBenCorps && isRoleStaff && isBusiness"
       offset-y
       left
       transition="slide-y-transition"
@@ -92,6 +92,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
   @Prop({ required: true }) readonly index!: number
 
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   // @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: (x: ApiFilingIF) => void
