@@ -24,7 +24,7 @@
           placeholder="Jurisdiction Country"
           :rules="countryRules"
           menu-props="auto"
-          @input="emitChangedCountry($event)"
+          @input="emitChangedCountry()"
         />
         <v-select
           v-if="canadaUsaRegions.length > 0"
@@ -36,7 +36,7 @@
           filled
           placeholder="Jurisdiction Region"
           :rules="regionRules"
-          @input="emitChangedRegion($event)"
+          @input="emitChangedRegion()"
         />
       </v-col>
     </v-row>
@@ -82,7 +82,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   /** Get the respective regions of the country selected as an array of objects. */
   get canadaUsaRegions (): Array<any> {
     if (this.selectedCountryName === 'Canada') {
-      let regions = this.getCountryRegions('CA')
+      let regions = this.getCountryRegions('CA') as any[]
       regions = regions.filter(province => province.short !== 'BC')
       regions.push({ name: 'Federal', short: 'FEDERAL' })
       return regions
@@ -108,7 +108,8 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
 
   /** Get the selected country's code. */
   get selectedCountryCode (): string {
-    const countryCode = this.getCountries().find(country => country.name === this.selectedCountryName)
+    const countries = this.getCountries() as any[]
+    const countryCode = countries.find(country => country.name === this.selectedCountryName)
     return countryCode?.code
   }
 
@@ -116,7 +117,8 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
    * @example ('CA') -> 'Canada'
    */
   private getCountryNameFromCode (code: string): string {
-    const country = this.getCountries().find(country => country.code === code)
+    const countries = this.getCountries() as any[]
+    const country = countries.find(country => country.code === code)
     return country?.name
   }
 

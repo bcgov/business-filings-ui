@@ -29,12 +29,6 @@
         </p>
 
         <p
-          v-if="orderDetails"
-          class="mt-4"
-          v-html="orderDetails"
-        />
-
-        <p
           v-if="fileNumber"
           class="mt-4 mb-0"
         >
@@ -85,10 +79,6 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
       }
     }
     return false
-  }
-
-  get orderDetails (): string {
-    return this.filing.data?.order?.orderDetails?.replaceAll('\n', '<br/>')
   }
 
   /** The court order file number. */
