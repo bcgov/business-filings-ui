@@ -167,7 +167,7 @@ describe('Consent to Amalgamation Out view', () => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
-        consentAmalgamationOut: { details: 'test' },
+        consentAmalgamationOut: {},
         annualReport: {}
       })
     })
@@ -202,9 +202,6 @@ describe('Consent to Amalgamation Out view', () => {
     // verify new Filing ID
     expect(vm.filingId).toBe(456)
 
-    // verify that detail comment from Legal API is not null
-    expect(vm.savedFiling.consentAmalgamationOut.details).toBe('test')
-
     vi.restoreAllMocks()
     wrapper.destroy()
   })
@@ -225,7 +222,6 @@ describe('Consent to Amalgamation Out view', () => {
           priority: true
         },
         consentAmalgamationOut: {
-          details: 'Line 1\nLine 2\nLine 3',
           foreignJurisdiction: {
             country: 'CA',
             region: 'AB'
@@ -393,7 +389,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
-        consentAmalgamationOut: { details: null },
+        consentAmalgamationOut: {},
         annualReport: {}
       })
     })
@@ -427,9 +423,6 @@ describe('Consent to Continue Out for general user and IAs only', () => {
 
     // verify new Filing ID
     expect(vm.filingId).toBe(456)
-
-    // verify that detail comment from Legal API is null
-    expect(vm.savedFiling.consentAmalgamationOut.details).toBeNull()
 
     vi.restoreAllMocks()
     wrapper.destroy()
