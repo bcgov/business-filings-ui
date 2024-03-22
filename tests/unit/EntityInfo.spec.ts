@@ -31,6 +31,7 @@ describe('Entity Info component', () => {
     rootStore.entityStatus = null
     businessStore.setTaxId(null)
 
+    // NB: router is needed for isDCRoute()
     const wrapper = shallowMount(EntityInfo, { vuetify, router })
     await Vue.nextTick()
 

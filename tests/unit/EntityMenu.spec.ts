@@ -1,19 +1,16 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import VueRouter from 'vue-router'
 import { mount, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import EntityMenu from '@/components/EntityInfo/EntityMenu.vue'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
-import mockRouter from './mockRouter'
 import { AllowableActions, CorpTypeCd, EntityState, EntityStatus } from '@/enums'
 import * as utils from '@/utils'
 
 Vue.use(Vuetify)
-Vue.use(VueRouter)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
@@ -23,8 +20,6 @@ const rootStore = useRootStore()
 document.body.setAttribute('data-app', 'true')
 
 describe('Entity Menu - entities', () => {
-  const router = mockRouter.mock()
-
   it('handles empty data', async () => {
     // set store properties
     businessStore.setGoodStanding(false)
@@ -36,7 +31,6 @@ describe('Entity Menu - entities', () => {
 
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => false } }],
       propsData: { businessId: null }
     })
@@ -71,7 +65,6 @@ describe('Entity Menu - entities', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed } }],
       propsData: { businessId: 'CP0001191' }
     })
@@ -105,7 +98,6 @@ describe('Entity Menu - entities', () => {
 
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed } }],
       propsData: { businessId: null }
     })
@@ -139,7 +131,6 @@ describe('Entity Menu - entities', () => {
 
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed } }],
       propsData: { businessId: null }
     })
@@ -156,8 +147,6 @@ describe('Entity Menu - entities', () => {
 })
 
 describe('Entity Menu - View and Change Business Information button', () => {
-  const router = mockRouter.mock()
-
   const variations = [
     { // 0
       businessId: 'BC1234567',
@@ -198,7 +187,6 @@ describe('Entity Menu - View and Change Business Information button', () => {
 
       const wrapper = shallowMount(EntityMenu, {
         vuetify,
-        router,
         mixins: [{ methods: { isAllowed: () => _.isAllowed } }],
         propsData: { businessId: _.businessId }
       })
@@ -214,7 +202,6 @@ describe('Entity Menu - View and Change Business Information button', () => {
 
 describe('Entity Menu - View and Change Business Information click tests', () => {
   const { assign } = window.location
-  const router = mockRouter.mock()
 
   beforeAll(() => {
     // mock the window.location.assign function
@@ -246,7 +233,6 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
 
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -275,7 +261,6 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
 
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'CP1234567' }
     })
@@ -311,14 +296,11 @@ describe('Entity Menu - Amalgamate button tests', () => {
   })
 
   it('displays the Amalgamate button', async () => {
-    const router = mockRouter.mock()
-
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.$state.businessInfo.state = EntityState.ACTIVE
 
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -350,14 +332,11 @@ describe('Entity Menu - Amalgamate button tests', () => {
 })
 
 describe('Entity Menu - Dissolve this Business click tests', () => {
-  const router = mockRouter.mock()
-
   it('displays the Dissolve this Business button', async () => {
     businessStore.setState(EntityState.ACTIVE)
 
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -377,7 +356,6 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -398,7 +376,6 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -414,13 +391,10 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
 })
 
 describe('Entity Menu - Business Summary click tests', () => {
-  const router = mockRouter.mock()
-
   it('displays the Business Summary button', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -437,7 +411,6 @@ describe('Entity Menu - Business Summary click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -452,13 +425,10 @@ describe('Entity Menu - Business Summary click tests', () => {
 })
 
 describe('Entity Menu - Digital Business Cards click tests', () => {
-  const router = mockRouter.mock()
-
   it('displays the Digital Business Cards button', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -476,7 +446,6 @@ describe('Entity Menu - Digital Business Cards click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -492,13 +461,10 @@ describe('Entity Menu - Digital Business Cards click tests', () => {
 })
 
 describe('Entity Menu - More actions click tests', () => {
-  const router = mockRouter.mock()
-
   it('renders More actions correctly', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -547,8 +513,6 @@ it('renders More actions if historical and digital credential feature is allowed
 })
 
 describe('Entity Menu - Consent to Amalgamation Out click tests', () => {
-  const router = mockRouter.mock()
-
   beforeAll(() => {
     // override feature flag
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
@@ -573,7 +537,6 @@ describe('Entity Menu - Consent to Amalgamation Out click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -589,8 +552,6 @@ describe('Entity Menu - Consent to Amalgamation Out click tests', () => {
 })
 
 describe('Entity Menu - Consent to Continuation Out click tests', () => {
-  const router = mockRouter.mock()
-
   beforeAll(() => {
     // override feature flag
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
@@ -615,7 +576,6 @@ describe('Entity Menu - Consent to Continuation Out click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -631,8 +591,6 @@ describe('Entity Menu - Consent to Continuation Out click tests', () => {
 })
 
 describe('Entity Menu - Request AGM Extension click tests', () => {
-  const router = mockRouter.mock()
-
   beforeAll(() => {
     // override feature flag
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
@@ -656,7 +614,6 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
@@ -672,8 +629,6 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
 })
 
 describe('Entity Menu - Request AGM Location Change click tests', () => {
-  const router = mockRouter.mock()
-
   beforeAll(() => {
     // override feature flag
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
@@ -697,7 +652,6 @@ describe('Entity Menu - Request AGM Location Change click tests', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
-      router,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
