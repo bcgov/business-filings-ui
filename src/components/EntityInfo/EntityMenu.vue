@@ -23,6 +23,7 @@
             text
             color="primary"
             :href="getCorporateOnlineUrl"
+            target="_blank"
             v-on="on"
           >
             <v-icon medium>mdi-file-document-edit-outline</v-icon>
