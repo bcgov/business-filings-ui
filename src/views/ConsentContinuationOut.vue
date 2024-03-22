@@ -79,7 +79,7 @@
             </header>
 
             <!-- Ledger Detail -->
-            <section>
+            <section v-if="isRoleStaff">
               <header>
                 <h2>Ledger Detail</h2>
                 <p class="grey-text">
@@ -446,8 +446,13 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.detailCommentValid && this.certifyFormValid && this.foreignJurisdictionValid &&
-      this.documentDeliveryValid && this.courtOrderValid)
+    return (
+      (this.detailCommentValid || !this.isRoleStaff) && // staff only
+      this.certifyFormValid &&
+      this.foreignJurisdictionValid &&
+      this.documentDeliveryValid &&
+      this.courtOrderValid
+    )
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -820,7 +825,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
     const data: any = {
       [FilingTypes.CONSENT_CONTINUATION_OUT]: {
-        details: `${this.defaultComment}\n${this.detailComment}`,
+        details: this.isRoleStaff ? `${this.defaultComment}\n${this.detailComment}` : null,
         foreignJurisdiction: {
           country: this.selectedCountry,
           region: this.selectedRegion

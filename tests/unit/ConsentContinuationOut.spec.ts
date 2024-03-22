@@ -217,6 +217,9 @@ describe('Consent to Continuation Out view', () => {
     // verify new Filing ID
     expect(vm.filingId).toBe(456)
 
+    // verify that detail comment is not empty
+    expect(vm.detailComment).not.toBe('')
+
     vi.restoreAllMocks()
     wrapper.destroy()
   })
@@ -385,7 +388,6 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
     expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(false) // staff only
-    expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
     expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
     expect(wrapper.findComponent(ForeignJurisdiction).exists()).toBe(true)
     expect(wrapper.findComponent(PaymentErrorDialog).exists()).toBe(true)
@@ -408,7 +410,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
-        consentContinuationOut: { details: 'test' },
+        consentContinuationOut: { details: null },
         annualReport: {}
       })
     })
@@ -443,6 +445,9 @@ describe('Consent to Continue Out for general user and IAs only', () => {
 
     // verify new Filing ID
     expect(vm.filingId).toBe(456)
+
+    // verify that detail comment is empty
+    expect(vm.detailComment).toBe('')
 
     vi.restoreAllMocks()
     wrapper.destroy()
