@@ -24,7 +24,7 @@
 
     <!-- the drop-down menu -->
     <v-menu
-      v-if="isRoleStaff && isBusiness"
+      v-if="!isDisableNonBenCorps && isRoleStaff && isBusiness"
       offset-y
       left
       transition="slide-y-transition"
@@ -57,7 +57,6 @@
           </v-list-item>
 
           <v-list-item
-            v-if="!isDisableNonBenCorps"
             :disabled="!isAllowed(AllowableActions.DETAIL_COMMENT)"
             @click.stop="showCommentDialog(filing)"
           >
