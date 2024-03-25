@@ -96,12 +96,10 @@ export interface ApiFilingIF {
     continuationOut?: {
       continuationOutDate: IsoDatePacific
       courtOrder?: any
-      details: string
-      foreignJurisdiction: {
-        country: string
-        region?: string
-      }
+      country: string
+      details?: string
       legalName: string
+      region: string // may be null
     }
 
     // conversion filings only
@@ -112,7 +110,7 @@ export interface ApiFilingIF {
       effectOfOrder?: EffectOfOrderTypes
       fileNumber: string // may be null
       orderDate?: string // FUTURE: use date type here
-      orderDetails: string
+      orderDetails?: string
     }
 
     // dissolution filings only

@@ -78,50 +78,6 @@
               </h1>
             </header>
 
-            <!-- Ledger Detail -->
-            <section>
-              <header>
-                <h2>Ledger Detail</h2>
-                <p class="grey-text">
-                  Enter a detail that will appear on the ledger for this entity.
-                </p>
-              </header>
-              <div
-                id="detail-comment-section"
-                :class="{ 'invalid-section': !detailCommentValid && showErrors }"
-              >
-                <v-card
-                  flat
-                  class="py-8 px-5"
-                >
-                  <v-row no-gutters>
-                    <v-col
-                      cols="12"
-                      sm="3"
-                      class="pr-4"
-                    >
-                      <strong :class="{ 'app-red': !detailCommentValid && showErrors }">Detail</strong>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="9"
-                    >
-                      <p class="grey-text font-weight-bold">
-                        {{ defaultComment }}
-                      </p>
-                      <DetailComment
-                        ref="detailCommentRef"
-                        v-model="detailComment"
-                        placeholder="Add a Detail that will appear on the ledger for this entity."
-                        :maxLength="maxDetailCommentLength"
-                        @valid="detailCommentValid=$event"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </div>
-            </section>
-
             <!-- Jurisdiction Information -->
             <section>
               <header>
@@ -326,7 +282,7 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, DetailComment, ForeignJurisdiction } from '@/components/common'
+import { Certify, ForeignJurisdiction } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -343,7 +299,6 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     Certify,
     ConfirmDialog,
     CourtOrderPoa,
-    DetailComment,
     DocumentDelivery,
     ForeignJurisdiction,
     PaymentErrorDialog,
@@ -359,7 +314,6 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   $refs!: {
     confirm: ConfirmDialogType,
     certifyRef: Certify,
-    detailCommentRef: DetailComment,
     foreignJurisdictionRef: ForeignJurisdiction
   }
 
@@ -372,10 +326,6 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
   // enum for template
   readonly FilingCodes = FilingCodes
-
-  // variables for DetailComment component
-  detailComment = ''
-  detailCommentValid = false
 
   // variables for Certify component
   certifiedBy = ''
@@ -428,17 +378,6 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     return (!this.dataLoaded && !this.saveErrorReason && !this.paymentErrorDialog)
   }
 
-  /** Default comment (ie, the first line of the detail comment). */
-  get defaultComment (): string {
-    return 'Six Month Consent to Continue Out'
-  }
-
-  /** Maximum length of detail comment. */
-  get maxDetailCommentLength (): number {
-    // = (max size in db) - (default comment length) - (Carriage Return)
-    return 2000 - this.defaultComment.length - 1
-  }
-
   /** The Base URL string. */
   get baseUrl (): string {
     return sessionStorage.getItem('BASE_URL')
@@ -446,8 +385,12 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.detailCommentValid && this.certifyFormValid && this.foreignJurisdictionValid &&
-      this.documentDeliveryValid && this.courtOrderValid)
+    return (
+      this.certifyFormValid &&
+      this.foreignJurisdictionValid &&
+      this.documentDeliveryValid &&
+      this.courtOrderValid
+    )
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -516,6 +459,12 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
+  /** Called just before this component is destroyed. */
+  beforeDestroy (): void {
+    // remove event handler
+    window.onbeforeunload = null
+  }
+
   /** Fetches the draft consent filing. */
   async fetchDraftFiling (): Promise<void> {
     const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
@@ -557,10 +506,6 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
           option: StaffPaymentOptions.NONE
         } as StaffPaymentIF
       }
-
-      // load Detail Comment, removing the first line (default comment)
-      const comment: string = filing.consentContinuationOut.details || ''
-      this.detailComment = comment.split('\n').slice(1).join('\n')
 
       const courtOrder = filing.consentContinuationOut.courtOrder
       if (courtOrder) {
@@ -675,10 +620,6 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
-      if (!this.detailCommentValid) {
-        // Show error message of detail comment text area if invalid
-        this.$refs.detailCommentRef.$refs.textarea.error = true
-      }
       if (!this.certifyFormValid) {
         // Show error message of legal name text field if invalid
         this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
@@ -819,8 +760,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     }
 
     const data: any = {
-      [FilingTypes.CONSENT_CONTINUATION_OUT]: {
-        details: `${this.defaultComment}\n${this.detailComment}`,
+      consentContinuationOut: {
         foreignJurisdiction: {
           country: this.selectedCountry,
           region: this.selectedRegion
@@ -829,7 +769,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     }
 
     if (this.fileNumber !== '') {
-      data[FilingTypes.CONSENT_CONTINUATION_OUT].courtOrder = {
+      data.consentContinuationOut.courtOrder = {
         fileNumber: this.fileNumber,
         effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string
       }
@@ -951,7 +891,6 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
-    'detail-comment-section',
     'foreign-jurisdiction-section',
     'document-delivery-section',
     'certify-form-section',
@@ -961,7 +900,6 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   /** Object of valid flags. Must match validComponents. */
   get validFlags (): object {
     return {
-      detailComment: this.detailCommentValid,
       foreignJurisdiction: this.foreignJurisdictionValid,
       documentDelivery: this.documentDeliveryValid,
       certifyForm: this.certifyFormValid,
@@ -971,7 +909,6 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
-  @Watch('detailCommentValid')
   @Watch('documentDeliveryValid')
   @Watch('foreignJurisdictionValid')
   onHaveChanges (): void {

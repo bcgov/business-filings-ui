@@ -298,6 +298,12 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
     this.updateFilingData('add', FilingCodes.AGM_EXTENSION, undefined, undefined)
   }
 
+  /** Called just before this component is destroyed. */
+  beforeDestroy (): void {
+    // remove event handler
+    window.onbeforeunload = null
+  }
+
   /**
    * Called when user clicks File and Pay button
    * or when user retries from Save Error dialog.

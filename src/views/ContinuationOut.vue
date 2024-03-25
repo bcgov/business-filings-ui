@@ -545,6 +545,12 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     this.updateFilingData('add', FilingCodes.CONTINUATION_OUT, undefined, true)
   }
 
+  /** Called just before this component is destroyed. */
+  beforeDestroy (): void {
+    // remove event handler
+    window.onbeforeunload = null
+  }
+
   /** Fetches the draft continuation out filing. */
   async fetchDraftFiling (): Promise<void> {
     const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`

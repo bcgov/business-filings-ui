@@ -8,7 +8,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import ConsentAmalgamationOut from '@/views/ConsentAmalgamationOut.vue'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
-import { Certify, DetailComment, ForeignJurisdiction } from '@/components/common'
+import { Certify, ForeignJurisdiction } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { LegalServices } from '@/services'
@@ -64,7 +64,6 @@ describe('Consent to Amalgamation Out view', () => {
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
     expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
-    expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
     expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
     expect(wrapper.findComponent(PaymentErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
@@ -121,23 +120,13 @@ describe('Consent to Amalgamation Out view', () => {
     // verify "validated" - all true
     vm.certifyFormValid = true
     vm.courtOrderValid = true
-    vm.detailCommentValid = true
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = true
     expect(vm.isPageValid).toBe(true)
 
-    // verify "validated" - invalid Detail Comment form
-    vm.certifyFormValid = true
-    vm.courtOrderValid = true
-    vm.detailCommentValid = false
-    vm.documentDeliveryValid = true
-    vm.foreignJurisdictionValid = true
-    expect(vm.isPageValid).toBe(false)
-
     // verify "validated" - invalid Certify form
     vm.certifyFormValid = false
     vm.courtOrderValid = true
-    vm.detailCommentValid = true
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = true
     expect(vm.isPageValid).toBe(false)
@@ -145,7 +134,6 @@ describe('Consent to Amalgamation Out view', () => {
     // verify "validated" - invalid Court Order form
     vm.certifyFormValid = true
     vm.courtOrderValid = false
-    vm.detailCommentValid = true
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = true
     expect(vm.isPageValid).toBe(false)
@@ -153,7 +141,6 @@ describe('Consent to Amalgamation Out view', () => {
     // verify "validated" - invalid Document Delivery form
     vm.certifyFormValid = true
     vm.courtOrderValid = true
-    vm.detailCommentValid = true
     vm.documentDeliveryValid = false
     vm.foreignJurisdictionValid = true
     expect(vm.isPageValid).toBe(false)
@@ -161,7 +148,6 @@ describe('Consent to Amalgamation Out view', () => {
     // verify "validated" - invalid Foreign Jurisdiction form
     vm.certifyFormValid = true
     vm.courtOrderValid = true
-    vm.detailCommentValid = true
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = false
     expect(vm.isPageValid).toBe(false)
@@ -181,7 +167,7 @@ describe('Consent to Amalgamation Out view', () => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
-        consentAmalgamationOut: { details: 'test' },
+        consentAmalgamationOut: {},
         annualReport: {}
       })
     })
@@ -198,7 +184,6 @@ describe('Consent to Amalgamation Out view', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
-        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
@@ -237,7 +222,6 @@ describe('Consent to Amalgamation Out view', () => {
           priority: true
         },
         consentAmalgamationOut: {
-          details: 'Line 1\nLine 2\nLine 3',
           foreignJurisdiction: {
             country: 'CA',
             region: 'AB'
@@ -259,7 +243,6 @@ describe('Consent to Amalgamation Out view', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
-        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
@@ -277,7 +260,6 @@ describe('Consent to Amalgamation Out view', () => {
     expect(vm.staffPaymentData.routingSlipNumber).toBe('123456789')
     expect(vm.staffPaymentData.isPriority).toBe(true)
     // NB: line 1 (default comment) should be removed
-    expect(vm.detailComment).toBe('Line 2\nLine 3')
     expect(vm.draftCountry).toBe('CA')
     expect(vm.draftRegion).toBe('AB')
 
@@ -385,7 +367,6 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
     expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(false) // staff only
-    expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
     expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
     expect(wrapper.findComponent(ForeignJurisdiction).exists()).toBe(true)
     expect(wrapper.findComponent(PaymentErrorDialog).exists()).toBe(true)
@@ -408,7 +389,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
-        consentAmalgamationOut: { details: 'test' },
+        consentAmalgamationOut: {},
         annualReport: {}
       })
     })
@@ -425,7 +406,6 @@ describe('Consent to Continue Out for general user and IAs only', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
-        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
@@ -459,7 +439,6 @@ describe('Consent to Continue Out for general user and IAs only', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
-        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
@@ -471,7 +450,6 @@ describe('Consent to Continue Out for general user and IAs only', () => {
 
     // make sure form is validated
     await wrapper.setData({
-      detailCommentValid: true,
       documentDeliveryValid: true,
       certifyFormValid: true,
       courtOrderValid: true,

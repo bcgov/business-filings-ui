@@ -664,6 +664,9 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   beforeDestroy (): void {
     // stop listening for custom events
     this.$root.$off('fetch-error-event')
+
+    // remove event handler
+    window.onbeforeunload = null
   }
 
   async fetchDraftFiling (): Promise<void> {
