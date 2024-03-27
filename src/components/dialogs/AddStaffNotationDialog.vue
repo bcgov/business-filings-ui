@@ -37,7 +37,12 @@
           <span class="text-uppercase font-weight-bold">{{ getLegalName }}</span>, {{ getIdentifier }}.
         </p>
 
+        <p v-if="isAdministerFreeze">
+          This filing will not appear in Recent Filing History.
+        </p>
+
         <v-form
+          v-if="!isAdministerFreeze"
           id="notation-form"
           ref="notationFormRef"
         >
@@ -45,7 +50,7 @@
             id="notation-text"
             :class="{ 'mt-4': isAdministrativeDissolution || isPutBackOn }"
           >
-            Enter a {{ (isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'detail' : displayName }}
+            Enter a {{ (isAdministrativeDissolution || isPutBackOn) ? 'detail' : displayName }}
             that will appear on the ledger for this entity:
           </p>
 
@@ -87,32 +92,27 @@
               :uploadToUrl="LegalServices.uploadToUrl"
             />
           </div>
+
+          <v-divider class="mt-4" />
         </template>
 
-        <v-divider
-          v-if="isCourtOrder"
-          class="mt-4"
-        />
+        <template v-if="!isAdministerFreeze">
+          <p class="mt-4">
+            If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
+            to a plan of arrangement, enter the court order number and select Plan of Arrangement.
+          </p>
 
-        <p
-          v-if="!isAdministerFreeze"
-          class="mt-4"
-        >
-          If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
-          to a plan of arrangement, enter the court order number and select Plan of Arrangement.
-        </p>
-
-        <CourtOrderPoa
-          v-if="!isAdministerFreeze"
-          ref="courtOrderPoaRef"
-          :key="courtOrderPoaKey"
-          class="mt-4"
-          :displaySideLabels="false"
-          :autoValidation="enableValidation"
-          :courtOrderNumberRequired="courtOrderNumberRequired"
-          @emitCourtNumber="courtOrderNumber = $event"
-          @emitPoa="planOfArrangement = $event"
-        />
+          <CourtOrderPoa
+            ref="courtOrderPoaRef"
+            :key="courtOrderPoaKey"
+            class="mt-4"
+            :displaySideLabels="false"
+            :autoValidation="enableValidation"
+            :courtOrderNumberRequired="courtOrderNumberRequired"
+            @emitCourtNumber="courtOrderNumber = $event"
+            @emitPoa="planOfArrangement = $event"
+          />
+        </template>
       </v-card-text>
 
       <v-divider class="mx-4" />
@@ -243,7 +243,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   }
 
   get notationLabel (): string {
-    if (this.isAdministrativeDissolution || this.isPutBackOn || this.isAdministerFreeze) {
+    if (this.isAdministrativeDissolution || this.isPutBackOn) {
       return 'Add Detail'
     } else if (this.isCourtOrder) {
       return `${this.displayName} Text`
@@ -258,7 +258,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
       // Administrative Dissolution, Put Back On, Freeze/Unfreeze Business require a detailed comment
       (v: string) => (
         !!v ||
-        (!this.isAdministrativeDissolution && !this.isPutBackOn && !this.isAdministerFreeze) ||
+        (!this.isAdministrativeDissolution && !this.isPutBackOn) ||
         'Enter a detailed comment'
       ),
       // Court Order requires a file or a comment
@@ -271,7 +271,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
       // others require a comment
       (v: string) => (
         !!v ||
-        (this.isAdministrativeDissolution || this.isPutBackOn || this.isCourtOrder || this.isAdministerFreeze) ||
+        (this.isAdministrativeDissolution || this.isPutBackOn || this.isCourtOrder) ||
         `Enter a ${this.displayName}`
       ),
       (v: string) => (
@@ -297,7 +297,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
     // if this is a court order and file has changed, re-validate notation form
     if (this.isCourtOrder && this.enableValidation) {
       await this.$nextTick() // wait for variables to update
-      this.$refs.notationFormRef.validate()
+      this.$refs.notationFormRef && this.$refs.notationFormRef.validate()
     }
   }
 
@@ -309,7 +309,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
       this.enableValidation = false
 
       // reset notation form
-      this.$refs.notationFormRef.reset()
+      this.$refs.notationFormRef && this.$refs.notationFormRef.reset()
 
       // reset file upload component
       if (this.isCourtOrder) this.$refs.fileUploadRef.reset()
@@ -333,9 +333,9 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
     await this.$nextTick() // wait for form to update
 
     // if any component is invalid, don't save
-    const isNotationFormValid = this.$refs.notationFormRef.validate()
-    const isFileComponentValid = (!this.isCourtOrder || this.$refs.fileUploadRef.validate())
-    const isCourtOrderPoaValid = !this.isAdministerFreeze ? this.$refs.courtOrderPoaRef.validate() : true
+    const isNotationFormValid = (!this.$refs.notationFormRef || this.$refs.notationFormRef.validate())
+    const isFileComponentValid = (!this.$refs.fileUploadRef || this.$refs.fileUploadRef.validate())
+    const isCourtOrderPoaValid = (!this.$refs.courtOrderPoaRef || this.$refs.courtOrderPoaRef.validate())
 
     if (!isNotationFormValid || !isFileComponentValid || !isCourtOrderPoaValid) {
       this.saving = false
@@ -405,7 +405,6 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
       }
     } else if (this.isAdministerFreeze) {
       filing[FilingTypes.ADMIN_FREEZE] = {
-        details: this.notation,
         freeze: !this.isAdminFrozen
       }
     } else {

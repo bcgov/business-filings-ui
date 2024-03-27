@@ -90,6 +90,30 @@ describe('AddStaffNotationDialog', () => {
     wrapper.destroy()
   })
 
+  it('renders the page contents correctly for Admin Freeze/Unfreeze', () => {
+    const wrapper = shallowMount(AddStaffNotationDialog,
+      {
+        propsData: {
+          dialog: true,
+          displayName: 'Freeze Business',
+          name: 'adminFreeze',
+          attach: '#parent-page'
+        }
+      })
+    console.log(wrapper.html())
+
+    expect(wrapper.find('v-card-title-stub').text()).toBe('Freeze Business')
+    expect(wrapper.find('v-card-text-stub').text()).toContain('You are about to freeze')
+    expect(wrapper.find('v-card-text-stub').text()).toContain('This filing will not appear')
+    expect(wrapper.find('#notation-form').exists()).toBe(false)
+    expect(wrapper.find('.file-upload-pdf').exists()).toBe(false)
+    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(false)
+    expect(wrapper.find('#dialog-save-button')).toBeDefined()
+    expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
+
+    wrapper.destroy()
+  })
+
   it('emits Close=false event when user clicks Cancel button', async () => {
     const wrapper = shallowMount(AddStaffNotationDialog,
       {
@@ -109,7 +133,7 @@ describe('AddStaffNotationDialog', () => {
     wrapper.destroy()
   })
 
-  it('validates notation is not empty for standard filing', async () => {
+  it('validates notation is not empty for Registrar\'s Notation', async () => {
     const wrapper = mount(AddStaffNotationDialog,
       {
         propsData: {
@@ -133,7 +157,7 @@ describe('AddStaffNotationDialog', () => {
     wrapper.destroy()
   })
 
-  it('validates notation is not empty for Put Back On Filing', async () => {
+  it('validates notation is not empty for Put Back On', async () => {
     const wrapper = mount(AddStaffNotationDialog,
       {
         propsData: {
@@ -157,7 +181,7 @@ describe('AddStaffNotationDialog', () => {
     wrapper.destroy()
   })
 
-  it('validates notation is not empty for Administrative Dissolution Filing', async () => {
+  it('validates notation is not empty for Administrative Dissolution', async () => {
     const wrapper = mount(AddStaffNotationDialog,
       {
         propsData: {
