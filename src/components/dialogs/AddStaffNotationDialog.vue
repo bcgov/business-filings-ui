@@ -287,7 +287,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
     // if this is a court order and notation has changed, re-validate file upload component
     if (this.isCourtOrder && this.enableValidation) {
       await this.$nextTick() // wait for variables to update
-      this.$refs.fileUploadRef.validate()
+      this.$refs.fileUploadRef?.validate()
     }
   }
 
@@ -297,7 +297,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
     // if this is a court order and file has changed, re-validate notation form
     if (this.isCourtOrder && this.enableValidation) {
       await this.$nextTick() // wait for variables to update
-      this.$refs.notationFormRef && this.$refs.notationFormRef.validate()
+      this.$refs.notationFormRef?.validate()
     }
   }
 
@@ -309,10 +309,10 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
       this.enableValidation = false
 
       // reset notation form
-      this.$refs.notationFormRef && this.$refs.notationFormRef.reset()
+      this.$refs.notationFormRef?.reset()
 
       // reset file upload component
-      if (this.isCourtOrder) this.$refs.fileUploadRef.reset()
+      this.$refs.fileUploadRef?.reset()
 
       // reset court order component and variables
       this.courtOrderPoaKey++ // force re-render
