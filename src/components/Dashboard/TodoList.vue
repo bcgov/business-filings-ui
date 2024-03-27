@@ -1019,9 +1019,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
     if (header) {
       switch (header.name) {
-        case FilingTypes.ADMIN_FREEZE:
-          // do nothing for admin_freeze
-          break
         case FilingTypes.AGM_EXTENSION:
           await this.loadAgmExtension(task)
           break
