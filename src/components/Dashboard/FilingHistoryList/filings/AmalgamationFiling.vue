@@ -42,7 +42,7 @@
         </p>
 
         <p>
-          The system has completed processing your filing. You can now retrieve the information.
+          The system has completed processing your filing. You can now retrieve the business information.
         </p>
 
         <div class="reload-business-container text-center mt-6">
