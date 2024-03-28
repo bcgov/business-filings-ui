@@ -63,7 +63,7 @@ export default class RegistrationFiling extends Vue {
 
   /** Reloads Filings UI using business id instead of temporary registration number. */
   reloadWithBusinessId (): void {
-    // build the URL to the business dashboard with the busines id and any URL parameters
+    // build the URL to the business dashboard with the business id and any URL parameters
     const url = this.getDashboardUrl + this.filing.businessIdentifier + this.$route.fullPath
     window.location.assign(url)
   }
