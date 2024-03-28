@@ -7,7 +7,7 @@
     <template #body>
       <div
         v-if="!!tempRegNumber && isStatusCompleted"
-        class="completed-dissolution-details"
+        class="completed-registration-details"
       >
         <h4>Registration Complete</h4>
 
@@ -16,15 +16,15 @@
         </p>
 
         <p>
-          Return to My Business Registry to access your business and file changes.
+          The system has completed processing your filing. You can now retrieve the information.
         </p>
 
-        <div class="to-dashboard-container text-center mt-6">
+        <div class="reload-business-container text-center mt-6">
           <v-btn
             color="primary"
-            @click.stop="returnToMyBusinessRegistry()"
+            @click.stop="reloadWithBusinessId()"
           >
-            <span>Return to My Business Registry</span>
+            <span>Retrieve Business Information</span>
           </v-btn>
         </div>
       </div>
@@ -37,7 +37,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { EnumUtilities } from '@/services'
-import { navigate } from '@/utils'
 import FilingTemplate from '../FilingTemplate.vue'
 import { useBusinessStore, useConfigurationStore } from '@/stores'
 
@@ -51,7 +50,7 @@ export default class RegistrationFiling extends Vue {
   @Prop({ required: true }) readonly index!: number
 
   @Getter(useBusinessStore) getLegalName!: string
-  @Getter(useConfigurationStore) getMyBusinessRegistryUrl!: string
+  @Getter(useConfigurationStore) getDashboardUrl!: string
 
   /** The Temporary Registration Number string (may be null). */
   get tempRegNumber (): string {
@@ -62,8 +61,11 @@ export default class RegistrationFiling extends Vue {
     return EnumUtilities.isStatusCompleted(this.filing)
   }
 
-  returnToMyBusinessRegistry (): void {
-    navigate(this.getMyBusinessRegistryUrl)
+  /** Reloads Filings UI using business id instead of temporary registration number. */
+  reloadWithBusinessId (): void {
+    // build the URL to the business dashboard with the busines id and any URL parameters
+    const url = this.getDashboardUrl + this.filing.businessIdentifier + this.$route.fullPath
+    window.location.assign(url)
   }
 }
 </script>

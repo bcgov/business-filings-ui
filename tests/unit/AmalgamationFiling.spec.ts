@@ -62,7 +62,7 @@ describe('Regular amalgamation Filing', () => {
     expect(wrapper.find('.hide-details').text()).toBe('Hide Documents')
 
     await wrapper.find('.view-details').trigger('click')
-    expect(wrapper.find('.completed-ia-details').exists()).toBe(true)
+    expect(wrapper.find('.completed-amalgamation-details').exists()).toBe(true)
     expect(wrapper.find('h4').text()).toBe('Amalgamation Complete')
     expect(wrapper.find('p').text()).toBe('MY COMPANY has been successfully amalgamated.')
 
@@ -115,7 +115,7 @@ describe('Horizontal amalgamation Filing', () => {
     expect(wrapper.find('.hide-details').text()).toBe('Hide Documents')
 
     await wrapper.find('.view-details').trigger('click')
-    expect(wrapper.find('.completed-ia-details').exists()).toBe(true)
+    expect(wrapper.find('.completed-amalgamation-details').exists()).toBe(true)
     expect(wrapper.find('h4').text()).toBe('Amalgamation Complete')
     expect(wrapper.find('p').text()).toBe('MY COMPANY has been successfully amalgamated.')
 

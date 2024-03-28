@@ -24,7 +24,7 @@ describe.skip('Registration Filing', () => {
     expect(paragraphs.at(0).text()).toContain('My Firm has been successfully registered.')
     expect(paragraphs.at(1).text())
       .toContain('Return to My Business Registry to access your business and file changes.')
-    expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
+    expect(wrapper.find('.reload-business-container').exists()).toBe(true)
 
     wrapper.destroy()
   })

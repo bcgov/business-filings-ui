@@ -82,13 +82,13 @@ export default class LegalServices {
   }
 
   /**
-   * Fetches the draft IA / Registration / Amalgamation filing.
+   * Fetches a bootstrap business filing (IA / Registration / Amalgamation).
    * This is a unique request using the temp reg number.
-   * This assumes a single filing is returned.
+   * This assumes a single filing is returned by the API.
    * @param tempRegNumber the temporary registration number
-   * @returns the draft app response (a single filing)
+   * @returns the bootstrap filing response (a single filing)
    */
-  static async fetchDraftApp (tempRegNumber: string): Promise<any> {
+  static async fetchBootstrapFiling (tempRegNumber: string): Promise<any> {
     const url = `businesses/${tempRegNumber}/filings`
     return axios.get(url)
       // workaround because data is at "response.data.data"

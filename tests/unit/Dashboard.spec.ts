@@ -85,18 +85,18 @@ describe('Dashboard - UI', () => {
 
   it('identifies app tasks vs app filings', () => {
     const tests = [
-      { entityStatus: EntityStatus.DRAFT_AMALGAMATION, isAppTask: true },
-      { entityStatus: EntityStatus.DRAFT_INCORP_APP, isAppTask: true },
-      { entityStatus: EntityStatus.DRAFT_REGISTRATION, isAppTask: true },
-      { entityStatus: EntityStatus.FILED_AMALGAMATION, isAppFiling: true },
-      { entityStatus: EntityStatus.FILED_INCORP_APP, isAppFiling: true },
-      { entityStatus: EntityStatus.FILED_REGISTRATION, isAppFiling: true }
+      { entityStatus: EntityStatus.DRAFT_AMALGAMATION, isBootstrapTask: true },
+      { entityStatus: EntityStatus.DRAFT_INCORP_APP, isBootstrapTask: true },
+      { entityStatus: EntityStatus.DRAFT_REGISTRATION, isBootstrapTask: true },
+      { entityStatus: EntityStatus.FILED_AMALGAMATION, isBootstrapFiling: true },
+      { entityStatus: EntityStatus.FILED_INCORP_APP, isBootstrapFiling: true },
+      { entityStatus: EntityStatus.FILED_REGISTRATION, isBootstrapFiling: true }
     ]
 
     tests.forEach((test) => {
       rootStore.entityStatus = test.entityStatus
-      expect(vm.isAppTask).toBe(!!test.isAppTask)
-      expect(vm.isAppFiling).toBe(!!test.isAppFiling)
+      expect(vm.isBootstrapTask).toBe(!!test.isBootstrapTask)
+      expect(vm.isBootstrapFiling).toBe(!!test.isBootstrapFiling)
     })
   })
 

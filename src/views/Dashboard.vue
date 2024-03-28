@@ -134,8 +134,8 @@
 
               <v-card flat>
                 <AddressListSm
-                  :showCompleteYourFilingMessage="isAppTask"
-                  :showGrayedOut="isAppFiling"
+                  :showCompleteYourFilingMessage="isBootstrapTask"
+                  :showGrayedOut="isBootstrapFiling"
                 />
               </v-card>
             </section>
@@ -177,8 +177,8 @@
               >
                 <v-card flat>
                   <ProprietorPartnersListSm
-                    :showCompleteYourFilingMessage="isAppTask"
-                    :showGrayedOut="isAppFiling"
+                    :showCompleteYourFilingMessage="isBootstrapTask"
+                    :showGrayedOut="isBootstrapFiling"
                   />
                 </v-card>
               </div>
@@ -212,8 +212,8 @@
               >
                 <v-card flat>
                   <DirectorListSm
-                    :showCompleteYourFilingMessage="isAppTask"
-                    :showGrayedOut="isAppFiling"
+                    :showCompleteYourFilingMessage="isBootstrapTask"
+                    :showGrayedOut="isBootstrapFiling"
                   />
                 </v-card>
               </div>
@@ -287,8 +287,8 @@ export default class Dashboard extends Mixins(
   @Getter(useFilingHistoryListStore) getPendingCoa!: ApiFilingIF
 
   @Getter(useRootStore) getParties!: Array<PartyIF>
-  @Getter(useRootStore) isAppFiling!: boolean
-  @Getter(useRootStore) isAppTask!: boolean
+  @Getter(useRootStore) isBootstrapFiling!: boolean
+  @Getter(useRootStore) isBootstrapTask!: boolean
   // @Getter(useRootStore) isRoleStaff!: boolean
 
   /** Whether a COA is pending. */
