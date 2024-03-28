@@ -576,7 +576,7 @@ describe('StaffNotation', () => {
     wrapper.destroy()
   })
 
-  it('renders the staff notation dialog for Admin Freeze', async () => {
+  it('doesn\'t render the staff notation dialog for Admin Freeze', async () => {
     const wrapper = mount(StaffNotation, { vuetify })
 
     // open menu
@@ -594,7 +594,7 @@ describe('StaffNotation', () => {
     expect(wrapper.find('#dialog-title').text()).toContain('Freeze Business')
 
     // verify textarea label
-    expect(wrapper.find('#notation-form .notation-textarea .v-label').text()).toBe('Add Detail')
+    expect(wrapper.find('#notation-form').exists()).toBe(false)
 
     // click Cancel button
     await wrapper.find('#dialog-cancel-button').trigger('click')
