@@ -90,15 +90,15 @@ export const useBusinessStore = defineStore('business', {
       return state.businessInfo.lastDirectorChangeDate
     },
 
-    /** The legal name, or operating name if is firm. */
+    /** The legal name, or alternate name if is firm. */
     getLegalName (state: BusinessStateIF): string {
-      return (this.isFirm && this.getOperatingName) ? this.getOperatingName : state.businessInfo.legalName
+      return (this.isFirm && this.getAlternateName) ? this.getAlternateName : state.businessInfo.legalName
     },
 
-    getOperatingName (state: BusinessStateIF): string {
+    getAlternateName (state: BusinessStateIF): string {
       const { alternateNames, identifier } = state.businessInfo
-      const operatingName = alternateNames?.find((x) => x.identifier === identifier)?.operatingName
-      return operatingName || null
+      const name = alternateNames?.find((x) => x.identifier === identifier)?.name
+      return name || null
     },
 
     /** The legal type. */
