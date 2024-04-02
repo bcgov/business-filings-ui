@@ -24,7 +24,7 @@ export interface AlternateNameIF {
   name: string
   nameRegisteredDate: ApiDateTimeUtc
   nameStartDate: IsoDatePacific
-  nameType: CorpTypeCd
+  nameType: string
 }
 
 export interface AmalgamatedIntoIF {
