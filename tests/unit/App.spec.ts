@@ -987,7 +987,7 @@ describe('App as a Draft IA with approved NR', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('BEN')
     expect(businessStore.getLegalName).toBe('My Name Request')
-    expect(rootStore.isAppTask).toBe(true)
+    expect(rootStore.isBootstrapTask).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -1425,7 +1425,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('BEN')
     expect(businessStore.getLegalName).toBe('My Name Request')
-    expect(rootStore.isAppFiling).toBe(true)
+    expect(rootStore.isBootstrapFiling).toBe(true)
 
     // spot check addresses and directors
     expect(rootStore.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
@@ -1568,7 +1568,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('BEN')
     expect(businessStore.getLegalName).toBe('My Name Request')
-    expect(rootStore.isAppFiling).toBe(true)
+    expect(rootStore.isBootstrapFiling).toBe(true)
 
     // spot check addresses and directors
     expect(rootStore.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
@@ -2085,7 +2085,7 @@ describe('App as a Draft Registration with approved NR', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('SP')
     expect(businessStore.getLegalName).toBe('My Name Request')
-    expect(rootStore.isAppTask).toBe(true)
+    expect(rootStore.isBootstrapTask).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -2215,7 +2215,7 @@ describe('App as a COMPLETED Registration Application', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('SP')
     expect(businessStore.getLegalName).toBe('My Name Request')
-    expect(rootStore.isAppFiling).toBe(true)
+    expect(rootStore.isBootstrapFiling).toBe(true)
 
     // verify loaded filing
     expect(filingHistoryListStore.filings.length).toBe(1)
@@ -2266,8 +2266,8 @@ describe('App as a draft numbered regular amalgamation application', () => {
       return Promise.resolve(USER_INFO)
     })
 
-    // mock "fetchDraftApp" legal service
-    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+    // mock "fetchBootstrapFiling" legal service
+    vi.spyOn(LegalServices, 'fetchBootstrapFiling').mockImplementation((): any => {
       return Promise.resolve({
         filing: {
           business: {
@@ -2319,7 +2319,7 @@ describe('App as a draft numbered regular amalgamation application', () => {
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
     expect(rootStore.isDraftAmalgamation).toBe(true)
-    expect(rootStore.isAppTask).toBe(true)
+    expect(rootStore.isBootstrapTask).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -2379,8 +2379,8 @@ describe('App as a draft named regular amalgamation application', () => {
       })
     })
 
-    // mock "fetchDraftApp" legal service
-    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+    // mock "fetchBootstrapFiling" legal service
+    vi.spyOn(LegalServices, 'fetchBootstrapFiling').mockImplementation((): any => {
       return Promise.resolve({
         filing: {
           business: {
@@ -2433,7 +2433,7 @@ describe('App as a draft named regular amalgamation application', () => {
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBe('My Amalgamated Company')
     expect(rootStore.isDraftAmalgamation).toBe(true)
-    expect(rootStore.isAppTask).toBe(true)
+    expect(rootStore.isBootstrapTask).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -2476,8 +2476,8 @@ describe('App as a completed regular amalgamation application', () => {
       return Promise.resolve(USER_INFO)
     })
 
-    // mock "fetchDraftApp" legal service
-    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+    // mock "fetchBootstrapFiling" legal service
+    vi.spyOn(LegalServices, 'fetchBootstrapFiling').mockImplementation((): any => {
       return Promise.resolve({
         filing: {
           business: {
@@ -2533,7 +2533,7 @@ describe('App as a completed regular amalgamation application', () => {
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
     expect(rootStore.isFiledAmalgamation).toBe(true)
-    expect(rootStore.isAppFiling).toBe(true)
+    expect(rootStore.isBootstrapFiling).toBe(true)
 
     // verify loaded filing
     expect(filingHistoryListStore.filings.length).toBe(1)
@@ -2575,8 +2575,8 @@ describe('App as a draft horizontal amalgamation application', () => {
       return Promise.resolve(USER_INFO)
     })
 
-    // mock "fetchDraftApp" legal service
-    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+    // mock "fetchBootstrapFiling" legal service
+    vi.spyOn(LegalServices, 'fetchBootstrapFiling').mockImplementation((): any => {
       return Promise.resolve({
         filing: {
           business: {
@@ -2632,7 +2632,7 @@ describe('App as a draft horizontal amalgamation application', () => {
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
     expect(rootStore.isDraftAmalgamation).toBe(true)
-    expect(rootStore.isAppTask).toBe(true)
+    expect(rootStore.isBootstrapTask).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -2675,8 +2675,8 @@ describe('App as a completed horizontal amalgamation application', () => {
       return Promise.resolve(USER_INFO)
     })
 
-    // mock "fetchDraftApp" legal service
-    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+    // mock "fetchBootstrapFiling" legal service
+    vi.spyOn(LegalServices, 'fetchBootstrapFiling').mockImplementation((): any => {
       return Promise.resolve({
         filing: {
           business: {
@@ -2736,7 +2736,7 @@ describe('App as a completed horizontal amalgamation application', () => {
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
     expect(rootStore.isFiledAmalgamation).toBe(true)
-    expect(rootStore.isAppFiling).toBe(true)
+    expect(rootStore.isBootstrapFiling).toBe(true)
 
     // verify loaded filing
     expect(filingHistoryListStore.filings.length).toBe(1)
@@ -2778,8 +2778,8 @@ describe('App as a draft vertical amalgamation application', () => {
       return Promise.resolve(USER_INFO)
     })
 
-    // mock "fetchDraftApp" legal service
-    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+    // mock "fetchBootstrapFiling" legal service
+    vi.spyOn(LegalServices, 'fetchBootstrapFiling').mockImplementation((): any => {
       return Promise.resolve({
         filing: {
           business: {
@@ -2835,7 +2835,7 @@ describe('App as a draft vertical amalgamation application', () => {
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
     expect(rootStore.isDraftAmalgamation).toBe(true)
-    expect(rootStore.isAppTask).toBe(true)
+    expect(rootStore.isBootstrapTask).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -2878,8 +2878,8 @@ describe('App as a completed vertical amalgamation application', () => {
       return Promise.resolve(USER_INFO)
     })
 
-    // mock "fetchDraftApp" legal service
-    vi.spyOn(LegalServices, 'fetchDraftApp').mockImplementation((): any => {
+    // mock "fetchBootstrapFiling" legal service
+    vi.spyOn(LegalServices, 'fetchBootstrapFiling').mockImplementation((): any => {
       return Promise.resolve({
         filing: {
           business: {
@@ -2939,7 +2939,7 @@ describe('App as a completed vertical amalgamation application', () => {
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
     expect(rootStore.isFiledAmalgamation).toBe(true)
-    expect(rootStore.isAppFiling).toBe(true)
+    expect(rootStore.isBootstrapFiling).toBe(true)
 
     // verify loaded filing
     expect(filingHistoryListStore.filings.length).toBe(1)

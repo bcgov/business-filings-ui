@@ -115,7 +115,7 @@ describe('Legal Services', () => {
     expect(directors).toEqual({ data: DIRECTORS })
   })
 
-  it('fetches incorp app correctly', async () => {
+  it('fetches bootstrap filing correctly', async () => {
     const IA = {
       foo: 'bar'
     }
@@ -125,7 +125,7 @@ describe('Legal Services', () => {
       .returns(new Promise(resolve => resolve({ data: IA })))
 
     // call method
-    const ia = await LegalServices.fetchDraftApp('T1234567')
+    const ia = await LegalServices.fetchBootstrapFiling('T1234567')
 
     // verify data
     expect(ia).toEqual(IA)

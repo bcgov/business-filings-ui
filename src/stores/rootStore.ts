@@ -139,15 +139,15 @@ export const useRootStore = defineStore('root', {
       return (state.entityStatus === EntityStatus.FILED_REGISTRATION)
     },
 
-    /** Is True if this is a Draft or Pending application. */
-    isAppTask (): boolean {
+    /** Is True if this is a bootstrap task (ie, Draft or Pending). */
+    isBootstrapTask (): boolean {
       return (
         this.isDraftAmalgamation || this.isDraftIncorpApp || this.isDraftRegistration
       )
     },
 
-    /** Is True if this is a Completed or Paid application. */
-    isAppFiling (): boolean {
+    /** Is True if this is a bootstrap filing (ie, Completed or Paid). */
+    isBootstrapFiling (): boolean {
       return (
         this.isFiledAmalgamation || this.isFiledIncorpApp || this.isFiledRegistration
       )

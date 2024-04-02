@@ -42,15 +42,15 @@
         </p>
 
         <p>
-          Return to My Business Registry to access your business and file changes.
+          The system has completed processing your filing. You can now retrieve the business information.
         </p>
 
-        <div class="to-dashboard-container text-center mt-6">
+        <div class="reload-business-container text-center mt-6">
           <v-btn
             color="primary"
-            @click.stop="returnToMyBusinessRegistry()"
+            @click.stop="reloadWithBusinessId()"
           >
-            <span>Return to My Business Registry</span>
+            <span>Retrieve Business Information</span>
           </v-btn>
         </div>
       </div>
@@ -63,7 +63,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
-import { navigate } from '@/utils'
 import FiledAndPendingPaid from '../subtitles/FiledAndPendingPaid.vue'
 import FilingTemplate from '../FilingTemplate.vue'
 import FutureEffective from '../bodies/FutureEffective.vue'
@@ -86,7 +85,7 @@ export default class IncorporationApplication extends Vue {
 
   @Getter(useBusinessStore) getEntityName!: string
   @Getter(useBusinessStore) getLegalName!: string
-  @Getter(useConfigurationStore) getMyBusinessRegistryUrl!: string
+  @Getter(useConfigurationStore) getDashboardUrl!: string
 
   /** The Temporary Registration Number string (may be null). */
   get tempRegNumber (): string {
@@ -123,8 +122,11 @@ export default class IncorporationApplication extends Vue {
     return 'Unknown Name'
   }
 
-  returnToMyBusinessRegistry (): void {
-    navigate(this.getMyBusinessRegistryUrl)
+  /** Reloads Filings UI using business id instead of temporary registration number. */
+  reloadWithBusinessId (): void {
+    // build the URL to the business dashboard with the business id and any URL parameters
+    const url = this.getDashboardUrl + this.filing.businessIdentifier + this.$route.fullPath
+    window.location.assign(url)
   }
 }
 </script>

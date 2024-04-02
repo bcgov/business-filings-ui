@@ -40,6 +40,10 @@ export const useConfigurationStore = defineStore('configuration', {
       return state.configuration.VUE_APP_BUSINESS_CREATE_URL
     },
 
+    getDashboardUrl (state: ConfigurationStateIF): string {
+      return state.configuration.VUE_APP_DASHBOARD_URL
+    },
+
     getEditUrl (state: ConfigurationStateIF): string {
       return state.configuration.VUE_APP_BUSINESS_EDIT_URL
     },

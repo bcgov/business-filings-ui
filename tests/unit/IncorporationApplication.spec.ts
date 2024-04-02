@@ -25,7 +25,7 @@ describe.skip('Incorporation Application Filing', () => {
     expect(paragraphs.at(0).text()).toContain('My Business has been successfully incorporated.')
     expect(paragraphs.at(1).text())
       .toContain('Return to My Business Registry to access your business and file changes.')
-    expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
+    expect(wrapper.find('.reload-business-container').exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -43,7 +43,7 @@ describe.skip('Incorporation Application Filing', () => {
     expect(paragraphs.at(0).text()).toContain('A Numbered Benefit Company has been successfully incorporated.')
     expect(paragraphs.at(1).text())
       .toContain('Return to My Business Registry to access your business and file changes.')
-    expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
+    expect(wrapper.find('.reload-business-container').exists()).toBe(true)
 
     wrapper.destroy()
   })

@@ -234,8 +234,8 @@ export default class App extends Mixins(
   @Getter(useConfigurationStore) getRegHomeUrl!: string
 
   @Getter(useRootStore) getKeycloakRoles!: Array<string>
-  @Getter(useRootStore) isAppFiling!: boolean
-  @Getter(useRootStore) isAppTask!: boolean
+  @Getter(useRootStore) isBootstrapFiling!: boolean
+  @Getter(useRootStore) isBootstrapTask!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useRootStore) showFetchingDataSpinner!: boolean
   @Getter(useRootStore) showStartingAmalgamationSpinner!: boolean
@@ -457,10 +457,21 @@ export default class App extends Mixins(
       }
     }
 
-    // is this a draft app entity (incorporation/registration/amalgamation)?
+    // is this a bootstrap business? (eg, incorporation/registration/amalgamation)
     if (this.tempRegNumber) {
       try {
-        await this.fetchDraftAppData() // throws on error
+        this.nameRequestInvalidType = null // reset for new fetches
+
+        // fetch the bootstrap filing and store the bootstrap business data
+        const response = await LegalServices.fetchBootstrapFiling(this.tempRegNumber)
+        this.storeBootstrapBusinessData(response)
+
+        // if it is a task (not a filing), and it has a NR, load it
+        if (this.isBootstrapTask && this.localNrNumber) {
+          const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
+          this.storeNrData(nr, response)
+        }
+
         this.dataLoaded = true
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
@@ -510,22 +521,6 @@ export default class App extends Mixins(
       this.storeAddresses({ data: { businessOffice: null } })
     } else {
       throw new Error('Incomplete business data')
-    }
-  }
-
-  /** Fetches and stores the draft application data. */
-  async fetchDraftAppData (): Promise<void> {
-    this.nameRequestInvalidType = null // reset for new fetches
-
-    const application = await LegalServices.fetchDraftApp(this.tempRegNumber)
-
-    // handle draft application
-    this.storeDraftApp(application)
-
-    // if this app is a task (not a filing), and it has a NR, load it
-    if (this.isAppTask && this.localNrNumber) {
-      const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
-      this.storeNrData(nr, application)
     }
   }
 
@@ -604,12 +599,12 @@ export default class App extends Mixins(
     }
   }
 
-  /** Verifies and stores a draft application's data. */
-  storeDraftApp (application: any): void {
-    const filing = application?.filing
+  /** Verifies and stores a bootstrap business' data. */
+  storeBootstrapBusinessData (response: any): void {
+    const filing = response?.filing
     const filingName = filing.header?.name as FilingTypes
 
-    if (!filing || !filing.header || !filingName) {
+    if (!filing || !filing.business || !filing.header || !filingName) {
       throw new Error(`Invalid ${filingName} filing`)
     }
 
@@ -626,7 +621,7 @@ export default class App extends Mixins(
     switch (status) {
       case FilingStatus.DRAFT:
       case FilingStatus.PENDING:
-        // this is a draft application
+        // this is a boostrap task
         if (isAmalgamation) entityStatus = EntityStatus.DRAFT_AMALGAMATION
         else if (isIncorporationApplication) entityStatus = EntityStatus.DRAFT_INCORP_APP
         else if (isRegistration) entityStatus = EntityStatus.DRAFT_REGISTRATION
@@ -635,7 +630,7 @@ export default class App extends Mixins(
 
       case FilingStatus.COMPLETED:
       case FilingStatus.PAID:
-        // this is a filed application
+        // this is a bootstrap filing
         if (isAmalgamation) entityStatus = EntityStatus.FILED_AMALGAMATION
         else if (isIncorporationApplication) entityStatus = EntityStatus.FILED_INCORP_APP
         else if (isRegistration) entityStatus = EntityStatus.FILED_REGISTRATION
@@ -679,16 +674,16 @@ export default class App extends Mixins(
     // store Legal Name if present
     if (nameRequest.legalName) this.setLegalName(nameRequest.legalName)
 
-    // store the application in the right list
-    if (this.isAppTask) this.storeDraftAppTask(application)
-    else if (this.isAppFiling) this.storeDraftAppFiling(application)
+    // store the bootstrap data in the right list
+    if (this.isBootstrapTask) this.storeBootstrapTask(response)
+    else if (this.isBootstrapFiling) this.storeBootstrapFiling(response)
     else throw new Error(`Invalid ${filingName} filing - filing status`)
   }
 
-  /** Stores draft application as a task in the Todo List. */
-  storeDraftAppTask (application: any): void {
-    const filing = application.filing as TaskTodoIF
-    // NB: these were already validated in storeDraftApp()
+  /** Stores bootstrap task in the Todo List. */
+  storeBootstrapTask (response: any): void {
+    const filing = response.filing as TaskTodoIF
+    // NB: these were already validated in storeBootstrapBusinessData()
     const header = filing.header
     const data = filing[header.name]
 
@@ -710,10 +705,10 @@ export default class App extends Mixins(
     this.setTasks([taskItem])
   }
 
-  /** Stores filed application as a filing in the Filing History List. */
-  storeDraftAppFiling (application: any): void {
-    const filing = application.filing as TaskTodoIF
-    // NB: these were already validated in storeDraftApp()
+  /** Stores bootstrap filing in the Filing History List. */
+  storeBootstrapFiling (response: any): void {
+    const filing = response.filing as TaskTodoIF
+    // NB: these were already validated in storeBootstrapBusinessData()
     const header = filing.header
     const data = filing[header.name]
 
@@ -732,15 +727,15 @@ export default class App extends Mixins(
     // add this as a filing item
     const filingItem = {
       availableOnPaperOnly: header.availableOnPaperOnly,
-      businessIdentifier: this.getIdentifier,
-      commentsCount: application.commentsCount,
-      commentsLink: application.commentsLink,
-      displayLedger: application.displayLedger,
+      businessIdentifier: filing.business.identifier || this.getIdentifier,
+      commentsCount: response.commentsCount,
+      commentsLink: response.commentsLink,
+      displayLedger: response.displayLedger,
       displayName,
-      documentsLink: application.documentsLink,
+      documentsLink: response.documentsLink,
       effectiveDate: this.apiToUtcString(header.effectiveDate),
       filingId: header.filingId,
-      filingLink: application.filingLink,
+      filingLink: response.filingLink,
       filingSubType: data.type,
       isFutureEffective: header.isFutureEffective,
       name: header.name,
