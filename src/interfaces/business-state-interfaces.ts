@@ -17,13 +17,14 @@ export interface AllowedActionsIF {
   }
 }
 
-/** The Alternate Name (aka operating name) object. */
+/** The Alternate Name object. */
 export interface AlternateNameIF {
   entityType: CorpTypeCd
   identifier: string
+  name: string
   nameRegisteredDate: ApiDateTimeUtc
   nameStartDate: IsoDatePacific
-  operatingName: string
+  nameType: CorpTypeCd
 }
 
 export interface AmalgamatedIntoIF {

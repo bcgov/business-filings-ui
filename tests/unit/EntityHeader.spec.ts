@@ -550,7 +550,7 @@ describe('Entity Header - Operating Name', () => {
         legalName: 'My Business',
         alternateNames: [
           {
-            operatingName: 'Wayne Enterprises'
+            name: 'Wayne Enterprises'
           }
         ]
       } as any
@@ -574,7 +574,7 @@ describe('Entity Header - Operating Name', () => {
         legalName: 'My Business',
         alternateNames: [
           {
-            operatingName: 'Wayne Enterprises'
+            name: 'Wayne Enterprises'
           }
         ]
       } as any
