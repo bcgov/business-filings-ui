@@ -541,9 +541,9 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
   })
 })
 
-describe('Entity Header - Operating Name', () => {
+describe('Entity Header - Alternate Name', () => {
   const router = mockRouter.mock()
-  it('displays operating name if firm', async () => {
+  it('displays alternate name if firm', async () => {
     // set store properties
     businessStore.setBusinessInfo(
       {
