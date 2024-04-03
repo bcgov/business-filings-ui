@@ -10,7 +10,6 @@ export * from './filingStatus'
 export * from './filingSubTypes'
 export * from './nameRequestStates'
 export * from './nameRequestTypes'
-export * from './nameType'
 export * from './nigsMessage'
 export * from './pageSizes'
 export * from './partyTypes'
@@ -23,5 +22,5 @@ export * from './affiliationInvitation'
 
 // external enums
 export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'
-export { AccountTypes, AmalgamationTypes, FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions }
+export { AccountTypes, AmalgamationTypes, FilingCodes, FilingNames, FilingTypes, NameTypes, StaffPaymentOptions }
   from '@bcrs-shared-components/enums'
