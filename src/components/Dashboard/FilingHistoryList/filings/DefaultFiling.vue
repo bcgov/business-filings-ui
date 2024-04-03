@@ -4,7 +4,7 @@
     :filing="filing"
     :index="index"
   >
-    <!-- just use all fallback slots -->
+    <!-- just use all fallback slots (see FilingTemplate.vue) -->
   </FilingTemplate>
 </template>
 

@@ -37,7 +37,7 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
-    expect(wrapper.find('#company-information-button').exists()).toBe(false)
+    expect(wrapper.find('#business-information-button').exists()).toBe(false)
     expect(wrapper.find('.menu-btn').exists()).toBe(false)
     expect(wrapper.find('#download-summary-button').exists()).toBe(false)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
@@ -71,7 +71,7 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(true)
-    expect(wrapper.find('#company-information-button').exists()).toBe(true)
+    expect(wrapper.find('#business-information-button').exists()).toBe(true)
     expect(wrapper.find('.menu-btn').exists()).toBe(true)
     expect(wrapper.find('#download-summary-button').exists()).toBe(true)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
@@ -104,7 +104,7 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
-    expect(wrapper.find('#company-information-button').exists()).toBe(false)
+    expect(wrapper.find('#business-information-button').exists()).toBe(false)
     expect(wrapper.find('.menu-btn').exists()).toBe(false)
     expect(wrapper.find('#download-summary-button').exists()).toBe(false)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
@@ -137,7 +137,7 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
-    expect(wrapper.find('#company-information-button').exists()).toBe(false)
+    expect(wrapper.find('#business-information-button').exists()).toBe(false)
     expect(wrapper.find('#dissolution-button').exists()).toBe(false)
     expect(wrapper.find('#download-summary-button').exists()).toBe(false)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
@@ -192,7 +192,7 @@ describe('Entity Menu - View and Change Business Information button', () => {
       })
 
       // verify button
-      const companyInformationButton = wrapper.find('#company-information-button')
+      const companyInformationButton = wrapper.find('#business-information-button')
       expect(companyInformationButton.exists()).toBe(_.buttonExists)
 
       wrapper.destroy()
@@ -238,7 +238,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
     })
     await Vue.nextTick()
 
-    await wrapper.find('#company-information-button').trigger('click')
+    await wrapper.find('#business-information-button').trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -266,7 +266,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
     })
     await Vue.nextTick()
 
-    await wrapper.find('#company-information-button').trigger('click')
+    await wrapper.find('#business-information-button').trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id

@@ -110,7 +110,7 @@
                   v-model="enableCheckbox[index]"
                   class="todo-list-checkbox"
                   label="All information about the Office Addresses and Current Directors is correct."
-                  :disabled="!item.enabled || isCoaPending"
+                  :disabled="!item.enabled || isCoaPending || !isAllowed(AllowableActions.ANNUAL_REPORT)"
                   @click.stop
                 />
               </div>
@@ -310,15 +310,30 @@
                   </v-btn>
                 </template>
 
-                <!-- non-staff see no buttons for correction or conversion or restoration or Continuation Out -->
+                <!-- non-staff see no buttons for these filings (these are staff-only filings) -->
                 <template
-                  v-else-if="!isRoleStaff && (isTypeCorrection(item) || isTypeConversion(item) ||
-                    EnumUtilities.isTypeRestoration(item) || EnumUtilities.isTypeContinuationOut(item))"
+                  v-else-if="!isRoleStaff && (
+                    EnumUtilities.isTypeCorrection(item) ||
+                    EnumUtilities.isTypeConversion(item) ||
+                    EnumUtilities.isTypeRestoration(item) ||
+                    EnumUtilities.isTypeContinuationOut(item)
+                  )"
                 >
                   <!-- no action button in this case -->
                 </template>
 
-                <!-- draft filing -->
+                <!-- draft filing - show Delete only -->
+                <template v-else-if="isStatusDraft(item) && item.showDeleteOnly">
+                  <v-btn
+                    class="btn-draft-delete"
+                    color="primary"
+                    @click.native.stop="confirmDeleteDraft(item)"
+                  >
+                    <span>Delete draft</span>
+                  </v-btn>
+                </template>
+
+                <!-- draft filing - other -->
                 <template v-else-if="isStatusDraft(item)">
                   <v-btn
                     class="btn-draft-resume"
@@ -686,6 +701,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   @Action(useRootStore) setNextARDate!: (x: string) => void
 
   // for template
+  readonly AllowableActions = AllowableActions
   readonly EnumUtilities = EnumUtilities
   readonly FilingStatus = FilingStatus
 
@@ -1088,10 +1104,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     const header = filing.header
 
     if (dissolution && business && header) {
-      // don't allow resuming a draft if not in good standing
-      if (this.isStatusDraft(header) && !this.isGoodStanding) {
-        task.enabled = false
-      }
+      // non-staff can only delete item when NIGS
+      const showDeleteOnly = (!this.isRoleStaff && !this.isGoodStanding)
 
       const corpFullDescription = GetCorpFullDescription(business.legalType)
 
@@ -1099,6 +1113,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
+        showDeleteOnly,
         name: FilingTypes.DISSOLUTION,
         filingId: header.filingId,
         legalType: corpFullDescription,
@@ -1132,11 +1147,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         alteration.business?.legalType === CorpTypeCd.BENEFIT_COMPANY
       )
 
-      // don't allow resuming a draft if not in good standing
-      // for entity type change alterations only
-      if (this.isStatusDraft(header) && !this.isGoodStanding && isAlteringToBen) {
-        task.enabled = false
-      }
+      // non-staff can only delete item when NIGS
+      const showDeleteOnly = (!this.isRoleStaff && !this.isGoodStanding)
 
       const corpFullDescription = GetCorpFullDescription(business.legalType)
 
@@ -1152,6 +1164,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
+        showDeleteOnly,
         name: FilingTypes.ALTERATION,
         filingId: header.filingId,
         legalType: corpFullDescription,
@@ -1653,10 +1666,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     const specialResolution = filing.specialResolution
 
     if (header && specialResolution) {
-      // don't allow resuming a draft if not in good standing
-      if (this.isStatusDraft(header) && !this.isGoodStanding) {
-        task.enabled = false
-      }
+      // non-staff can only delete item when NIGS
+      const showDeleteOnly = (!this.isRoleStaff && !this.isGoodStanding)
 
       const corpFullDescription = GetCorpFullDescription(business.legalType)
 
@@ -1664,6 +1675,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
+        showDeleteOnly,
         name: FilingTypes.SPECIAL_RESOLUTION,
         filingId: header.filingId,
         legalType: corpFullDescription,
@@ -1690,11 +1702,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     const restoration = filing.restoration
 
     if (header && restoration) {
-      // don't allow resuming a draft if not in good standing
-      if (this.isStatusDraft(header) && !this.isGoodStanding) {
-        task.enabled = false
-      }
-
       const corpFullDescription = GetCorpFullDescription(business.legalType)
 
       const title = EnumUtilities.filingTypeToName(FilingTypes.RESTORATION, null, restoration.type)

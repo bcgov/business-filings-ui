@@ -15,6 +15,9 @@ export interface TodoItemIF {
   title: string
   comments?: Array<any> // always [] and never used
 
+  // alterations, dissolutions and special resolutions only
+  showDeleteOnly?: boolean
+
   // Todo ARs and Draft IAs only
   subtitle?: string
 
