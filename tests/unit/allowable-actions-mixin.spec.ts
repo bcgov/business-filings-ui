@@ -80,12 +80,21 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Administrative Dissolution is allowed', () => {
-    // verify no allowed filing type
+    vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
+
+    // verify allowed filing type but no feature flag
+    setAllowedFilingType({ name: FilingTypes.DISSOLUTION, type: FilingSubTypes.DISSOLUTION_ADMINISTRATIVE })
+    setFeatureFlag([])
+    expect(vm.isAllowed(AllowableActions.ADMINISTRATIVE_DISSOLUTION)).toBe(false)
+
+    // verify feature flag but no allowed filing type
+    setFeatureFlag([CorpTypeCd.BC_COMPANY])
     setAllowedFilingType()
     expect(vm.isAllowed(AllowableActions.ADMINISTRATIVE_DISSOLUTION)).toBe(false)
 
-    // verify allowed filing type
-    setAllowedFilingType({ name: FilingTypes.DISSOLUTION })
+    // verify both feature flag and allowed filing type
+    setFeatureFlag([CorpTypeCd.BC_COMPANY])
+    setAllowedFilingType({ name: FilingTypes.DISSOLUTION, type: FilingSubTypes.DISSOLUTION_ADMINISTRATIVE })
     expect(vm.isAllowed(AllowableActions.ADMINISTRATIVE_DISSOLUTION)).toBe(true)
   })
 
@@ -403,7 +412,7 @@ describe('Allowable Actions Mixin', () => {
     vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
 
     // verify allowed filing type but no feature flag
-    setAllowedFilingType({ name: FilingTypes.DISSOLUTION })
+    setAllowedFilingType({ name: FilingTypes.DISSOLUTION, type: FilingSubTypes.DISSOLUTION_VOLUNTARY })
     setFeatureFlag([])
     expect(vm.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)).toBe(false)
 
@@ -414,7 +423,7 @@ describe('Allowable Actions Mixin', () => {
 
     // verify both feature flag and allowed filing type
     setFeatureFlag([CorpTypeCd.BC_COMPANY])
-    setAllowedFilingType({ name: FilingTypes.DISSOLUTION })
+    setAllowedFilingType({ name: FilingTypes.DISSOLUTION, type: FilingSubTypes.DISSOLUTION_VOLUNTARY })
     expect(vm.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)).toBe(true)
   })
 })

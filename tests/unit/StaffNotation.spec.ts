@@ -136,7 +136,7 @@ describe('StaffNotation', () => {
           { name: FilingTypes.REGISTRARS_ORDER },
           { name: FilingTypes.COURT_ORDER },
           { name: FilingTypes.CONVERSION },
-          { name: FilingTypes.DISSOLUTION }, // FUTURE: add dissolution type
+          { name: FilingTypes.DISSOLUTION, type: FilingSubTypes.DISSOLUTION_ADMINISTRATIVE },
           { name: FilingTypes.RESTORATION, type: FilingSubTypes.FULL_RESTORATION },
           { name: FilingTypes.PUT_BACK_ON },
           { name: FilingTypes.ADMIN_FREEZE },
@@ -165,6 +165,12 @@ describe('StaffNotation', () => {
   })
 
   it('renders drop-down menu correctly - full list, all allowed actions', async () => {
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-dissolution-entities') return 'SP'
+      if (flag === 'supported-put-back-on-entities') return 'SP'
+      return null
+    })
+
     const wrapper = mount(StaffNotation, { vuetify })
 
     // open menu
@@ -248,10 +254,11 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - not firm', async () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-      if (flag === 'supported-consent-amalgamation-out-entities') return 'BEN'
       if (flag === 'supported-amalgamation-out-entities') return 'BEN'
       if (flag === 'supported-consent-continuation-out-entities') return 'BEN'
+      if (flag === 'supported-consent-amalgamation-out-entities') return 'BEN'
       if (flag === 'supported-continuation-out-entities') return 'BEN'
+      if (flag === 'supported-dissolution-entities') return 'BEN'
       return null
     })
 
@@ -265,7 +272,6 @@ describe('StaffNotation', () => {
     await wrapper.find('.menu-btn').trigger('click')
     expect(wrapper.vm.$data.expand).toBe(true)
 
-    console.log(wrapper.html())
     // verify items
     expect(wrapper.find('[data-type="record-conversion"]').exists()).toBe(false) // firms only
     expect(wrapper.find('[data-type="consent-amalgamate-out"]').exists()).toBe(true)

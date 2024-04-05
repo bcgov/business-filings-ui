@@ -100,7 +100,6 @@ describe('AddStaffNotationDialog', () => {
           attach: '#parent-page'
         }
       })
-    console.log(wrapper.html())
 
     expect(wrapper.find('v-card-title-stub').text()).toBe('Freeze Business')
     expect(wrapper.find('v-card-text-stub').text()).toContain('You are about to freeze')
