@@ -323,7 +323,7 @@
                 </template>
 
                 <!-- draft filing - show Delete only -->
-                <template v-else-if="isStatusDraft(item) && item.showDeleteOnly">
+                <template v-else-if="isStatusDraft(item) && showDeleteOnly(item)">
                   <v-btn
                     class="btn-draft-delete"
                     color="primary"
@@ -790,6 +790,19 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     return false
   }
 
+  /** Whether to show the Delete button only for a draft item. */
+  showDeleteOnly (item: TodoItemIF): boolean {
+    switch (item.name) {
+      case FilingTypes.ALTERATION:
+      case FilingTypes.DISSOLUTION:
+      case FilingTypes.SPECIAL_RESOLUTION:
+        // when NIGS, non-staff can only delete item (staff can resume, etc)
+        return (!this.isGoodStanding && !this.isRoleStaff)
+      default:
+        return false
+    }
+  }
+
   /** Loads list of tasks from the API into Todo Items array. */
   async loadData (): Promise<void> {
     this.todoItems = []
@@ -1104,16 +1117,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     const header = filing.header
 
     if (dissolution && business && header) {
-      // non-staff can only delete item when NIGS
-      const showDeleteOnly = (!this.isRoleStaff && !this.isGoodStanding)
-
       const corpFullDescription = GetCorpFullDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
-        showDeleteOnly,
         name: FilingTypes.DISSOLUTION,
         filingId: header.filingId,
         legalType: corpFullDescription,
@@ -1147,9 +1156,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         alteration.business?.legalType === CorpTypeCd.BENEFIT_COMPANY
       )
 
-      // non-staff can only delete item when NIGS
-      const showDeleteOnly = (!this.isRoleStaff && !this.isGoodStanding)
-
       const corpFullDescription = GetCorpFullDescription(business.legalType)
 
       let title = header.priority ? 'Priority ' : ''
@@ -1164,7 +1170,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
-        showDeleteOnly,
         name: FilingTypes.ALTERATION,
         filingId: header.filingId,
         legalType: corpFullDescription,
@@ -1666,16 +1671,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     const specialResolution = filing.specialResolution
 
     if (header && specialResolution) {
-      // non-staff can only delete item when NIGS
-      const showDeleteOnly = (!this.isRoleStaff && !this.isGoodStanding)
-
       const corpFullDescription = GetCorpFullDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
-        showDeleteOnly,
         name: FilingTypes.SPECIAL_RESOLUTION,
         filingId: header.filingId,
         legalType: corpFullDescription,
