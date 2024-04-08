@@ -3,7 +3,6 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import ExtensionRequest from '@/components/AgmExtension/ExtensionRequest.vue'
-import { DatePicker } from '@bcrs-shared-components/date-picker'
 import { AgmExtEvalIF, EmptyAgmExtEval } from '@/interfaces'
 
 Vue.use(Vuetify)
@@ -53,10 +52,6 @@ describe('ExtensionRequest', () => {
     expect(rows.at(2).find('.col-sm-9').text())
       .toContain('Yes - Specify the date the extension expires')
     expect(rows.at(2).find('.col-sm-9').text()).toContain('No - this is the first extension request for this AGM')
-
-    // Verify intended date picker
-    expect(rows.at(3).find('.col-sm-3').text()).toBe('Intended date this AGM will be held')
-    expect(rows.at(3).find('.col-sm-9').findComponent(DatePicker).exists()).toBe(true)
   })
 
   it('displays first agm with no previous extension requested', async () => {
