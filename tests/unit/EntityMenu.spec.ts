@@ -37,7 +37,7 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
-    expect(wrapper.find('#company-information-button').exists()).toBe(false)
+    expect(wrapper.find('#business-information-button').exists()).toBe(false)
     expect(wrapper.find('.menu-btn').exists()).toBe(false)
     expect(wrapper.find('#download-summary-button').exists()).toBe(false)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
@@ -71,7 +71,7 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(true)
-    expect(wrapper.find('#company-information-button').exists()).toBe(true)
+    expect(wrapper.find('#business-information-button').exists()).toBe(true)
     expect(wrapper.find('.menu-btn').exists()).toBe(true)
     expect(wrapper.find('#download-summary-button').exists()).toBe(true)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
@@ -104,7 +104,7 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
-    expect(wrapper.find('#company-information-button').exists()).toBe(false)
+    expect(wrapper.find('#business-information-button').exists()).toBe(false)
     expect(wrapper.find('.menu-btn').exists()).toBe(false)
     expect(wrapper.find('#download-summary-button').exists()).toBe(false)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
@@ -137,7 +137,7 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
-    expect(wrapper.find('#company-information-button').exists()).toBe(false)
+    expect(wrapper.find('#business-information-button').exists()).toBe(false)
     expect(wrapper.find('#dissolution-button').exists()).toBe(false)
     expect(wrapper.find('#download-summary-button').exists()).toBe(false)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
@@ -192,7 +192,7 @@ describe('Entity Menu - View and Change Business Information button', () => {
       })
 
       // verify button
-      const companyInformationButton = wrapper.find('#company-information-button')
+      const companyInformationButton = wrapper.find('#business-information-button')
       expect(companyInformationButton.exists()).toBe(_.buttonExists)
 
       wrapper.destroy()
@@ -238,7 +238,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
     })
     await Vue.nextTick()
 
-    await wrapper.find('#company-information-button').trigger('click')
+    await wrapper.find('#business-information-button').trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -266,7 +266,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
     })
     await Vue.nextTick()
 
-    await wrapper.find('#company-information-button').trigger('click')
+    await wrapper.find('#business-information-button').trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -344,7 +344,7 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
     await wrapper.find('.menu-btn').trigger('click')
     expect(wrapper.find('#dissolution-list-item').exists()).toBe(true)
     expect(wrapper.find('#dissolution-list-item').text()).toBe('Dissolve this Business')
-    expect(wrapper.find('#dissolution-list-item').classes()).not.toContain('v-btn--disabled') // enabled
+    expect(wrapper.find('#dissolution-list-item').classes()).not.toContain('v-list-item--disabled') // enabled
 
     wrapper.destroy()
   })
@@ -372,6 +372,7 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
   it('emits Not In Good Standing event if not in good standing', async () => {
     businessStore.setGoodStanding(false)
     businessStore.setState(EntityState.ACTIVE)
+    rootStore.keycloakRoles = [] // regular user
 
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
@@ -424,7 +425,20 @@ describe('Entity Menu - Business Summary click tests', () => {
   })
 })
 
-describe('Entity Menu - Digital Business Cards click tests', () => {
+describe('Entity Menu - Digital Business Cards tests', () => {
+  it('renders More actions if historical and digital credential feature is allowed', async () => {
+    businessStore.setState(EntityState.HISTORICAL)
+
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      mixins: [{ methods: { isAllowed: () => true } }],
+      propsData: { businessId: 'BC1234567' }
+    })
+
+    expect(wrapper.find('.menu-btn').exists()).toBe(true)
+    wrapper.destroy()
+  })
+
   it('displays the Digital Business Cards button', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
@@ -499,19 +513,6 @@ describe('Entity Menu - More actions click tests', () => {
   })
 })
 
-it('renders More actions if historical and digital credential feature is allowed', async () => {
-  businessStore.setState(EntityState.HISTORICAL)
-
-  const wrapper = mount(EntityMenu, {
-    vuetify,
-    mixins: [{ methods: { isAllowed: () => true } }],
-    propsData: { businessId: 'BC1234567' }
-  })
-
-  expect(wrapper.find('.menu-btn').exists()).toBe(true)
-  wrapper.destroy()
-})
-
 describe('Entity Menu - Consent to Amalgamation Out click tests', () => {
   beforeAll(() => {
     // override feature flag
@@ -545,7 +546,8 @@ describe('Entity Menu - Consent to Amalgamation Out click tests', () => {
 
     expect(wrapper.find('#consent-amalgamate-out-list-item').exists()).toBe(true)
     expect(wrapper.find('#consent-amalgamate-out-list-item').text()).toBe('Consent to Amalgamate Out')
-    expect(wrapper.find('#consent-amalgamate-out-list-item').classes()).not.toContain('v-btn--disabled') // enabled
+    // eslint-disable-next-line max-len
+    expect(wrapper.find('#consent-amalgamate-out-list-item').classes()).not.toContain('v-list-item--disabled') // enabled
 
     wrapper.destroy()
   })
@@ -584,7 +586,7 @@ describe('Entity Menu - Consent to Continuation Out click tests', () => {
 
     expect(wrapper.find('#consent-continue-out-list-item').exists()).toBe(true)
     expect(wrapper.find('#consent-continue-out-list-item').text()).toBe('Consent to Continue Out')
-    expect(wrapper.find('#consent-continue-out-list-item').classes()).not.toContain('v-btn--disabled') // enabled
+    expect(wrapper.find('#consent-continue-out-list-item').classes()).not.toContain('v-list-item--disabled') // enabled
 
     wrapper.destroy()
   })
@@ -622,7 +624,7 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
 
     expect(wrapper.find('#agm-ext-list-item').exists()).toBe(true)
     expect(wrapper.find('#agm-ext-list-item').text()).toBe('Request AGM Extension')
-    expect(wrapper.find('#agm-ext-list-item').classes()).not.toContain('v-btn--disabled') // enabled
+    expect(wrapper.find('#agm-ext-list-item').classes()).not.toContain('v-list-item--disabled') // enabled
 
     wrapper.destroy()
   })
@@ -660,7 +662,7 @@ describe('Entity Menu - Request AGM Location Change click tests', () => {
 
     expect(wrapper.find('#agm-loc-chg-list-item').exists()).toBe(true)
     expect(wrapper.find('#agm-loc-chg-list-item').text()).toBe('Request AGM Location Change')
-    expect(wrapper.find('#agm-loc-chg-list-item').classes()).not.toContain('v-btn--disabled') // enabled
+    expect(wrapper.find('#agm-loc-chg-list-item').classes()).not.toContain('v-list-item--disabled') // enabled
 
     wrapper.destroy()
   })

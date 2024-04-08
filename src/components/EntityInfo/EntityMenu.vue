@@ -37,12 +37,12 @@
     <!-- View and Change Business Information -->
     <span v-if="!isDisableNonBenCorps && isBusiness && !isHistorical">
       <v-btn
-        id="company-information-button"
+        id="business-information-button"
         small
         text
         color="primary"
-        :disabled="!isAllowed(AllowableActions.BUSINESS_INFORMATION)"
-        @click="promptChangeCompanyInfo()"
+        :disabled="isChangeBusinessInfoDisabled"
+        @click="promptChangeBusinessInfo()"
       >
         <v-icon medium>mdi-file-document-edit-outline</v-icon>
         <span class="font-13 ml-1">View and Change Business Information</span>
@@ -153,9 +153,9 @@
                 <template #activator="{ on }">
                   <v-list-item
                     id="dissolution-list-item"
-                    :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
+                    :disabled="isDissolveBusinessDisabled"
                     v-on="on"
-                    @click="promptDissolve()"
+                    @click="promptDissolveBusiness()"
                   >
                     <v-list-item-title>
                       <span class="app-blue">Dissolve this Business</span>
@@ -391,29 +391,50 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     return 'Amalgamate with other businesses.'
   }
 
-  /**
-   * Emits an event to display NIGS dialog if company is not in good standing except Coop
-   * Otherwise, navigates to the Edit UI to view or change company information.
-   */
-  promptChangeCompanyInfo (): void {
-    const base = `${this.getEditUrl}${this.getIdentifier}`
+  /** Whether to disable the View and Change Business Information button. */
+  get isChangeBusinessInfoDisabled (): boolean {
+    // enable if business is Not In Good Standing and user isn't staff
+    // clicking button will show a dialog -- see promptChangeBusinessInfo()
+    if (!this.isGoodStanding && !this.isRoleStaff) return false
 
-    if (this.isCoop) {
-      navigate(`${base}/special-resolution`)
-    } else if (!this.isGoodStanding) {
+    // otherwise, disable if not allowed
+    return !this.isAllowed(AllowableActions.BUSINESS_INFORMATION)
+  }
+
+  /** Whether to disable the Dissolve this Business action. */
+  get isDissolveBusinessDisabled (): boolean {
+    // enable if business is Not In Good Standing and user isn't staff
+    // clicking button will show a dialog -- see promptDissolveBusiness()
+    if (!this.isGoodStanding && !this.isRoleStaff) return false
+
+    // otherwise, disable if not allowed
+    return !this.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)
+  }
+
+  /**
+   * If business is Not In Good Standing and user isn't staff, emits an event to display NIGS dialog.
+   * Otherwise, navigates to Edit UI to create a Special Resolution or Change or Alteration filing.
+   */
+  promptChangeBusinessInfo (): void {
+    const editUrl = `${this.getEditUrl}${this.getIdentifier}`
+
+    if (!this.isGoodStanding && !this.isRoleStaff) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
+    } else if (this.isCoop) {
+      navigate(`${editUrl}/special-resolution`)
+    } else if (this.isFirm) {
+      navigate(`${editUrl}/change`)
     } else {
-      const route = this.isFirm ? '/change' : '/alteration'
-      navigate(`${base}${route}`)
+      navigate(`${editUrl}/alteration`)
     }
   }
 
   /**
-   * Emits an event to display NIGS dialog if company is not in good standing.
-   * Otherwise, emits an event to prompt user to confirm voluntary dissolution.
+   * If business is Not In Good Standing and user isn't staff, emits an event to display NIGS dialog.
+   * Otherwise, emits an event to prompt user to confirm Voluntary Dissolution.
    */
-  promptDissolve (): void {
-    if (!this.isGoodStanding) {
+  promptDissolveBusiness (): void {
+    if (!this.isGoodStanding && !this.isRoleStaff) {
       this.emitNotInGoodStanding(NigsMessage.DISSOLVE)
     } else {
       this.emitConfirmDissolution()

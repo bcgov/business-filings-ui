@@ -31,8 +31,9 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.ADMINISTRATIVE_DISSOLUTION: {
-        // FUTURE: check dissolution type
-        return this.isAllowedFiling(FilingTypes.DISSOLUTION)
+        // NB: specific entities are targeted via LaunchDarkly
+        const ff = !!GetFeatureFlag('supported-dissolution-entities')?.includes(this.getLegalType)
+        return (ff && this.isAllowedFiling(FilingTypes.DISSOLUTION, FilingSubTypes.DISSOLUTION_ADMINISTRATIVE))
       }
 
       case AllowableActions.AGM_EXTENSION: {
@@ -57,6 +58,7 @@ export default class AllowableActionsMixin extends Vue {
 
       case AllowableActions.BUSINESS_INFORMATION: {
         if (this.isCoop) {
+          // NB: this feature is targeted via LaunchDarkly
           const ff = !!GetFeatureFlag('special-resolution-ui-enabled')
           return (ff && this.isAllowedFiling(FilingTypes.SPECIAL_RESOLUTION))
         }
@@ -122,18 +124,21 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.LIMITED_RESTORATION_EXTENSION: {
-        return !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType) &&
-          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)
+        // NB: specific entities are targeted via LaunchDarkly
+        const ff = !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType)
+        return (ff && this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_EXTENSION))
       }
 
       case AllowableActions.LIMITED_RESTORATION_TO_FULL: {
-        return !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType) &&
-          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_TO_FULL)
+        // NB: specific entities are targeted via LaunchDarkly
+        const ff = !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType)
+        return (ff && this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_TO_FULL))
       }
 
       case AllowableActions.PUT_BACK_ON: {
-        return this.isAllowedFiling(FilingTypes.PUT_BACK_ON) &&
-          !!GetFeatureFlag('supported-put-back-on-entities')?.includes(this.getLegalType)
+        // NB: specific entities are targeted via LaunchDarkly
+        const ff = !!GetFeatureFlag('supported-put-back-on-entities')?.includes(this.getLegalType)
+        return (ff && this.isAllowedFiling(FilingTypes.PUT_BACK_ON))
       }
 
       case AllowableActions.RECORD_CONVERSION: {
@@ -149,13 +154,16 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.RESTORATION: {
-        // full restoration or limited restoration
+        // NB: specific entities are targeted via LaunchDarkly
+        // NB: this applies to full restoration or limited restoration
         // but not limited restoration extension or limited restoration to full
         const ff = !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType)
         return (
           ff &&
-          (this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.FULL_RESTORATION) ||
-          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION))
+          (
+            this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.FULL_RESTORATION) ||
+            this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION)
+          )
         )
       }
 
@@ -170,8 +178,7 @@ export default class AllowableActionsMixin extends Vue {
       case AllowableActions.VOLUNTARY_DISSOLUTION: {
         // NB: specific entities are targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('supported-dissolution-entities')?.includes(this.getLegalType)
-        // FUTURE: check dissolution type
-        return (ff && this.isAllowedFiling(FilingTypes.DISSOLUTION))
+        return (ff && this.isAllowedFiling(FilingTypes.DISSOLUTION, FilingSubTypes.DISSOLUTION_VOLUNTARY))
       }
 
       default: return false // should never happen
@@ -184,7 +191,7 @@ export default class AllowableActionsMixin extends Vue {
    * @param type the filing subtype to check (optional)
    * @returns True if the specified filing is allowed, else False
    */
-  private isAllowedFiling (name: FilingTypes, type = ''): boolean {
+  private isAllowedFiling (name: FilingTypes, type: FilingSubTypes = null): boolean {
     const filingTypes = this.getAllowedActions?.filing?.filingTypes || []
     return filingTypes.some(ft => {
       if (ft.name !== name) return false

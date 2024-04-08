@@ -47,7 +47,7 @@ const AllowableActionsMixin: any = {
   }
 }
 
-describe('TodoList - UI', () => {
+describe('TodoList - UI - Coops', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
@@ -1846,7 +1846,7 @@ describe('TodoList - UI - Amalgamation Applications', () => {
   })
 })
 
-describe('TodoList - Click Tests', () => {
+describe('TodoList - Click Tests - Coops', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -2852,7 +2852,7 @@ describe('TodoList - Click Tests - Alterations', () => {
   })
 })
 
-describe('TodoList - Delete Draft', () => {
+describe('TodoList - Delete draft', () => {
   const { assign } = window.location
   let deleteCall: any
 
@@ -2874,10 +2874,98 @@ describe('TodoList - Delete Draft', () => {
     sinon.restore()
   })
 
-  it('shows confirmation popup when \'Delete Draft\' is clicked', async () => {
+  it('allows resuming a restoration draft if not in good standing (as staff)', async () => {
     // init session storage and store
     sessionStorage.clear()
-    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
+    sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    businessStore.setGoodStanding(false)
+    rootStore.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: FilingTypes.RESTORATION,
+              status: FilingStatus.DRAFT,
+              filingId: 789
+            },
+            business: {
+              legalType: CorpTypeCd.BENEFIT_COMPANY
+            },
+            restoration: {
+              type: 'limitedRestorationToFull'
+            }
+          } as any
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+    rootStore.keycloakRoles = ['staff'] // only staff may resume draft alterations
+
+    const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
+    await Vue.nextTick()
+
+    // verify item title
+    expect(wrapper.find('.list-item__title').text()).toContain('Limited Restoration To Full')
+
+    // verify action buttons
+    expect(wrapper.find('.btn-draft-delete').exists()).toBe(false)
+    expect(wrapper.find('.btn-draft-resume').exists()).toBe(true)
+    expect(wrapper.find('.actions__more-actions__btn').exists()).toBe(true)
+
+    businessStore.setGoodStanding(true)
+    wrapper.destroy()
+  })
+
+  it('doesn\'t allow resuming an alteration draft if not in good standing (as reg user)', async () => {
+    // init session storage and store
+    sessionStorage.clear()
+    sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    businessStore.setGoodStanding(false)
+    rootStore.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: FilingTypes.ALTERATION,
+              status: FilingStatus.DRAFT,
+              filingId: 789
+            },
+            business: {
+              legalType: CorpTypeCd.BENEFIT_COMPANY
+            },
+            alteration: {
+            }
+          } as any
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+    rootStore.keycloakRoles = []
+
+    const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
+    await Vue.nextTick()
+
+    // verify item title
+    expect(wrapper.find('.list-item__title').text()).toContain('Alteration')
+
+    // verify action buttons
+    expect(wrapper.find('.btn-draft-delete').exists()).toBe(true)
+    expect(wrapper.find('.btn-draft-resume').exists()).toBe(false)
+    expect(wrapper.find('.actions__more-actions__btn').exists()).toBe(false)
+
+    businessStore.setGoodStanding(true)
+    wrapper.destroy()
+  })
+
+  it('shows confirmation popup when \'Delete draft\' is clicked', async () => {
+    // init session storage and store
+    sessionStorage.clear()
+    sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     rootStore.tasks = [
       {
         task: {
@@ -2916,7 +3004,10 @@ describe('TodoList - Delete Draft', () => {
   })
 
   it('calls DELETE endpoint when user clicks confirmation OK', async () => {
-    // init store
+    // init session storage and store
+    sessionStorage.clear()
+    sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     rootStore.tasks = [
       {
         task: {
@@ -2962,7 +3053,10 @@ describe('TodoList - Delete Draft', () => {
   })
 
   it('does not call DELETE endpoint when user clicks confirmation Cancel', async () => {
-    // init store
+    // init session storage and store
+    sessionStorage.clear()
+    sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     rootStore.tasks = [
       {
         task: {
@@ -3285,7 +3379,7 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
   }
 })
 
-describe('TodoList - Click Tests - Extension and Coversion Restoration', () => {
+describe('TodoList - Click Tests - Restoration Extension and Conversion', () => {
   const { assign } = window.location
 
   beforeAll(() => {
