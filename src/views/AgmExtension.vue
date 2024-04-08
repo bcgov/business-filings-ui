@@ -436,7 +436,6 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
         year: this.data.agmYear,
         isFirstAgm: this.data.isFirstAgm,
         extReqForAgmYear: this.data.isPrevExtension,
-        intendedAgmDate: this.data.intendedAgmDate,
         totalApprovedExt: this.getTotalAgmExtensionDuration(Number(this.data.agmYear)) + this.data.extensionDuration,
         expireDateApprovedExt: this.data.agmDueDate,
         // conditionally add properties if not null
@@ -540,7 +539,6 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
   @Watch('data.prevAgmDate')
   @Watch('data.isPrevExtension')
   @Watch('data.prevExpiryDate')
-  @Watch('data.intendedAgmDate')
   private onHaveChanges (): void {
     this.haveChanges = true
   }

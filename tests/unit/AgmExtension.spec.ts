@@ -8,6 +8,7 @@ import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { CorpTypeCd, FilingTypes } from '@/enums'
 import { LegalServices } from '@/services'
+import flushPromises from 'flush-promises'
 
 // components
 import AgmExtension from '@/views/AgmExtension.vue'
@@ -19,7 +20,6 @@ import { Certify } from '@/components/common'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import ExtensionRequest from '@/components/AgmExtension/ExtensionRequest.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import flushPromises from 'flush-promises'
 
 // suppress warning "Unknown custom element <affix>" warnings
 Vue.config.silent = true
@@ -213,7 +213,6 @@ describe('AGM Extension view', () => {
         extReqForAgmYear: null,
         extensionDuration: NaN,
         incorporationDate: new Date('2000-01-01T08:00:00.000Z'),
-        intendedAgmDate: null,
         isEligible: true,
         isFirstAgm: null,
         isGoodStanding: true,

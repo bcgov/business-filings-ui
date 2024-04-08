@@ -10,7 +10,6 @@ export interface AgmExtEvalIF {
   prevAgmDate: string // YYYY-MM-DD
   isPrevExtension: boolean
   prevExpiryDate: string // YYYY-MM-DD
-  intendedAgmDate: string // YYYY-MM-DD
   extensionDuration: number // in months
   agmDueDate: string // YYYY-MM-DD
   isEligible: boolean
@@ -28,7 +27,6 @@ export const EmptyAgmExtEval: AgmExtEvalIF = {
   prevAgmDate: null,
   isPrevExtension: null,
   prevExpiryDate: null,
-  intendedAgmDate: null,
   extensionDuration: NaN,
   agmDueDate: null,
   isEligible: null

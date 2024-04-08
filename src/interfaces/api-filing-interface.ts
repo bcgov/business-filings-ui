@@ -50,7 +50,6 @@ export interface ApiFilingIF {
       prevAgmRefDate: string // YYYY-MM-DD
       extReqForAgmYear: boolean
       expireDateCurrExt: string // YYYY-MM-DD
-      intendedAgmDate: string // YYYY-MM-DD
       totalApprovedExt: number // in months
       extensionDuration: number // in months
       expireDateApprovedExt: string // YYYY-MM-DD

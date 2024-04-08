@@ -13,6 +13,7 @@
         class="px-6 py-7"
         :class="{ 'invalid-section': !firstSectionValid && showErrors }"
       >
+        <!-- first AGM? -->
         <v-row
           v-if="!is30MonthsAfterIncorp"
           no-gutters
@@ -45,6 +46,7 @@
           </v-col>
         </v-row>
 
+        <!-- AGM year -->
         <v-row no-gutters>
           <v-col
             cols="12"
@@ -74,6 +76,7 @@
         :class="{ 'invalid-section': !secondSectionValid && showErrors }"
       >
         <v-expand-transition>
+          <!-- annual reference / AGM date -->
           <v-row
             v-if="!isFirstAgm"
             no-gutters
@@ -102,6 +105,8 @@
             </v-col>
           </v-row>
         </v-expand-transition>
+
+        <!-- extension already requested? -->
         <v-row no-gutters>
           <v-col
             cols="12"
@@ -147,37 +152,6 @@
           </v-col>
         </v-row>
       </div>
-
-      <v-divider class="mx-4" />
-
-      <div
-        class="px-6 py-7"
-        :class="{ 'invalid-section': !thirdSectionValid && showErrors }"
-      >
-        <v-row no-gutters>
-          <v-col
-            cols="12"
-            sm="3"
-            class="pr-4"
-          >
-            <strong>Intended date this AGM will be held</strong>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="9"
-          >
-            <DatePicker
-              class="pt-2"
-              title="Intended date this AGM will be held"
-              nudge-right="40"
-              :minDate="data.currentDate"
-              :inputRules="dateRules"
-              @emitDate="data.intendedAgmDate = $event"
-              @emitCancel="data.intendedAgmDate = ''"
-            />
-          </v-col>
-        </v-row>
-      </div>
     </template>
   </VcardTemplate>
 </template>
@@ -220,10 +194,6 @@ export default class ExtensionRequest extends Vue {
     } else {
       return this.data.prevAgmDate && isPrevExtensionValid
     }
-  }
-
-  get thirdSectionValid (): boolean {
-    return !!this.data.intendedAgmDate
   }
 
   /** The array of validations rule(s) for the AGM Year text field. */
@@ -323,7 +293,6 @@ export default class ExtensionRequest extends Vue {
   @Watch('data.prevAgmDate')
   @Watch('data.isPrevExtension')
   @Watch('data.prevExpiryDate')
-  @Watch('data.intendedAgmDate')
   @Watch('data.currentDate')
   @Watch('agmYearValid')
   private onHaveChanges (): void {
@@ -497,11 +466,7 @@ export default class ExtensionRequest extends Vue {
 
   /** Whether the extension request is valid or not */
   checkValidity (): void {
-    this.isValid = (
-      this.firstSectionValid &&
-      this.secondSectionValid &&
-      this.thirdSectionValid
-    )
+    this.isValid = (this.firstSectionValid && this.secondSectionValid)
 
     this.emitValid()
   }
