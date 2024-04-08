@@ -310,15 +310,8 @@
                   </v-btn>
                 </template>
 
-                <!-- non-staff see no buttons for these filings (these are staff-only filings) -->
-                <template
-                  v-else-if="!isRoleStaff && (
-                    EnumUtilities.isTypeCorrection(item) ||
-                    EnumUtilities.isTypeConversion(item) ||
-                    EnumUtilities.isTypeRestoration(item) ||
-                    EnumUtilities.isTypeContinuationOut(item)
-                  )"
-                >
+                <!-- non-staff see no buttons for staff filings -->
+                <template v-else-if="!isRoleStaff && isStaffFiling(item)">
                   <!-- no action button in this case -->
                 </template>
 
@@ -788,6 +781,16 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     if (this.isStatusError(item) && (this.inProcessFiling !== item.filingId)) return true
     if (this.isStatusPaid(item) && (this.inProcessFiling !== item.filingId)) return true
     return false
+  }
+
+  /** Whether this is a staff-only filing. */
+  isStaffFiling (item: TodoItemIF): boolean {
+    return (
+      EnumUtilities.isTypeContinuationOut(item) ||
+      EnumUtilities.isTypeConversion(item) ||
+      EnumUtilities.isTypeCorrection(item) ||
+      EnumUtilities.isTypeRestoration(item)
+    )
   }
 
   /** Whether to show the Delete button only for a draft item. */
