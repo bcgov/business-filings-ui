@@ -144,7 +144,7 @@
 </template>
 
 <script lang="ts">
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import { Action, Getter } from 'pinia-class'
 import { Component, Vue } from 'vue-property-decorator'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
@@ -160,6 +160,7 @@ import { TechnicalErrorDialog } from '@/components/dialogs'
   }
 })
 export default class AmalgamationSelection extends Vue {
+  @Getter(useAuthenticationStore) getAccountId!: string
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useRootStore) getFullPhoneNumber!: string
@@ -176,6 +177,7 @@ export default class AmalgamationSelection extends Vue {
   // enum for template
   readonly AmalgamationTypes = AmalgamationTypes
 
+  // local variable
   showErrorDialog = false
 
   /** Called when component is created. */
@@ -220,17 +222,25 @@ export default class AmalgamationSelection extends Vue {
    * @returns the business identifier of the newly created amalgamation application
    */
   private async createBusinessAA (type: AmalgamationTypes): Promise<string> {
-    const accountId = +JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id || 0
-    const email = this.isShortFormAmalgamation(type) ? this.getBusinessEmail : ''
-    const phone = this.isShortFormAmalgamation(type) ? this.getFullPhoneNumber : ''
-    const legalName = this.isShortFormAmalgamation(type) ? this.getLegalName : ''
-    const correctNameOption = this.isShortFormAmalgamation(type) ? CorrectNameOptions.CORRECT_AML_ADOPT : null
+    // short-form amalgamations use the legal name of the primary business,
+    // otherwise don't set a legal name
+    const legalName = this.isShortFormAmalgamation(type) ? this.getLegalName : undefined
+
+    // short-form amalgamations adopt the name of the primary business,
+    // otherwise don't set a correct name option
+    const correctNameOption =
+      this.isShortFormAmalgamation(type) ? CorrectNameOptions.CORRECT_AML_ADOPT : undefined
+
+    // short-form amalgamations use the email and phone of the primary business (if they exist),
+    // otherwise set empty initial values
+    const email = (this.isShortFormAmalgamation(type) && this.getBusinessEmail) || ''
+    const phone = (this.isShortFormAmalgamation(type) && this.getFullPhoneNumber) || ''
 
     const draftAmalgamationApplication = {
       filing: {
         header: {
           name: FilingTypes.AMALGAMATION_APPLICATION,
-          accountId
+          accountId: this.getAccountId
         },
         business: {
           legalType: this.getLegalType
@@ -243,8 +253,8 @@ export default class AmalgamationSelection extends Vue {
           },
           type,
           contactPoint: {
-            email: email || '',
-            phone: phone || ''
+            email,
+            phone
           }
         }
       }
