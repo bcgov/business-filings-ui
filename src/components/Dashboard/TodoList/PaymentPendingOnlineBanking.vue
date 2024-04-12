@@ -43,7 +43,7 @@ export default class PaymentPendingOnlineBanking extends Vue {
   /** The subject filing. */
   @Prop({ required: true }) readonly filing!: any
   @Prop({ required: true }) readonly payApiUrl!: string
-  @Prop({ required: true }) readonly accountId!: any
+  @Prop({ required: true }) readonly accountId!: string
 
   cfsAccountId: string = null;
 
@@ -53,7 +53,7 @@ export default class PaymentPendingOnlineBanking extends Vue {
   }
 
   async mounted () {
-    this.cfsAccountId = await PayServices.fetchCfsAccountId(this.payApiUrl, this.accountId)
+    this.cfsAccountId = await PayServices.fetchCfsAccountId(this.payApiUrl, +this.accountId)
   }
 }
 </script>

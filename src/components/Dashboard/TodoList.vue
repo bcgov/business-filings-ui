@@ -550,7 +550,7 @@
               v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
               :filing="item"
               :payApiUrl="getPayApiUrl"
-              :accountId="accountId"
+              :accountId="getAccountId"
               class="mb-6"
             />
             <PaymentPending v-else />
@@ -627,7 +627,8 @@ import {
   TodoListResourceIF
 } from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
-import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFilingHistoryListStore,
+  useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -669,10 +670,10 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   inProcessFiling: number = null
   fetchAffiliationInvitationsErrorDialog = false
   authorizeAffiliationInvitationErrorDialog = false
-  accountId: number = null
 
   @Prop({ default: null }) readonly highlightId!: number
 
+  @Getter(useAuthenticationStore) getAccountId!: string
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useConfigurationStore) getBusinessesUrl!: string
   @Getter(useConfigurationStore) getAuthApiUrl!: string
@@ -996,9 +997,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     }
 
     // load all the invitations here and push them into todo items
-    this.accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const response =
-      await AuthServices.fetchAffiliationInvitations(this.getAuthApiUrl, this.getIdentifier, this.accountId)
+      await AuthServices.fetchAffiliationInvitations(this.getAuthApiUrl, this.getIdentifier, +this.getAccountId)
         .catch((err) => {
           console.log('Error fetching affiliation invitations for todo', err) // eslint-disable-line no-console
           this.fetchAffiliationInvitationsErrorDialog = true
