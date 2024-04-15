@@ -517,6 +517,7 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
 
 describe('Entity Header - Alternate Name', () => {
   const router = mockRouter.mock()
+
   it('displays alternate name if firm and legal name fix FF is true', async () => {
     // override feature flag
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
@@ -545,6 +546,31 @@ describe('Entity Header - Alternate Name', () => {
     await Vue.nextTick()
     // verify displayed text
     expect(wrapper.find('#entity-legal-name').text()).toBe('Wayne Enterprises')
+  })
+
+  it('displays Unknown if firm and legal name fix FF is true, but alternateNames array not found', async () => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return true
+      return null
+    })
+    // set store properties
+    businessStore.setBusinessInfo(
+      {
+        legalName: 'Stark Industries'
+      } as any
+    )
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'FM1052377', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+    // verify displayed text
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Unknown')
   })
 
   it('displays legal name if firm and legal name fix FF is false', async () => {
