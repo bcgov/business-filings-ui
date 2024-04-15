@@ -1,4 +1,5 @@
-import { FilingStatus, FilingTypes } from '@/enums'
+import { FilingStatus } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 
 /** A filing's header object from the API, ie, `filing.header`. */
 export interface FilingHeaderIF {

@@ -12,7 +12,8 @@ import Correction from '@/views/Correction.vue'
 import Signin from '@/views/auth/Signin.vue'
 import Signout from '@/views/auth/Signout.vue'
 import { DigitalCredentialRoutes } from '@/resources/DigitalCredentialRoutes'
-import { FilingNames, Routes } from '@/enums'
+import { Routes } from '@/enums'
+import { FilingNames } from '@bcrs-shared-components/enums'
 
 export default [
   {

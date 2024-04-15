@@ -1,5 +1,5 @@
-import { EntityState, CorpTypeCd, FilingSubTypes, FilingTypes, NameTypes } from '@/enums'
-import { AmalgamationTypes } from '@bcrs-shared-components/enums'
+import { CorpTypeCd, EntityState, FilingSubTypes } from '@/enums'
+import { AmalgamationTypes, NameTypes, FilingTypes } from '@bcrs-shared-components/enums'
 import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
 
 export interface FilingTypeIF {

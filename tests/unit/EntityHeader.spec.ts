@@ -6,7 +6,8 @@ import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/sto
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
 import mockRouter from './mockRouter'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { EntityState, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import { EntityState, EntityStatus, FilingStatus, FilingSubTypes } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 import * as utils from '@/utils'
 
 Vue.use(Vuetify)

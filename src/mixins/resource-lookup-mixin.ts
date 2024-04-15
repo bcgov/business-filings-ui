@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { AlertMessageIF, ObligationsResourceIF } from '@/interfaces'
-import { FilingCodes } from '@/enums'
+import { FilingCodes } from '@bcrs-shared-components/enums'
 import { useBusinessStore, useRootStore } from '@/stores'
 
 /**

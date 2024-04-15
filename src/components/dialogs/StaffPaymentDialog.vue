@@ -59,7 +59,7 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { StaffPayment } from '@bcrs-shared-components/staff-payment'
 import { StaffPaymentIF } from '@/interfaces'
-import { StaffPaymentOptions } from '@/enums'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 @Component({
   components: { StaffPayment }

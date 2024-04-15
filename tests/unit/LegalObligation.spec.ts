@@ -5,7 +5,8 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import { ConfigJson } from '@/resources'
-import { CorpTypeCd, EntityState, FilingTypes } from '@/enums'
+import { CorpTypeCd, EntityState } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 
 // Components
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'

@@ -1,5 +1,5 @@
-import { AmalgamationTypes, CorpTypeCd, FilingTypes } from '@/enums'
-import { CorrectNameOptions } from '@bcrs-shared-components/enums'
+import { CorpTypeCd } from '@/enums'
+import { AmalgamationTypes, CorrectNameOptions, FilingTypes } from '@bcrs-shared-components/enums'
 import { CompletingPartyIF, ContactPointIF, CourtOrderIF,
   NameTranslationIF, ShareClassIF } from '@bcrs-shared-components/interfaces'
 import { OfficeAddressIF } from './address-interfaces'

@@ -1,5 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { FilingStatus, FilingTypes } from '@/enums'
+import { FilingStatus } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 
 /**
  * Mixin that provides some useful enum-related utilities.

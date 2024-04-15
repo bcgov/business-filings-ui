@@ -1,11 +1,10 @@
 import {
   EffectOfOrderTypes,
-  FilingNames,
   FilingStatus,
   FilingSubTypes,
-  FilingTypes,
   PaymentMethod
 } from '@/enums'
+import { FilingNames, FilingTypes } from '@bcrs-shared-components/enums'
 
 export default class EnumUtilities {
   /** Returns True if item status is Cancelled. */

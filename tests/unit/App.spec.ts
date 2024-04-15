@@ -12,7 +12,9 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import App from '@/App.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { AmalgamationTypes, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import { EntityStatus, FilingStatus, FilingSubTypes } from '@/enums'
+import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
+
 import * as utils from '@/utils'
 
 // mock fetch() as it is not defined in Vitest

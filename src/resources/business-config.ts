@@ -1,4 +1,5 @@
-import { CorpTypeCd, FilingCodes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
+import { FilingCodes } from '@bcrs-shared-components/enums'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/corp-type-module'
 
 export class Flow {

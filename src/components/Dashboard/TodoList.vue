@@ -611,12 +611,11 @@ import {
   AffiliationInvitationType,
   AllowableActions,
   CorpTypeCd,
-  FilingNames,
   FilingStatus,
   FilingSubTypes,
-  FilingTypes,
   Routes
 } from '@/enums'
+import { FilingNames, FilingTypes } from '@bcrs-shared-components/enums'
 import {
   AffiliationInvitationIF,
   ApiFilingIF,
