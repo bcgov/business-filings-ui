@@ -10,6 +10,7 @@ declare const window: any
 const defaultFlagSet: LDFlagSet = {
   'banner-text': '', // by default, there is no banner text
   'enable-digital-credentials': false,
+  'enable-legal-name-fix': false,
   'enable-non-ben-corps': false,
   'sentry-enable': false, // by default, no sentry logs
   'show-alert-phone-numbers-firm': false,

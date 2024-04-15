@@ -4,8 +4,10 @@ import { shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
+import mockRouter from './mockRouter'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { EntityState, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import * as utils from '@/utils'
 
 Vue.use(Vuetify)
 
@@ -510,5 +512,62 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
       filingHistoryListStore.filings.pop()
       wrapper.destroy()
     })
+  })
+})
+
+describe('Entity Header - Alternate Name', () => {
+  const router = mockRouter.mock()
+  // override feature flag
+  vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+    if (flag === 'enable-legal-name-fix') return true
+    return null
+  })
+  it('displays alternate name if firm', async () => {
+    // set store properties
+    businessStore.setBusinessInfo(
+      {
+        legalName: 'My Business',
+        alternateNames: [
+          {
+            name: 'Wayne Enterprises'
+          }
+        ]
+      } as any
+    )
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'FM1052377', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+    // verify displayed text
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Wayne Enterprises')
+  })
+
+  it('displays legal name if not firm', async () => {
+    businessStore.setBusinessInfo(
+      {
+        legalName: 'My Business',
+        alternateNames: [
+          {
+            name: 'Wayne Enterprises'
+          }
+        ]
+      } as any
+    )
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'BC1052377', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+    // verify displayed text
+    expect(wrapper.find('#entity-legal-name').text()).toBe('My Business')
   })
 })

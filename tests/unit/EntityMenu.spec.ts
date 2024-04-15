@@ -214,6 +214,10 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
 
     // set configurations
     configurationStore.setConfiguration(configuration)
+
+    // init session storage
+    sessionStorage.clear()
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
   afterAll(() => {
@@ -221,10 +225,6 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
   })
 
   it('redirects to Edit URL to view/alter business info', async () => {
-    // init session storage
-    sessionStorage.clear()
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-
     // init store
     businessStore.setIdentifier('BC1234567')
     businessStore.setGoodStanding(true)
@@ -249,10 +249,6 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
   })
 
   it('redirects to special-resolution for a coop', async () => {
-    // init session storage
-    sessionStorage.clear()
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2299" }')
-
     // init store
     businessStore.setIdentifier('CP1234567')
     businessStore.setGoodStanding(true)
