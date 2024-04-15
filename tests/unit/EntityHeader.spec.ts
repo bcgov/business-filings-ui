@@ -517,16 +517,16 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
 
 describe('Entity Header - Alternate Name', () => {
   const router = mockRouter.mock()
-  // override feature flag
-  vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-    if (flag === 'enable-legal-name-fix') return true
-    return null
-  })
-  it('displays alternate name if firm', async () => {
+  it('displays alternate name if firm and legal name fix FF is true', async () => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return true
+      return null
+    })
     // set store properties
     businessStore.setBusinessInfo(
       {
-        legalName: 'My Business',
+        legalName: 'Stark Industries',
         alternateNames: [
           {
             name: 'Wayne Enterprises'
@@ -547,10 +547,40 @@ describe('Entity Header - Alternate Name', () => {
     expect(wrapper.find('#entity-legal-name').text()).toBe('Wayne Enterprises')
   })
 
+  it('displays legal name if firm and legal name fix FF is false', async () => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return false
+      return null
+    })
+    // set store properties
+    businessStore.setBusinessInfo(
+      {
+        legalName: 'Stark Industries',
+        alternateNames: [
+          {
+            name: 'Wayne Enterprises'
+          }
+        ]
+      } as any
+    )
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'FM1052377', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+    // verify displayed text
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Stark Industries')
+  })
+
   it('displays legal name if not firm', async () => {
     businessStore.setBusinessInfo(
       {
-        legalName: 'My Business',
+        legalName: 'Stark Industries',
         alternateNames: [
           {
             name: 'Wayne Enterprises'
@@ -568,6 +598,6 @@ describe('Entity Header - Alternate Name', () => {
     })
     await Vue.nextTick()
     // verify displayed text
-    expect(wrapper.find('#entity-legal-name').text()).toBe('My Business')
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Stark Industries')
   })
 })
