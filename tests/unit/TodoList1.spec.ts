@@ -1849,7 +1849,7 @@ describe('TodoList - UI - Amalgamation Applications', () => {
 describe('TodoList - Click Tests - Coops', () => {
   const { assign } = window.location
 
-  beforeAll(() => {
+  beforeEach(() => {
     // init store
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
