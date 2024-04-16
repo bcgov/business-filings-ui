@@ -1,6 +1,7 @@
 import { AlterationIF, AmalgamationApplicationIF,
   ApiBusinessIF, RestorationIF, SpecialResolutionIF } from '@/interfaces'
-import { FilingStatus, FilingTypes } from '@/enums'
+import { FilingStatus } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 
 /**
  * The header object from the Legal API when the filing contains separate business /

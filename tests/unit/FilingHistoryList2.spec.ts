@@ -7,7 +7,8 @@ import flushPromises from 'flush-promises'
 import axios from '@/axios-auth'
 import sinon from 'sinon'
 import { filings } from './filings.json'
-import { FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import { FilingStatus, FilingSubTypes } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 
 // Components and sub-components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'

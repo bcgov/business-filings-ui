@@ -11,10 +11,9 @@ import {
 import {
   CorpTypeCd,
   CorrectionTypes,
-  FilingCodes,
-  FilingSubTypes,
-  FilingTypes
+  FilingSubTypes
 } from '@/enums'
+import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
 import { useBusinessStore, useRootStore } from '@/stores'
 
 /**

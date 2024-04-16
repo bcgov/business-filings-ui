@@ -975,6 +975,9 @@ describe('Filing History List - redirections', () => {
         }
       }
       })))
+
+    // set session storage current account
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2816" }')
   })
 
   afterEach(() => {
@@ -987,7 +990,6 @@ describe('Filing History List - redirections', () => {
     businessStore.setIdentifier('CP1002587')
     businessStore.setLegalType(CorpTypeCd.COOP)
     sessionStorage.setItem('BUSINESS_ID', 'CP1002587')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2816" }')
     rootStore.keycloakRoles = ['staff']
     filingHistoryListStore.setFilings([
       {
@@ -1058,7 +1060,6 @@ describe('Filing History List - redirections', () => {
   it('redirects to Edit URL when filing an IA correction', async () => {
     // init data
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     rootStore.keycloakRoles = ['staff']
     businessStore.setIdentifier('BC1234567')
@@ -1127,9 +1128,6 @@ describe('Filing History List - redirections', () => {
   it('redirects to Edit URL when filing an CP IA correction', async () => {
     // init data
     sessionStorage.setItem('BUSINESS_ID', 'CP1002587')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-    expect(sessionStorage.getItem('BUSINESS_ID')).toEqual('CP1002587')
-    expect(sessionStorage.getItem('CURRENT_ACCOUNT')).toEqual('{ "id": "2288" }')
     businessStore.setLegalType(CorpTypeCd.COOP)
     rootStore.keycloakRoles = ['staff']
     businessStore.setIdentifier('CP1002587')

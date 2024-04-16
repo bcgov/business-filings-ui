@@ -91,9 +91,23 @@ export const useBusinessStore = defineStore('business', {
       return state.businessInfo.lastDirectorChangeDate
     },
 
-    /** The legal name. */
+    /** The legal name or alternate name if is firm. */
     getLegalName (state: BusinessStateIF): string {
-      return state.businessInfo.legalName
+      if (!GetFeatureFlag('enable-legal-name-fix')) {
+        return state.businessInfo.legalName
+      }
+      if (this.isFirm) {
+        return this.getAlternateName || 'Unknown'
+      } else {
+        return state.businessInfo.legalName || 'Unknown'
+      }
+    },
+
+    /** The alternate name. */
+    getAlternateName (state: BusinessStateIF): string {
+      const { alternateNames, identifier } = state.businessInfo
+      const name = alternateNames?.find((x) => x.identifier === identifier)?.name
+      return name || null
     },
 
     /** The legal type. */

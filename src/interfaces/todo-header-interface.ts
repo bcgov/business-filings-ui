@@ -1,4 +1,5 @@
-import { FilingStatus, FilingTypes } from '@/enums'
+import { FilingStatus } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 
 /** A todo's header object from the APIe, ie, `todo.header`. */
 export interface TodoHeaderIF {

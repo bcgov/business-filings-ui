@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { CorpTypeCd, EntityStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import { CorpTypeCd, EntityStatus, FilingSubTypes } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF,
   RootStateIF, TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'

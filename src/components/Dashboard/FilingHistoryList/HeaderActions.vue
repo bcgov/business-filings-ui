@@ -78,7 +78,8 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { AllowableActions, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, Routes } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 import { ApiFilingIF } from '@/interfaces'
 import { AllowableActionsMixin } from '@/mixins'
 import { EnumUtilities } from '@/services'

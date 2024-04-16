@@ -1,4 +1,5 @@
-import { FilingSubTypes, FilingTypes, PaymentMethod } from '@/enums'
+import { FilingSubTypes, PaymentMethod } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 import { PaymentErrorIF } from '@/interfaces'
 
 /**

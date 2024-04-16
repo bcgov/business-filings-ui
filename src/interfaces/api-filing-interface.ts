@@ -1,7 +1,7 @@
-import { AmalgamationTypes, CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingSubTypes, FilingTypes }
-  from '@/enums'
+import { CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingSubTypes } from '@/enums'
 import { ApiDateTimeUtc, CommentIF, DocumentIF, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
   from '@/interfaces'
+import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
 
 /**
  * A filing object from the Legal API ("filings" call). This is the newer response with extra metadata

@@ -4,8 +4,11 @@ import { shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
+import mockRouter from './mockRouter'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { EntityState, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import { EntityState, EntityStatus, FilingStatus, FilingSubTypes } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
+import * as utils from '@/utils'
 
 Vue.use(Vuetify)
 
@@ -510,5 +513,152 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
       filingHistoryListStore.filings.pop()
       wrapper.destroy()
     })
+  })
+})
+
+describe('Entity Header - Alternate Name', () => {
+  const router = mockRouter.mock()
+
+  it('displays alternate name if firm and legal name fix FF is true', async () => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return true
+      return null
+    })
+    // set store properties
+    businessStore.setBusinessInfo(
+      {
+        legalName: 'Stark Industries',
+        alternateNames: [
+          {
+            name: 'Wayne Enterprises'
+          }
+        ]
+      } as any
+    )
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'FM1052377', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+    // verify displayed text
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Wayne Enterprises')
+  })
+
+  it('displays Unknown if firm and legal name fix FF is true, but alternateNames array not found', async () => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return true
+      return null
+    })
+    // set store properties
+    businessStore.setBusinessInfo(
+      {
+        legalName: 'Stark Industries'
+      } as any
+    )
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'FM1052377', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+    // verify displayed text
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Unknown')
+  })
+
+  it('displays legal name if firm and legal name fix FF is false', async () => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return false
+      return null
+    })
+    // set store properties
+    businessStore.setBusinessInfo(
+      {
+        legalName: 'Stark Industries',
+        alternateNames: [
+          {
+            name: 'Wayne Enterprises'
+          }
+        ]
+      } as any
+    )
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'FM1052377', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+    // verify displayed text
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Stark Industries')
+  })
+
+  it('displays legal name if not firm and legal name fix FF is false', async () => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return false
+      return null
+    })
+    businessStore.setBusinessInfo(
+      {
+        legalName: 'Stark Industries',
+        alternateNames: [
+          {
+            name: 'Wayne Enterprises'
+          }
+        ]
+      } as any
+    )
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'BC1052377', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+    // verify displayed text
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Stark Industries')
+  })
+
+  it('displays legal name if not firm and legal name fix FF is true', async () => {
+    // override feature flag
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return true
+      return null
+    })
+    businessStore.setBusinessInfo(
+      {
+        legalName: 'Stark Industries',
+        alternateNames: [
+          {
+            name: 'Wayne Enterprises'
+          }
+        ]
+      } as any
+    )
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'BC1052377', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+    // verify displayed text
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Stark Industries')
   })
 })

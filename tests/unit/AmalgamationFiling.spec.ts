@@ -3,7 +3,8 @@ import Vuetify from 'vuetify'
 import { Wrapper, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore } from '@/stores'
-import { FilingStatus, FilingTypes } from '@/enums'
+import { FilingStatus } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 import AmalgamationFiling from '@/components/Dashboard/FilingHistoryList/filings/AmalgamationFiling.vue'
 
 // mock the console.warn function to hide "[Vuetify] The v-expansion-panel component must be used inside a

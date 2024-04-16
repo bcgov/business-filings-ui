@@ -93,7 +93,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
-import { FilingNames } from '@/enums'
+import { FilingNames } from '@bcrs-shared-components/enums'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import { ApiFilingIF, ApiTaskIF } from '@/interfaces'
 

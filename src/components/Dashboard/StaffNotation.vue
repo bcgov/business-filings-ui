@@ -242,11 +242,10 @@ import { GetFeatureFlag, navigate } from '@/utils'
 import {
   AllowableActions,
   ApplicationTypes,
-  FilingNames,
   FilingSubTypes,
-  FilingTypes,
   Routes
 } from '@/enums'
+import { FilingNames, FilingTypes } from '@bcrs-shared-components/enums'
 import { AddStaffNotationDialog } from '@/components/dialogs'
 import { AllowableActionsMixin, FilingMixin } from '@/mixins'
 import { LegalServices } from '@/services'

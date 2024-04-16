@@ -241,8 +241,8 @@ import { ConfirmDialog, LoadCorrectionDialog, PaymentErrorDialog, ResumeErrorDia
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
-import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
-  StaffPaymentOptions } from '@/enums'
+import { FilingStatus, Routes, SaveErrorReasons } from '@/enums'
+import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 

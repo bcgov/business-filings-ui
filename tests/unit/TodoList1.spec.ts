@@ -19,7 +19,8 @@ import PaymentPending from '@/components/Dashboard/TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from '@/components/Dashboard/TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from '@/components/Dashboard/TodoList/PaymentUnsuccessful.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { AmalgamationTypes, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
+import { EntityState, EntityStatus, FilingStatus } from '@/enums'
+import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -1849,7 +1850,7 @@ describe('TodoList - UI - Amalgamation Applications', () => {
 describe('TodoList - Click Tests - Coops', () => {
   const { assign } = window.location
 
-  beforeAll(() => {
+  beforeEach(() => {
     // init store
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
