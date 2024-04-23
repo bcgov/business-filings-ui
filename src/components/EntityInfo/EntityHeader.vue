@@ -81,7 +81,7 @@
       <!-- Subtitle -->
       <div
         id="app-description"
-        aria-label="Amalgamation, Incorporation or Registration Description"
+        aria-label="Amalgamation, Continuation In, Incorporation or Registration Description"
       >
         {{ appDescription }}
       </div>
@@ -111,6 +111,8 @@ export default class EntityHeader extends Vue {
   @Getter(useFilingHistoryListStore) isAuthorizedToContinueOut!: boolean
   @Getter(useRootStore) isDraftAmalgamation!: boolean
   @Getter(useRootStore) isFiledAmalgamation!: boolean
+  @Getter(useRootStore) isDraftContinuationIn!: boolean
+  @Getter(useRootStore) isFiledContinuationIn!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isInLimitedRestoration!: boolean
   @Getter(useBusinessStore) isSoleProp!: boolean
@@ -125,12 +127,19 @@ export default class EntityHeader extends Vue {
     }
   }
 
-  /** The incorporation/registration/amalgamation application description. */
+  /** The incorporation/registration/continuationIn/amalgamation application description. */
   get appDescription (): string {
     if (this.isDraftAmalgamation) {
       return this.getTasks[0]?.task.filing.displayName
     }
     if (this.isFiledAmalgamation) {
+      return this.getFilings[0]?.displayName
+    }
+
+    if (this.isDraftContinuationIn) {
+      return this.getTasks[0]?.task.filing.displayName
+    }
+    if (this.isFiledContinuationIn) {
       return this.getFilings[0]?.displayName
     }
 

@@ -189,6 +189,14 @@
                   <span>{{ item.subtitle }}</span>
                 </div>
 
+                <!-- draft continuation in -->
+                <div
+                  v-else-if="isStatusDraft(item) && EnumUtilities.isTypeContinuationInApplication(item)"
+                  class="todo-subtitle"
+                >
+                  <span>{{ item.subtitle }}</span>
+                </div>
+
                 <!-- draft other -->
                 <div
                   v-else-if="isStatusDraft(item)"
@@ -343,6 +351,10 @@
                     </template>
                     <template v-else-if="isTypeRegistration(item) && item.isEmptyFiling">
                       <span>Register using this NR</span>
+                    </template>
+                    <template v-else-if="EnumUtilities.isTypeContinuationInApplication(item) && item.isEmptyFiling">
+                      <span v-if="getNameRequest">Continue In using this NR</span>
+                      <span v-else>Continue In as a Numbered Company</span>
                     </template>
                     <span v-else>Resume</span>
                   </v-btn>
@@ -539,7 +551,7 @@
           <!-- is this a draft Amalgamation or IA or Registration? -->
           <template
             v-else-if="isStatusDraft(item) && (isTypeAmalgamation(item) || isTypeIncorporationApplication(item) ||
-              isTypeRegistration(item))"
+              EnumUtilities.isTypeContinuationInApplication(item) || isTypeRegistration(item))"
           >
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
@@ -764,6 +776,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     if (this.isStatusNew(item) && this.isTypeConversion(item)) return true
     if (this.isStatusDraft(item) && this.isTypeConversion(item)) return true
     if (this.isStatusDraft(item) && this.isTypeAmalgamation(item) &&
+      item.nameRequest) return true
+    if (this.isStatusDraft(item) && EnumUtilities.isTypeContinuationInApplication(item) &&
       item.nameRequest) return true
     if (this.isStatusDraft(item) && this.isTypeIncorporationApplication(item) &&
       item.nameRequest) return true
@@ -1079,6 +1093,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
           break
         case FilingTypes.CONTINUATION_OUT:
           await this.loadContinuationOut(task)
+          break
+        case FilingTypes.CONTINUATION_IN:
+          await this.loadContinuationInApplication(task)
           break
         case FilingTypes.CONVERSION:
           await this.loadConversion(task)
@@ -1408,6 +1425,54 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         title: filing.displayName,
         subtitle,
         draftTitle: FilingNames.INCORPORATION_APPLICATION,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        isEmptyFiling: !haveData,
+        nameRequest: this.getNameRequest
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header in filing =', filing)
+    }
+  }
+
+  async loadContinuationInApplication (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const continuationIn = filing.continuationIn
+
+    if (header) {
+      let subtitle: string = null
+      if (this.isStatusDraft(header)) {
+        if (this.getNameRequest) {
+          subtitle = `NR APPROVED - ${this.expiresText(this.getNameRequest)}`
+        } else {
+          subtitle = 'DRAFT'
+        }
+      }
+
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
+
+      // NB: continuationIn application may be undefined
+      const haveData = Boolean(
+        continuationIn?.offices ||
+        continuationIn?.contactPoint ||
+        continuationIn?.parties ||
+        continuationIn?.shareClasses
+      )
+
+      const item: TodoItemIF = {
+        name: FilingTypes.CONTINUATION_IN,
+        filingId: header.filingId,
+        title: filing.displayName,
+        subtitle,
+        draftTitle: FilingNames.CONTINUATION_IN_APPLICATION,
         status: header.status,
         enabled: task.enabled,
         order: task.order,
@@ -1805,6 +1870,13 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         // resume this Consent to Continuation Out locally
         this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
         break
+
+      case FilingTypes.CONTINUATION_IN: {
+        // navigate to Create UI to resume this Incorporation Application
+        const incorpAppUrl = `${this.getCreateUrl}?id=${this.tempRegNumber}`
+        navigate(incorpAppUrl)
+        break
+      }
 
       case FilingTypes.CONTINUATION_OUT:
         // resume this Continuation Out locally
