@@ -1872,9 +1872,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         break
 
       case FilingTypes.CONTINUATION_IN: {
-        // navigate to Create UI to resume this Incorporation Application
-        const incorpAppUrl = `${this.getCreateUrl}?id=${this.tempRegNumber}`
-        navigate(incorpAppUrl)
+        // navigate to Create UI to resume this Continuation In Application
+        const continuationInUrl = `${this.getCreateUrl}/continuation-in-business-home?id=${this.tempRegNumber}`
+        navigate(continuationInUrl)
         break
       }
 
