@@ -1,6 +1,6 @@
 import { CorpTypeCd, EntityState, FilingSubTypes } from '@/enums'
-import { AmalgamationTypes, NameTypes, FilingTypes } from '@bcrs-shared-components/enums'
-import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
+import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
+import { AlternateNameIF, ApiDateTimeUtc, IsoDatePacific } from '@bcrs-shared-components/interfaces'
 
 export interface FilingTypeIF {
   displayName: string
@@ -15,16 +15,6 @@ export interface AllowedActionsIF {
     filingSubmissionLink: string
     filingTypes: Array<FilingTypeIF>
   }
-}
-
-/** The Alternate Name object. */
-export interface AlternateNameIF {
-  entityType: CorpTypeCd
-  identifier: string
-  name: string
-  nameRegisteredDate: ApiDateTimeUtc
-  nameStartDate: IsoDatePacific
-  nameType: NameTypes
 }
 
 export interface AmalgamatedIntoIF {

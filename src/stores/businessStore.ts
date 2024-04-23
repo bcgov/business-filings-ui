@@ -97,9 +97,9 @@ export const useBusinessStore = defineStore('business', {
         return state.businessInfo.legalName
       }
       if (this.isFirm) {
-        return this.getAlternateName || 'Unknown'
+        return this.getAlternateName
       } else {
-        return state.businessInfo.legalName || 'Unknown'
+        return state.businessInfo.legalName
       }
     },
 

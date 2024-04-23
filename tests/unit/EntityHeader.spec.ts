@@ -571,7 +571,7 @@ describe('Entity Header - Alternate Name', () => {
     })
     await Vue.nextTick()
     // verify displayed text
-    expect(wrapper.find('#entity-legal-name').text()).toBe('Unknown')
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Unknown Name')
   })
 
   it('displays legal name if firm and legal name fix FF is false', async () => {
