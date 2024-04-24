@@ -886,7 +886,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
-  @Watch('detailCommentValid')
   @Watch('documentDeliveryValid')
   onHaveChanges (): void {
     this.haveChanges = true
