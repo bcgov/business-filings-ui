@@ -59,7 +59,6 @@ describe('Continuation Out view', () => {
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
     expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
-    expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
     expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
     expect(wrapper.findComponent(EffectiveDate).exists()).toBe(true)
     expect(wrapper.findComponent(ForeignJurisdiction).exists()).toBe(true)
@@ -122,16 +121,6 @@ describe('Continuation Out view', () => {
     vm.effectiveDateValid = true
     vm.foreignJurisdictionValid = true
     expect(!!vm.isPageValid).toBe(true)
-
-    // verify "validated" - invalid Detail Comment form
-    vm.businessNameValid = true
-    vm.certifyFormValid = true
-    vm.courtOrderValid = true
-    vm.detailCommentValid = false
-    vm.documentDeliveryValid = true
-    vm.effectiveDateValid = true
-    vm.foreignJurisdictionValid = true
-    expect(!!vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Certify form
     vm.businessNameValid = true
@@ -314,7 +303,6 @@ describe('Continuation Out view', () => {
 
     expect(vm.certifiedBy).toBe('Johnny Certifier')
     // NB: line 1 (default comment) should be removed
-    expect(vm.detailComment).toBe('Line 2\nLine 3')
     expect(vm.initialEffectiveDate).toBe('2023-06-10')
     expect(vm.initialBusinessName).toBe('North Shore Toys LTD.')
     expect(vm.initialCountry).toBe('CA')
