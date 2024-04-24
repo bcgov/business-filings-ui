@@ -346,6 +346,112 @@ describe('Entity Header - data', () => {
     expect(wrapper.find('#entity-legal-name').text()).toBe('Numbered Limited Company')
     expect(wrapper.find('#business-description').text()).toBe('BC Limited Company')
   })
+
+  it('displays Draft Continuation In application entity info - Named company', async () => {
+    // set store properties
+    businessStore.setLegalName('Continued In Company')
+    rootStore.entityStatus = EntityStatus.DRAFT_CONTINUATION_IN
+    businessStore.setLegalType(CorpTypeCd.CONTINUE_IN)
+    filingHistoryListStore.setFilings([])
+    rootStore.setTasks([
+      {
+        task: {
+          filing: {
+            displayName: 'BC Limited Company Continuation In Application'
+          }
+        }
+      } as any
+    ])
+
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      propsData: { businessId: null, tempRegNumber: 'T1234567' }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#app-name').text()).toBe('Continued In Company')
+    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Continuation In Application')
+  })
+
+  it('displays Draft Continuation In application entity info - Numbered Company', async () => {
+    // set store properties
+    businessStore.setLegalName(null)
+    rootStore.entityStatus = EntityStatus.DRAFT_CONTINUATION_IN
+    businessStore.setLegalType(CorpTypeCd.CONTINUE_IN)
+    filingHistoryListStore.setFilings([])
+    rootStore.setTasks([
+      {
+        task: {
+          filing: {
+            displayName: 'BC Limited Company Continuation In Application'
+          }
+        }
+      } as any
+    ])
+
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      propsData: { businessId: null, tempRegNumber: 'T123456789' }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#app-name').text()).toBe('Numbered Limited Company')
+    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Continuation In Application')
+  })
+
+  it('displays filed named continued in company', async () => {
+    // set store properties
+    businessStore.setLegalName('Continued In Company')
+    rootStore.entityStatus = EntityStatus.FILED_CONTINUATION_IN
+    businessStore.setLegalType(CorpTypeCd.CONTINUE_IN)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([
+      {
+        displayLedger: true,
+        displayName: 'BC Limited Company Continuation In Application',
+        effectiveDate: '2019-06-02 19:22:59 GMT',
+        name: FilingTypes.CONTINUATION_IN,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
+      } as any
+    ])
+
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      propsData: { businessId: 'BC1234567', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Continued In Company')
+    expect(wrapper.find('#business-description').text()).toBe('BC Limited Company')
+  })
+
+  it('displays filed numbered continued in company', async () => {
+    // set store properties
+    businessStore.setLegalName(null)
+    rootStore.entityStatus = EntityStatus.FILED_CONTINUATION_IN
+    businessStore.setLegalType(CorpTypeCd.CONTINUE_IN)
+    rootStore.setTasks([])
+    filingHistoryListStore.setFilings([
+      {
+        displayLedger: true,
+        displayName: 'BC Limited Company Continuation In Application',
+        effectiveDate: '2019-06-02 19:22:59 GMT',
+        name: FilingTypes.CONTINUATION_IN,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT'
+      } as any
+    ])
+
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      propsData: { businessId: null, tempRegNumber: 'T1234567' }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#app-name').text()).toBe('Numbered Limited Company')
+    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Continuation In Application')
+  })
 })
 
 describe('Entity Header - HISTORICAL badge', () => {
