@@ -97,8 +97,6 @@
                         v-model="detailComment"
                         placeholder="Add a Detail that will appear on the ledger for this entity."
                         :maxLength="maxDetailCommentLength"
-                        :isRoleStaff="isRoleStaff"
-                        :isContinuationOutDetailComment="true"
                         @valid="detailCommentValid=$event"
                       />
                     </v-col>

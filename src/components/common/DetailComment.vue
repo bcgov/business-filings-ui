@@ -41,12 +41,6 @@ export default class DetailComment extends Vue {
   /** Max Length passed into this component (optional). */
   @Prop({ default: 4096 }) readonly maxLength!: number
 
-  /** Role passed into this component. */
-  @Prop({ default: false }) readonly isRoleStaff: boolean
-
-  /** Comment is for continuationOut (optional) */
-  @Prop({ default: false }) readonly isContinuationOutDetailComment!: boolean
-
   /** Autofocus passed into this component (optional). */
   @Prop({ default: false }) readonly autofocus!: boolean
 
@@ -60,11 +54,6 @@ export default class DetailComment extends Vue {
 
   /** Array of validations rules for the textarea. */
   get rules (): Array<(val) => boolean | string> {
-    // Check if it should bypass rules based on specific conditions
-    if (!this.isRoleStaff && this.isContinuationOutDetailComment) {
-      return [() => true] // Always returns true under these conditions
-    }
-
     // include whitespace in maximum length check
     return [
       val => (val && val.trim().length > 0) || this.textRequiredErrorMsg,
