@@ -61,50 +61,6 @@
               </h1>
             </header>
 
-            <!-- Ledger Detail -->
-            <section>
-              <header>
-                <h2>Ledger Detail</h2>
-                <p class="grey-text">
-                  Enter a detail that will appear on the ledger for this entity.
-                </p>
-              </header>
-              <div
-                id="detail-comment-section"
-                :class="{ 'invalid-section': !detailCommentValid && showErrors }"
-              >
-                <v-card
-                  flat
-                  class="py-8 px-5"
-                >
-                  <v-row no-gutters>
-                    <v-col
-                      cols="12"
-                      sm="3"
-                      class="pr-4"
-                    >
-                      <strong :class="{ 'app-red': !detailCommentValid && showErrors }">Detail</strong>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="9"
-                    >
-                      <p class="grey-text font-weight-bold">
-                        {{ defaultComment }}
-                      </p>
-                      <DetailComment
-                        ref="detailCommentRef"
-                        v-model="detailComment"
-                        placeholder="Add a Detail that will appear on the ledger for this entity."
-                        :maxLength="maxDetailCommentLength"
-                        @valid="detailCommentValid=$event"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </div>
-            </section>
-
             <!-- Effective Date of Continuation -->
             <section>
               <header>
@@ -347,7 +303,7 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { BusinessNameForeign, Certify, DetailComment, EffectiveDate, ForeignJurisdiction } from '@/components/common'
+import { BusinessNameForeign, Certify, EffectiveDate, ForeignJurisdiction } from '@/components/common'
 import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -365,7 +321,6 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     Certify,
     ConfirmDialog,
     CourtOrderPoa,
-    DetailComment,
     DocumentDelivery,
     EffectiveDate,
     ForeignJurisdiction,
@@ -381,7 +336,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     businessNameForeignRef: BusinessNameForeign,
     confirm: ConfirmDialogType,
     certifyRef: Certify,
-    detailCommentRef: DetailComment,
     effectiveDateRef: EffectiveDate,
     foreignJurisdictionRef: ForeignJurisdiction,
   }
@@ -394,10 +348,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   // enum for template
   readonly FilingCodes = FilingCodes
-
-  // variables for DetailComment component
-  detailComment = ''
-  detailCommentValid = false
 
   // variables for EffectiveDate component
   initialEffectiveDate = ''
@@ -455,17 +405,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     return (!this.dataLoaded && !this.saveErrorReason)
   }
 
-  /** Default comment (ie, the first line of the detail comment). */
-  get defaultComment (): string {
-    return 'Continuation Out'
-  }
-
-  /** Maximum length of detail comment. */
-  get maxDetailCommentLength (): number {
-    // = (max size in db) - (default comment length) - (Carriage Return)
-    return 2000 - this.defaultComment.length - 1
-  }
-
   /** The Base URL string. */
   get baseUrl (): string {
     return sessionStorage.getItem('BASE_URL')
@@ -473,10 +412,9 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.detailCommentValid && this.effectiveDateValid &&
+    return (this.effectiveDateValid && this.certifyFormValid &&
       this.foreignJurisdictionValid && this.businessNameValid &&
-      this.documentDeliveryValid && this.courtOrderValid &&
-      this.certifyFormValid)
+      this.documentDeliveryValid && this.courtOrderValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -568,10 +506,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
       // load Certified By (but not Date)
       this.certifiedBy = filing.header.certifiedBy
-
-      // load Detail Comment, removing the first line (default comment)
-      const comment: string = filing.continuationOut.details || ''
-      this.detailComment = comment.split('\n').slice(1).join('\n')
 
       const courtOrder = filing.continuationOut.courtOrder
       if (courtOrder) {
@@ -700,10 +634,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     if (!this.isPageValid) {
       this.showErrors = true
 
-      // Show error messages of components if invalid
-      if (!this.detailCommentValid) {
-        this.$refs.detailCommentRef.$refs.textarea.error = true
-      }
       if (!this.certifyFormValid) {
         this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
       }
@@ -816,7 +746,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
     const data: any = {
       [FilingTypes.CONTINUATION_OUT]: {
-        details: `${this.defaultComment}\n${this.detailComment}`,
         continuationOutDate: this.effectiveDate,
         foreignJurisdiction: {
           country: this.selectedCountry,
@@ -935,7 +864,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
-    'detail-comment-section',
     'effective-date-section',
     'jurisdiction-information-section',
     'business-information-section',
@@ -947,7 +875,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   /** Object of valid flags. Must match validComponents. */
   get validFlags (): object {
     return {
-      detailComment: this.detailCommentValid,
       effectiveDate: this.effectiveDateValid,
       foreignJurisdiction: this.foreignJurisdictionValid,
       businessInformation: this.businessNameValid,
@@ -959,7 +886,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
-  @Watch('detailCommentValid')
   @Watch('documentDeliveryValid')
   onHaveChanges (): void {
     this.haveChanges = true
