@@ -62,7 +62,7 @@
             </header>
 
             <!-- Ledger Detail -->
-            <section>
+            <section v-if="isRoleStaff">
               <header>
                 <h2>Ledger Detail</h2>
                 <p class="grey-text">
@@ -97,6 +97,8 @@
                         v-model="detailComment"
                         placeholder="Add a Detail that will appear on the ledger for this entity."
                         :maxLength="maxDetailCommentLength"
+                        :isRoleStaff="isRoleStaff"
+                        :isContinuationOutDetailComment="true"
                         @valid="detailCommentValid=$event"
                       />
                     </v-col>
@@ -396,7 +398,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   readonly FilingCodes = FilingCodes
 
   // variables for DetailComment component
-  detailComment = ''
+  detailComment = null
   detailCommentValid = false
 
   // variables for EffectiveDate component
