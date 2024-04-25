@@ -548,7 +548,7 @@
             </div>
           </template>
 
-          <!-- is this a draft Amalgamation or Continuation In or IA or Registration? -->
+          <!-- is this a draft filing with a NR? -->
           <template
             v-else-if="isStatusDraft(item) && isFilingWithNr(item)"
           >
@@ -744,7 +744,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     return this.todoItems.sort((a, b) => (a.order - b.order))
   }
 
-  /** Show Name Request Info section */
+  /** Whether to show Name Request Info section */
   isFilingWithNr (item: TodoItemIF): boolean {
     return EnumUtilities.isTypeAmalgamation(item) || EnumUtilities.isTypeIncorporationApplication(item) ||
       EnumUtilities.isTypeContinuationInApplication(item) || EnumUtilities.isTypeRegistration(item)
