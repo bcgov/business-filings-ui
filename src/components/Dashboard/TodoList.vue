@@ -548,10 +548,9 @@
             </div>
           </template>
 
-          <!-- is this a draft Amalgamation or IA or Registration? -->
+          <!-- is this a draft Amalgamation or Continuation In or IA or Registration? -->
           <template
-            v-else-if="isStatusDraft(item) && (isTypeAmalgamation(item) || isTypeIncorporationApplication(item) ||
-              EnumUtilities.isTypeContinuationInApplication(item) || isTypeRegistration(item))"
+            v-else-if="isStatusDraft(item) && isFilingWithNr(item)"
           >
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
@@ -743,6 +742,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   /** The todo items sorted by "order" key. */
   get orderedTodoItems (): Array<TodoItemIF> {
     return this.todoItems.sort((a, b) => (a.order - b.order))
+  }
+
+  /** Show Name Request Info section */
+  isFilingWithNr (item: TodoItemIF): boolean {
+    return EnumUtilities.isTypeAmalgamation(item) || EnumUtilities.isTypeIncorporationApplication(item) ||
+      EnumUtilities.isTypeContinuationInApplication(item) || EnumUtilities.isTypeRegistration(item)
   }
 
   /** Whether to show the invalid section styling. */
@@ -1464,7 +1469,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         continuationIn?.offices ||
         continuationIn?.contactPoint ||
         continuationIn?.parties ||
-        continuationIn?.shareClasses
+        continuationIn?.shareStructure.shareClasses ||
+        continuationIn?.foreignJurisdiction
       )
 
       const item: TodoItemIF = {
