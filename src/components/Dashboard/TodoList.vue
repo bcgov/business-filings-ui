@@ -342,14 +342,14 @@
                     :disabled="!item.enabled"
                     @click.native.stop="doResumeFiling(item)"
                   >
-                    <template v-if="isTypeAmalgamation(item) && item.isEmptyFiling">
+                    <template v-if="EnumUtilities.isTypeAmalgamation(item) && item.isEmptyFiling">
                       <span>Fill out Amalgamation Application</span>
                     </template>
-                    <template v-else-if="isTypeIncorporationApplication(item) && item.isEmptyFiling">
+                    <template v-else-if="EnumUtilities.isTypeIncorporationApplication(item) && item.isEmptyFiling">
                       <span v-if="getNameRequest">Incorporate using this NR</span>
                       <span v-else>Incorporate a Numbered Company</span>
                     </template>
-                    <template v-else-if="isTypeRegistration(item) && item.isEmptyFiling">
+                    <template v-else-if="EnumUtilities.isTypeRegistration(item) && item.isEmptyFiling">
                       <span>Register using this NR</span>
                     </template>
                     <template v-else-if="EnumUtilities.isTypeContinuationInApplication(item) && item.isEmptyFiling">
