@@ -775,13 +775,13 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   showDetailsBtnBlue (item: TodoItemIF): boolean {
     if (this.isStatusNew(item) && this.isTypeConversion(item)) return true
     if (this.isStatusDraft(item) && this.isTypeConversion(item)) return true
-    if (this.isStatusDraft(item) && this.isTypeAmalgamation(item) &&
+    if (this.isStatusDraft(item) && EnumUtilities.isTypeAmalgamation(item) &&
       item.nameRequest) return true
     if (this.isStatusDraft(item) && EnumUtilities.isTypeContinuationInApplication(item) &&
       item.nameRequest) return true
-    if (this.isStatusDraft(item) && this.isTypeIncorporationApplication(item) &&
+    if (this.isStatusDraft(item) && EnumUtilities.isTypeIncorporationApplication(item) &&
       item.nameRequest) return true
-    if (this.isStatusDraft(item) && this.isTypeRegistration(item) &&
+    if (this.isStatusDraft(item) && EnumUtilities.isTypeRegistration(item) &&
       item.nameRequest) return true
     if (this.isStatusPending(item)) return true
     if (this.isAffiliationInvitation(item)) return true

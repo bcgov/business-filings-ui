@@ -214,17 +214,17 @@ export default class App extends Mixins(
 
   /** Currently supported entity types in Filings UI. */
   supportedEntityTypes = [
-    CorpTypeCd.BENEFIT_COMPANY,
     CorpTypeCd.BC_CCC,
     CorpTypeCd.BC_COMPANY,
     CorpTypeCd.BC_ULC_COMPANY,
-    CorpTypeCd.CONTINUE_IN,
     CorpTypeCd.BEN_CONTINUE_IN,
+    CorpTypeCd.BENEFIT_COMPANY,
     CorpTypeCd.CCC_CONTINUE_IN,
-    CorpTypeCd.ULC_CONTINUE_IN,
+    CorpTypeCd.CONTINUE_IN,
     CorpTypeCd.COOP,
     CorpTypeCd.PARTNERSHIP,
-    CorpTypeCd.SOLE_PROP
+    CorpTypeCd.SOLE_PROP,
+    CorpTypeCd.ULC_CONTINUE_IN
   ]
   // store references
   @Getter(useBusinessStore) getEntityName!: string
