@@ -197,6 +197,26 @@ export const useBusinessStore = defineStore('business', {
       )
     },
 
+    /** Is True if entity is a Continue In Benefit Company. */
+    isContinuationInBen (): boolean {
+      return (this.getLegalType === CorpTypeCd.BEN_CONTINUE_IN)
+    },
+
+    /** Is True if entity is a Continue In Ltd Company. */
+    isContinuationInC (): boolean {
+      return (this.getLegalType === CorpTypeCd.CONTINUE_IN)
+    },
+
+    /** Is True if entity is a Continue In Community Contribution Company. */
+    isContinuationInCcc (): boolean {
+      return (this.getLegalType === CorpTypeCd.CCC_CONTINUE_IN)
+    },
+
+    /** Is True if entity is a Continue In ULC Company. */
+    isContinuationInUlc (): boolean {
+      return (this.getLegalType === CorpTypeCd.ULC_CONTINUE_IN)
+    },
+
     /** Is True if entity is a Cooperative. */
     isCoop (): boolean {
       return (this.getLegalType === CorpTypeCd.COOP)

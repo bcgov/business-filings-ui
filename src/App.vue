@@ -214,13 +214,17 @@ export default class App extends Mixins(
 
   /** Currently supported entity types in Filings UI. */
   supportedEntityTypes = [
-    CorpTypeCd.BENEFIT_COMPANY,
     CorpTypeCd.BC_CCC,
     CorpTypeCd.BC_COMPANY,
     CorpTypeCd.BC_ULC_COMPANY,
+    CorpTypeCd.BEN_CONTINUE_IN,
+    CorpTypeCd.BENEFIT_COMPANY,
+    CorpTypeCd.CCC_CONTINUE_IN,
+    CorpTypeCd.CONTINUE_IN,
     CorpTypeCd.COOP,
     CorpTypeCd.PARTNERSHIP,
-    CorpTypeCd.SOLE_PROP
+    CorpTypeCd.SOLE_PROP,
+    CorpTypeCd.ULC_CONTINUE_IN
   ]
   // store references
   @Getter(useBusinessStore) getEntityName!: string
@@ -614,6 +618,7 @@ export default class App extends Mixins(
     }
 
     const isAmalgamation = (filingName === FilingTypes.AMALGAMATION_APPLICATION)
+    const isContinuationInApplication = (filingName === FilingTypes.CONTINUATION_IN)
     const isIncorporationApplication = (filingName === FilingTypes.INCORPORATION_APPLICATION)
     const isRegistration = (filingName === FilingTypes.REGISTRATION)
 
@@ -623,6 +628,7 @@ export default class App extends Mixins(
       case FilingStatus.PENDING:
         // this is a boostrap task
         if (isAmalgamation) entityStatus = EntityStatus.DRAFT_AMALGAMATION
+        else if (isContinuationInApplication) entityStatus = EntityStatus.DRAFT_CONTINUATION_IN
         else if (isIncorporationApplication) entityStatus = EntityStatus.DRAFT_INCORP_APP
         else if (isRegistration) entityStatus = EntityStatus.DRAFT_REGISTRATION
         else throw new Error(`Invalid ${filingName} filing - filing name`)
@@ -632,6 +638,7 @@ export default class App extends Mixins(
       case FilingStatus.PAID:
         // this is a bootstrap filing
         if (isAmalgamation) entityStatus = EntityStatus.FILED_AMALGAMATION
+        else if (isContinuationInApplication) entityStatus = EntityStatus.FILED_CONTINUATION_IN
         else if (isIncorporationApplication) entityStatus = EntityStatus.FILED_INCORP_APP
         else if (isRegistration) entityStatus = EntityStatus.FILED_REGISTRATION
         else throw new Error(`Invalid ${filingName} filing - filing name`)

@@ -52,6 +52,7 @@ export interface TaskTodoIF {
   changeOfDirectors?: any
   changeOfRegistration?: any
   consentContinuationOut?: any
+  continuationIn?:any
   continuationOut?: any
   conversion?: any
   correction?: any

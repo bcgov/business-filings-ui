@@ -120,6 +120,10 @@ export const useRootStore = defineStore('root', {
       return (state.entityStatus === EntityStatus.DRAFT_AMALGAMATION)
     },
 
+    isDraftContinuationIn (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.DRAFT_CONTINUATION_IN)
+    },
+
     isDraftIncorpApp (state: RootStateIF): boolean {
       return (state.entityStatus === EntityStatus.DRAFT_INCORP_APP)
     },
@@ -130,6 +134,10 @@ export const useRootStore = defineStore('root', {
 
     isFiledAmalgamation (state: RootStateIF): boolean {
       return (state.entityStatus === EntityStatus.FILED_AMALGAMATION)
+    },
+
+    isFiledContinuationIn (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.FILED_CONTINUATION_IN)
     },
 
     isFiledIncorpApp (state: RootStateIF): boolean {
@@ -143,14 +151,14 @@ export const useRootStore = defineStore('root', {
     /** Is True if this is a bootstrap task (ie, Draft or Pending). */
     isBootstrapTask (): boolean {
       return (
-        this.isDraftAmalgamation || this.isDraftIncorpApp || this.isDraftRegistration
+        this.isDraftAmalgamation || this.isDraftIncorpApp || this.isDraftRegistration || this.isDraftContinuationIn
       )
     },
 
     /** Is True if this is a bootstrap filing (ie, Completed or Paid). */
     isBootstrapFiling (): boolean {
       return (
-        this.isFiledAmalgamation || this.isFiledIncorpApp || this.isFiledRegistration
+        this.isFiledAmalgamation || this.isFiledIncorpApp || this.isFiledRegistration || this.isFiledContinuationIn
       )
     },
 

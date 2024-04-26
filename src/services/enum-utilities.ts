@@ -111,6 +111,11 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.CONSENT_CONTINUATION_OUT)
   }
 
+  /** Returns True if filing is an Continuation In Application. */
+  static isTypeContinuationInApplication (item: any): boolean {
+    return (item.name === FilingTypes.CONTINUATION_IN)
+  }
+
   /** Returns True if filing is a Continuation Out. */
   static isTypeContinuationOut (item: any): boolean {
     return (item.name === FilingTypes.CONTINUATION_OUT)
@@ -368,6 +373,7 @@ export default class EnumUtilities {
       case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.CHANGE_OF_DIRECTORS
       case FilingTypes.CHANGE_OF_NAME: return FilingNames.CHANGE_OF_NAME
       case FilingTypes.CHANGE_OF_REGISTRATION: return FilingNames.CHANGE_OF_REGISTRATION
+      case FilingTypes.CONTINUATION_IN: return FilingNames.CONTINUATION_IN_APPLICATION
       case FilingTypes.CONVERSION: return FilingNames.CONVERSION
       case FilingTypes.CORRECTION: return FilingNames.CORRECTION
       case FilingTypes.COURT_ORDER: return FilingNames.COURT_ORDER

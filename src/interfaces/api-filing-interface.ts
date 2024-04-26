@@ -91,6 +91,9 @@ export interface ApiFilingIF {
       region: string // may be null
     }
 
+    // continuation in filings only
+    continuationIn?: any // some object
+
     // continuation out filings only
     continuationOut?: {
       continuationOutDate: IsoDatePacific
