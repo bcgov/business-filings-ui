@@ -1469,7 +1469,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         continuationIn?.offices ||
         continuationIn?.contactPoint ||
         continuationIn?.parties ||
-        continuationIn?.shareStructure.shareClasses ||
+        continuationIn?.shareClasses ||
         continuationIn?.foreignJurisdiction
       )
 
