@@ -20,7 +20,8 @@ export default class NameRequestMixin extends Vue {
     if (!nr.nrNum) return 'Invalid NR number'
     if (
       nr.request_action_cd !== NameRequestTypes.NEW &&
-      nr.request_action_cd !== NameRequestTypes.AMALGAMATION
+      nr.request_action_cd !== NameRequestTypes.AMALGAMATION &&
+      nr.request_action_cd !== NameRequestTypes.CONTINUATION_IN
     ) return 'Invalid NR action code'
     if (!nr.state) return 'Invalid NR state'
     return null
