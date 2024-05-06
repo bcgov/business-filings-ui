@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview --port 8080",
+    "preview": "vite preview",
     "lint": "eslint . --ext .js,.ts,.vue",
     "test:unit": "vitest run",
     "test:coverage": "vitest run --coverage --silent"
