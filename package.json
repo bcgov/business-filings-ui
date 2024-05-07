@@ -39,7 +39,7 @@
     "launchdarkly-js-client-sdk": "^2.24.2",
     "lodash": "^4.17.21",
     "lodash.omit": "^4.5.0",
-    "pdfjs-dist": "3.9.179",
+    "pdfjs-dist": "4.2.67",
     "pinia": "^2.0.35",
     "pinia-class": "^0.0.3",
     "provinces": "^1.11.0",
