@@ -52,6 +52,8 @@ const isStaff = (filing) => (
   filing.name === FilingTypes.PUT_BACK_ON ||
   (filing.name === FilingTypes.DISSOLUTION && filing.displayName === 'Administrative Dissolution')
 )
+// MAYBE IMPLEMENT THIS?
+const isFiledIncorpApp = (filing) => (filing.name === FilingTypes.CONSENT_CONTINUATION_OUT)
 
 // Iterate over sample filings
 filings.forEach((filing: any, index: number) => {
@@ -104,6 +106,18 @@ filings.forEach((filing: any, index: number) => {
       const item = vm.getFilings[0]
 
       expect(item.correctionFilingId).toBe(filing.correctionFilingId)
+    })
+
+    // MAYBE IMPLEMENT THIS?
+    itIf(isFiledIncorpApp(filing))('filed incorporation application filing', () => {
+      expect(vm.getFilings.length).toBe(1) // sanity check
+      const item = vm.getFilings[0]
+
+      // verify that View button is displayed when expansion is collapsed
+      // ...
+
+      // verify that Hide button is hidden when expansion is expanded
+      // ...
     })
 
     itIf(isIncorporationApplication(filing))('incorporation application filing', () => {

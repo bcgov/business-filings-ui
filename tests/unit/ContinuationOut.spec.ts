@@ -6,7 +6,7 @@ import { useBusinessStore, useRootStore } from '@/stores'
 import ContinuationOut from '@/views/ContinuationOut.vue'
 import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
-import { BusinessNameForeign, EffectiveDate, Certify, DetailComment, ForeignJurisdiction } from '@/components/common'
+import { BusinessNameForeign, EffectiveDate, Certify, ForeignJurisdiction } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { LegalServices } from '@/services'
