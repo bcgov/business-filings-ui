@@ -3,6 +3,7 @@
     <!-- the main button -->
     <v-btn
       class="expand-btn"
+      :class="{ 'bootstrap-filing': isBootstrapFiling }"
       outlined
       color="primary"
       :ripple="false"
@@ -12,7 +13,7 @@
         <span class="view-details app-blue">Request a Copy</span>
         <span class="hide-details app-blue">Close</span>
       </template>
-      <template v-else-if="isTypeStaff">
+      <template v-else-if="isTypeStaff || isBootstrapFiling">
         <span class="view-details app-blue">View</span>
         <span class="hide-details app-blue">Hide</span>
       </template>
@@ -83,7 +84,7 @@ import { FilingTypes } from '@bcrs-shared-components/enums'
 import { ApiFilingIF } from '@/interfaces'
 import { AllowableActionsMixin } from '@/mixins'
 import { EnumUtilities } from '@/services'
-import { useBusinessStore, useFilingHistoryListStore } from '@/stores'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class HeaderActions extends Mixins(AllowableActionsMixin) {
@@ -93,6 +94,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
   @Prop({ required: true }) readonly index!: number
 
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useRootStore) isBootstrapFiling!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   // @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
@@ -199,6 +201,11 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
   font-size: $px-14;
   font-weight: bold;
   border: none;
+}
+
+// when panel is active and this is a bootstrap filing, hide button
+.v-expansion-panel.v-expansion-panel--active .bootstrap-filing {
+  display: none;
 }
 
 // when panel is active, hide View span

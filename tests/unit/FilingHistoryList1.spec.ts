@@ -1489,6 +1489,7 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
+  // MAYBE FIX THIS?
   it.skip('displays a Completed IA (temp reg number mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
@@ -1533,8 +1534,8 @@ describe('Filing History List - incorporation applications', () => {
     await detailsBtn.trigger('click')
     await Vue.nextTick()
 
-    // verify Hide Details button
-    expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
+    // verify that Hide Details button is hidden
+    expect(wrapper.find('.details-btn').isVisible()).toBe(false)
 
     // verify details
     expect(vm.getPanel).toEqual(0) // first row is expanded
