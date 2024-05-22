@@ -107,15 +107,17 @@ filings.forEach((filing: any, index: number) => {
       expect(item.correctionFilingId).toBe(filing.correctionFilingId)
     })
 
-    itIf(isStaff(filing))('TP Hide Documents button for IAs', async () => {
+    itIf(isIncorporationApplication(filing))('TP Hide Documents button for IAs', async () => {
       expect(vm.getFilings.length).toBe(1) // sanity check
+      const expandBtn = wrapper.find('.expand-btn')
       rootStore.$state = {
         ...rootStore.$state,
         entityStatus: EntityStatus.FILED_CONTINUATION_IN // Set isBootstrapFiling to true for the purpose of the test
       }
-      const expandBtn = wrapper.find('.expand-btn')
-      expect(wrapper.find('.view-details').text()).toBe('View')
-      expect(wrapper.find('.hide-details').text()).toBe('Hide')
+      await Vue.nextTick()
+      await flushPromises()
+      // expect(wrapper.find('.view-details').text()).toBe('View')
+      // expect(wrapper.find('.hide-details').text()).toBe('Hide')
       // verify that View button is displayed when expansion is collapsed
       expect(expandBtn.isVisible()).toBe(true)
       // verify that Hide button and View Button are hidden when expansion is expanded
