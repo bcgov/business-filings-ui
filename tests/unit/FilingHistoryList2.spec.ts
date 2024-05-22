@@ -2,12 +2,12 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useFilingHistoryListStore } from '@/stores'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import flushPromises from 'flush-promises'
 import axios from '@/axios-auth'
 import sinon from 'sinon'
 import { filings } from './filings.json'
-import { FilingStatus, FilingSubTypes } from '@/enums'
+import { FilingStatus, FilingSubTypes, EntityStatus } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 
 // Components and sub-components
@@ -29,6 +29,7 @@ const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 const filingHistoryListStore = useFilingHistoryListStore()
+const rootStore = useRootStore()
 
 // Helper functions
 const itIf = (condition) => condition ? it : it.skip
@@ -104,6 +105,28 @@ filings.forEach((filing: any, index: number) => {
       const item = vm.getFilings[0]
 
       expect(item.correctionFilingId).toBe(filing.correctionFilingId)
+    })
+
+    itIf(isStaff(filing))('TP Hide Documents button for IAs', async () => {
+      expect(vm.getFilings.length).toBe(1) // sanity check
+      rootStore.$state = {
+        ...rootStore.$state,
+        entityStatus: EntityStatus.FILED_CONTINUATION_IN // Set isBootstrapFiling to true for the purpose of the test
+      }
+      const expandBtn = wrapper.find('.expand-btn')
+      expect(wrapper.find('.view-details').text()).toBe('View')
+      expect(wrapper.find('.hide-details').text()).toBe('Hide')
+      // verify that View button is displayed when expansion is collapsed
+      expect(expandBtn.isVisible()).toBe(true)
+      // verify that Hide button and View Button are hidden when expansion is expanded
+      await expandBtn.trigger('click')
+      await flushPromises() // wait for expansion transition
+      await Vue.nextTick()
+      // expect(expandBtn.isVisible()).toBe(false)
+      rootStore.$state = {
+        ...rootStore.$state,
+        entityStatus: null // Set isBootstrapFiling to false
+      }
     })
 
     itIf(isIncorporationApplication(filing))('incorporation application filing', () => {

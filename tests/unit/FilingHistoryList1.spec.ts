@@ -1533,8 +1533,8 @@ describe('Filing History List - incorporation applications', () => {
     await detailsBtn.trigger('click')
     await Vue.nextTick()
 
-    // verify Hide Details button
-    expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
+    // verify that Hide Details button is hidden when expanded
+    expect(wrapper.find('.details-btn').isVisible()).toBe(false)
 
     // verify details
     expect(vm.getPanel).toEqual(0) // first row is expanded
