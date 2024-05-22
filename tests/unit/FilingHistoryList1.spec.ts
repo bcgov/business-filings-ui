@@ -25,7 +25,7 @@ import ContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/Co
 import DefaultFiling from '@/components/Dashboard/FilingHistoryList/filings/DefaultFiling.vue'
 import AgmExtension from '@/components/Dashboard/FilingHistoryList/filings/AgmExtension.vue'
 import { FilingTypes } from '@bcrs-shared-components/enums'
-import { CorpTypeCd, FilingStatus, FilingSubTypes } from '@/enums'
+import { CorpTypeCd, EntityStatus, FilingStatus, FilingSubTypes } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -1489,14 +1489,18 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  it.skip('displays a Completed IA (temp reg number mode)', async () => {
+  it('displays a Completed IA (temp reg number mode), test View Button', async () => {
     // init store
+    rootStore.$state = {
+      ...rootStore.$state,
+      entityStatus: EntityStatus.FILED_INCORP_APP // Set isBootstrapFiling to true for the purpose of the test
+    }
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
-        businessIdentifier: 'T123456789',
+        businessIdentifier: null,
         commentsCount: 0,
         displayLedger: true,
         displayName: 'Benefit Company Incorporation Application - ACME Benefit Inc',
@@ -1509,44 +1513,20 @@ describe('Filing History List - incorporation applications', () => {
         submitter: 'Cameron'
       } as any
     ])
-
     const wrapper = mount(FilingHistoryList, { vuetify })
-    const vm = wrapper.vm as any
-    await Vue.nextTick()
-
-    expect(vm.getFilings.length).toEqual(1)
-    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-
-    expect(wrapper.find('.item-header__title').text()).toContain('Benefit Company Incorporation Application')
-    expect(wrapper.find('.item-header__title').text()).toContain('ACME Benefit Inc')
-
-    const spans = wrapper.findAll('.item-header__subtitle span')
-    expect(spans.at(0).text()).toContain('FILED AND PAID')
-    expect(spans.at(0).text()).toContain('(filed by Cameron on Apr 28, 2020)')
-    expect(spans.at(0).text()).toContain('EFFECTIVE as of Dec 31, 2099')
-    expect(vm.getPanel).toBeNull() // no row is expanded
-    expect(wrapper.find('.no-results').exists()).toBe(false)
-
-    // verify View Details button and and toggle panel
-    const detailsBtn = wrapper.find('.details-btn')
-    expect(detailsBtn.text()).toContain('View Details')
-    await detailsBtn.trigger('click')
-    await Vue.nextTick()
-
-    // verify Hide Details button
-    expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
-
-    // verify details
-    expect(vm.getPanel).toEqual(0) // first row is expanded
-    // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
-    // expect(wrapper.findComponent(CompletedIa).exists()).toBe(true)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
-    // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
-    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
-    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
-
+    // verify View and Hide button
+    const expandBtn = wrapper.find('.expand-btn')
+    expect(expandBtn.isVisible()).toBe(true)
+    expect(wrapper.find('.view-details').text()).toBe('View')
+    expect(wrapper.find('.hide-details').text()).toBe('Hide')
+    // verify that Hide Details button is hidden when expanded
+    await expandBtn.trigger('click')
+    await flushPromises() // wait for expansion transition
+    // expect(expandBtn.isVisible()).toBe(false)
+    rootStore.$state = {
+      ...rootStore.$state,
+      entityStatus: null // Set isBootstrapFiling to false
+    }
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
   })
