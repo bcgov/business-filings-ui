@@ -1386,7 +1386,7 @@ describe('Filing History List - incorporation applications', () => {
 
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
-    console.log(wrapper.html())
+
     await detailsBtn.trigger('click')
     await Vue.nextTick()
 
