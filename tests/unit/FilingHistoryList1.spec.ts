@@ -1361,6 +1361,46 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
+  it('displays a "future effective" IA filing view details', async () => {
+    // init store
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    filingHistoryListStore.setFilings([
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'T123456789',
+        commentsCount: 0,
+        displayLedger: true,
+        displayName: 'BC Benefit Company Incorporation Application - ACME Benefit Inc',
+        effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
+        filingId: 85114,
+        isFutureEffective: true,
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.PAID,
+        submittedDate: 'Tue, 28 Apr 2020 19:14:45 GMT',
+        submitter: 'Cameron'
+      } as any
+    ])
+
+    const wrapper = mount(FilingHistoryList, { vuetify })
+
+    const detailsBtn = wrapper.find('.details-btn')
+    expect(detailsBtn.text()).toContain('View Details')
+
+    await detailsBtn.trigger('click')
+    await Vue.nextTick()
+
+    expect(wrapper.findAll('.v-expansion-panel-content').isVisible()).toBe(true)
+    expect(wrapper.find('.future-effective').text()).toContain('Future Effective Incorporation Date')
+
+    rootStore.$state = {
+      ...rootStore.$state,
+      entityStatus: null // Set isBootstrapFiling to false
+    }
+    sessionStorage.removeItem('TEMP_REG_NUMBER')
+    wrapper.destroy()
+  })
+
   it.skip('displays a "future effective pending" IA filing', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
