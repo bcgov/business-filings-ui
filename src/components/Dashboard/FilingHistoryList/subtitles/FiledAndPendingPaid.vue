@@ -6,6 +6,7 @@
 
     <v-btn
       class="details-btn"
+      :class="{ 'bootstrap-filing': isBootstrapFiling }"
       outlined
       color="orange darken-2"
       :ripple="false"
@@ -20,10 +21,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { Action } from 'pinia-class'
+import { Action, Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import FiledLabel from '../FiledLabel.vue'
-import { useFilingHistoryListStore } from '@/stores'
+import { useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
   components: { FiledLabel }
@@ -32,6 +33,7 @@ export default class FiledAndPendingPaid extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
+  @Getter(useRootStore) isBootstrapFiling!: boolean
   @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: (x: number) => Promise<void>
 }
 </script>
@@ -54,6 +56,11 @@ export default class FiledAndPendingPaid extends Vue {
 
 // when panel is not active, hide Hide button
 .v-expansion-panel:not(.v-expansion-panel--active) .hide-details {
+  display: none;
+}
+
+// when panel is active and this is a bootstrap filing, hide button
+.v-expansion-panel.v-expansion-panel--active .bootstrap-filing {
   display: none;
 }
 </style>
