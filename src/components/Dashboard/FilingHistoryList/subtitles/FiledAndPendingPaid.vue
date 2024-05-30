@@ -10,6 +10,7 @@
       outlined
       color="orange darken-2"
       :ripple="false"
+      tabindex="-1"
       @click.stop="toggleFilingHistoryItem(index)"
     >
       <v-icon>mdi-alert</v-icon>

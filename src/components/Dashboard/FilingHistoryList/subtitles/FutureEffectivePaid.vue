@@ -13,6 +13,7 @@
       outlined
       color="primary"
       :ripple="false"
+      tabindex="-1"
       @click.stop="toggleFilingHistoryItem(index)"
     >
       <v-icon>mdi-information-outline</v-icon>

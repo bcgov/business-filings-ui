@@ -1,6 +1,6 @@
 <template>
   <v-expansion-panel class="filing-template">
-    <v-expansion-panel-header>
+    <v-expansion-panel-header tabindex="-1">
       <div class="item-header d-flex justify-space-between">
         <div>
           <h3 class="item-header-title">

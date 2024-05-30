@@ -7,6 +7,7 @@
       outlined
       color="primary"
       :ripple="false"
+      tabindex="-1"
       @click.stop="toggleFilingHistoryItem(index)"
     >
       <template v-if="filing.availableOnPaperOnly">
