@@ -9,6 +9,7 @@ import Alerts from '@/components/Dashboard/Alerts.vue'
 import Amalgamation from '@/components/Dashboard/Alerts/Amalgamation.vue'
 import CorporateOnline from '@/components/Dashboard/Alerts/CorporateOnline.vue'
 import FrozenInformation from '@/components/Dashboard/Alerts/FrozenInformation.vue'
+import InDissolution from '@/components/Dashboard/Alerts/InDissolution.vue'
 import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
 import NotInCompliance from '@/components/Dashboard/Alerts/NotInCompliance.vue'
 import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.vue'
@@ -23,7 +24,7 @@ describe('Dashboard - UI', () => {
 
   beforeEach(() => {
     // create wrapper for Dashboard
-    // this stubs out the 5 sub-components
+    // this stubs out the 7 sub-components
     wrapper = shallowMount(Alerts, {
       vuetify,
       // create local properties for use in computed object below
@@ -31,6 +32,7 @@ describe('Dashboard - UI', () => {
         _isAmalgamationAlert: false,
         _isDisableNonBenCorps: false,
         _isFrozenInformationAlert: false,
+        _isInDissolutionAlert: false,
         _isMissingInformationAlert: false,
         _isNotInComplianceAlert: false,
         _isNotInGoodStandingAlert: false
@@ -48,6 +50,10 @@ describe('Dashboard - UI', () => {
         isFrozenInformationAlert: {
           get (): boolean { return this.$data._isFrozenInformationAlert },
           set (val: boolean) { this.$data._isFrozenInformationAlert = val }
+        },
+        isInDissolutionAlert: {
+          get (): boolean { return this.$data._isInDissolutionAlert },
+          set (val: boolean) { this.$data._isInDissolutionAlert = val }
         },
         isMissingInformationAlert: {
           get (): boolean { return this.$data._isMissingInformationAlert },
@@ -113,6 +119,19 @@ describe('Dashboard - UI', () => {
 
     // cleanup
     await wrapper.setData({ isFrozenInformationAlert: false })
+  })
+
+  it('displays the In Dissolution alert', async () => {
+    // verify initially hidden
+    expect(wrapper.findComponent(InDissolution).exists()).toBe(false)
+
+    // enable and verify displayed
+    await wrapper.setData({ isInDissolutionAlert: true })
+    expect(wrapper.findComponent(InDissolution).exists()).toBe(true)
+    expect(wrapper.emitted('count').pop()[0]).toBe(1)
+
+    // cleanup
+    await wrapper.setData({ isInDissolutionAlert: false })
   })
 
   it('displays the Missing Information alert', async () => {
