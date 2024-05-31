@@ -59,8 +59,8 @@ import { WarningTypes } from '@/enums'
 export default class InDissolution extends Vue {
   @Prop({ required: true }) readonly showPanel!: boolean
 
-  @Getter(useRootStore) getCurrentDate!: string
   @Getter(useBusinessStore) getBusinessWarnings!: BusinessWarningIF[]
+  @Getter(useRootStore) getCurrentDate!: string
 
   /** Return the number of days left for the business until it is dissolved. */
   get daysLeft (): number {
