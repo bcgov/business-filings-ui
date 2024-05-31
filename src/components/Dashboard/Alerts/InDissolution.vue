@@ -46,6 +46,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import { BusinessWarningIF } from '@/interfaces'
 import { ContactInfo } from '@/components/common'
 import { Getter } from 'pinia-class'
 import { useBusinessStore, useRootStore } from '@/stores'
@@ -59,7 +60,7 @@ export default class InDissolution extends Vue {
   @Prop({ required: true }) readonly showPanel!: boolean
 
   @Getter(useRootStore) getCurrentDate!: string
-  @Getter(useBusinessStore) getBusinessWarnings!: Array<any>
+  @Getter(useBusinessStore) getBusinessWarnings!: BusinessWarningIF[]
 
   /** Return the number of days left for the business until it is dissolved. */
   get daysLeft (): number {
