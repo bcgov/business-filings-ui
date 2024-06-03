@@ -68,9 +68,10 @@ export default class InDissolution extends Vue {
       item.warningType?.includes(WarningTypes.INVOLUNTARY_DISSOLUTION)
     )
     const targetDissolutionDate = warning?.data?.targetDissolutionDate
-    const daysDifference = DateUtilities.daysBetweenTwoDates(new Date(this.getCurrentDate), new Date(targetDissolutionDate))
+    const daysDifference = DateUtilities.daysBetweenTwoDates(
+      new Date(this.getCurrentDate), new Date(targetDissolutionDate))
 
-    if (!Number.isNaN(daysDifference) && daysDifference > 0) return String(daysDifference)
+    if (daysDifference >= 0) return String(daysDifference)
     return 'Unknown'
   }
 
