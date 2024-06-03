@@ -69,7 +69,7 @@ export default class InDissolution extends Vue {
     )
     const targetDissolutionDate = warning?.data?.targetDissolutionDate
 
-    return DateUtilities.daysBetweenTwoDates(new Date(this.getCurrentDate), new Date(targetDissolutionDate)) || -1
+    return DateUtilities.daysBetweenTwoDates(new Date(this.getCurrentDate), new Date(targetDissolutionDate))
   }
 
   @Emit('togglePanel')
