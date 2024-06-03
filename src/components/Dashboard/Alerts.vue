@@ -54,10 +54,10 @@ export default class Alerts extends Vue {
   /** The list of alerts. */
   get alerts (): Array<any> {
     const alerts = []
+    if (this.isInDissolutionAlert) alerts.push(InDissolution) // needs to be shown first (high priority)
     if (this.isAmalgamationAlert) alerts.push(Amalgamation)
     if (this.isDisableNonBenCorps) alerts.push(CorporateOnline)
     if (this.isFrozenInformationAlert) alerts.push(FrozenInformation)
-    if (this.isInDissolutionAlert) alerts.push(InDissolution)
     if (this.isMissingInformationAlert) alerts.push(MissingInformation)
     if (this.isNotInComplianceAlert) alerts.push(NotInCompliance)
     if (this.isNotInGoodStandingAlert) alerts.push(NotInGoodStanding)
