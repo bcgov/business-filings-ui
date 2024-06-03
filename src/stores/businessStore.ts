@@ -1,7 +1,7 @@
 import { AllowedActionsIF, AmalgamatedIntoIF, ApiBusinessIF, ApiDateTimeUtc, BusinessStateIF, BusinessWarningIF }
   from '@/interfaces'
 import { defineStore } from 'pinia'
-import { CorpTypeCd, EntityState } from '@/enums'
+import { CorpTypeCd, EntityState, WarningTypes } from '@/enums'
 import { DateUtilities, LegalServices } from '@/services/'
 import { GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
 import { useRootStore } from './rootStore'
@@ -140,21 +140,26 @@ export const useBusinessStore = defineStore('business', {
     hasComplianceWarning (): boolean {
       return (
         this.isFirm &&
-        this.getBusinessWarnings.some(item => item.warningType?.includes('COMPLIANCE'))
+        this.getBusinessWarnings.some(item => item.warningType?.includes(WarningTypes.COMPLIANCE))
       )
+    },
+
+    /** Is True if the business is in the process of being dissolved via involuntary dissolution. */
+    hasInvoluntaryDissolutionWarning (): boolean {
+      return this.getBusinessWarnings.some(item => item.warningType === WarningTypes.INVOLUNTARY_DISSOLUTION)
     },
 
     /** Is True if a firm has at least one "missing required business info" warning. */
     hasMissingInfoWarning (): boolean {
       return (
         this.isFirm &&
-        this.getBusinessWarnings.some(item => item.warningType === 'MISSING_REQUIRED_BUSINESS_INFO')
+        this.getBusinessWarnings.some(item => item.warningType === WarningTypes.MISSING_REQUIRED_BUSINESS_INFO)
       )
     },
 
     /** Is True if the business is part of a future effective amalgamation filing. */
     isFutureEffectiveAmalgamation (): boolean {
-      return this.getBusinessWarnings.some(item => item.warningType === 'FUTURE_EFFECTIVE_AMALGAMATION')
+      return this.getBusinessWarnings.some(item => item.warningType === WarningTypes.FUTURE_EFFECTIVE_AMALGAMATION)
     },
 
     /** Is True if business is active. */
@@ -281,6 +286,11 @@ export const useBusinessStore = defineStore('business', {
     /** Whether to show Frozen Information alert. */
     isFrozenInformationAlert (): boolean {
       return this.isAdminFrozen
+    },
+
+    /** Whether to show In Dissolution alert. */
+    isInDissolutionAlert (): boolean {
+      return this.hasInvoluntaryDissolutionWarning
     },
 
     /** Whether to show Missing Information alert. */

@@ -6,6 +6,7 @@ import { useBusinessStore } from '@/stores'
 import Alerts from '@/components/Dashboard/Alerts.vue'
 import { ContactInfo } from '@/components/common'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { WarningTypes } from '@/enums'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -21,7 +22,7 @@ describe('Missing Information alert', () => {
       {
         code: null,
         message: null,
-        warningType: 'MISSING_REQUIRED_BUSINESS_INFO'
+        warningType: WarningTypes.MISSING_REQUIRED_BUSINESS_INFO
       }
     ]
   })
