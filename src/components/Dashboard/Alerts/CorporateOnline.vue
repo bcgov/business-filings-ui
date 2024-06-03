@@ -56,7 +56,6 @@ export default class CorporateOnline extends Vue {
 
   @Getter(useConfigurationStore) getCorporateOnlineUrl!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
-  @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
 
   get corpFullDescription (): string {
     return GetCorpFullDescription(this.getLegalType)

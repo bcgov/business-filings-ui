@@ -697,6 +697,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   @Getter(useRootStore) getTasks!: Array<ApiTaskIF>
   @Getter(useRootStore) getTodoListResource!: TodoListResourceIF
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   // @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   @Action(useRootStore) setARFilingYear!: (x: number) => void
@@ -951,7 +952,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         arMinDate: header.arMinDate, // COOP only
         arMaxDate: header.arMaxDate, // COOP only
         status: header.status || FilingStatus.NEW,
-        enabled: task.enabled,
+        enabled: task.enabled && !this.isDisableNonBenCorps,
         order: task.order,
         nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BEN/BC/CCC/ULC only
         arDueDate: this.formatYyyyMmDd(header.arMaxDate)
