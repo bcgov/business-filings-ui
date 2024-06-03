@@ -63,13 +63,15 @@ export default class InDissolution extends Vue {
   @Getter(useRootStore) getCurrentDate!: string
 
   /** Return the number of days left for the business until it is dissolved. */
-  get daysLeft (): number {
+  get daysLeft (): string {
     const warning = this.getBusinessWarnings.find(item =>
       item.warningType?.includes(WarningTypes.INVOLUNTARY_DISSOLUTION)
     )
     const targetDissolutionDate = warning?.data?.targetDissolutionDate
+    const daysDifference = DateUtilities.daysBetweenTwoDates(new Date(this.getCurrentDate), new Date(targetDissolutionDate))
 
-    return DateUtilities.daysBetweenTwoDates(new Date(this.getCurrentDate), new Date(targetDissolutionDate))
+    if (!Number.isNaN(daysDifference) && daysDifference > 0) return String(daysDifference)
+    return 'Unknown'
   }
 
   @Emit('togglePanel')
