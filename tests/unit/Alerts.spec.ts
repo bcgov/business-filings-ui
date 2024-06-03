@@ -22,7 +22,7 @@ setActivePinia(createPinia())
 describe('Dashboard - UI', () => {
   let wrapper: Wrapper<Vue>
 
-  beforeEach(() => {
+  beforeAll(() => {
     // create wrapper for Dashboard
     // this stubs out the 7 sub-components
     wrapper = shallowMount(Alerts, {
@@ -71,7 +71,7 @@ describe('Dashboard - UI', () => {
     })
   })
 
-  afterEach(() => {
+  afterAll(() => {
     wrapper.destroy()
   })
 
