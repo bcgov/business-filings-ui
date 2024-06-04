@@ -1,6 +1,9 @@
 <template>
-  <v-expansion-panel class="filing-template">
-    <v-expansion-panel-header tabindex="-1">
+  <v-expansion-panel
+    class="filing-template py-5 px-6"
+    :disabled="true"
+  >
+    <v-expansion-panel-header>
       <div class="item-header d-flex justify-space-between">
         <div>
           <h3 class="item-header-title">
@@ -179,11 +182,6 @@ export default class FilingTemplate extends Vue {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
-
-.v-expansion-panel {
-  padding: 1.25rem 1.5rem;
-  pointer-events: none; // disable expansion generally
-}
 
 .item-header {
   line-height: 1.25rem;
