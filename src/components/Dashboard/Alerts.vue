@@ -22,6 +22,7 @@ import { useBusinessStore } from '@/stores'
 import Amalgamation from '@/components/Dashboard/Alerts/Amalgamation.vue'
 import CorporateOnline from '@/components/Dashboard/Alerts/CorporateOnline.vue'
 import FrozenInformation from '@/components/Dashboard/Alerts/FrozenInformation.vue'
+import InDissolution from '@/components/Dashboard/Alerts/InDissolution.vue'
 import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
 import NotInCompliance from '@/components/Dashboard/Alerts/NotInCompliance.vue'
 import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.vue'
@@ -31,6 +32,7 @@ import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.v
     Amalgamation,
     CorporateOnline,
     FrozenInformation,
+    InDissolution,
     MissingInformation,
     NotInCompliance,
     NotInGoodStanding
@@ -41,6 +43,7 @@ export default class Alerts extends Vue {
   @Getter(useBusinessStore) isAmalgamationAlert!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   @Getter(useBusinessStore) isFrozenInformationAlert!: boolean
+  @Getter(useBusinessStore) isInDissolutionAlert!: boolean
   @Getter(useBusinessStore) isMissingInformationAlert!: boolean
   @Getter(useBusinessStore) isNotInComplianceAlert!: boolean
   @Getter(useBusinessStore) isNotInGoodStandingAlert!: boolean
@@ -51,6 +54,7 @@ export default class Alerts extends Vue {
   /** The list of alerts. */
   get alerts (): Array<any> {
     const alerts = []
+    if (this.isInDissolutionAlert) alerts.push(InDissolution) // needs to be shown first (high priority)
     if (this.isAmalgamationAlert) alerts.push(Amalgamation)
     if (this.isDisableNonBenCorps) alerts.push(CorporateOnline)
     if (this.isFrozenInformationAlert) alerts.push(FrozenInformation)

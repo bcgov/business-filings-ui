@@ -1,4 +1,4 @@
-import { CorpTypeCd, EntityState, FilingSubTypes } from '@/enums'
+import { CorpTypeCd, EntityState, FilingSubTypes, WarningTypes } from '@/enums'
 import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
 import { AlternateNameIF, ApiDateTimeUtc, IsoDatePacific } from '@bcrs-shared-components/interfaces'
 
@@ -28,7 +28,7 @@ export interface BusinessWarningIF {
   code: string // FUTURE: use an enum
   filing?: string // not used
   message: string
-  warningType: string // FUTURE: use an enum
+  warningType: WarningTypes
   data?: any // optional extra properties (eg, amalgamationDate)
 }
 
