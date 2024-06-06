@@ -327,9 +327,8 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
 
   /** AGM Year of original filing (AR only). */
   get agmYear (): string {
-    if (this.origFiling?.annualReport?.annualReportDate) {
-      const date: string = this.origFiling.annualReport.annualReportDate
-      return date.slice(0, 4)
+    if (this.origFiling?.annualReport) {
+      return this.origFiling.header.ARFilingYear.toString()
     }
     return null
   }
