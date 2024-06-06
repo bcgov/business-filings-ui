@@ -49,11 +49,10 @@ describe('Correction - UI', () => {
               header: {
                 name: 'annualReport',
                 status: 'COMPLETED',
-                date: '2018-12-24T00:00:00+00:00'
+                date: '2018-12-24T00:00:00+00:00',
+                ARFilingYear: 2018
               },
-              annualReport: {
-                annualReportDate: '2018-06-26'
-              }
+              annualReport: {}
             }
           }
         })
