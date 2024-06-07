@@ -98,7 +98,7 @@ export const useBusinessStore = defineStore('business', {
       if (!GetFeatureFlag('enable-legal-name-fix')) {
         return state.businessInfo.legalName
       }
-      if (this.isFirm && !rootStore.isDraftRegistration) {
+      if (this.isFirm && !rootStore.isDraftRegistration  && !rootStore.isFiledRegistration) {
         return this.getAlternateName
       } else {
         return state.businessInfo.legalName
