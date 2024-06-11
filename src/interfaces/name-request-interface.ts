@@ -1,5 +1,6 @@
-import { CorpTypeCd } from '@bcrs-shared-components/enums'
-import { NameRequestStates, NameRequestTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { NameRequestStates } from '@/enums'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 
 /**
  * Name request applicant interface.
@@ -40,6 +41,6 @@ export interface NameRequestIF {
   legalType: CorpTypeCd
   names: Array<NameRequestNameIF>
   nrNum: string
-  request_action_cd: NameRequestTypes // eslint-disable-line camelcase
+  request_action_cd: NrRequestActionCodes // eslint-disable-line camelcase
   state: NameRequestStates
 }

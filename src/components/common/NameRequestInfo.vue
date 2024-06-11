@@ -91,7 +91,8 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { getName } from 'country-list'
 import { capitalize, formatPhoneNumber } from '@/utils'
-import { NameRequestStates, NameRequestTypes } from '@/enums'
+import { NameRequestStates } from '@/enums'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { NameRequestIF, NameRequestApplicantIF } from '@/interfaces'
 import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
@@ -124,10 +125,13 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
 
   /** The request type. */
   get requestType (): string {
-    if (this.nameRequest.request_action_cd === NameRequestTypes.AMALGAMATION) {
-      return 'Amalgamation'
+    switch (this.nameRequest.request_action_cd) {
+      case NrRequestActionCodes.NEW_BUSINESS: return 'New Business'
+      case NrRequestActionCodes.RESTORE: return 'Restoration Request'
+      case NrRequestActionCodes.AMALGAMATE: return 'Amalgamation'
+      case NrRequestActionCodes.MOVE: return 'Continuation In'
     }
-    return 'New Business'
+    return '' // should never happen
   }
 
   /** The expiration date. */

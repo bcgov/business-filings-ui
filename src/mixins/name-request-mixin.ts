@@ -1,5 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { NameRequestStates, NameRequestTypes } from '@/enums'
+import { NameRequestStates } from '@/enums'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { NameRequestIF } from '@/interfaces'
 
 /**
@@ -19,9 +20,9 @@ export default class NameRequestMixin extends Vue {
     if (!this.getNrApprovedName(nr)) return 'Invalid NR approved name'
     if (!nr.nrNum) return 'Invalid NR number'
     if (
-      nr.request_action_cd !== NameRequestTypes.NEW &&
-      nr.request_action_cd !== NameRequestTypes.AMALGAMATION &&
-      nr.request_action_cd !== NameRequestTypes.CONTINUATION_IN
+      nr.request_action_cd !== NrRequestActionCodes.NEW_BUSINESS &&
+      nr.request_action_cd !== NrRequestActionCodes.AMALGAMATE &&
+      nr.request_action_cd !== NrRequestActionCodes.MOVE
     ) return 'Invalid NR action code'
     if (!nr.state) return 'Invalid NR state'
     return null
