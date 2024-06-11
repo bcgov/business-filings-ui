@@ -5,7 +5,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore } from '@/stores'
 import { NameRequestInfo } from '@/components/common/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { NameRequestStates, NameRequestTypes } from '@/enums'
+import { NameRequestStates } from '@/enums'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 
@@ -42,7 +43,7 @@ const approvedCpNamerequest = {
   ],
   consentFlag: null,
   expirationDate: '2022-07-05T06:59:00+00:00',
-  request_action_cd: NameRequestTypes.NEW,
+  request_action_cd: NrRequestActionCodes.NEW_BUSINESS,
   state: NameRequestStates.APPROVED
 }
 
@@ -75,7 +76,7 @@ const conditionalSpNamerequest = {
   ],
   consentFlag: 'X',
   expirationDate: '2021-07-05T06:59:00+00:00',
-  request_action_cd: NameRequestTypes.NEW,
+  request_action_cd: NrRequestActionCodes.NEW_BUSINESS,
   state: NameRequestStates.EXPIRED
 }
 
@@ -108,7 +109,7 @@ const approvedAmlNamerequest = {
   ],
   consentFlag: null,
   expirationDate: '2022-07-05T06:59:00+00:00',
-  request_action_cd: NameRequestTypes.AMALGAMATION,
+  request_action_cd: NrRequestActionCodes.AMALGAMATE,
   state: NameRequestStates.APPROVED
 }
 
