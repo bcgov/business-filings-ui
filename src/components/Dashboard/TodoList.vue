@@ -122,9 +122,16 @@
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
                 <!-- affiliation invitation todo task -->
+                <div
+                  v-if="isAffiliationInvitation(item)"
+                  class="todo-subtitle"
+                >
+                  <span v-if="!!item.subtitle">{{ item.subtitle }}</span>
+                </div>
+
                 <!-- new todo task -->
                 <div
-                  v-if="isStatusNew(item) || isAffiliationInvitation(item)"
+                  v-else-if="isStatusNew(item)"
                   class="todo-subtitle"
                 >
                   <span v-if="!!item.subtitle">{{ item.subtitle }}</span>
@@ -220,6 +227,7 @@
                     <span class="vert-pipe" />
                     <span v-if="inProcessFiling === item.filingId">PROCESSING...</span>
                     <span v-else-if="EnumUtilities.isPayMethodOnlineBanking(item)">ONLINE BANKING PAYMENT PENDING</span>
+                    <span v-else-if="item.isPayCompleted">PAYMENT COMPLETED</span>
                     <span v-else>PAYMENT INCOMPLETE</span>
                   </template>
                 </div>
@@ -271,6 +279,7 @@
               </v-btn>
             </div>
 
+            <!-- Not affiliation invite (ie, rest of the todo actions) -->
             <div
               v-else
               class="list-item__actions"
@@ -423,7 +432,7 @@
                 </template>
 
                 <!-- pending filing -->
-                <template v-else-if="isStatusPending(item)">
+                <template v-else-if="isStatusPending(item) && !item.isPayCompleted">
                   <v-btn
                     v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
                     class="btn-change-payment-type"
@@ -556,7 +565,7 @@
           </template>
 
           <!-- does this item have a pending payment? -->
-          <template v-else-if="isStatusPending(item)">
+          <template v-else-if="isStatusPending(item) && !item.isPayCompleted">
             <PaymentPendingOnlineBanking
               v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
               :filing="item"
@@ -572,8 +581,8 @@
             <PaymentUnsuccessful />
           </template>
 
-          <!-- does this item have a paid payment? -->
-          <template v-else-if="isStatusPaid(item)">
+          <!-- does this item have a paid or completed payment? -->
+          <template v-else-if="isStatusPaid(item) || item.isPayCompleted">
             <PaymentPaid />
           </template>
         </v-expansion-panel-content>
@@ -1159,7 +1168,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj
+        payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED')
       }
       this.todoItems.push(item)
     } else {
@@ -1206,7 +1216,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj
+        payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED')
       }
       this.todoItems.push(item)
     } else {
@@ -1244,7 +1255,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         nextArDate: annualReport.nextARDate, // BEN/BC/CCC/ULC only
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj
+        payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED')
       }
       this.todoItems.push(item)
     } else {
@@ -1273,7 +1285,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj
+        payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED')
       }
       this.todoItems.push(item)
     } else {
@@ -1302,7 +1315,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj
+        payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED')
       }
       this.todoItems.push(item)
     } else {
@@ -1338,6 +1352,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         comment: correction.comment
       }
       this.todoItems.push(item)
@@ -1387,6 +1402,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         isEmptyFiling: !haveData,
         nameRequest: this.getNameRequest
       }
@@ -1437,6 +1453,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         isEmptyFiling: !haveData,
         nameRequest: this.getNameRequest
       }
@@ -1486,6 +1503,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         isEmptyFiling: !haveData,
         nameRequest: this.getNameRequest
       }
@@ -1536,6 +1554,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         isEmptyFiling: !haveData,
         nameRequest: this.getNameRequest
       }
@@ -1579,6 +1598,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         nameRequest: this.getNameRequest
       }
       this.todoItems.push(item)
@@ -1608,6 +1628,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         // FUTURE: ideally, this would come from the filing:
         warnings: this.getBusinessWarnings.map(warning => warning.message)
       } as TodoItemIF
@@ -1638,6 +1659,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         // FUTURE: ideally, this would come from the filing:
         warnings: this.getBusinessWarnings.map(warning => warning.message)
       } as TodoItemIF
@@ -1668,6 +1690,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         // FUTURE: ideally, this would come from the filing:
         warnings: this.getBusinessWarnings.map(warning => warning.message)
       } as TodoItemIF
@@ -1698,6 +1721,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         // FUTURE: ideally, this would come from the filing:
         warnings: this.getBusinessWarnings.map(warning => warning.message)
       } as TodoItemIF
@@ -1728,6 +1752,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         // FUTURE: ideally, this would come from the filing:
         warnings: this.getBusinessWarnings.map(warning => warning.message)
       } as TodoItemIF
@@ -1761,7 +1786,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj
+        payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED')
       }
       this.todoItems.push(item)
     } else {
@@ -1796,7 +1822,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj
+        payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED')
       }
       this.todoItems.push(item)
     } else {
