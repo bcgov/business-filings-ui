@@ -109,7 +109,7 @@
                   </p>
 
                   <v-alert
-                    v-if="!isBenBcCccUlc"
+                    v-if="!isBaseCompany"
                     type="info"
                     outlined
                     icon="mdi-information"
@@ -407,6 +407,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // variables
@@ -481,12 +482,12 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
 
   /** The Director Change fee code based on entity type. */
   get feeCode (): FilingCodes {
-    return this.isBenBcCccUlc ? FilingCodes.DIRECTOR_CHANGE_BC : FilingCodes.DIRECTOR_CHANGE_OT
+    return this.isBaseCompany ? FilingCodes.DIRECTOR_CHANGE_BC : FilingCodes.DIRECTOR_CHANGE_OT
   }
 
   /** The Free Director Change fee code based on entity type. */
   get freeFeeCode (): FilingCodes {
-    return this.isBenBcCccUlc ? FilingCodes.FREE_DIRECTOR_CHANGE_BC : FilingCodes.FREE_DIRECTOR_CHANGE_OT
+    return this.isBaseCompany ? FilingCodes.FREE_DIRECTOR_CHANGE_BC : FilingCodes.FREE_DIRECTOR_CHANGE_OT
   }
 
   /** Called when component is created. */

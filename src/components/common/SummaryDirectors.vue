@@ -6,7 +6,7 @@
         <v-subheader class="director-header">
           <span>Names</span>
           <span>Delivery Address</span>
-          <span v-if="isBenBcCccUlc">Mailing Address</span>
+          <span v-if="isBaseCompany">Mailing Address</span>
           <span class="header-appointed">Appointed/Elected</span>
         </v-subheader>
 
@@ -88,7 +88,7 @@
                   </div>
 
                   <div
-                    v-if="isBenBcCccUlc"
+                    v-if="isBaseCompany"
                     class="address same-address"
                   >
                     <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
@@ -215,7 +215,7 @@
                       <BaseAddress :address="director.deliveryAddress" />
                     </div>
                     <div
-                      v-if="isBenBcCccUlc"
+                      v-if="isBaseCompany"
                       class="address same-address"
                     >
                       <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
@@ -264,7 +264,7 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
   // Directors array passed into this component.
   @Prop({ default: () => [] }) readonly directors!: Array<DirectorIF>
 
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBaseCompany!: boolean
 
   // Local properties
   directorSummary: Array<DirectorIF> = []

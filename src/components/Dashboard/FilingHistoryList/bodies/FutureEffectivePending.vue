@@ -7,8 +7,8 @@
       has been recorded as <strong>{{ effectiveDateTime }}</strong>.
     </p>
 
-    <p v-if="fileNumber">
-      Court Order Number: {{ filing.courtOrderNumber }}
+    <p v-if="courtOrderNumber">
+      Court Order Number: {{ courtOrderNumber }}
     </p>
 
     <p v-if="hasEffectOfOrder">
@@ -75,7 +75,7 @@ export default class FutureEffectivePending extends Vue {
   }
 
   /** The court order file number. */
-  get fileNumber (): string {
+  get courtOrderNumber (): string {
     return this.filing.data?.order?.fileNumber
   }
 

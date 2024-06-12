@@ -276,7 +276,7 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) isAdminFrozen!: boolean
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
 
@@ -325,28 +325,28 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
 
   get showConsentAmalgamateOut (): boolean {
     return (
-      (this.isBenBcCccUlc || this.isCoop) &&
+      (this.isBaseCompany || this.isCoop) &&
       !!GetFeatureFlag('supported-consent-amalgamation-out-entities').includes(this.getLegalType)
     )
   }
 
   get showAmalgamateOut (): boolean {
     return (
-      (this.isBenBcCccUlc || this.isCoop) &&
+      (this.isBaseCompany || this.isCoop) &&
       !!GetFeatureFlag('supported-amalgamation-out-entities').includes(this.getLegalType)
     )
   }
 
   get showConsentContinueOut (): boolean {
     return (
-      (this.isBenBcCccUlc || this.isCoop) &&
+      (this.isBaseCompany || this.isCoop) &&
       !!GetFeatureFlag('supported-consent-continuation-out-entities').includes(this.getLegalType)
     )
   }
 
   get showContinueOut (): boolean {
     return (
-      (this.isBenBcCccUlc || this.isCoop) &&
+      (this.isBaseCompany || this.isCoop) &&
       !!GetFeatureFlag('supported-continuation-out-entities').includes(this.getLegalType)
     )
   }

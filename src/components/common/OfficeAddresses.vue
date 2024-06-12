@@ -107,7 +107,7 @@
           </div>
         </li>
 
-        <div v-if="isBenBcCccUlc">
+        <div v-if="isBaseCompany">
           <div
             v-if="showAddressForm"
             class="address-edit-header"
@@ -257,7 +257,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Prop({ default: () => {} }) readonly addresses!: RegRecAddressesIF
 
   @Getter(useBusinessStore) getIdentifier!: string
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBaseCompany!: boolean
 
   /** Effective date for fetching office addresses. */
   asOfDate: string
@@ -332,7 +332,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
             deliveryAddress: { ...recordsOffice.deliveryAddress, actions: [] },
             mailingAddress: { ...recordsOffice.mailingAddress, actions: [] }
           }
-        } else if (this.isBenBcCccUlc) {
+        } else if (this.isBaseCompany) {
           throw new Error('Missing records office address')
         }
       }).catch(error => {
@@ -385,7 +385,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     this.inheritDeliveryAddress =
       this.isSame(this.deliveryAddress, this.mailingAddress, ['addressType'])
 
-    if (this.isBenBcCccUlc) {
+    if (this.isBaseCompany) {
       this.recDeliveryAddress = { ...addresses?.recordsOffice?.deliveryAddress }
       this.recMailingAddress = { ...addresses?.recordsOffice?.mailingAddress }
 
@@ -434,7 +434,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       // inherit the registered delivery address
       this.mailingAddress = { ...this.deliveryAddress, addressType: 'mailing' }
     }
-    if (this.isBenBcCccUlc) {
+    if (this.isBaseCompany) {
       if (this.inheritRecDeliveryAddress) {
         // inherit the records delivery address
         this.recMailingAddress = { ...this.recDeliveryAddress, addressType: 'mailing' }
@@ -483,7 +483,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Emits original addresses object to the parent page. */
   @Emit('original')
   emitOriginalAddresses (): RegRecAddressesIF {
-    if (this.isBenBcCccUlc) {
+    if (this.isBaseCompany) {
       return {
         registeredOffice: this.original.registeredOffice,
         recordsOffice: this.original.recordsOffice
@@ -515,7 +515,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         ? this.removeAction(mailingAddress, Actions.ADDRESSCHANGED)
         : this.addAction(mailingAddress, Actions.ADDRESSCHANGED)
 
-      if (this.isBenBcCccUlc) {
+      if (this.isBaseCompany) {
         // update records delivery action
         this.isSame(this.recDeliveryAddress, this.original?.recordsOffice?.deliveryAddress)
           ? this.removeAction(recDeliveryAddress, Actions.ADDRESSCHANGED)

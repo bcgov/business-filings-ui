@@ -74,7 +74,7 @@
                 </v-list-item-title>
                 <v-list-item-subtitle>
                   <div
-                    v-if="isSame(director.deliveryAddress, director.mailingAddress, 'id')"
+                    v-if="isSame(director.deliveryAddress, director.mailingAddress, ['id'])"
                     class="same-as-above"
                   >
                     <span>Same as above</span>

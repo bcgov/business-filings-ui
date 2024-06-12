@@ -129,7 +129,7 @@
                 </v-list-item-title>
                 <v-list-item-subtitle>
                   <div
-                    v-if="isSame(registeredAddress.deliveryAddress, registeredAddress.mailingAddress, 'id')"
+                    v-if="isSame(registeredAddress.deliveryAddress, registeredAddress.mailingAddress, ['id'])"
                     class="same-as-above"
                   >
                     <span>Same as above</span>
@@ -162,7 +162,7 @@
 
       <!-- Records Office (BEN/BC/CCC/ULC and CORPs) -->
       <v-expansion-panel
-        v-if="isBenBcCccUlc || isCorp"
+        v-if="isBaseCompany || isCorporation"
         id="records-office-panel"
         class="align-items-top"
         :class="{
@@ -274,7 +274,7 @@
                 </v-list-item-title>
                 <v-list-item-subtitle>
                   <div
-                    v-if="isSame(recordsAddress.deliveryAddress, recordsAddress.mailingAddress, 'id')"
+                    v-if="isSame(recordsAddress.deliveryAddress, recordsAddress.mailingAddress, ['id'])"
                     class="same-as-above"
                   >
                     <span>Same as above</span>
@@ -327,8 +327,8 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
   @Prop({ default: false }) readonly showGrayedOut!: boolean
 
   @Getter(useFilingHistoryListStore) getPendingCoa!: ApiFilingIF
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
-  @Getter(useBusinessStore) isCorp!: boolean
+  @Getter(useBusinessStore) isBaseCompany!: boolean
+  @Getter(useBusinessStore) isCorporation!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) recordsAddress!: OfficeAddressIF

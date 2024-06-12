@@ -313,7 +313,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isAdminFrozen!: boolean
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
@@ -351,14 +351,14 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   get showConsentAmalgamateOut (): boolean {
     return (
-      (this.isBenBcCccUlc || this.isCoop) &&
+      (this.isBaseCompany || this.isCoop) &&
       !!GetFeatureFlag('supported-consent-amalgamation-out-entities').includes(this.getLegalType)
     )
   }
 
   get showConsentContinueOut (): boolean {
     return (
-      (this.isBenBcCccUlc || this.isCoop) &&
+      (this.isBaseCompany || this.isCoop) &&
       !!GetFeatureFlag('supported-consent-continuation-out-entities').includes(this.getLegalType)
     )
   }

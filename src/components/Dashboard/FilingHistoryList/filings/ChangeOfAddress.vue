@@ -40,11 +40,11 @@ export default class ChangeOfAddress extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBaseCompany!: boolean
 
   get isFutureEffective (): boolean {
     return (
-      this.isBenBcCccUlc &&
+      this.isBaseCompany &&
       this.filing.isFutureEffective &&
       EnumUtilities.isStatusPaid(this.filing) &&
       DateUtilities.isDateFuture(this.filing.effectiveDate)

@@ -123,7 +123,7 @@
                   </div>
 
                   <div
-                    v-if="isBenBcCccUlc"
+                    v-if="isBaseCompany"
                     class="form__row"
                   >
                     <v-checkbox
@@ -240,7 +240,7 @@
         >
           <span>Names</span>
           <span>Delivery Address</span>
-          <span v-if="isBenBcCccUlc">Mailing Address</span>
+          <span v-if="isBaseCompany">Mailing Address</span>
           <span>Appointed/Elected</span>
         </v-subheader>
 
@@ -326,7 +326,7 @@
                   </div>
 
                   <div
-                    v-if="isBenBcCccUlc"
+                    v-if="isBaseCompany"
                     class="address same-address"
                   >
                     <span v-if="isSame(dir.deliveryAddress, dir.mailingAddress)">
@@ -515,7 +515,7 @@
                     </div>
 
                     <div
-                      v-if="isBenBcCccUlc"
+                      v-if="isBaseCompany"
                       class="form__row"
                     >
                       <v-checkbox
@@ -727,6 +727,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
+  // @Getter(useBusinessStore) isBaseCompany!: boolean
 
   /** Effective date for fetching and appointing/ceasing directors. */
   asOfDate: string
@@ -1105,7 +1106,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     }
 
     // Add the mailing address property if the entity is a BEN/BC/CCC/ULC
-    if (this.isBenBcCccUlc) {
+    if (this.isBaseCompany) {
       director.mailingAddress = { ...this.inProgressMailAddress }
     }
 
@@ -1225,7 +1226,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
         director.deliveryAddress = this.inProgressDelivAddress
       }
 
-      if (this.isBenBcCccUlc) {
+      if (this.isBaseCompany) {
         if (!Object.values(this.inProgressMailAddress).every(el => el === undefined)) {
           director.mailingAddress = this.inProgressMailAddress
         }
