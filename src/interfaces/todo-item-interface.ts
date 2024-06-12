@@ -23,6 +23,7 @@ export interface TodoItemIF {
   paymentMethod?: PaymentMethod
   paymentToken?: number
   payErrorObj?: PaymentErrorIF
+  isPayCompleted?: boolean
 
   // ARs only
   ARFilingYear?: number // YYYY
