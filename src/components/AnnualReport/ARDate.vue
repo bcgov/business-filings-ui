@@ -1,6 +1,6 @@
 <template>
   <v-card
-    v-if="isBenBcCccUlc"
+    v-if="isBaseCompany"
     flat
     class="ar-date-container"
   >
@@ -23,7 +23,7 @@ import { useBusinessStore, useRootStore } from '@/stores'
 export default class ArDate extends Mixins(DateMixin) {
   // Getters
   @Getter(useRootStore) nextARDate!: string
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useRootStore) getCurrentDate!: string
 }
 </script>

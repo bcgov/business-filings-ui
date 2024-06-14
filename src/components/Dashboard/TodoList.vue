@@ -286,7 +286,7 @@
             >
               <div style="width:100%">
                 <!-- BEN/BC/CCC/ULC AR special case -->
-                <template v-if="isBenBcCccUlc && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)">
+                <template v-if="isBaseCompany && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)">
                   <p class="date-subtitle">
                     Due: {{ item.arDueDate }}
                   </p>
@@ -705,7 +705,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   @Getter(useFilingHistoryListStore) getPendingCoa!: ApiFilingIF
   @Getter(useRootStore) getTasks!: Array<ApiTaskIF>
   @Getter(useRootStore) getTodoListResource!: TodoListResourceIF
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   // @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
@@ -771,7 +771,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     return (
       item.enabled &&
       this.businessId &&
-      this.isBenBcCccUlc &&
+      this.isBaseCompany &&
       this.isTypeAnnualReport(item) &&
       this.isStatusNew(item)
     )
@@ -781,7 +781,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   isFileAnnualReportDisabled (item: TodoItemIF, index: number): boolean {
     return (
       !item.enabled ||
-      (this.isBenBcCccUlc && !this.enableCheckbox[index]) ||
+      (this.isBaseCompany && !this.enableCheckbox[index]) ||
       !this.isAllowed(AllowableActions.ANNUAL_REPORT)
     )
   }
@@ -883,6 +883,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     // stop this cycle after 5 iterations
     if (++count > 5) {
       this.inProcessFiling = null
+      // eslint-disable-next-line no-console
+      console.log(`filing ${id} is not completed after 5 iterations`)
       return
     }
 
@@ -893,7 +895,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       if (filing?.header?.status === FilingStatus.COMPLETED) {
         this.$root.$emit('reloadData')
       } else {
-        throw new Error('Filing not yet completed')
+        throw new Error() // filing not yet completed
       }
     }).catch(() => {
       // call this function again in 1 second
@@ -945,7 +947,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const ARFilingYear = header.ARFilingYear
 
       let subtitle: string = null
-      if (task.enabled && !this.isBenBcCccUlc) {
+      if (task.enabled && !this.isBaseCompany) {
         subtitle = '(including Address and/or Director Change)'
       }
 
@@ -1931,7 +1933,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
           case FilingNames.CHANGE_OF_ADDRESS:
           case FilingNames.CHANGE_OF_DIRECTORS:
-            if (this.isBenBcCccUlc || this.isCoop) {
+            if (this.isBaseCompany || this.isCoop) {
               navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
               break
             } else {

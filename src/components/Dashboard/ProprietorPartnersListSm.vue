@@ -97,7 +97,7 @@
                 <v-list-item-subtitle>
                   <div v-if="party.mailingAddress">
                     <span
-                      v-if="isSame(party.deliveryAddress, party.mailingAddress, 'id')"
+                      v-if="isSame(party.deliveryAddress, party.mailingAddress, ['id'])"
                       class="same-as-above"
                     >
                       Same as above

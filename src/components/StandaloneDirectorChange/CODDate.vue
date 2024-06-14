@@ -76,7 +76,7 @@ export default class CodDate extends Mixins(DateMixin) {
   @Getter(useBusinessStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBaseCompany!: boolean
 
   // Local properties.
   date = '' // bound to date picker
@@ -99,7 +99,7 @@ export default class CodDate extends Mixins(DateMixin) {
   get minDate (): string {
     let date: string = null
 
-    if (this.isBenBcCccUlc) {
+    if (this.isBaseCompany) {
       // For BEN/BC/CCC/ULC, use the last COD filing in filing history.
       date = (this.getLastDirectorChangeDate || this.dateToYyyyMmDd(this.getFoundingDate))
     } else if (this.getLastDirectorChangeDate || this.getLastAnnualReportDate) {

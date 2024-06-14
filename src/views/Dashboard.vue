@@ -274,7 +274,7 @@ export default class Dashboard extends Mixins(
 
   // store references
   @Getter(useBusinessStore) getIdentifier!: string
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   // @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
@@ -353,7 +353,7 @@ export default class Dashboard extends Mixins(
     if (this.isFirm) {
       const url = `${this.getEditUrl}${this.getIdentifier}/change`
       navigate(url)
-    } else if (this.isBenBcCccUlc) {
+    } else if (this.isBaseCompany) {
       this.toggleCoaWarning()
     } else {
       this.goToStandaloneAddresses()

@@ -193,7 +193,7 @@
 
             <!-- BEN/BC/CCC/ULC only: -->
             <article
-              v-else-if="isBenBcCccUlc"
+              v-else-if="isBaseCompany"
               class="annual-report-article"
             >
               <!-- Page Title -->
@@ -250,7 +250,7 @@
             </article>
 
             <!-- Certify -->
-            <section v-show="isBenBcCccUlc || agmDateValid">
+            <section v-show="isBaseCompany || agmDateValid">
               <header>
                 <h2
                   v-if="isCoop"
@@ -259,7 +259,7 @@
                   4. Certify
                 </h2>
                 <h2
-                  v-else-if="isBenBcCccUlc"
+                  v-else-if="isBaseCompany"
                   id="certify-header"
                 >
                   3. Certify
@@ -365,7 +365,7 @@
 
     <!-- Buttons ( BEN/BC/CCC/ULC only ) -->
     <v-container
-      v-else-if="isBenBcCccUlc"
+      v-else-if="isBaseCompany"
       id="bcorp-buttons-container"
       class="list-item"
     >
@@ -469,6 +469,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
@@ -541,7 +542,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       // if filing is in past year then use last day in that year
       if (this.ARFilingYear < this.getCurrentYear) return `${this.ARFilingYear}-12-31`
     }
-    if (this.isBenBcCccUlc) {
+    if (this.isBaseCompany) {
       return this.nextARDate
     }
     // should never get here
@@ -549,7 +550,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   }
 
   get certifyMessage (): string {
-    if (this.isBenBcCccUlc) {
+    if (this.isBaseCompany) {
       return this.certifyText(FilingCodes.ANNUAL_REPORT_BC)
     }
     return this.certifyText(FilingCodes.ANNUAL_REPORT_OT)
@@ -616,7 +617,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       this.goToDashboard(true)
       return // don't continue
     }
-    if (this.isBenBcCccUlc && !this.nextARDate) {
+    if (this.isBaseCompany && !this.nextARDate) {
       // eslint-disable-next-line no-console
       console.log('Annual Report error - missing Next AR Date!')
       this.goToDashboard(true)
@@ -654,7 +655,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     // for BComp, add AR filing code now
     // for Coop, code is added when AGM Date becomes valid
     // use existing Priority and Waive Fees flags
-    if (this.isBenBcCccUlc) {
+    if (this.isBaseCompany) {
       this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, this.staffPaymentData.isPriority,
         (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     }
@@ -753,9 +754,9 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
         // records office is required for BCOMP only
         const registeredOffice = changeOfAddress.offices?.registeredOffice
         const recordsOffice = changeOfAddress.offices?.recordsOffice
-        if (this.isBenBcCccUlc && registeredOffice && recordsOffice) {
+        if (this.isBaseCompany && registeredOffice && recordsOffice) {
           this.updatedAddresses = { registeredOffice, recordsOffice }
-        } else if (!this.isBenBcCccUlc && registeredOffice) {
+        } else if (!this.isBaseCompany && registeredOffice) {
           this.updatedAddresses = { registeredOffice }
         } else {
           throw new Error('Invalid change of address object')
@@ -1085,7 +1086,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       }
     }
 
-    if (this.isBenBcCccUlc) {
+    if (this.isBaseCompany) {
       annualReport = {
         [FilingTypes.ANNUAL_REPORT]: {
           annualReportDate: this.asOfDate,
@@ -1301,7 +1302,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
     // apply Priority flag to AR filing code only
     // simply re-add the AR code with the updated Priority flag and existing Waive Fees flag
-    if (this.isBenBcCccUlc) {
+    if (this.isBaseCompany) {
       this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val.isPriority, waiveFees)
     } else if (this.isCoop) {
       this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_OT, val.isPriority, waiveFees)

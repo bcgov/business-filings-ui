@@ -93,7 +93,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useRootStore) isBootstrapFiling!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   // @Getter(useAuthenticationStore) isRoleStaff!: boolean
@@ -131,12 +131,13 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
       !EnumUtilities.isStatusCorrected(this.filing)
     )
     conditions[3] = () => (EnumUtilities.isTypeIncorporationApplication(this.filing) &&
-      !this.isBenBcCccUlc && !this.isCoop)
+      !this.isBaseCompany && !this.isCoop)
     conditions[4] = () => (EnumUtilities.isTypeChangeOfRegistration(this.filing) && !this.isFirm)
     conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) && !this.isFirm &&
-      !this.isBenBcCccUlc && !this.isCoop)
+      !this.isBaseCompany && !this.isCoop)
     conditions[6] = () => (EnumUtilities.isTypeRegistration(this.filing) && !this.isFirm)
-    conditions[7] = () => (EnumUtilities.isTypeAmalgamation(this.filing) && !this.isBenBcCccUlc)
+    conditions[7] = () => (EnumUtilities.isTypeAmalgamation(this.filing) && !this.isBaseCompany)
+    conditions[8] = () => (EnumUtilities.isTypeContinuationInApplication(this.filing) && !this.isBaseCompany)
 
     // check if any condition is True
     return conditions.some(condition => condition())
@@ -160,7 +161,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
 
       case FilingTypes.CHANGE_OF_ADDRESS:
       case FilingTypes.CHANGE_OF_DIRECTORS:
-        if (this.isBenBcCccUlc || this.isCoop) {
+        if (this.isBaseCompany || this.isCoop) {
           // correction via Edit UI if current type is BC, CC, ULC, BEN or COOP
           this.setCurrentFiling(filing)
           this.setFileCorrectionDialog(true)

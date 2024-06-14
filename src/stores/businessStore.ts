@@ -179,7 +179,7 @@ export const useBusinessStore = defineStore('business', {
       return (this.getLegalType === CorpTypeCd.BENEFIT_COMPANY)
     },
 
-    /** Is True if entity is a BC Company. */
+    /** Is True if entity is a BC Limited Company. */
     isBcCompany (): boolean {
       return (this.getLegalType === CorpTypeCd.BC_COMPANY)
     },
@@ -189,37 +189,35 @@ export const useBusinessStore = defineStore('business', {
       return (this.getLegalType === CorpTypeCd.BC_CCC)
     },
 
-    /** Is True if entity is a BC ULC Company. */
+    /** Is True if entity is a BC Unlimited Liability Company. */
     isUlc (): boolean {
       return (this.getLegalType === CorpTypeCd.BC_ULC_COMPANY)
     },
 
-    /** Is True if entity is a BEN/BC/CCC/ULC. */
-    isBenBcCccUlc (): boolean {
+    /** Is True if the entity is a base company (BEN/BC/CC/ULC or C/CBEN/CCC/CUL). */
+    isBaseCompany (): boolean {
       return (
-        this.isBComp ||
-        this.isBcCompany ||
-        this.isCcc ||
-        this.isUlc
+        this.isBComp || this.isBcCompany || this.isCcc || this.isUlc ||
+        this.isContinuationInC || this.isContinuationInBen || this.isContinuationInCcc || this.isContinuationInUlc
       )
     },
 
-    /** Is True if entity is a Continue In Benefit Company. */
+    /** Is True if entity is a Continued In Benefit Company. */
     isContinuationInBen (): boolean {
       return (this.getLegalType === CorpTypeCd.BEN_CONTINUE_IN)
     },
 
-    /** Is True if entity is a Continue In Ltd Company. */
+    /** Is True if entity is a Continued In BC Limited Company. */
     isContinuationInC (): boolean {
       return (this.getLegalType === CorpTypeCd.CONTINUE_IN)
     },
 
-    /** Is True if entity is a Continue In Community Contribution Company. */
+    /** Is True if entity is a Continued In Community Contribution Company. */
     isContinuationInCcc (): boolean {
       return (this.getLegalType === CorpTypeCd.CCC_CONTINUE_IN)
     },
 
-    /** Is True if entity is a Continue In ULC Company. */
+    /** Is True if entity is a Continued In Unlimited Liability Company. */
     isContinuationInUlc (): boolean {
       return (this.getLegalType === CorpTypeCd.ULC_CONTINUE_IN)
     },
@@ -230,7 +228,7 @@ export const useBusinessStore = defineStore('business', {
     },
 
     /** Is True if entity is a Corporation. */
-    isCorp (): boolean {
+    isCorporation (): boolean {
       return (this.getLegalType === CorpTypeCd.CORPORATION)
     },
 

@@ -89,7 +89,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       const filings = this.getFilings as ApiFilingIF[]
       return filings.find(filing => {
         return (
-          businessStore.isBenBcCccUlc &&
+          businessStore.isBaseCompany &&
           EnumUtilities.isTypeChangeOfAddress(filing) &&
           filing.isFutureEffective &&
           EnumUtilities.isStatusPaid(filing) &&

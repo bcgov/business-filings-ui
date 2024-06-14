@@ -104,12 +104,12 @@
               <p v-if="isCoop">
                 Please change your Registered Office Address.
               </p>
-              <p v-else-if="isBenBcCccUlc">
+              <p v-else-if="isBaseCompany">
                 Please change your Registered Office Address and Records Address.
               </p>
 
               <v-alert
-                v-if="isBenBcCccUlc"
+                v-if="isBaseCompany"
                 type="info"
                 outlined
                 icon="mdi-information"
@@ -279,6 +279,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
@@ -346,7 +347,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
 
   /** Local computed value for the fee code based on entity type */
   get feeCode (): FilingCodes {
-    return this.isBenBcCccUlc ? FilingCodes.ADDRESS_CHANGE_BC : FilingCodes.ADDRESS_CHANGE_OT
+    return this.isBaseCompany ? FilingCodes.ADDRESS_CHANGE_BC : FilingCodes.ADDRESS_CHANGE_OT
   }
 
   /** Called when component is created. */
@@ -469,9 +470,9 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
         // records office is required for BCOMP only
         const registeredOffice = changeOfAddress.offices?.registeredOffice
         const recordsOffice = changeOfAddress.offices?.recordsOffice
-        if (this.isBenBcCccUlc && registeredOffice && recordsOffice) {
+        if (this.isBaseCompany && registeredOffice && recordsOffice) {
           this.updatedAddresses = { registeredOffice, recordsOffice }
-        } else if (!this.isBenBcCccUlc && registeredOffice) {
+        } else if (!this.isBaseCompany && registeredOffice) {
           this.updatedAddresses = { registeredOffice }
         } else {
           throw new Error('Invalid change of address object')
