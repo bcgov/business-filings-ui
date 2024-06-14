@@ -26,6 +26,7 @@ import DefaultFiling from '@/components/Dashboard/FilingHistoryList/filings/Defa
 import AgmExtension from '@/components/Dashboard/FilingHistoryList/filings/AgmExtension.vue'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd, EntityStatus, FilingStatus, FilingSubTypes } from '@/enums'
+import { LegalServices } from '@/services'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -2207,13 +2208,9 @@ describe('Filing History List - with documents', () => {
     // init store
     filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
-    // mock "get documents"
-    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
-      .returns(new Promise(resolve => resolve({
-        data: {
-          documents: {}
-        }
-      })))
+    // mock "fetch documents"
+    vi.spyOn((LegalServices as any), 'fetchDocuments').mockImplementation(
+      () => Promise.resolve({}))
 
     const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
@@ -2227,30 +2224,27 @@ describe('Filing History List - with documents', () => {
 
     // expand details
     await button.trigger('click')
+    await flushPromises() // wait for expansion transition
 
     // verify that Documents List component is not displayed after the item is expanded
     expect(wrapper.findComponent(DocumentsList).exists()).toBe(false)
 
-    sinon.restore()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
-  it.skip('display the documents list when documents are present on a filing', async () => {
+  it.skip('displays the documents list when documents are present on a filing', async () => {
     // init store
     filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
-    // mock "get documents"
-    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
-      .returns(new Promise(resolve => resolve({
-        data: {
-          documents: {
-            legalFilings: [
-              { annualReport: 'businesses/CP0000840/filings/112758/documents/annualReport' }
-            ],
-            receipt: 'businesses/CP0000840/filings/112758/documents/receipt'
-          }
-        }
-      })))
+    // mock "fetch documents"
+    vi.spyOn((LegalServices as any), 'fetchDocuments').mockImplementation(
+      () => Promise.resolve({
+        legalFilings: [
+          { annualReport: 'businesses/CP0000840/filings/112758/documents/annualReport' }
+        ],
+        receipt: 'businesses/CP0000840/filings/112758/documents/receipt'
+      }))
 
     const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
@@ -2258,11 +2252,8 @@ describe('Filing History List - with documents', () => {
     // verify that Documents List component does not exist before the item is expanded
     expect(wrapper.findComponent(DocumentsList).exists()).toBe(false)
 
-    // verify View Documents button
-    const button = wrapper.find('.expand-btn')
-    expect(button.text()).toContain('View Documents')
-
     // expand details
+    const button = wrapper.find('.expand-btn')
     await button.trigger('click')
     await flushPromises() // wait for expansion transition
 
@@ -2272,28 +2263,30 @@ describe('Filing History List - with documents', () => {
     // verify the number of documents
     expect(wrapper.findAll('.documents-list .download-one-btn').length).toBe(2)
 
-    sinon.restore()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
-  it.skip('computes proper document titles from the documents data', async () => {
+  it('computes proper document titles from the documents data', async () => {
     // init store
     filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
-    // mock "get documents"
-    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
-      .returns(new Promise(resolve => resolve({
-        data: {
-          documents: {
-            legalFilings: [
-              { annualReport: 'businesses/CP0000840/filings/112758/documents/annualReport' },
-              { addressChange: 'businesses/CP0000840/filings/112758/documents/addressChange' },
-              { directorChange: 'businesses/CP0000840/filings/112758/documents/directorChange' }
-            ],
-            receipt: 'businesses/CP0000840/filings/112758/documents/receipt'
+    // mock "fetch documents"
+    vi.spyOn((LegalServices as any), 'fetchDocuments').mockImplementation(
+      () => Promise.resolve({
+        legalFilings: [
+          { annualReport: 'businesses/CP0000840/filings/112758/documents/annualReport' },
+          { addressChange: 'businesses/CP0000840/filings/112758/documents/addressChange' },
+          { directorChange: 'businesses/CP0000840/filings/112758/documents/directorChange' }
+        ],
+        staticDocuments: [
+          {
+            name: 'My Static Document.pdf',
+            url: 'businesses/CP0000840/filings/112758/documents/myStaticDocument.pdf'
           }
-        }
-      })))
+        ],
+        receipt: 'businesses/CP0000840/filings/112758/documents/receipt'
+      }))
 
     const wrapper = mount(FilingHistoryList, {
       propsData: { highlightId: 666 },
@@ -2302,7 +2295,8 @@ describe('Filing History List - with documents', () => {
     await Vue.nextTick()
 
     // expand details
-    await wrapper.find('.expand-btn').trigger('click')
+    const button = wrapper.find('.expand-btn')
+    await button.trigger('click')
     await flushPromises() // wait for expansion transition
 
     // verify that Documents List component is displayed after the item is expanded
@@ -2310,13 +2304,14 @@ describe('Filing History List - with documents', () => {
 
     // verify document titles
     const downloadBtns = wrapper.findAll('.documents-list .download-one-btn')
-    expect(downloadBtns.length).toBe(4)
+    expect(downloadBtns.length).toBe(5)
     expect(downloadBtns.at(0).text()).toContain('Annual Report (2019)')
     expect(downloadBtns.at(1).text()).toContain('Address Change')
     expect(downloadBtns.at(2).text()).toContain('Director Change')
-    expect(downloadBtns.at(3).text()).toContain('Receipt')
+    expect(downloadBtns.at(3).text()).toContain('My Static Document.pdf')
+    expect(downloadBtns.at(4).text()).toContain('Receipt')
 
-    sinon.restore()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 })

@@ -294,11 +294,11 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
         // iterate over documents properties
         for (const prop in documents) {
           if (prop === 'legalFilings' && Array.isArray(documents.legalFilings)) {
-          // iterate over legalFilings array
+            // iterate over legalFilings array
             for (const legalFiling of documents.legalFilings) {
-            // iterate over legalFiling properties
+              // iterate over legalFiling properties
               for (const prop in legalFiling) {
-              // this is a legal filing output
+                // this is a legal filing output
                 let title: string
                 // use display name for primary document's title
                 if (prop === filing.name) title = filing.displayName
@@ -309,6 +309,14 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
                 const link = legalFiling[prop]
                 pushDocument(title, filename, link)
               }
+            }
+          } else if (prop === 'staticDocuments' && Array.isArray(documents.staticDocuments)) {
+            // iterate over staticDocuments array
+            for (const document of documents.staticDocuments) {
+              const title = document.name
+              const filename = title
+              const link = document.url
+              pushDocument(title, filename, link)
             }
           } else if (prop === 'uploadedCourtOrder') {
             const fileNumber = filing.data?.order?.fileNumber || '[unknown]'
