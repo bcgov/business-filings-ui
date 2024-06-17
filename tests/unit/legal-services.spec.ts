@@ -208,10 +208,10 @@ describe('Legal Services', () => {
       .returns(new Promise(resolve => resolve({ data: { comments: COMMENTS } })))
 
     // call method
-    const comments = await LegalServices.fetchComments('COMMENTS_URL')
+    const response = await LegalServices.fetchComments('COMMENTS_URL')
 
     // verify data
-    expect(comments).toEqual(COMMENTS)
+    expect(response).toEqual(COMMENTS)
   })
 
   it('fetches documents correctly', async () => {
@@ -230,10 +230,10 @@ describe('Legal Services', () => {
       .returns(new Promise(resolve => resolve({ data: { documents: DOCUMENTS } })))
 
     // call method
-    const comments = await LegalServices.fetchDocuments(URL)
+    const response = await LegalServices.fetchDocuments(URL)
 
     // verify data
-    expect(comments).toEqual(DOCUMENTS)
+    expect(response).toEqual(DOCUMENTS)
   })
 
   it('fetches one document correctly', async () => {
