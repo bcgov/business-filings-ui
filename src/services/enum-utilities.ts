@@ -420,7 +420,7 @@ export default class EnumUtilities {
   static dissolutionTypeToName (isFirm: boolean, subType: FilingSubTypes): string {
     switch (subType) {
       case FilingSubTypes.DISSOLUTION_ADMINISTRATIVE: return FilingNames.DISSOLUTION_ADMINISTRATIVE
-      case FilingSubTypes.DISSOLUTION_INVOLUNTARY: return FilingNames.DISSOLUTION_INVOLUNTARY
+      case FilingSubTypes.DISSOLUTION_INVOLUNTARY: return 'Dissolved for Failure to File'
       case FilingSubTypes.DISSOLUTION_VOLUNTARY: return (
         isFirm ? FilingNames.DISSOLUTION_FIRM : FilingNames.DISSOLUTION_VOLUNTARY
       )
