@@ -96,7 +96,7 @@ describe('Enum Utilities', () => {
 
   it('returns correct values for dissolutionTypeToName()', () => {
     expect(EnumUtilities.dissolutionTypeToName(false, ('administrative' as any))).toBe('Administrative Dissolution')
-    expect(EnumUtilities.dissolutionTypeToName(false, ('involuntary' as any))).toBe('Involuntary Dissolution')
+    expect(EnumUtilities.dissolutionTypeToName(false, ('involuntary' as any))).toBe('Dissolved for Failure to File')
     expect(EnumUtilities.dissolutionTypeToName(false, ('voluntary' as any))).toBe('Voluntary Dissolution')
     expect(EnumUtilities.dissolutionTypeToName(true, ('voluntary' as any))).toBe('Dissolution')
     expect(EnumUtilities.dissolutionTypeToName(false, ('unknown' as any))).toBe('Unknown')
