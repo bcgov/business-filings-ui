@@ -147,6 +147,7 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
       case EnumUtilities.isTypeAmalgamation(filing): return 'amalgamation-filing'
       case EnumUtilities.isTypeChangeOfAddress(filing): return 'change-of-address'
       case EnumUtilities.isTypeConsentContinuationOut(filing): return 'consent-continuation-out'
+      case EnumUtilities.isTypeContinuationInApplication(filing): return 'continuation-in-application'
       case EnumUtilities.isTypeContinuationOut(filing): return 'continuation-out'
       case EnumUtilities.isTypeDissolutionVoluntary(filing): return 'dissolution-voluntary'
       case EnumUtilities.isTypeIncorporationApplication(filing): return 'incorporation-application'

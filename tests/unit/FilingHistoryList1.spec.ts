@@ -21,6 +21,7 @@ import PaperFiling from '@/components/Dashboard/FilingHistoryList/filings/PaperF
 import StaffFiling from '@/components/Dashboard/FilingHistoryList/filings/StaffFiling.vue'
 import LimitedRestoration from '@/components/Dashboard/FilingHistoryList/filings/LimitedRestoration.vue'
 import ConsentContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ConsentContinuationOut.vue'
+import ContinuationInApplication from '@/components/Dashboard/FilingHistoryList/filings/ContinuationInApplication.vue'
 import ContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ContinuationOut.vue'
 import DefaultFiling from '@/components/Dashboard/FilingHistoryList/filings/DefaultFiling.vue'
 import AgmExtension from '@/components/Dashboard/FilingHistoryList/filings/AgmExtension.vue'
@@ -1597,6 +1598,53 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+})
+
+describe('Filing History List - continuation in applications', () => {
+  it('displays a Completed and Paid Cont In (temp reg number mode)', async () => {
+    // init store
+    rootStore.$state = {
+      ...rootStore.$state,
+      entityStatus: EntityStatus.FILED_CONTINUATION_IN // Set isBootstrapFiling to true for the purpose of the test
+    }
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    businessStore.setLegalType(CorpTypeCd.ULC_CONTINUE_IN)
+    filingHistoryListStore.setFilings([
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: null,
+        commentsCount: 0,
+        displayLedger: true,
+        displayName: 'BC Unlimited Liability Company Continuation In Application',
+        effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
+        filingId: 85114,
+        isFutureEffective: false,
+        name: FilingTypes.CONTINUATION_IN,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Tue, 28 Apr 2020 19:14:45 GMT',
+        submitter: 'Cameron'
+      } as any
+    ])
+    const wrapper = mount(FilingHistoryList, { vuetify })
+    // verify View and Hide button
+    const expandBtn = wrapper.find('.expand-btn')
+    expect(expandBtn.isVisible()).toBe(true)
+    expect(wrapper.find('.view-details').text()).toBe('View')
+    expect(wrapper.find('.hide-details').text()).toBe('Hide')
+    // verify Filing History Component
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(ContinuationInApplication).exists()).toBe(true)
+    rootStore.$state = {
+      ...rootStore.$state,
+      entityStatus: null // Set isBootstrapFiling to false
+    }
+    sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
   })
 })
