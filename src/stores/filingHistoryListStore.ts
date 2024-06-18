@@ -69,8 +69,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
 
     /** The count of filings in the Filing History List. */
     getHistoryCount (): number {
-      const filings = this.getFilings as ApiFilingIF[]
-      return filings.length
+      return this.getFilings.length
     },
 
     /** The index of the currently-downloading doc. */
