@@ -58,6 +58,14 @@
           You are required to retain a copy of all the dissolution documents in your
           records book.
         </p>
+
+        <p v-if="courtOrderNumber">
+          Court Order Number: {{ courtOrderNumber }}
+        </p>
+
+        <p v-if="hasEffectOfOrder">
+          Pursuant to a Plan of Arrangement
+        </p>
       </div>
     </template>
   </FilingTemplate>
@@ -144,6 +152,16 @@ export default class DissolutionVoluntary extends Vue {
   /** The act title to display. */
   get actTitle (): string {
     return this.getDissolutionConfirmationResource?.act || '[unknown]'
+  }
+
+  /** The court order file number. */
+  get courtOrderNumber (): string {
+    return this.filing.data?.order?.fileNumber
+  }
+
+  /** Whether the court order has an effect of order. */
+  get hasEffectOfOrder (): boolean {
+    return Boolean(this.filing.data?.order?.effectOfOrder)
   }
 }
 </script>

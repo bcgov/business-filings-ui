@@ -111,8 +111,8 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.CONSENT_CONTINUATION_OUT)
   }
 
-  /** Returns True if filing is an Continuation In Application. */
-  static isTypeContinuationInApplication (item: any): boolean {
+  /** Returns True if filing is a Continuation In. */
+  static isTypeContinuationIn (item: any): boolean {
     return (item.name === FilingTypes.CONTINUATION_IN)
   }
 

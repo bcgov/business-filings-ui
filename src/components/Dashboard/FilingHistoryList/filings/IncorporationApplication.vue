@@ -32,7 +32,7 @@
       />
 
       <div
-        v-if="!!tempRegNumber && isStatusCompleted"
+        v-else-if="!!tempRegNumber && isStatusCompleted"
         class="completed-ia-details"
       >
         <h4>Incorporation Complete</h4>

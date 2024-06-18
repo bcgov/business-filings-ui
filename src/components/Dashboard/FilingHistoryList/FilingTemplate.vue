@@ -66,35 +66,44 @@
           v-if="isStatusPaid"
           class="body-2"
         >
-          <h4 class="mt-4">
-            Filing Pending
-          </h4>
+          <h4>Filing Pending</h4>
 
-          <p class="mt-4">
+          <p>
             This {{ title }} is paid, but the filing has not been completed by the Business Registry
             yet. Some filings may take longer than expected.
           </p>
 
-          <p
-            v-if="fileNumber"
-            class="mt-4"
-          >
+          <p v-if="fileNumber">
             Court Order Number: {{ fileNumber }}
           </p>
 
-          <p
-            v-if="hasEffectOfOrder"
-            class="mt-4"
-          >
+          <p v-if="hasEffectOfOrder">
             Pursuant to a Plan of Arrangement
           </p>
 
-          <p class="mt-4">
+          <p>
             Refresh this screen in a few minutes or you can come back later to check on the progress.
             If this issue persists, please contact us.
           </p>
 
           <ContactInfo class="mt-4" />
+        </div>
+
+        <!-- otherwise, this is a completed filing -->
+        <div
+          v-else
+          class="body-2"
+        >
+          <p
+            v-if="fileNumber"
+            class="mt-0"
+          >
+            Court Order Number: {{ fileNumber }}
+          </p>
+
+          <p v-if="hasEffectOfOrder">
+            Pursuant to a Plan of Arrangement
+          </p>
         </div>
       </slot>
 
@@ -203,6 +212,7 @@ export default class FilingTemplate extends Vue {
 p {
   color: $gray7;
   font-size: $px-15;
+  margin-top: 1rem !important;
   margin-bottom: 0 !important;
 }
 </style>

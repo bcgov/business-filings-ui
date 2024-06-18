@@ -198,7 +198,7 @@
 
                 <!-- draft continuation in -->
                 <div
-                  v-else-if="isStatusDraft(item) && EnumUtilities.isTypeContinuationInApplication(item)"
+                  v-else-if="isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item)"
                   class="todo-subtitle"
                 >
                   <span>{{ item.subtitle }}</span>
@@ -361,7 +361,7 @@
                     <template v-else-if="EnumUtilities.isTypeRegistration(item) && item.isEmptyFiling">
                       <span>Register using this NR</span>
                     </template>
-                    <template v-else-if="EnumUtilities.isTypeContinuationInApplication(item) && item.isEmptyFiling">
+                    <template v-else-if="EnumUtilities.isTypeContinuationIn(item) && item.isEmptyFiling">
                       <span v-if="getNameRequest">Continue In using this NR</span>
                       <span v-else>Continue In as a Numbered Company</span>
                     </template>
@@ -756,8 +756,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
   /** Whether to show Name Request Info section */
   isFilingWithNr (item: TodoItemIF): boolean {
-    return EnumUtilities.isTypeAmalgamation(item) || EnumUtilities.isTypeIncorporationApplication(item) ||
-      EnumUtilities.isTypeContinuationInApplication(item) || EnumUtilities.isTypeRegistration(item)
+    return (
+      EnumUtilities.isTypeAmalgamation(item) ||
+      EnumUtilities.isTypeContinuationIn(item) ||
+      EnumUtilities.isTypeIncorporationApplication(item) ||
+      EnumUtilities.isTypeRegistration(item)
+    )
   }
 
   /** Whether to show the invalid section styling. */
@@ -792,7 +796,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     if (this.isStatusDraft(item) && this.isTypeConversion(item)) return true
     if (this.isStatusDraft(item) && EnumUtilities.isTypeAmalgamation(item) &&
       item.nameRequest) return true
-    if (this.isStatusDraft(item) && EnumUtilities.isTypeContinuationInApplication(item) &&
+    if (this.isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item) &&
       item.nameRequest) return true
     if (this.isStatusDraft(item) && EnumUtilities.isTypeIncorporationApplication(item) &&
       item.nameRequest) return true

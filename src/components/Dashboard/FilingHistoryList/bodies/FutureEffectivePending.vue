@@ -61,6 +61,12 @@ export default class FutureEffectivePending extends Vue {
         filingLabel: 'dissolution'
       }
     }
+    if (EnumUtilities.isTypeContinuationIn(this.filing)) {
+      return {
+        subtitle: 'Incorporation Pending',
+        filingLabel: 'continuation in'
+      }
+    }
     return {
       subtitle: 'Filing Pending',
       filingLabel: 'filing'
@@ -90,7 +96,9 @@ export default class FutureEffectivePending extends Vue {
 @import "@/assets/styles/theme.scss";
 
 p {
+  color: $gray7;
   font-size: $px-15;
-  margin-top: 1rem;
+  margin-top: 1rem !important;
+  margin-bottom: 0 !important;
 }
 </style>
