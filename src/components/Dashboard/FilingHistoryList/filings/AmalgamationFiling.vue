@@ -32,7 +32,7 @@
       />
 
       <div
-        v-if="!!tempRegNumber && isStatusCompleted"
+        v-else-if="!!tempRegNumber && isStatusCompleted"
         class="completed-amalgamation-details"
       >
         <h4>Amalgamation Complete</h4>

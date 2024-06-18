@@ -1,6 +1,6 @@
 <template>
   <FilingTemplate
-    class="alteration-filing"
+    class="continuation-in"
     :filing="filing"
     :index="index"
   >
@@ -32,25 +32,27 @@
       />
 
       <div
-        v-else-if="isStatusCompleted"
-        class="completed-alteration-details"
+        v-else-if="!!tempRegNumber && isStatusCompleted"
+        class="completed-continuation-in-details"
       >
-        <h4>Alteration Complete</h4>
+        <h4>Incorporation Complete</h4>
 
-        <p v-if="fromLegalType !== toLegalType">
-          {{ getLegalName || 'This company' }} was successfully altered
-          from a {{ GetCorpFullDescription(fromLegalType) }}
-          to a {{ GetCorpFullDescription(toLegalType) }}
-          on <DateTooltip :date="effectiveDate" />.
+        <p>
+          {{ companyName }} has been successfully continued in.
         </p>
 
-        <p v-if="courtOrderNumber">
-          Court Order Number: {{ courtOrderNumber }}
+        <p>
+          The system has completed processing your filing. You can now retrieve the business information.
         </p>
 
-        <p v-if="isArrangement">
-          Pursuant to a Plan of Arrangement
-        </p>
+        <div class="reload-business-container text-center mt-6">
+          <v-btn
+            color="primary"
+            @click.stop="reloadWithBusinessId()"
+          >
+            <span>Retrieve Business Information</span>
+          </v-btn>
+        </div>
       </div>
     </template>
   </FilingTemplate>
@@ -59,8 +61,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
-import { DateTooltip } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
 import FiledAndPendingPaid from '../subtitles/FiledAndPendingPaid.vue'
@@ -68,11 +68,10 @@ import FilingTemplate from '../FilingTemplate.vue'
 import FutureEffective from '../bodies/FutureEffective.vue'
 import FutureEffectivePaid from '../subtitles/FutureEffectivePaid.vue'
 import FutureEffectivePending from '../bodies/FutureEffectivePending.vue'
-import { useBusinessStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
-    DateTooltip,
     FiledAndPendingPaid,
     FilingTemplate,
     FutureEffective,
@@ -80,13 +79,18 @@ import { useBusinessStore } from '@/stores'
     FutureEffectivePending
   }
 })
-export default class AlterationFiling extends Vue {
-  readonly GetCorpFullDescription = GetCorpFullDescription
-
+export default class ContinuationIn extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
+  @Getter(useBusinessStore) getEntityName!: string
   @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useConfigurationStore) getDashboardUrl!: string
+
+  /** The Temporary Registration Number string (may be null). */
+  get tempRegNumber (): string {
+    return sessionStorage.getItem('TEMP_REG_NUMBER')
+  }
 
   /** Whether this filing is in Complete status. */
   get isStatusCompleted (): boolean {
@@ -111,32 +115,18 @@ export default class AlterationFiling extends Vue {
     )
   }
 
-  /** The completed alteration court order number. */
-  get courtOrderNumber (): string {
-    return this.isStatusCompleted
-      ? this.filing.data?.order?.fileNumber
-      : null
+  /** The legal name or numbered description of the new company. */
+  get companyName (): string {
+    if (this.getLegalName) return this.getLegalName
+    if (this.getEntityName) return `A ${this.getEntityName}`
+    return 'Unknown Name'
   }
 
-  /** Whether completed alteration is pursuant to a plan of arrangement. */
-  get isArrangement (): boolean {
-    return this.isStatusCompleted
-      ? EnumUtilities.isEffectOfOrderPlanOfArrangement(this.filing.data?.order?.effectOfOrder)
-      : null
-  }
-
-  /** The completed alteration "from" legal type. */
-  get fromLegalType (): CorpTypeCd {
-    return this.filing.data?.alteration?.fromLegalType
-  }
-
-  /** The completed alteration "to" legal type. */
-  get toLegalType (): CorpTypeCd {
-    return this.filing.data?.alteration?.toLegalType
-  }
-
-  get effectiveDate (): Date {
-    return new Date(this.filing.effectiveDate)
+  /** Reloads Filings UI using business id instead of temporary registration number. */
+  reloadWithBusinessId (): void {
+    // build the URL to the business dashboard with the business id and any URL parameters
+    const url = this.getDashboardUrl + this.filing.businessIdentifier + this.$route.fullPath
+    window.location.assign(url)
   }
 }
 </script>
@@ -153,6 +143,5 @@ p {
   color: $gray7;
   font-size: $px-15;
   margin-top: 1rem !important;
-  margin-bottom: 0 !important;
 }
 </style>

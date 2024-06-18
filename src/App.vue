@@ -751,7 +751,8 @@ export default class App extends Mixins(
       submitter: header.submitter,
       data: {
         applicationDate: this.dateToYyyyMmDd(this.apiToDate(header.date)),
-        legalFilings: [header.name]
+        legalFilings: [header.name],
+        order: data.courtOrder
       }
     } as ApiFilingIF
     this.setFilings([filingItem])

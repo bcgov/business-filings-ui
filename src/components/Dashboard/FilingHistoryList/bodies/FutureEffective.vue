@@ -21,7 +21,7 @@
       this {{ _.filingLabel }} and all associated information, and will incur a $20.00 fee.
     </p>
 
-    <h4 class="font-14">
+    <h4 class="mt-4">
       BC Registries Contact Information:
     </h4>
 
@@ -69,6 +69,13 @@ export default class FutureEffective extends Vue {
         filingTitle: 'Voluntary Dissolution'
       }
     }
+    if (EnumUtilities.isTypeContinuationIn(this.filing)) {
+      return {
+        subtitle: 'Future Effective Incorporation Date',
+        filingLabel: 'continuation in',
+        filingTitle: 'Continuation In Application'
+      }
+    }
     return {
       subtitle: 'Future Effective Filing Date',
       filingLabel: 'filing',
@@ -99,7 +106,9 @@ export default class FutureEffective extends Vue {
 @import "@/assets/styles/theme.scss";
 
 p {
+  color: $gray7;
   font-size: $px-15;
-  margin-top: 1rem;
+  margin-top: 1rem !important;
+  margin-bottom: 0 !important;
 }
 </style>
