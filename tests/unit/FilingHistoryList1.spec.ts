@@ -21,7 +21,7 @@ import PaperFiling from '@/components/Dashboard/FilingHistoryList/filings/PaperF
 import StaffFiling from '@/components/Dashboard/FilingHistoryList/filings/StaffFiling.vue'
 import LimitedRestoration from '@/components/Dashboard/FilingHistoryList/filings/LimitedRestoration.vue'
 import ConsentContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ConsentContinuationOut.vue'
-import ContinuationInApplication from '@/components/Dashboard/FilingHistoryList/filings/ContinuationInApplication.vue'
+import ContinuationIn from '@/components/Dashboard/FilingHistoryList/filings/ContinuationIn.vue'
 import ContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ContinuationOut.vue'
 import DefaultFiling from '@/components/Dashboard/FilingHistoryList/filings/DefaultFiling.vue'
 import AgmExtension from '@/components/Dashboard/FilingHistoryList/filings/AgmExtension.vue'
@@ -1639,7 +1639,7 @@ describe('Filing History List - continuation in applications', () => {
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
-    expect(wrapper.findComponent(ContinuationInApplication).exists()).toBe(true)
+    expect(wrapper.findComponent(ContinuationIn).exists()).toBe(true)
     rootStore.$state = {
       ...rootStore.$state,
       entityStatus: null // Set isBootstrapFiling to false
