@@ -492,7 +492,7 @@ describe('Entity Header - HISTORICAL badge', () => {
         }
       },
       exists: true,
-      text: 'Involuntary Dissolution – January 1, 2020'
+      text: 'Dissolved for Failure to File – January 1, 2020'
     },
     { // variation 5 - historical company due to amalgamation
       businessState: EntityState.HISTORICAL,
