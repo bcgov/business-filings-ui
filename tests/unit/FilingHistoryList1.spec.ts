@@ -2252,13 +2252,13 @@ describe('Filing History List - with documents', () => {
     submitter: 'Cameron'
   }
 
-  it.skip('does not display the documents list when no documents are present on a filing', async () => {
+  it('does not display the documents list when no documents are present on a filing', async () => {
     // init store
     filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
+    filingHistoryListStore.setPanel(null) // so we can re-open it
 
     // mock "fetch documents"
-    vi.spyOn((LegalServices as any), 'fetchDocuments').mockImplementation(
-      () => Promise.resolve({}))
+    vi.spyOn(LegalServices, 'fetchDocuments').mockImplementation((): any => Promise.resolve({}))
 
     const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
@@ -2277,69 +2277,32 @@ describe('Filing History List - with documents', () => {
     // verify that Documents List component is not displayed after the item is expanded
     expect(wrapper.findComponent(DocumentsList).exists()).toBe(false)
 
-    vi.restoreAllMocks()
     wrapper.destroy()
+    vi.clearAllMocks()
   })
 
-  it.skip('displays the documents list when documents are present on a filing', async () => {
+  it('displays the documents list when documents are present on a filing', async () => {
     // init store
     filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
+    filingHistoryListStore.setPanel(null) // so we can re-open it
 
     // mock "fetch documents"
-    vi.spyOn((LegalServices as any), 'fetchDocuments').mockImplementation(
-      () => Promise.resolve({
-        legalFilings: [
-          { annualReport: 'businesses/CP0000840/filings/112758/documents/annualReport' }
-        ],
-        receipt: 'businesses/CP0000840/filings/112758/documents/receipt'
-      }))
+    vi.spyOn(LegalServices, 'fetchDocuments').mockImplementation((): any => Promise.resolve({
+      legalFilings: [
+        { annualReport: 'businesses/CP0000840/filings/112758/documents/annualReport' },
+        { addressChange: 'businesses/CP0000840/filings/112758/documents/addressChange' },
+        { directorChange: 'businesses/CP0000840/filings/112758/documents/directorChange' }
+      ],
+      staticDocuments: [
+        {
+          name: 'My Static Document.pdf',
+          url: 'businesses/CP0000840/filings/112758/documents/myStaticDocument.pdf'
+        }
+      ],
+      receipt: 'businesses/CP0000840/filings/112758/documents/receipt'
+    }))
 
     const wrapper = mount(FilingHistoryList, { vuetify })
-    await Vue.nextTick()
-
-    // verify that Documents List component does not exist before the item is expanded
-    expect(wrapper.findComponent(DocumentsList).exists()).toBe(false)
-
-    // expand details
-    const button = wrapper.find('.expand-btn')
-    await button.trigger('click')
-    await flushPromises() // wait for expansion transition
-
-    // verify that Documents List component is displayed after the item is expanded
-    expect(wrapper.findComponent(DocumentsList).exists()).toBe(true)
-
-    // verify the number of documents
-    expect(wrapper.findAll('.documents-list .download-one-btn').length).toBe(2)
-
-    vi.restoreAllMocks()
-    wrapper.destroy()
-  })
-
-  it('computes proper document titles from the documents data', async () => {
-    // init store
-    filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
-
-    // mock "fetch documents"
-    vi.spyOn((LegalServices as any), 'fetchDocuments').mockImplementation(
-      () => Promise.resolve({
-        legalFilings: [
-          { annualReport: 'businesses/CP0000840/filings/112758/documents/annualReport' },
-          { addressChange: 'businesses/CP0000840/filings/112758/documents/addressChange' },
-          { directorChange: 'businesses/CP0000840/filings/112758/documents/directorChange' }
-        ],
-        staticDocuments: [
-          {
-            name: 'My Static Document.pdf',
-            url: 'businesses/CP0000840/filings/112758/documents/myStaticDocument.pdf'
-          }
-        ],
-        receipt: 'businesses/CP0000840/filings/112758/documents/receipt'
-      }))
-
-    const wrapper = mount(FilingHistoryList, {
-      propsData: { highlightId: 666 },
-      vuetify
-    })
     await Vue.nextTick()
 
     // expand details
@@ -2359,8 +2322,8 @@ describe('Filing History List - with documents', () => {
     expect(downloadBtns.at(3).text()).toContain('My Static Document.pdf')
     expect(downloadBtns.at(4).text()).toContain('Receipt')
 
-    vi.restoreAllMocks()
     wrapper.destroy()
+    vi.clearAllMocks()
   })
 })
 
@@ -2516,7 +2479,7 @@ describe('Filing History List - detail comments', () => {
   })
 })
 
-describe('Filing History List - without documents', () => {
+describe('Filing History List - without documents link', () => {
   const FILING_WITHOUT_DOCUMENTS_LINK = {
     availableOnPaperOnly: false,
     businessIdentifier: 'CP0001191',
@@ -2526,7 +2489,8 @@ describe('Filing History List - without documents', () => {
     effectiveDate: '2019-12-13 00:00:00 GMT',
     filingId: 111,
     isFutureEffective: false,
-    name: 'Involuntary Dissolution',
+    name: 'dissolution',
+    filingSubType: 'involuntary',
     status: 'COMPLETED',
     submittedDate: 'Sat, 06 Apr 2019 19:22:59.00 GMT',
     submitter: 'Cameron'
