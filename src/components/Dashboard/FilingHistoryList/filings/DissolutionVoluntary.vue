@@ -153,8 +153,8 @@ export default class DissolutionVoluntary extends Vue {
   get actTitle (): string {
     return this.getDissolutionConfirmationResource?.act || '[unknown]'
   }
-  /** The court order file number. */
 
+  /** The court order file number. */
   get courtOrderNumber (): string {
     return this.filing.data?.order?.fileNumber
   }
