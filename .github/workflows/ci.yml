@@ -61,10 +61,11 @@ jobs:
         run: |
           make test
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           name: codecov-business-filings
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN}}
 
   build-check:
     needs: setup-job
