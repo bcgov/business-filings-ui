@@ -177,7 +177,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
       case EnumUtilities.isTypeRegistrarsNotation(this.filing): return true // staff filing not allowed
       case EnumUtilities.isTypeRegistrarsOrder(this.filing): return true // staff filing not allowed
       case EnumUtilities.isTypeRestoration(this.filing): return true // not supported
-      case EnumUtilities.isTypeSpecialResolution(this.filing): break
+      case EnumUtilities.isTypeSpecialResolution(this.filing): return true // not supported
       case EnumUtilities.isTypeTransition(this.filing): return true // not supported
     }
 

@@ -59,6 +59,7 @@ describe('Header Actions component - disableCorrection()', () => {
     FilingTypes.DISSOLUTION,
     FilingTypes.DISSOLVED,
     FilingTypes.RESTORATION,
+    FilingTypes.SPECIAL_RESOLUTION,
     FilingTypes.TRANSITION
   ]
 
