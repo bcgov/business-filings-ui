@@ -36,7 +36,7 @@ describe('Enum Utilities', () => {
     expect(EnumUtilities.isTypeIncorporationApplication({ name: 'incorporationApplication' })).toBe(true)
     expect(EnumUtilities.isTypePutBackOn({ name: 'putBackOn' })).toBe(true)
     expect(EnumUtilities.isTypeRegistrarsNotation({ name: 'registrarsNotation' })).toBe(true)
-    expect(EnumUtilities.isTypeRegistarsOrder({ name: 'registrarsOrder' })).toBe(true)
+    expect(EnumUtilities.isTypeRegistrarsOrder({ name: 'registrarsOrder' })).toBe(true)
     expect(EnumUtilities.isTypeRegistration({ name: 'registration' })).toBe(true)
     expect(EnumUtilities.isTypeRestoration({ name: 'restoration' })).toBe(true)
     expect(EnumUtilities.isTypeRestorationFull({ name: 'restoration', filingSubType: 'fullRestoration' })).toBe(true)

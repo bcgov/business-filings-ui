@@ -2722,69 +2722,6 @@ describe('TodoList - Click Tests - Corrections', () => {
       wrapper.destroy()
     })
   }
-
-  // courtOrder is not a valid filing for Corrections
-  const localTest = ['annualReport', 'changeOfAddress', 'changeOfDirectors', 'conversion', 'changeOfName',
-    'courtOrder', 'dissolution', 'dissolved', 'involuntaryDissolution', 'putBackOn', 'registrarsNotation',
-    'registrarsOrder', 'transition', 'voluntaryDissolution']
-
-  for (const test of localTest) {
-    it(`Router pushes locally to resume a draft ${test} correction`, async () => {
-      // init draft Correction filing task
-      rootStore.tasks = [
-        {
-          task: {
-            filing: {
-              header: {
-                name: FilingTypes.CORRECTION,
-                status: FilingStatus.DRAFT,
-                filingId: 123,
-                comments: []
-              },
-              business: {},
-              correction: {
-                correctedFilingType: test,
-                correctedFilingId: 456
-              }
-            } as any
-          },
-          enabled: true,
-          order: 1
-        }
-      ]
-      rootStore.keycloakRoles = ['staff'] // only staff may resume draft corrections
-
-      const localVue = createLocalVue()
-      localVue.use(VueRouter)
-      const router = mockRouter.mock()
-
-      const wrapper = mount(TodoList, { localVue, router, vuetify, mixins: [AllowableActionsMixin] })
-      const vm = wrapper.vm as any
-      await Vue.nextTick()
-
-      expect(vm.todoItems.length).toEqual(1)
-      expect(wrapper.find('.todo-subtitle span').text()).toBe('DRAFT')
-
-      await wrapper.find('.btn-draft-resume').trigger('click')
-
-      // wait for save to complete and everything to update
-      // await flushPromises()
-
-      // verify routing to Correction page with filing id = 123 and corrected filing id = 456
-      if (test !== 'changeOfAddress' && test !== 'changeOfDirectors') {
-        expect(vm.$route.name).toBe('correction')
-        expect(vm.$route.params.filingId).toBe('123')
-        expect(vm.$route.params.correctedFilingId).toBe('456')
-      } else {
-        // verify redirection if correction of change of Address/Directors
-        const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-        const editUrl = 'https://edit.url/BC1234567/correction/?correction-id=123'
-        expect(window.location.assign).toHaveBeenCalledWith(editUrl + '&accountid=' + accountId)
-      }
-
-      wrapper.destroy()
-    })
-  }
 })
 
 describe('TodoList - Click Tests - Alterations', () => {

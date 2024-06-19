@@ -130,50 +130,50 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
       !EnumUtilities.isStatusCorrected(this.filing)
     ) return true
 
-    // disable for certain filing types
+    // disable/allow according to filing type
     switch (true) {
       case EnumUtilities.isTypeAdminFreeze(this.filing): return true // staff filing not allowed
-      case EnumUtilities.isTypeAlteration(this.filing): break
+      case EnumUtilities.isTypeAlteration(this.filing): return false
       case EnumUtilities.isTypeAgmExtension(this.filing): return true // not supported
       case EnumUtilities.isTypeAgmLocationChange(this.filing): return true // not supported
       case EnumUtilities.isTypeAmalgamationApplication(this.filing):
         // disable if not a base company (safety check for filing compatibility)
         if (!this.isBaseCompany) return true
-        break
+        return false
       case EnumUtilities.isTypeAmalgamationOut(this.filing): return true // not supported
       case EnumUtilities.isTypeAnnualReport(this.filing): return true // not supported
-      case EnumUtilities.isTypeChangeOfAddress(this.filing): break
+      case EnumUtilities.isTypeChangeOfAddress(this.filing): return false
       case EnumUtilities.isTypeChangeOfCompanyInfo(this.filing): return true // not supported
-      case EnumUtilities.isTypeChangeOfDirectors(this.filing): break
-      case EnumUtilities.isTypeChangeOfName(this.filing): break
+      case EnumUtilities.isTypeChangeOfDirectors(this.filing): return false
+      case EnumUtilities.isTypeChangeOfName(this.filing): return false
       case EnumUtilities.isTypeChangeOfRegistration(this.filing):
         // disable if not a firm (safety check for filing compatibility)
         if (!this.isFirm) return true
-        break
+        return false
       case EnumUtilities.isTypeConsentAmalgamationOut(this.filing): return true // not supported
       case EnumUtilities.isTypeConsentContinuationOut(this.filing): return true // not supported
       case EnumUtilities.isTypeContinuationIn(this.filing):
         // disable if not a base company (safety check for filing compatibility)
         if (!this.isBaseCompany) return true
-        break
+        return false
       case EnumUtilities.isTypeContinuationOut(this.filing): return true // not supported
       case EnumUtilities.isTypeConversion(this.filing): return true // not supported
       case EnumUtilities.isTypeCorrection(this.filing):
         // disable if not a firm, base company, or coop (safety check for filing compatibility)
         if (!this.isFirm && !this.isBaseCompany && !this.isCoop) return true
-        break
+        return false
       case EnumUtilities.isTypeCourtOrder(this.filing): return true // staff filing not allowed
       case EnumUtilities.isTypeDissolution(this.filing): return true // not supported
       case EnumUtilities.isTypeDissolved(this.filing): return true // not supported
       case EnumUtilities.isTypeIncorporationApplication(this.filing):
         // disable if not a base company or coop (safety check for filing compatibility)
         if (!this.isBaseCompany && !this.isCoop) return true
-        break
+        return false
       case EnumUtilities.isTypePutBackOn(this.filing): return true // staff filing not allowed
       case EnumUtilities.isTypeRegistration(this.filing):
         // disable if not a firm (safety check for filing compatibility)
         if (!this.isFirm) return true
-        break
+        return false
       case EnumUtilities.isTypeRegistrarsNotation(this.filing): return true // staff filing not allowed
       case EnumUtilities.isTypeRegistrarsOrder(this.filing): return true // staff filing not allowed
       case EnumUtilities.isTypeRestoration(this.filing): return true // not supported
@@ -181,8 +181,10 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
       case EnumUtilities.isTypeTransition(this.filing): return true // not supported
     }
 
-    // if we get this far then don't disable correction
-    return false
+    // eslint-disable-next-line no-console
+    console.log('disableCorrection(), unhandled filing =', this.filing)
+
+    return true // safe fallback
   }
 
   /** Called by File a Correction button to correct the subject filing. */
