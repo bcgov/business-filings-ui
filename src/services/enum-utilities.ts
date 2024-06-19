@@ -91,6 +91,11 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.CHANGE_OF_ADDRESS)
   }
 
+  /** Returns True if filing is a Change of of Company Info. */
+  static isTypeChangeOfCompanyInfo (item: any): boolean {
+    return (item.name === FilingTypes.CHANGE_OF_COMPANY_INFO)
+  }
+
   /** Returns True if filing is a Change of Directors. */
   static isTypeChangeOfDirectors (item: any): boolean {
     return (item.name === FilingTypes.CHANGE_OF_DIRECTORS)
@@ -106,7 +111,17 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.CHANGE_OF_REGISTRATION)
   }
 
-  /** Returns True if filing is a Consent to Continuation Out. */
+  /** Returns True if filing is an Amalgamation Out. */
+  static isTypeAmalgamationOut (item: any): boolean {
+    return (item.name === FilingTypes.AMALGAMATION_OUT)
+  }
+
+  /** Returns True if filing is a Consent for Amalgamation Out. */
+  static isTypeConsentAmalgamationOut (item: any): boolean {
+    return (item.name === FilingTypes.CONSENT_AMALGAMATION_OUT)
+  }
+
+  /** Returns True if filing is a Consent for Continuation Out. */
   static isTypeConsentContinuationOut (item: any): boolean {
     return (item.name === FilingTypes.CONSENT_CONTINUATION_OUT)
   }
@@ -136,8 +151,13 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.DISSOLUTION)
   }
 
-  /** Returns True if filing is an Amalgamation. */
-  static isTypeAmalgamation (item: any): boolean {
+  /** Returns True if filing is a Dissolved. */
+  static isTypeDissolved (item: any): boolean {
+    return (item.name === FilingTypes.DISSOLVED)
+  }
+
+  /** Returns True if filing is an Amalgamation Application. */
+  static isTypeAmalgamationApplication (item: any): boolean {
     return (item.name === FilingTypes.AMALGAMATION_APPLICATION)
   }
 
@@ -181,7 +201,7 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.REGISTRATION)
   }
 
-  /** Returns True if filing is a Restoration. */
+  /** Returns True if filing is a Restoration (of any subtype). */
   static isTypeRestoration (item: any): boolean {
     return (item.name === FilingTypes.RESTORATION)
   }
@@ -227,7 +247,7 @@ export default class EnumUtilities {
   }
 
   /** Returns True if filing is a Registrar's Order. */
-  static isTypeRegistarsOrder (item: any): boolean {
+  static isTypeRegistrarsOrder (item: any): boolean {
     return (item.name === FilingTypes.REGISTRARS_ORDER)
   }
 
@@ -298,8 +318,8 @@ export default class EnumUtilities {
       this.isTypeCourtOrder(item) ||
       this.isTypeDissolutionAdministrative(item) ||
       this.isTypePutBackOn(item) ||
-      this.isTypeRegistarsOrder(item) ||
-      this.isTypeRegistrarsNotation(item)
+      this.isTypeRegistrarsNotation(item) ||
+      this.isTypeRegistrarsOrder(item)
     )
   }
 

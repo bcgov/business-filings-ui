@@ -79,7 +79,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { AllowableActions, Routes } from '@/enums'
+import { AllowableActions } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { ApiFilingIF } from '@/interfaces'
 import { AllowableActionsMixin } from '@/mixins'
@@ -114,33 +114,75 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
 
   /**
    * Whether to disable correction for THIS filing.
-   * This is function instead of a getter so that we always query the realtime FF.
+   * (This is function instead of a getter so that we always query the realtime FF.)
    */
   disableCorrection (): boolean {
-    // first check allowable actions
+    // disable if not allowed
     if (!this.isAllowed(AllowableActions.CORRECTION)) return true
 
-    const conditions: Array<() => boolean> = []
-    // list of conditions to DISABLE correction
-    // (any condition not listed below is ALLOWED)
-    conditions[0] = () => this.filing.availableOnPaperOnly
-    conditions[1] = () => this.isTypeStaff
-    conditions[2] = () => (
+    // disable if filing is paper-only
+    if (this.filing.availableOnPaperOnly) return true
+
+    // disable if filing is future effective but is not completed or corrected
+    if (
       this.filing.isFutureEffective &&
       !EnumUtilities.isStatusCompleted(this.filing) &&
       !EnumUtilities.isStatusCorrected(this.filing)
-    )
-    conditions[3] = () => (EnumUtilities.isTypeIncorporationApplication(this.filing) &&
-      !this.isBaseCompany && !this.isCoop)
-    conditions[4] = () => (EnumUtilities.isTypeChangeOfRegistration(this.filing) && !this.isFirm)
-    conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) && !this.isFirm &&
-      !this.isBaseCompany && !this.isCoop)
-    conditions[6] = () => (EnumUtilities.isTypeRegistration(this.filing) && !this.isFirm)
-    conditions[7] = () => (EnumUtilities.isTypeAmalgamation(this.filing) && !this.isBaseCompany)
-    conditions[8] = () => (EnumUtilities.isTypeContinuationIn(this.filing) && !this.isBaseCompany)
+    ) return true
 
-    // check if any condition is True
-    return conditions.some(condition => condition())
+    // disable for certain filing types
+    switch (true) {
+      case EnumUtilities.isTypeAdminFreeze(this.filing): return true // staff filing not allowed
+      case EnumUtilities.isTypeAlteration(this.filing): break
+      case EnumUtilities.isTypeAgmExtension(this.filing): return true // not supported
+      case EnumUtilities.isTypeAgmLocationChange(this.filing): return true // not supported
+      case EnumUtilities.isTypeAmalgamationApplication(this.filing):
+        // disable if not a base company (safety check for filing compatibility)
+        if (!this.isBaseCompany) return true
+        break
+      case EnumUtilities.isTypeAmalgamationOut(this.filing): return true // not supported
+      case EnumUtilities.isTypeAnnualReport(this.filing): return true // not supported
+      case EnumUtilities.isTypeChangeOfAddress(this.filing): break
+      case EnumUtilities.isTypeChangeOfCompanyInfo(this.filing): return true // not supported
+      case EnumUtilities.isTypeChangeOfDirectors(this.filing): break
+      case EnumUtilities.isTypeChangeOfName(this.filing): break
+      case EnumUtilities.isTypeChangeOfRegistration(this.filing):
+        // disable if not a firm (safety check for filing compatibility)
+        if (!this.isFirm) return true
+        break
+      case EnumUtilities.isTypeConsentAmalgamationOut(this.filing): return true // not supported
+      case EnumUtilities.isTypeConsentContinuationOut(this.filing): return true // not supported
+      case EnumUtilities.isTypeContinuationIn(this.filing):
+        // disable if not a base company (safety check for filing compatibility)
+        if (!this.isBaseCompany) return true
+        break
+      case EnumUtilities.isTypeContinuationOut(this.filing): return true // not supported
+      case EnumUtilities.isTypeConversion(this.filing): return true // not supported
+      case EnumUtilities.isTypeCorrection(this.filing):
+        // disable if not a firm, base company, or coop (safety check for filing compatibility)
+        if (!this.isFirm && !this.isBaseCompany && !this.isCoop) return true
+        break
+      case EnumUtilities.isTypeCourtOrder(this.filing): return true // staff filing not allowed
+      case EnumUtilities.isTypeDissolution(this.filing): return true // not supported
+      case EnumUtilities.isTypeDissolved(this.filing): return true // not supported
+      case EnumUtilities.isTypeIncorporationApplication(this.filing):
+        // disable if not a base company or coop (safety check for filing compatibility)
+        if (!this.isBaseCompany && !this.isCoop) return true
+        break
+      case EnumUtilities.isTypePutBackOn(this.filing): return true // staff filing not allowed
+      case EnumUtilities.isTypeRegistration(this.filing):
+        // disable if not a firm (safety check for filing compatibility)
+        if (!this.isFirm) return true
+        break
+      case EnumUtilities.isTypeRegistrarsNotation(this.filing): return true // staff filing not allowed
+      case EnumUtilities.isTypeRegistrarsOrder(this.filing): return true // staff filing not allowed
+      case EnumUtilities.isTypeRestoration(this.filing): return true // not supported
+      case EnumUtilities.isTypeSpecialResolution(this.filing): break
+      case EnumUtilities.isTypeTransition(this.filing): return true // not supported
+    }
+
+    // if we get this far then don't disable correction
+    return false
   }
 
   /** Called by File a Correction button to correct the subject filing. */
@@ -157,7 +199,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
         // correction via Edit UI
         this.setCurrentFiling(filing)
         this.setFileCorrectionDialog(true)
-        break
+        return
 
       case FilingTypes.CHANGE_OF_ADDRESS:
       case FilingTypes.CHANGE_OF_DIRECTORS:
@@ -165,26 +207,14 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
           // correction via Edit UI if current type is BEN/BC/CC/ULC/C/CBEN/CCC/CUL or CP
           this.setCurrentFiling(filing)
           this.setFileCorrectionDialog(true)
-          break
-        } else {
-          // Local correction otherwise
-          this.$router.push({
-            name: Routes.CORRECTION,
-            params: { correctedFilingId: filing.filingId.toString() }
-          })
-          break
+          return
         }
-
-      case FilingTypes.ANNUAL_REPORT:
-      case FilingTypes.CONVERSION:
-      default:
-        // local correction for all other filings
-        this.$router.push({
-          name: Routes.CORRECTION,
-          params: { correctedFilingId: filing.filingId.toString() }
-        })
         break
     }
+
+    // correction is not supported for all other filings
+    // eslint-disable-next-line no-console
+    console.log('correctThisFiling(), invalid correction type for filing =', this.filing)
   }
 }
 </script>

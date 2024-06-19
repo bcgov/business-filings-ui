@@ -188,7 +188,7 @@ export const useRootStore = defineStore('root', {
         (state.tasks.length === 0) &&
         // only the Amalgamation or IA or Registration filing history item
         (filingHistoryListStore.getFilings.length === 1) && (
-          EnumUtilities.isTypeAmalgamation(filingHistoryListStore.getFilings[0]) ||
+          EnumUtilities.isTypeAmalgamationApplication(filingHistoryListStore.getFilings[0]) ||
           EnumUtilities.isTypeIncorporationApplication(filingHistoryListStore.getFilings[0]) ||
           EnumUtilities.isTypeRegistration(filingHistoryListStore.getFilings[0])
         )

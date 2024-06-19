@@ -39,7 +39,7 @@ describe('Header Actions component - disableCorrection()', () => {
     wrapper.destroy()
   })
 
-  it('returns allowed (disabled=false) when no conditions', async () => {
+  it('returns allowed (disabled=false) when no conditions are met', async () => {
     // no conditions
     vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
     await wrapper.setProps({ filing })
