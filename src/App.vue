@@ -699,7 +699,7 @@ export default class App extends Mixins(
     const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
 
     // save display name for later
-    filing.displayName = EnumUtilities.isTypeAmalgamation(header)
+    filing.displayName = EnumUtilities.isTypeAmalgamationApplication(header)
       ? filingName
       : `${description}${dba}${filingName}`
 
@@ -727,7 +727,7 @@ export default class App extends Mixins(
 
     const description = GetCorpFullDescription(data.nameRequest.legalType)
     const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
-    const displayName = EnumUtilities.isTypeAmalgamation(header)
+    const displayName = EnumUtilities.isTypeAmalgamationApplication(header)
       ? filingName
       : `${description} ${filingName}`
 

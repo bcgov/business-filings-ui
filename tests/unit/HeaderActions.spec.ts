@@ -9,17 +9,6 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 
-const baseCompanies = [
-  CorpTypeCd.BC_COMPANY,
-  CorpTypeCd.BENEFIT_COMPANY,
-  CorpTypeCd.CONTINUE_IN,
-  CorpTypeCd.BEN_CONTINUE_IN,
-  CorpTypeCd.BC_CCC,
-  CorpTypeCd.CCC_CONTINUE_IN,
-  CorpTypeCd.ULC_CONTINUE_IN,
-  CorpTypeCd.BC_ULC_COMPANY
-]
-
 const filing = {
   availableOnPaperOnly: false,
   isFutureEffectiveIa: false,
@@ -39,168 +28,182 @@ describe('Header Actions component - disableCorrection()', () => {
     wrapper.destroy()
   })
 
-  it('returns allowed (disabled=false) when no conditions', async () => {
-    // no conditions
-    vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
+  it('correction is disabled when corrections are not allowed', async () => {
+    vi.spyOn(vm, 'isAllowed').mockReturnValue(false)
     await wrapper.setProps({ filing })
-    expect(vm.disableCorrection()).toBe(false)
+    expect(vm.disableCorrection()).toBe(true)
   })
 
-  it('returns allowed (disabled=false) when conditions[2]', async () => {
-    // conditions[2]: FE filing that is Completed or Corrected
-    for (const status of [FilingStatus.COMPLETED, FilingStatus.CORRECTED]) {
-      await wrapper.setProps({ filing: { ...filing, isFutureEffective: true, status } })
-      expect(vm.disableCorrection()).toBe(false)
-    }
-  })
-
-  it('returns allowed (disabled=false) when conditions[3]', async () => {
-    // conditions[3]: IA as a BC/BEN/C/CBEN/CC/CCC/CUL/ULC
-    for (const entityType of baseCompanies) {
-      businessStore.setLegalType(entityType as any)
-      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.INCORPORATION_APPLICATION } })
-      expect(vm.disableCorrection()).toBe(false)
-    }
-  })
-
-  it('returns allowed (disabled=false) when conditions[4]', async () => {
-    // conditions[4]: Change of Registration as a firm
-    for (const entityType of [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP]) {
-      businessStore.setLegalType(entityType as any)
-      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.CHANGE_OF_REGISTRATION } })
-      expect(vm.disableCorrection({ ...filing, name: FilingTypes.CHANGE_OF_REGISTRATION })).toBe(false)
-    }
-  })
-
-  it('returns allowed (disabled=false) when conditions[5]', async () => {
-    // conditions[5]: Correction as a firm or BC/BEN/C/CBEN/CC/CCC/CUL/ULC
-    for (const entityType of [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP, ...baseCompanies]) {
-      businessStore.setLegalType(entityType as any)
-      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.CORRECTION } })
-      expect(vm.disableCorrection({ ...filing, name: FilingTypes.CORRECTION })).toBe(false)
-    }
-  })
-
-  it('returns allowed (disabled=false) when conditions[6]', async () => {
-    // conditions[6]: Registration as a firm
-    for (const entityType of [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP]) {
-      businessStore.setLegalType(entityType as any)
-      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.REGISTRATION } })
-      expect(vm.disableCorrection({ ...filing, name: FilingTypes.REGISTRATION })).toBe(false)
-    }
-  })
-
-  it('returns allowed (disabled=false) when conditions[7]', async () => {
-    // conditions[7]: Amalgamation as a BC/BEN/C/CBEN/CC/CCC/CUL/ULC
-    for (const entityType of baseCompanies) {
-      businessStore.setLegalType(entityType as any)
-      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.AMALGAMATION_APPLICATION } })
-      expect(vm.disableCorrection({ ...filing, name: FilingTypes.AMALGAMATION_APPLICATION })).toBe(false)
-    }
-  })
-
-  it('returns allowed (disabled=false) when conditions[8]', async () => {
-    // conditions[8]: Continuation In as a BC/BEN/C/CBEN/CC/CCC/CUL/ULC
-    for (const entityType of baseCompanies) {
-      businessStore.setLegalType(entityType as any)
-      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.CONTINUATION_IN } })
-      expect(vm.disableCorrection({ ...filing, name: FilingTypes.CONTINUATION_IN })).toBe(false)
-    }
-  })
-
-  it('returns allowed (disabled=false) when misc filings', async () => {
-    // Annual Report, Alteration, Change of Address, Change of Directors, Conversion
-    const names = [
-      FilingTypes.ANNUAL_REPORT,
-      FilingTypes.ALTERATION,
-      FilingTypes.CHANGE_OF_ADDRESS,
-      FilingTypes.CHANGE_OF_DIRECTORS,
-      FilingTypes.CONVERSION
-    ]
-    for (const name of names) {
-      await wrapper.setProps({ filing: { ...filing } })
-      expect(vm.disableCorrection({ ...filing, name })).toBe(false)
-    }
-  })
-
-  it('returns not allowed (disabled=true) when conditions[0]', async () => {
-    // only conditions[0]
+  it('correction is disabled when filing is available on paper only', async () => {
+    vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
     await wrapper.setProps({ filing: { ...filing, availableOnPaperOnly: true } })
     expect(vm.disableCorrection()).toBe(true)
   })
 
-  it('returns not allowed (disabled=true) when conditions[1]', async () => {
-    const names = [
-      FilingTypes.ADMIN_FREEZE,
-      FilingTypes.COURT_ORDER,
-      FilingTypes.PUT_BACK_ON,
-      FilingTypes.REGISTRARS_ORDER,
-      FilingTypes.REGISTRARS_NOTATION
-    ]
-    // only conditions[1]
-    for (const name of names) {
+  it('correction is disabled when filing is future effective and not completed or corrected', async () => {
+    vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
+    await wrapper.setProps({ filing: { ...filing, isFutureEffective: true, status: FilingStatus.PENDING } })
+    expect(vm.disableCorrection()).toBe(true)
+  })
+
+  const NOT_SUPPORTED = [
+    FilingTypes.AGM_EXTENSION,
+    FilingTypes.AGM_LOCATION_CHANGE,
+    FilingTypes.AMALGAMATION_OUT,
+    FilingTypes.ANNUAL_REPORT,
+    FilingTypes.CHANGE_OF_COMPANY_INFO,
+    FilingTypes.CONSENT_AMALGAMATION_OUT,
+    FilingTypes.CONSENT_CONTINUATION_OUT,
+    FilingTypes.CONTINUATION_OUT,
+    FilingTypes.CONVERSION,
+    FilingTypes.DISSOLUTION,
+    FilingTypes.DISSOLVED,
+    FilingTypes.RESTORATION,
+    FilingTypes.SPECIAL_RESOLUTION,
+    FilingTypes.TRANSITION
+  ]
+
+  for (const name of NOT_SUPPORTED) {
+    it(`correction is disabled when filing is an unsupported type '${name}''`, async () => {
+      vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
       await wrapper.setProps({ filing: { ...filing, name } })
       expect(vm.disableCorrection()).toBe(true)
-    }
-  })
+    })
+  }
 
-  it('returns not allowed (disabled=true) when conditions[2]', async () => {
-    const statuses = [
-      FilingStatus.CANCELLED,
-      FilingStatus.DELETED,
-      FilingStatus.DRAFT,
-      FilingStatus.ERROR,
-      FilingStatus.NEW,
-      FilingStatus.PAID,
-      FilingStatus.PENDING,
-      FilingStatus.WITHDRAWN
-    ]
-    // only conditions[2]
-    for (const status of statuses) {
-      await wrapper.setProps({ filing: { ...filing, isFutureEffective: true, status } })
+  const STAFF_FILINGS = [
+    FilingTypes.ADMIN_FREEZE,
+    FilingTypes.COURT_ORDER,
+    FilingTypes.PUT_BACK_ON,
+    FilingTypes.REGISTRARS_ORDER,
+    FilingTypes.REGISTRARS_NOTATION
+  ]
+
+  for (const name of STAFF_FILINGS) {
+    it(`correction is disabled when filing is a staff type '${name}''`, async () => {
+      vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
+      await wrapper.setProps({ filing: { ...filing, name } })
       expect(vm.disableCorrection()).toBe(true)
+    })
+  }
+
+  const ALLOWED = [
+    FilingTypes.ALTERATION,
+    FilingTypes.CHANGE_OF_ADDRESS,
+    FilingTypes.CHANGE_OF_DIRECTORS,
+    FilingTypes.CHANGE_OF_NAME
+  ]
+
+  for (const name of ALLOWED) {
+    it(`correction is enabled when filing is type '${name}''`, async () => {
+      vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
+      await wrapper.setProps({ filing: { ...filing, name } })
+      expect(vm.disableCorrection()).toBe(false)
+    })
+  }
+
+  const baseCompanies = [
+    CorpTypeCd.BC_COMPANY,
+    CorpTypeCd.BENEFIT_COMPANY,
+    CorpTypeCd.CONTINUE_IN,
+    CorpTypeCd.BEN_CONTINUE_IN,
+    CorpTypeCd.BC_CCC,
+    CorpTypeCd.CCC_CONTINUE_IN,
+    CorpTypeCd.ULC_CONTINUE_IN,
+    CorpTypeCd.BC_ULC_COMPANY
+  ]
+
+  const firms = [
+    CorpTypeCd.PARTNERSHIP,
+    CorpTypeCd.SOLE_PROP
+  ]
+
+  it(`correction is enabled for an 'amalgamationApplication' depending on legal type`, async () => {
+    vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
+    // enabled
+    for (const legalType of baseCompanies) {
+      businessStore.setLegalType(legalType)
+      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.AMALGAMATION_APPLICATION } })
+      expect(vm.disableCorrection()).toBe(false)
     }
-  })
-
-  it('returns not allowed (disabled=true) when conditions[3]', async () => {
-    // only conditions[3]: IA as not a CP nor BC/BEN/C/CBEN/CC/CCC/CUL/ULC
-    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
-    await wrapper.setProps({ filing: { ...filing, name: FilingTypes.INCORPORATION_APPLICATION } })
+    // disabled
+    businessStore.setLegalType(null)
+    await wrapper.setProps({ filing: { ...filing, name: FilingTypes.AMALGAMATION_APPLICATION } })
     expect(vm.disableCorrection()).toBe(true)
   })
 
-  it('returns not allowed (disabled=true) when conditions[4]', async () => {
-    // only conditions[4]: Change of Registration as not a firm
-    businessStore.setLegalType(CorpTypeCd.COOP)
-    await wrapper.setProps({ filing: { ...filing, name: FilingTypes.CHANGE_OF_REGISTRATION } })
+  it(`correction is enabled for a 'registration' depending on legal type`, async () => {
+    vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
+    // enabled
+    for (const legalType of firms) {
+      businessStore.setLegalType(legalType)
+      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.REGISTRATION } })
+      expect(vm.disableCorrection()).toBe(false)
+    }
+    // disabled
+    businessStore.setLegalType(null)
+    await wrapper.setProps({ filing: { ...filing, name: FilingTypes.REGISTRATION } })
     expect(vm.disableCorrection()).toBe(true)
   })
 
-  it('returns not allowed (disabled=true) when conditions[5]', async () => {
-    // only conditions[5]: Correction as not a firm nor CP nor BC/BEN/C/CBEN/CC/CCC/CUL/ULC
+  it(`correction is enabled for a 'continuationIn' depending on legal type`, async () => {
+    vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
+    // enabled
+    for (const legalType of baseCompanies) {
+      businessStore.setLegalType(legalType)
+      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.CONTINUATION_IN } })
+      expect(vm.disableCorrection()).toBe(false)
+    }
+    // disabled
+    businessStore.setLegalType(null)
+    await wrapper.setProps({ filing: { ...filing, name: FilingTypes.CONTINUATION_IN } })
+    expect(vm.disableCorrection()).toBe(true)
+  })
+
+  it(`correction is enabled for a 'correction' depending on legal type`, async () => {
+    vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
+    // enabled
+    for (const legalType of [...firms, ...baseCompanies, CorpTypeCd.COOP]) {
+      businessStore.setLegalType(legalType)
+      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.CORRECTION } })
+      expect(vm.disableCorrection()).toBe(false)
+    }
+    // disabled
     businessStore.setLegalType(null)
     await wrapper.setProps({ filing: { ...filing, name: FilingTypes.CORRECTION } })
     expect(vm.disableCorrection()).toBe(true)
   })
 
-  it('returns not allowed (disabled=true) when conditions[6]', async () => {
-    // only conditions[6]: Registration as not a firm
-    businessStore.setLegalType(CorpTypeCd.COOP)
+  it(`correction is enabled for an 'incorporationApplication' depending on legal type`, async () => {
+    vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
+    // enabled
+    for (const legalType of [...baseCompanies, CorpTypeCd.COOP]) {
+      businessStore.setLegalType(legalType)
+      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.INCORPORATION_APPLICATION } })
+      expect(vm.disableCorrection()).toBe(false)
+    }
+    // disabled
+    businessStore.setLegalType(null)
+    await wrapper.setProps({ filing: { ...filing, name: FilingTypes.INCORPORATION_APPLICATION } })
+    expect(vm.disableCorrection()).toBe(true)
+  })
+
+  it(`correction is enabled for a 'registration' depending on legal type`, async () => {
+    vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
+    // enabled
+    for (const legalType of firms) {
+      businessStore.setLegalType(legalType)
+      await wrapper.setProps({ filing: { ...filing, name: FilingTypes.REGISTRATION } })
+      expect(vm.disableCorrection()).toBe(false)
+    }
+    // disabled
+    businessStore.setLegalType(null)
     await wrapper.setProps({ filing: { ...filing, name: FilingTypes.REGISTRATION } })
     expect(vm.disableCorrection()).toBe(true)
   })
 
-  it('returns not allowed (disabled=true) when conditions[7]', async () => {
-    // only conditions[7]: Amalgamation as not a BC/BEN/C/CBEN/CC/CCC/CUL/ULC
-    businessStore.setLegalType(CorpTypeCd.COOP)
-    await wrapper.setProps({ filing: { ...filing, name: FilingTypes.AMALGAMATION_APPLICATION } })
-    expect(vm.disableCorrection()).toBe(true)
-  })
-
-  it('returns not allowed (disabled=true) when conditions[8]', async () => {
-    // only conditions[8]: Continuation In as not a BC/BEN/C/CBEN/CC/CCC/CUL/ULC
-    businessStore.setLegalType(CorpTypeCd.COOP)
-    await wrapper.setProps({ filing: { ...filing, name: FilingTypes.CONTINUATION_IN } })
+  it('correction is disabled when filing is unhandled', async () => {
+    await wrapper.setProps({ filing })
     expect(vm.disableCorrection()).toBe(true)
   })
 })

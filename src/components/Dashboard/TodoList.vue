@@ -174,7 +174,7 @@
 
                 <!-- draft amalgamation -->
                 <div
-                  v-else-if="isStatusDraft(item) && isTypeAmalgamation(item)"
+                  v-else-if="isStatusDraft(item) && isTypeAmalgamationApplication(item)"
                   class="todo-subtitle"
                 >
                   <span>{{ item.subtitle }}</span>
@@ -351,7 +351,7 @@
                     :disabled="!item.enabled"
                     @click.native.stop="doResumeFiling(item)"
                   >
-                    <template v-if="EnumUtilities.isTypeAmalgamation(item) && item.isEmptyFiling">
+                    <template v-if="EnumUtilities.isTypeAmalgamationApplication(item) && item.isEmptyFiling">
                       <span>Fill out Amalgamation Application</span>
                     </template>
                     <template v-else-if="EnumUtilities.isTypeIncorporationApplication(item) && item.isEmptyFiling">
@@ -623,7 +623,6 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
-import VueRouter from 'vue-router'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { AuthServices, EnumUtilities, LegalServices, PayServices } from '@/services/'
 import {
@@ -757,7 +756,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   /** Whether to show Name Request Info section */
   isFilingWithNr (item: TodoItemIF): boolean {
     return (
-      EnumUtilities.isTypeAmalgamation(item) ||
+      EnumUtilities.isTypeAmalgamationApplication(item) ||
       EnumUtilities.isTypeContinuationIn(item) ||
       EnumUtilities.isTypeIncorporationApplication(item) ||
       EnumUtilities.isTypeRegistration(item)
@@ -794,7 +793,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   showDetailsBtnBlue (item: TodoItemIF): boolean {
     if (this.isStatusNew(item) && this.isTypeConversion(item)) return true
     if (this.isStatusDraft(item) && this.isTypeConversion(item)) return true
-    if (this.isStatusDraft(item) && EnumUtilities.isTypeAmalgamation(item) &&
+    if (this.isStatusDraft(item) && EnumUtilities.isTypeAmalgamationApplication(item) &&
       item.nameRequest) return true
     if (this.isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item) &&
       item.nameRequest) return true
@@ -1879,12 +1878,18 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
   /** Resumes a draft filing. */
   doResumeFiling (item: TodoItemIF): void {
+    function navigateToCorrectionEditUi (editUrl: string, identifier: string): void {
+      // resume correction via Edit UI
+      const correctionUrl = `${editUrl}${identifier}/correction/?correction-id=${item.filingId}`
+      navigate(correctionUrl)
+    }
+
     switch (item.name) {
       case FilingTypes.AMALGAMATION_APPLICATION: {
         // navigate to Create UI to resume this Amalgamation
         const amalgamationUrl = `${this.getCreateUrl}?id=${this.tempRegNumber}`
         navigate(amalgamationUrl)
-        break
+        return
       }
 
       case FilingTypes.ANNUAL_REPORT:
@@ -1894,34 +1899,34 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         this.setArMaxDate(item.arMaxDate) // COOP only
         this.setNextARDate(item.nextArDate) // BEN/BC/CCC/ULC only
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: item.filingId.toString() } })
-        break
+        return
 
       case FilingTypes.CHANGE_OF_DIRECTORS:
         // resume this Change Of Directors locally
         this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: item.filingId.toString() } })
-        break
+        return
 
       case FilingTypes.CHANGE_OF_ADDRESS:
         // resume this Change Of Address locally
         this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: item.filingId.toString() } })
-        break
+        return
 
       case FilingTypes.CONSENT_CONTINUATION_OUT:
         // resume this Consent to Continuation Out locally
         this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
-        break
+        return
 
       case FilingTypes.CONTINUATION_IN: {
         // navigate to Create UI to resume this Continuation In Application
         const continuationInUrl = `${this.getCreateUrl}/continuation-in-business-home?id=${this.tempRegNumber}`
         navigate(continuationInUrl)
-        break
+        return
       }
 
       case FilingTypes.CONTINUATION_OUT:
         // resume this Continuation Out locally
         this.$router.push({ name: Routes.CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
-        break
+        return
 
       case FilingTypes.CORRECTION:
         // see also ItemHeaderActions.vue:correctThisFiling()
@@ -1932,67 +1937,64 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
           case FilingNames.INCORPORATION_APPLICATION:
           case FilingNames.REGISTRATION:
           case FilingNames.SPECIAL_RESOLUTION:
+            // resume correction via Edit UI
             navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
-            break
+            return
 
           case FilingNames.CHANGE_OF_ADDRESS:
           case FilingNames.CHANGE_OF_DIRECTORS:
             if (this.isBaseCompany || this.isCoop) {
+              // resume correction via Edit UI if current type is BEN/BC/CC/ULC/C/CBEN/CCC/CUL or CP
               navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
-              break
-            } else {
-              routeToLocalCorrection(this.$router)
-              break
+              return
             }
-
-          case FilingTypes.ANNUAL_REPORT:
-          case FilingTypes.CONVERSION:
-          default:
-            routeToLocalCorrection(this.$router)
             break
         }
-        break
+        // resuming correction is not supported for all other filings
+        // eslint-disable-next-line no-console
+        console.log('doResumeFiling(), invalid correction type for item =', item)
+        return
 
       case FilingTypes.INCORPORATION_APPLICATION: {
         // navigate to Create UI to resume this Incorporation Application
         const incorpAppUrl = `${this.getCreateUrl}?id=${this.tempRegNumber}`
         navigate(incorpAppUrl)
-        break
+        return
       }
 
       case FilingTypes.REGISTRATION: {
         // navigate to Create UI to resume this Registration
         const registrationAppUrl = `${this.getCreateUrl}define-registration?id=${this.tempRegNumber}`
         navigate(registrationAppUrl)
-        break
+        return
       }
 
       case FilingTypes.ALTERATION: {
         // navigate to Edit UI to resume this Alteration
         const alterationUrl = `${this.getEditUrl}${this.getIdentifier}/alteration/?alteration-id=${item.filingId}`
         navigate(alterationUrl)
-        break
+        return
       }
 
       case FilingTypes.DISSOLUTION: {
         // navigate to Create UI to resume this Dissolution
         const dissolutionUrl = `${this.getCreateUrl}define-dissolution?id=${this.getIdentifier}`
         navigate(dissolutionUrl)
-        break
+        return
       }
 
       case FilingTypes.CHANGE_OF_REGISTRATION: {
         // navigate to Edit UI to resume this Change of Registration
         const changeUrl = `${this.getEditUrl}${this.getIdentifier}/change/?change-id=${item.filingId}`
         navigate(changeUrl)
-        break
+        return
       }
 
       case FilingTypes.CONVERSION: {
         // navigate to Edit UI to resume this Conversion
         const conversionUrl = `${this.getEditUrl}${this.getIdentifier}/conversion/?conversion-id=${item.filingId}`
         navigate(conversionUrl)
-        break
+        return
       }
 
       case FilingTypes.SPECIAL_RESOLUTION: {
@@ -2000,32 +2002,16 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         const specialResolutionUrl =
           `${this.getEditUrl}${this.getIdentifier}/special-resolution/?special-resolution-id=${item.filingId}`
         navigate(specialResolutionUrl)
-        break
+        return
       }
 
       case FilingTypes.RESTORATION:
         this.navigateForResumeRestoration(item)
-        break
-
-      default:
-        // eslint-disable-next-line no-console
-        console.log('doResumeFiling(), invalid type for item =', item)
-        break
+        return
     }
 
-    function navigateToCorrectionEditUi (editUrl: string, identifier: string): void {
-      // resume correction via Edit UI
-      const correctionUrl = `${editUrl}${identifier}/correction/?correction-id=${item.filingId}`
-      navigate(correctionUrl)
-    }
-
-    function routeToLocalCorrection (router: VueRouter): void {
-      // resume local correction
-      router.push({
-        name: Routes.CORRECTION,
-        params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
-      })
-    }
+    // eslint-disable-next-line no-console
+    console.log('doResumeFiling(), invalid type item =', item)
   }
 
   /* Handles the restoration flow inside of doResumeFiling */
