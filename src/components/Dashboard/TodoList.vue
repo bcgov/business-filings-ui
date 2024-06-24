@@ -1878,12 +1878,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
   /** Resumes a draft filing. */
   doResumeFiling (item: TodoItemIF): void {
-    function navigateToCorrectionEditUi (editUrl: string, identifier: string): void {
-      // resume correction via Edit UI
-      const correctionUrl = `${editUrl}${identifier}/correction/?correction-id=${item.filingId}`
-      navigate(correctionUrl)
-    }
-
     switch (item.name) {
       case FilingTypes.AMALGAMATION_APPLICATION: {
         // navigate to Create UI to resume this Amalgamation
@@ -1928,32 +1922,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         this.$router.push({ name: Routes.CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
         return
 
-      case FilingTypes.CORRECTION:
-        // see also ItemHeaderActions.vue:correctThisFiling()
-        switch (item.correctedFilingType) {
-          case FilingNames.ALTERATION:
-          case FilingNames.CHANGE_OF_REGISTRATION:
-          case FilingNames.CORRECTION:
-          case FilingNames.INCORPORATION_APPLICATION:
-          case FilingNames.REGISTRATION:
-          case FilingNames.SPECIAL_RESOLUTION:
-            // resume correction via Edit UI
-            navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
-            return
-
-          case FilingNames.CHANGE_OF_ADDRESS:
-          case FilingNames.CHANGE_OF_DIRECTORS:
-            if (this.isBaseCompany || this.isCoop) {
-              // resume correction via Edit UI if current type is BEN/BC/CC/ULC/C/CBEN/CCC/CUL or CP
-              navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
-              return
-            }
-            break
-        }
-        // resuming correction is not supported for all other filings
-        // eslint-disable-next-line no-console
-        console.log('doResumeFiling(), invalid correction type for item =', item)
+      case FilingTypes.CORRECTION: {
+        // resume correction via Edit UI
+        const correctionUrl = `${this.getEditUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
+        navigate(correctionUrl)
         return
+      }
 
       case FilingTypes.INCORPORATION_APPLICATION: {
         // navigate to Create UI to resume this Incorporation Application
@@ -2011,7 +1985,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     }
 
     // eslint-disable-next-line no-console
-    console.log('doResumeFiling(), invalid type item =', item)
+    console.log('doResumeFiling(), invalid filing type =', item)
   }
 
   /* Handles the restoration flow inside of doResumeFiling */
