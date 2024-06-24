@@ -268,7 +268,10 @@ export const useBusinessStore = defineStore('business', {
      * Used to apply special pre-go-live functionality.
      */
     isDisableNonBenCorps (): boolean {
-      if (this.isBcCompany || this.isCcc || this.isUlc) {
+      if (
+        this.isBcCompany || this.isCcc || this.isUlc ||
+        this.isContinuationInC || this.isContinuationInCcc || this.isContinuationInUlc
+      ) {
         return !GetFeatureFlag('enable-non-ben-corps')
       }
       return false

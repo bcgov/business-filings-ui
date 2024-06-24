@@ -170,6 +170,10 @@ export default class AmalgamationSelection extends Vue {
   @Getter(useBusinessStore) isBComp!: boolean
   @Getter(useBusinessStore) isBcCompany!: boolean
   @Getter(useBusinessStore) isCcc!: boolean
+  @Getter(useBusinessStore) isContinuationInBen!: boolean
+  @Getter(useBusinessStore) isContinuationInC!: boolean
+  @Getter(useBusinessStore) isContinuationInCcc!: boolean
+  @Getter(useBusinessStore) isContinuationInUlc!: boolean
   @Getter(useBusinessStore) isUlc!: boolean
 
   @Action(useRootStore) setStartingAmalgamationSpinner!: (x: boolean) => void
@@ -190,10 +194,21 @@ export default class AmalgamationSelection extends Vue {
 
   /** The amalmagated company result name depending on the type. */
   getRegularAmalgamationText (): string {
-    if (this.isBComp || this.isBcCompany) return 'BC limited company'
-    if (this.isCcc) return 'BC community contribution company'
-    if (this.isUlc) return 'BC unlimited liability company'
-    return 'Unknown'
+    switch (true) {
+      case this.isBComp:
+      case this.isBcCompany:
+      case this.isContinuationInBen:
+      case this.isContinuationInC:
+        return 'BC limited company'
+      case this.isCcc:
+      case this.isContinuationInCcc:
+        return 'BC community contribution company'
+      case this.isUlc:
+      case this.isContinuationInUlc:
+        return 'BC unlimited liability company'
+      default:
+        return 'Unknown'
+    }
   }
 
   /** Called when Start amalgamtion (regular, horizontal and vertical) button is clicked. */
