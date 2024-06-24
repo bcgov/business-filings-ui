@@ -80,7 +80,6 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { AllowableActions } from '@/enums'
-import { FilingTypes } from '@bcrs-shared-components/enums'
 import { ApiFilingIF } from '@/interfaces'
 import { AllowableActionsMixin } from '@/mixins'
 import { EnumUtilities } from '@/services'
@@ -189,34 +188,9 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
 
   /** Called by File a Correction button to correct the subject filing. */
   async correctThisFiling (filing: ApiFilingIF): Promise<void> {
-    // see also TodoList.vue:doResumeFiling()
-    switch (filing?.name) {
-      case FilingTypes.ALTERATION:
-      case FilingTypes.AMALGAMATION_APPLICATION:
-      case FilingTypes.CHANGE_OF_REGISTRATION:
-      case FilingTypes.CORRECTION:
-      case FilingTypes.INCORPORATION_APPLICATION:
-      case FilingTypes.REGISTRATION:
-      case FilingTypes.SPECIAL_RESOLUTION:
-        // correction via Edit UI
-        this.setCurrentFiling(filing)
-        this.setFileCorrectionDialog(true)
-        return
-
-      case FilingTypes.CHANGE_OF_ADDRESS:
-      case FilingTypes.CHANGE_OF_DIRECTORS:
-        if (this.isBaseCompany || this.isCoop) {
-          // correction via Edit UI if current type is BEN/BC/CC/ULC/C/CBEN/CCC/CUL or CP
-          this.setCurrentFiling(filing)
-          this.setFileCorrectionDialog(true)
-          return
-        }
-        break
-    }
-
-    // correction is not supported for all other filings
-    // eslint-disable-next-line no-console
-    console.log('correctThisFiling(), invalid correction type for filing =', this.filing)
+    // show file correction dialog, which will then route to Edit UI
+    this.setCurrentFiling(filing)
+    this.setFileCorrectionDialog(true)
   }
 }
 </script>
