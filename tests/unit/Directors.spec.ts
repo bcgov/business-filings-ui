@@ -7,7 +7,8 @@ import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useRootStore } from '@/stores'
 import Directors from '@/components/common/Directors.vue'
-import { ConfigJson } from '@/resources/business-config'
+import { BusinessConfigBen } from '@/resources/BEN'
+import { BusinessConfigCp } from '@/resources/CP'
 import { click } from '../click'
 import { setValue } from '../setValue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
@@ -29,7 +30,7 @@ describe('Directors as a COOP', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
-    rootStore.configObject = ConfigJson.find(x => x.entityType === CorpTypeCd.COOP)
+    rootStore.configObject = BusinessConfigCp
   })
 
   beforeEach(async () => {
@@ -328,7 +329,7 @@ describe('Directors as a COOP (no sync)', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
-    rootStore.configObject = ConfigJson.find(x => x.entityType === CorpTypeCd.COOP)
+    rootStore.configObject = BusinessConfigCp
   })
 
   beforeEach(async () => {
@@ -565,7 +566,7 @@ describe('Directors as a BCOMP', () => {
     businessStore.setIdentifier('BC0007291')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
-    rootStore.configObject = ConfigJson.find(x => x.entityType === CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.configObject = BusinessConfigBen
   })
 
   beforeEach(async () => {
@@ -882,7 +883,7 @@ describe('Appoint New Director tests', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
-    rootStore.configObject = ConfigJson.find(x => x.entityType === CorpTypeCd.COOP)
+    rootStore.configObject = BusinessConfigCp
   })
 
   beforeEach(async () => {

@@ -167,14 +167,14 @@ export default class AmalgamationSelection extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
-  @Getter(useBusinessStore) isBComp!: boolean
-  @Getter(useBusinessStore) isBcCompany!: boolean
-  @Getter(useBusinessStore) isCcc!: boolean
-  @Getter(useBusinessStore) isContinuationInBen!: boolean
-  @Getter(useBusinessStore) isContinuationInC!: boolean
-  @Getter(useBusinessStore) isContinuationInCcc!: boolean
-  @Getter(useBusinessStore) isContinuationInUlc!: boolean
-  @Getter(useBusinessStore) isUlc!: boolean
+  @Getter(useBusinessStore) isEntityBcCcc!: boolean
+  @Getter(useBusinessStore) isEntityBcCompany!: boolean
+  @Getter(useBusinessStore) isEntityBcUlcCompany!: boolean
+  @Getter(useBusinessStore) isEntityBenContinueIn!: boolean
+  @Getter(useBusinessStore) isEntityBenefitCompany!: boolean
+  @Getter(useBusinessStore) isEntityCccContinueIn!: boolean
+  @Getter(useBusinessStore) isEntityContinueIn!: boolean
+  @Getter(useBusinessStore) isEntityUlcContinueIn!: boolean
 
   @Action(useRootStore) setStartingAmalgamationSpinner!: (x: boolean) => void
 
@@ -195,16 +195,16 @@ export default class AmalgamationSelection extends Vue {
   /** The amalmagated company result name depending on the type. */
   getRegularAmalgamationText (): string {
     switch (true) {
-      case this.isBComp:
-      case this.isBcCompany:
-      case this.isContinuationInBen:
-      case this.isContinuationInC:
+      case this.isEntityBcCompany:
+      case this.isEntityBenContinueIn:
+      case this.isEntityBenefitCompany:
+      case this.isEntityContinueIn:
         return 'BC limited company'
-      case this.isCcc:
-      case this.isContinuationInCcc:
+      case this.isEntityBcCcc:
+      case this.isEntityCccContinueIn:
         return 'BC community contribution company'
-      case this.isUlc:
-      case this.isContinuationInUlc:
+      case this.isEntityBcUlcCompany:
+      case this.isEntityUlcContinueIn:
         return 'BC unlimited liability company'
       default:
         return 'Unknown'

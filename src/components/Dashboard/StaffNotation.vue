@@ -113,7 +113,7 @@
             </v-list-item>
 
             <v-list-item
-              v-if="isFirm"
+              v-if="isEntityFirm"
               data-type="record-conversion"
               :disabled="!isAllowed(AllowableActions.RECORD_CONVERSION)"
               @click="goToConversionFiling()"
@@ -278,6 +278,8 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
   @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
+  // @Getter(useBusinessStore) isEntityCoop!: boolean
+  // @Getter(useBusinessStore) isEntityFirm!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
 
   @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
@@ -325,28 +327,28 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
 
   get showConsentAmalgamateOut (): boolean {
     return (
-      (this.isBaseCompany || this.isCoop) &&
+      (this.isBaseCompany || this.isEntityCoop) &&
       !!GetFeatureFlag('supported-consent-amalgamation-out-entities').includes(this.getLegalType)
     )
   }
 
   get showAmalgamateOut (): boolean {
     return (
-      (this.isBaseCompany || this.isCoop) &&
+      (this.isBaseCompany || this.isEntityCoop) &&
       !!GetFeatureFlag('supported-amalgamation-out-entities').includes(this.getLegalType)
     )
   }
 
   get showConsentContinueOut (): boolean {
     return (
-      (this.isBaseCompany || this.isCoop) &&
+      (this.isBaseCompany || this.isEntityCoop) &&
       !!GetFeatureFlag('supported-consent-continuation-out-entities').includes(this.getLegalType)
     )
   }
 
   get showContinueOut (): boolean {
     return (
-      (this.isBaseCompany || this.isCoop) &&
+      (this.isBaseCompany || this.isEntityCoop) &&
       !!GetFeatureFlag('supported-continuation-out-entities').includes(this.getLegalType)
     )
   }

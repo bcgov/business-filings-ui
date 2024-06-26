@@ -84,7 +84,7 @@ import { Action, Getter } from 'pinia-class'
 import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrectionDialog }
   from '@/components/dialogs'
 import { CorrectionTypes } from '@/enums'
-import { ApiFilingIF, CorrectionFilingIF } from '@/interfaces'
+import { ApiFilingIF } from '@/interfaces'
 import { FilingMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
 import { navigate } from '@/utils'
@@ -107,9 +107,6 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useFilingHistoryListStore) getFilings!: Array<ApiFilingIF>
   @Getter(useFilingHistoryListStore) getPanel!: number
-  @Getter(useBusinessStore) isBaseCompany!: boolean
-  @Getter(useBusinessStore) isCoop!: boolean
-  @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) hasCourtOrders!: boolean
   @Getter(useFilingHistoryListStore) isAddCommentDialog!: boolean
   @Getter(useFilingHistoryListStore) isDownloadErrorDialog!: boolean
@@ -162,7 +159,7 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
 
   /**
    * Creates a draft correction and redirects to Edit UI.
-   * Called by File Correction Dialog
+   * Called by File Correction Dialog.
    **/
   async redirectFiling (correctionType: CorrectionTypes): Promise<void> {
     try {
@@ -170,12 +167,7 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
       this.setFetchingDataSpinner(true)
 
       // build correction filing
-      let correctionFiling: CorrectionFilingIF
-      if (this.isFirm || this.isBaseCompany || this.isCoop) {
-        correctionFiling = this.buildCorrectionFiling(this.getCurrentFiling, correctionType)
-      }
-
-      if (!correctionFiling) throw new Error('Invalid filing type')
+      const correctionFiling = this.buildCorrectionFiling(this.getCurrentFiling, correctionType)
 
       // save draft filing
       const draftCorrection = await LegalServices.createFiling(this.getIdentifier, correctionFiling, true)

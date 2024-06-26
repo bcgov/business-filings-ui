@@ -88,7 +88,7 @@
             <section>
               <header class="aside-header mb-3">
                 <h2 data-test-id="dashboard-addresses-subtitle">
-                  {{ isFirm ? 'Business Addresses' : 'Office Addresses' }}
+                  {{ isEntityFirm ? 'Business Addresses' : 'Office Addresses' }}
                 </h2>
 
                 <v-scale-transition>
@@ -141,16 +141,16 @@
             </section>
 
             <!-- Proprietor / Partners -->
-            <section v-if="isFirm">
+            <section v-if="isEntityFirm">
               <header class="aside-header mb-3">
                 <h2
-                  v-if="isSoleProp"
+                  v-if="isEntitySoleProp"
                   data-test-id="dashboard-proprietor-subtitle"
                 >
                   Proprietor
                 </h2>
                 <h2
-                  v-if="isPartnership"
+                  v-if="isEntityPartnership"
                   data-test-id="dashboard-partners-subtitle"
                 >
                   Partners
@@ -276,10 +276,10 @@ export default class Dashboard extends Mixins(
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
-  // @Getter(useBusinessStore) isFirm!: boolean
+  // @Getter(useBusinessStore) isEntityFirm!: boolean
+  @Getter(useBusinessStore) isEntityPartnership!: boolean
+  // @Getter(useBusinessStore) isEntitySoleProp!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
-  @Getter(useBusinessStore) isPartnership!: boolean
-  // @Getter(useBusinessStore) isSoleProp!: boolean
 
   @Getter(useConfigurationStore) getEditUrl!: string
 
@@ -345,12 +345,12 @@ export default class Dashboard extends Mixins(
   }
 
   /**
-   * If entity is a Firm then navigate to Edit UI.
-    * If entity is a BComp then display COA warning.
+    * If entity is a Firm then navigate to Edit UI.
+    * If entity is a base company then display COA warning.
     * Otherwise proceed to COA.
     */
   onAddressChangeClick () {
-    if (this.isFirm) {
+    if (this.isEntityFirm) {
       const url = `${this.getEditUrl}${this.getIdentifier}/change`
       navigate(url)
     } else if (this.isBaseCompany) {

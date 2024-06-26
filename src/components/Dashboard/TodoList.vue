@@ -198,7 +198,7 @@
 
                 <!-- draft continuation in -->
                 <div
-                  v-else-if="isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item)"
+                  v-else-if="isStatusDraft(item) && isTypeContinuationIn(item)"
                   class="todo-subtitle"
                 >
                   <span>{{ item.subtitle }}</span>
@@ -285,7 +285,7 @@
               class="list-item__actions"
             >
               <div style="width:100%">
-                <!-- BEN/BC/CCC/ULC AR special case -->
+                <!-- special case for BEN/BC/CC/ULC and CBEN/C/CCC/CUL annual report -->
                 <template v-if="isBaseCompany && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)">
                   <p class="date-subtitle">
                     Due: {{ item.arDueDate }}
@@ -753,7 +753,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     return this.todoItems.sort((a, b) => (a.order - b.order))
   }
 
-  /** Whether to show Name Request Info section */
+  /** Whether to show Name Request Info section. */
   isFilingWithNr (item: TodoItemIF): boolean {
     return (
       EnumUtilities.isTypeAmalgamationApplication(item) ||
@@ -968,7 +968,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled && !this.isDisableNonBenCorps,
         order: task.order,
-        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BEN/BC/CCC/ULC only
+        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
         arDueDate: this.formatYyyyMmDd(header.arMaxDate)
       }
       this.todoItems.push(item)
@@ -1233,7 +1233,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
   /**
    * Loads a DRAFT/PENDING/ERROR/PAID Annual Report filing.
-   * (Currently used for Coop ARs only, as BEN/BC/CCC/ULC can't save draft ARs.)
+   * (Currently used for Coop ARs only, as BEN/BC/CC/ULC and CBEN/C/CCC/CUL can't save draft ARs.)
    */
   async loadAnnualReport (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
@@ -1257,7 +1257,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
-        nextArDate: annualReport.nextARDate, // BEN/BC/CCC/ULC only
+        nextArDate: annualReport.nextARDate, // BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
@@ -1860,7 +1860,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         this.setARFilingYear(item.ARFilingYear)
         this.setArMinDate(item.arMinDate) // COOP only
         this.setArMaxDate(item.arMaxDate) // COOP only
-        this.setNextARDate(item.nextArDate) // BEN/BC/CCC/ULC only
+        this.setNextARDate(item.nextArDate) // BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: '0' } }) // 0 means "new AR"
         break
       case FilingTypes.CONVERSION: {
@@ -1891,7 +1891,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         this.setARFilingYear(item.ARFilingYear)
         this.setArMinDate(item.arMinDate) // COOP only
         this.setArMaxDate(item.arMaxDate) // COOP only
-        this.setNextARDate(item.nextArDate) // BEN/BC/CCC/ULC only
+        this.setNextARDate(item.nextArDate) // BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: item.filingId.toString() } })
         return
 

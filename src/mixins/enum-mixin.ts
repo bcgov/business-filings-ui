@@ -61,6 +61,11 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.CONSENT_CONTINUATION_OUT)
   }
 
+  /** DEPRECATED Returns True if filing is a Continuation In. */
+  isTypeContinuationIn (item: any): boolean {
+    return (item.name === FilingTypes.CONTINUATION_IN)
+  }
+
   /** DEPRECATED Returns True if filing is a Conversion. */
   isTypeConversion (item: any): boolean {
     return (item.name === FilingTypes.CONVERSION)

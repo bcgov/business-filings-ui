@@ -102,7 +102,7 @@ import { useBusinessStore } from '@/stores'
 export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRequestMixin) {
   @Prop({ default: () => {} }) readonly nameRequest!: NameRequestIF
 
-  @Getter(useBusinessStore) isSoleProp!: boolean
+  @Getter(useBusinessStore) isEntitySoleProp!: boolean
 
   // For template
   readonly NameRequestStates = NameRequestStates
@@ -117,7 +117,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
   /** The entity type description. */
   get entityTypeDescription (): string {
     const corpFullDescription = GetCorpFullDescription(this.nameRequest.legalType)
-    if (this.isSoleProp) {
+    if (this.isEntitySoleProp) {
       return `${corpFullDescription} or Doing Business As (DBA)`
     }
     return corpFullDescription

@@ -95,6 +95,8 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
   @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useRootStore) isBootstrapFiling!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
+  // @Getter(useBusinessStore) isEntityCoop!: boolean
+  // @Getter(useBusinessStore) isEntityFirm!: boolean
   // @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: (x: ApiFilingIF) => void
@@ -147,7 +149,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
       case EnumUtilities.isTypeChangeOfName(this.filing): return false
       case EnumUtilities.isTypeChangeOfRegistration(this.filing):
         // disable if not a firm (safety check for filing compatibility)
-        if (!this.isFirm) return true
+        if (!this.isEntityFirm) return true
         return false
       case EnumUtilities.isTypeConsentAmalgamationOut(this.filing): return true // not supported
       case EnumUtilities.isTypeConsentContinuationOut(this.filing): return true // not supported
@@ -159,19 +161,19 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
       case EnumUtilities.isTypeConversion(this.filing): return true // not supported
       case EnumUtilities.isTypeCorrection(this.filing):
         // disable if not a firm, base company, or coop (safety check for filing compatibility)
-        if (!this.isFirm && !this.isBaseCompany && !this.isCoop) return true
+        if (!this.isEntityFirm && !this.isBaseCompany && !this.isEntityCoop) return true
         return false
       case EnumUtilities.isTypeCourtOrder(this.filing): return true // staff filing not allowed
       case EnumUtilities.isTypeDissolution(this.filing): return true // not supported
       case EnumUtilities.isTypeDissolved(this.filing): return true // not supported
       case EnumUtilities.isTypeIncorporationApplication(this.filing):
         // disable if not a base company or coop (safety check for filing compatibility)
-        if (!this.isBaseCompany && !this.isCoop) return true
+        if (!this.isBaseCompany && !this.isEntityCoop) return true
         return false
       case EnumUtilities.isTypePutBackOn(this.filing): return true // staff filing not allowed
       case EnumUtilities.isTypeRegistration(this.filing):
         // disable if not a firm (safety check for filing compatibility)
-        if (!this.isFirm) return true
+        if (!this.isEntityFirm) return true
         return false
       case EnumUtilities.isTypeRegistrarsNotation(this.filing): return true // staff filing not allowed
       case EnumUtilities.isTypeRegistrarsOrder(this.filing): return true // staff filing not allowed

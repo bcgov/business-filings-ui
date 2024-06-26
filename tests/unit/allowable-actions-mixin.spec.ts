@@ -57,7 +57,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Address Change is allowed - firm', () => {
-    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isEntityFirm', 'get').mockReturnValue(true)
 
     // verify no allowed filing type
     setAllowedFilingType()
@@ -69,7 +69,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Address Change is allowed - other', () => {
-    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isEntityFirm', 'get').mockReturnValue(false)
 
     // verify no allowed filing type
     setAllowedFilingType()
@@ -130,8 +130,8 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Business Information is allowed - Coop', () => {
-    vi.spyOn(vm, 'isCoop', 'get').mockReturnValue(true)
-    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isEntityCoop', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isEntityFirm', 'get').mockReturnValue(false)
 
     // verify allowed filing type but no feature flag
     setAllowedFilingType({ name: FilingTypes.SPECIAL_RESOLUTION })
@@ -150,8 +150,8 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Business Information is allowed - firm', () => {
-    vi.spyOn(vm, 'isCoop', 'get').mockReturnValue(false)
-    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isEntityCoop', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isEntityFirm', 'get').mockReturnValue(true)
 
     // verify no allowed filing type
     setAllowedFilingType()
@@ -163,8 +163,8 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Business Information is allowed - other', () => {
-    vi.spyOn(vm, 'isCoop', 'get').mockReturnValue(false)
-    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isEntityCoop', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isEntityFirm', 'get').mockReturnValue(false)
 
     // verify no allowed filing type
     setAllowedFilingType()
@@ -275,7 +275,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Director Change is allowed - firm', () => {
-    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isEntityFirm', 'get').mockReturnValue(true)
 
     // verify no allowed filing type
     setAllowedFilingType()
@@ -287,7 +287,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Director Change is allowed - other', () => {
-    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isEntityFirm', 'get').mockReturnValue(false)
 
     // verify no allowed filing type
     setAllowedFilingType()

@@ -100,7 +100,7 @@ export default class CodDate extends Mixins(DateMixin) {
     let date: string = null
 
     if (this.isBaseCompany) {
-      // For BEN/BC/CCC/ULC, use the last COD filing in filing history.
+      // For BEN/BC/CC/ULC and CBEN/C/CCC/CUL, use the last COD filing in filing history.
       date = (this.getLastDirectorChangeDate || this.dateToYyyyMmDd(this.getFoundingDate))
     } else if (this.getLastDirectorChangeDate || this.getLastAnnualReportDate) {
       // For Coops, use the latest of the following dates:

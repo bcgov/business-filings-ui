@@ -101,7 +101,7 @@
                 Address Change
               </h1>
 
-              <p v-if="isCoop">
+              <p v-if="isEntityCoop">
                 Please change your Registered Office Address.
               </p>
               <p v-else-if="isBaseCompany">
@@ -280,7 +280,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
-  @Getter(useBusinessStore) isCoop!: boolean
+  @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // local variables
@@ -345,7 +345,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     return (this.totalFee > 0)
   }
 
-  /** Local computed value for the fee code based on entity type */
+  /** Local computed value for the fee code based on entity type. */
   get feeCode (): FilingCodes {
     return this.isBaseCompany ? FilingCodes.ADDRESS_CHANGE_BC : FilingCodes.ADDRESS_CHANGE_OT
   }
@@ -467,7 +467,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
       const changeOfAddress = filing.changeOfAddress
       if (changeOfAddress) {
         // registered office is required
-        // records office is required for BCOMP only
+        // records office is required for base company only
         const registeredOffice = changeOfAddress.offices?.registeredOffice
         const recordsOffice = changeOfAddress.offices?.recordsOffice
         if (this.isBaseCompany && registeredOffice && recordsOffice) {

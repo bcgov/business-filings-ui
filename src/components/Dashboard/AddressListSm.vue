@@ -1,6 +1,6 @@
 <template>
   <div id="address-list-sm">
-    <template v-if="isFirm">
+    <template v-if="isEntityFirm">
       <!-- Business Address -->
       <FirmsAddressList
         :showCompleteYourFilingMessage="showCompleteYourFilingMessage"
@@ -160,9 +160,9 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
 
-      <!-- Records Office (BEN/BC/CCC/ULC and CORPs) -->
+      <!-- Records Office (BEN/BC/CC/ULC and CBEN/C/CCC/CUL) -->
       <v-expansion-panel
-        v-if="isBaseCompany || isCorporation"
+        v-if="isBaseCompany"
         id="records-office-panel"
         class="align-items-top"
         :class="{
@@ -328,8 +328,7 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
 
   @Getter(useFilingHistoryListStore) getPendingCoa!: ApiFilingIF
   @Getter(useBusinessStore) isBaseCompany!: boolean
-  @Getter(useBusinessStore) isCorporation!: boolean
-  @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isEntityFirm!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) recordsAddress!: OfficeAddressIF
   @Getter(useRootStore) registeredAddress!: OfficeAddressIF

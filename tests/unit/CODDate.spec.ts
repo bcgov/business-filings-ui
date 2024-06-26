@@ -20,7 +20,7 @@ const businessStore = useBusinessStore()
 const filingHistoryListStore = useFilingHistoryListStore()
 const rootStore = useRootStore()
 
-describe('COD Date - COOPs', () => {
+describe('COD Date - Coops', () => {
   let wrapper: Wrapper<CodDate>
   let vm: any
 
@@ -173,7 +173,7 @@ describe('COD Date - COOPs', () => {
   })
 })
 
-describe('COD Date - BCOMPs', () => {
+describe('COD Date - Benefit Companies', () => {
   let wrapper: Wrapper<CodDate>
   let vm: any
 

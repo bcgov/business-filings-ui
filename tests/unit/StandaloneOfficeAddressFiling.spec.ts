@@ -13,7 +13,7 @@ import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling
 import { Certify, OfficeAddresses } from '@/components/common'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
-import { ConfigJson } from '@/resources/business-config'
+import { BusinessConfigBen } from '@/resources/BEN'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // suppress various warnings:
@@ -236,7 +236,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     })
 
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.configObject = ConfigJson.find(x => x.entityType === businessStore.getLegalType)
+    rootStore.configObject = BusinessConfigBen
     await Vue.nextTick()
 
     const certify: any = wrapper.findComponent(Certify)

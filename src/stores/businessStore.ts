@@ -98,7 +98,7 @@ export const useBusinessStore = defineStore('business', {
       if (!GetFeatureFlag('enable-legal-name-fix')) {
         return state.businessInfo.legalName
       }
-      if (this.isFirm && !rootStore.isDraftRegistration && !rootStore.isFiledRegistration) {
+      if (this.isEntityFirm && !rootStore.isDraftRegistration && !rootStore.isFiledRegistration) {
         return this.getAlternateName
       } else {
         return state.businessInfo.legalName
@@ -141,7 +141,7 @@ export const useBusinessStore = defineStore('business', {
     /** Is True if a firm has at least one "compliance" warning. */
     hasComplianceWarning (): boolean {
       return (
-        this.isFirm &&
+        this.isEntityFirm &&
         this.getBusinessWarnings.some(item => item.warningType?.includes(WarningTypes.COMPLIANCE))
       )
     },
@@ -154,7 +154,7 @@ export const useBusinessStore = defineStore('business', {
     /** Is True if a firm has at least one "missing required business info" warning. */
     hasMissingInfoWarning (): boolean {
       return (
-        this.isFirm &&
+        this.isEntityFirm &&
         this.getBusinessWarnings.some(item => item.warningType === WarningTypes.MISSING_REQUIRED_BUSINESS_INFO)
       )
     },
@@ -174,77 +174,78 @@ export const useBusinessStore = defineStore('business', {
       return state.businessInfo.adminFreeze
     },
 
-    /** Is True if entity is a Benefit Company. */
-    isBComp (): boolean {
+    /** Whether the entity is a Benefit Company. */
+    isEntityBenefitCompany (): boolean {
       return (this.getLegalType === CorpTypeCd.BENEFIT_COMPANY)
     },
 
-    /** Is True if entity is a BC Limited Company. */
-    isBcCompany (): boolean {
+    /** Whether the entity is a BC Limited Company. */
+    isEntityBcCompany (): boolean {
       return (this.getLegalType === CorpTypeCd.BC_COMPANY)
     },
 
-    /** Is True if entity is a BC Community Contribution Company. */
-    isCcc (): boolean {
+    /** Whether the entity is a BC Community Contribution Company. */
+    isEntityBcCcc (): boolean {
       return (this.getLegalType === CorpTypeCd.BC_CCC)
     },
 
-    /** Is True if entity is a BC Unlimited Liability Company. */
-    isUlc (): boolean {
+    /** Whether the entity is a BC Unlimited Liability Company. */
+    isEntityBcUlcCompany (): boolean {
       return (this.getLegalType === CorpTypeCd.BC_ULC_COMPANY)
     },
 
-    /** Is True if the entity is a base company (BEN/BC/CC/ULC or C/CBEN/CCC/CUL). */
+    /** Whether the entity is a base company (BC/BEN/CC/ULC or C/CBEN/CCC/CUL). */
     isBaseCompany (): boolean {
       return (
-        this.isBComp || this.isBcCompany || this.isCcc || this.isUlc ||
-        this.isContinuationInC || this.isContinuationInBen || this.isContinuationInCcc || this.isContinuationInUlc
+        this.isEntityBcCompany ||
+        this.isEntityBenefitCompany ||
+        this.isEntityBcCcc ||
+        this.isEntityBcUlcCompany ||
+        this.isEntityContinueIn ||
+        this.isEntityBenContinueIn ||
+        this.isEntityCccContinueIn ||
+        this.isEntityUlcContinueIn
       )
     },
 
-    /** Is True if entity is a Continued In Benefit Company. */
-    isContinuationInBen (): boolean {
+    /** Whether the entity is a Continued In Benefit Company. */
+    isEntityBenContinueIn (): boolean {
       return (this.getLegalType === CorpTypeCd.BEN_CONTINUE_IN)
     },
 
-    /** Is True if entity is a Continued In BC Limited Company. */
-    isContinuationInC (): boolean {
+    /** Whether the entity is a Continued In BC Limited Company. */
+    isEntityContinueIn (): boolean {
       return (this.getLegalType === CorpTypeCd.CONTINUE_IN)
     },
 
-    /** Is True if entity is a Continued In Community Contribution Company. */
-    isContinuationInCcc (): boolean {
+    /** Whether the entity is a Continued In Community Contribution Company. */
+    isEntityCccContinueIn (): boolean {
       return (this.getLegalType === CorpTypeCd.CCC_CONTINUE_IN)
     },
 
-    /** Is True if entity is a Continued In Unlimited Liability Company. */
-    isContinuationInUlc (): boolean {
+    /** Whether the entity is a Continued In Unlimited Liability Company. */
+    isEntityUlcContinueIn (): boolean {
       return (this.getLegalType === CorpTypeCd.ULC_CONTINUE_IN)
     },
 
-    /** Is True if entity is a Cooperative. */
-    isCoop (): boolean {
+    /** Whether the entity is a Cooperative Assocation. */
+    isEntityCoop (): boolean {
       return (this.getLegalType === CorpTypeCd.COOP)
     },
 
-    /** Is True if entity is a Corporation. */
-    isCorporation (): boolean {
-      return (this.getLegalType === CorpTypeCd.CORPORATION)
-    },
-
-    /** Is True if entity is a General Partnership. */
-    isPartnership (): boolean {
+    /** Whether the entity is a General Partnership. */
+    isEntityPartnership (): boolean {
       return (this.getLegalType === CorpTypeCd.PARTNERSHIP)
     },
 
-    /** Is True if entity is a Sole Proprietorship. */
-    isSoleProp (): boolean {
+    /** Whether the entity is a Sole Proprietorship. */
+    isEntitySoleProp (): boolean {
       return (this.getLegalType === CorpTypeCd.SOLE_PROP)
     },
 
-    /** Is True if entity is a Sole Proprietorship or General Partnership. */
-    isFirm (): boolean {
-      return (this.isSoleProp || this.isPartnership)
+    /** Whether the entity is a Sole Proprietorship or General Partnership. */
+    isEntityFirm (): boolean {
+      return (this.isEntitySoleProp || this.isEntityPartnership)
     },
 
     /** Is True if business is in good standing. */
@@ -269,8 +270,8 @@ export const useBusinessStore = defineStore('business', {
      */
     isDisableNonBenCorps (): boolean {
       if (
-        this.isBcCompany || this.isCcc || this.isUlc ||
-        this.isContinuationInC || this.isContinuationInCcc || this.isContinuationInUlc
+        this.isEntityBcCompany || this.isEntityBcCcc || this.isEntityBcUlcCompany ||
+        this.isEntityContinueIn || this.isEntityCccContinueIn || this.isEntityUlcContinueIn
       ) {
         return !GetFeatureFlag('enable-non-ben-corps')
       }

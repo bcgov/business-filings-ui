@@ -30,9 +30,9 @@ export interface RootStateIF {
 
   // set by Todo List
   ARFilingYear: number // YYYY
-  arMaxDate: string // YYYY-MM-DD // COOPs only
-  arMinDate: string // YYYY-MM-DD // COOPs only
-  nextARDate: string // YYYY-MM-DD // BCOMPs only
+  arMaxDate: string // YYYY-MM-DD // CPs only
+  arMinDate: string // YYYY-MM-DD // CPs only
+  nextARDate: string // YYYY-MM-DD // BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
 
   // other global data
   businessAddress: OfficeAddressIF

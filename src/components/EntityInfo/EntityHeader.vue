@@ -103,24 +103,26 @@ export default class EntityHeader extends Vue {
   @Prop({ required: true }) readonly tempRegNumber!: string // may be null
 
   @Getter(useBusinessStore) getEntityName!: string
-  @Getter(useFilingHistoryListStore) getFilings!: ApiFilingIF[]
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
+  @Getter(useBusinessStore) isEntitySoleProp!: boolean
+  @Getter(useBusinessStore) isHistorical!: boolean
+
+  @Getter(useFilingHistoryListStore) getFilings!: ApiFilingIF[]
+  @Getter(useFilingHistoryListStore) isAuthorizedToContinueOut!: boolean
+
   @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
   @Getter(useRootStore) getReasonText!: string
   @Getter(useRootStore) getTasks!: ApiTaskIF[]
-  @Getter(useFilingHistoryListStore) isAuthorizedToContinueOut!: boolean
   @Getter(useRootStore) isDraftAmalgamation!: boolean
-  @Getter(useRootStore) isFiledAmalgamation!: boolean
   @Getter(useRootStore) isDraftContinuationIn!: boolean
+  @Getter(useRootStore) isFiledAmalgamation!: boolean
   @Getter(useRootStore) isFiledContinuationIn!: boolean
-  @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isInLimitedRestoration!: boolean
-  @Getter(useBusinessStore) isSoleProp!: boolean
 
   /** The business description. */
   get businessDescription (): string {
     const corpFullDescription = GetCorpFullDescription(this.getLegalType)
-    if (this.isSoleProp && !!this.tempRegNumber) {
+    if (this.isEntitySoleProp && !!this.tempRegNumber) {
       return `${corpFullDescription} / Doing Business As (DBA)`
     } else {
       return corpFullDescription

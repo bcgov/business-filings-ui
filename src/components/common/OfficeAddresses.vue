@@ -325,7 +325,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
           throw new Error('Missing registered office address')
         }
 
-        // records office is required only for BCOMP
+        // records office is required for base companies
         const recordsOffice = response?.data?.recordsOffice
         if (recordsOffice) {
           this.original.recordsOffice = {
