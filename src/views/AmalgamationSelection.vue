@@ -200,15 +200,16 @@ export default class AmalgamationSelection extends Vue {
       case this.isEntityBenefitCompany:
       case this.isEntityContinueIn:
         return 'BC limited company'
+
       case this.isEntityBcCcc:
       case this.isEntityCccContinueIn:
         return 'BC community contribution company'
+
       case this.isEntityBcUlcCompany:
       case this.isEntityUlcContinueIn:
         return 'BC unlimited liability company'
-      default:
-        return 'Unknown'
     }
+    return 'Unknown' // should never happen
   }
 
   /** Called when Start amalgamtion (regular, horizontal and vertical) button is clicked. */
@@ -229,6 +230,28 @@ export default class AmalgamationSelection extends Vue {
       this.setStartingAmalgamationSpinner(false)
       this.showErrorDialog = true
     }
+  }
+
+  /** The legal type of the new amalgamation filing. */
+  get legalType (): CorpTypeCd {
+    switch (true) {
+      case this.isEntityBcCompany:
+      case this.isEntityContinueIn:
+        return CorpTypeCd.BC_COMPANY
+
+      case this.isEntityBenefitCompany:
+      case this.isEntityBenContinueIn:
+        return CorpTypeCd.BENEFIT_COMPANY
+
+      case this.isEntityBcCcc:
+      case this.isEntityCccContinueIn:
+        return CorpTypeCd.BC_CCC
+
+      case this.isEntityBcUlcCompany:
+      case this.isEntityUlcContinueIn:
+        return CorpTypeCd.BC_ULC_COMPANY
+    }
+    throw new Error(`Invalid legal type = ${this.getLegalType}`) // should never happen
   }
 
   /**
@@ -258,12 +281,12 @@ export default class AmalgamationSelection extends Vue {
           accountId: this.getAccountId
         },
         business: {
-          legalType: this.getLegalType
+          legalType: this.legalType
         },
         amalgamationApplication: {
           nameRequest: {
             legalName,
-            legalType: this.getLegalType,
+            legalType: this.legalType,
             correctNameOption
           },
           type,
