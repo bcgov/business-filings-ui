@@ -1105,7 +1105,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
       cessationDate: null // when implemented: this.newDirector.cessationDate
     }
 
-    // Add the mailing address property if the entity is a BEN/BC/CCC/ULC
+    // Add the mailing address property if the entity is a BEN/BC/CC/ULC or CBEN/C/CCC/CUL
     if (this.isBaseCompany) {
       director.mailingAddress = { ...this.inProgressMailAddress }
     }

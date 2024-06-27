@@ -37,7 +37,7 @@
       >
         <h4>Dissolution Complete</h4>
 
-        <p v-if="isFirm">
+        <p v-if="isEntityFirm">
           The statement of dissolution for {{ entityTitle }} {{ getLegalName || '' }}
           was successfully submitted on <strong>{{ dissolutionDateSubmitted }}</strong>
           with dissolution date of <strong>{{ dissolutionDate }}</strong>.
@@ -46,7 +46,7 @@
           under the {{ actTitle }} Act.
         </p>
 
-        <p v-if="!isFirm">
+        <p v-if="!isEntityFirm">
           The {{ entityTitle }} {{ getLegalName || '' }} was successfully
           <strong>dissolved on {{ dissolutionDateTime }}</strong>.
           The {{ entityTitle }} has been struck from the register and dissolved,
@@ -98,7 +98,7 @@ export default class DissolutionVoluntary extends Vue {
 
   @Getter(useRootStore) getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
   @Getter(useBusinessStore) getLegalName!: string
-  @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isEntityFirm!: boolean
 
   /** Whether this filing is in Complete status. */
   get isStatusCompleted (): boolean {

@@ -145,7 +145,7 @@
             </span>
 
             <span v-if="!isHistorical">
-              <!-- Dissolve Business -->
+              <!-- Dissolve this Business -->
               <v-tooltip
                 right
                 content-class="right-tooltip"
@@ -315,6 +315,8 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
+  // @Getter(useBusinessStore) isEntityCoop!: boolean
+  // @Getter(useBusinessStore) isEntityFirm!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
 
@@ -351,14 +353,14 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   get showConsentAmalgamateOut (): boolean {
     return (
-      (this.isBaseCompany || this.isCoop) &&
+      (this.isBaseCompany || this.isEntityCoop) &&
       !!GetFeatureFlag('supported-consent-amalgamation-out-entities').includes(this.getLegalType)
     )
   }
 
   get showConsentContinueOut (): boolean {
     return (
-      (this.isBaseCompany || this.isCoop) &&
+      (this.isBaseCompany || this.isEntityCoop) &&
       !!GetFeatureFlag('supported-consent-continuation-out-entities').includes(this.getLegalType)
     )
   }
@@ -420,9 +422,9 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
     if (!this.isGoodStanding && !this.isRoleStaff) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
-    } else if (this.isCoop) {
+    } else if (this.isEntityCoop) {
       navigate(`${editUrl}/special-resolution`)
-    } else if (this.isFirm) {
+    } else if (this.isEntityFirm) {
       navigate(`${editUrl}/change`)
     } else {
       navigate(`${editUrl}/alteration`)

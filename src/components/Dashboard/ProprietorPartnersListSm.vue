@@ -155,17 +155,17 @@ export default class ProprietorPartnersListSm extends Mixins(CommonMixin, Countr
   @Prop({ default: false }) readonly showGrayedOut!: boolean
 
   @Getter(useRootStore) getParties!: PartyIF[]
-  @Getter(useBusinessStore) isSoleProp!: boolean
-  @Getter(useBusinessStore) isPartnership!: boolean
+  @Getter(useBusinessStore) isEntityPartnership!: boolean
+  @Getter(useBusinessStore) isEntitySoleProp!: boolean
 
   /** The proprietor / partners list. */
   get proprietorPartners (): PartyIF[] {
-    if (this.isSoleProp) {
+    if (this.isEntitySoleProp) {
       // return array with the proprietor
       if (this.getParties.length === 0) return []
       return [ this.getParties.find(party => party.roles.some(role => role.roleType === Roles.PROPRIETOR)) ]
     }
-    if (this.isPartnership) {
+    if (this.isEntityPartnership) {
       // return array with all partners
       return this.getParties.filter(party => party.roles.some(role => role.roleType === Roles.PARTNER))
     }

@@ -4,7 +4,9 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useRootStore } from '@/stores'
 import DissolutionVoluntary from '@/components/Dashboard/FilingHistoryList/filings/DissolutionVoluntary.vue'
-import { ConfigJson } from '@/resources'
+import { BusinessConfigBen } from '@/resources/BEN'
+import { BusinessConfigCp } from '@/resources/CP'
+import { BusinessConfigSp } from '@/resources/SP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
@@ -32,7 +34,7 @@ describe.skip('Dissolution Filing', () => {
     // init store
     businessStore.setLegalName('MY COMPANY')
     businessStore.setLegalType(CorpTypeCd.COOP)
-    rootStore.configObject = ConfigJson.find(x => x.entityType === businessStore.getLegalType)
+    rootStore.configObject = BusinessConfigCp
 
     const wrapper = mount(DissolutionVoluntary, {
       vuetify,
@@ -61,7 +63,7 @@ describe.skip('Dissolution Filing', () => {
     // init store
     businessStore.setLegalName('MY COMPANY')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.configObject = ConfigJson.find(x => x.entityType === businessStore.getLegalType)
+    rootStore.configObject = BusinessConfigBen
 
     const wrapper = mount(DissolutionVoluntary, {
       vuetify,
@@ -90,7 +92,7 @@ describe.skip('Dissolution Filing', () => {
     // init store
     businessStore.setLegalName('MY COMPANY')
     businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
-    rootStore.configObject = ConfigJson.find(x => x.entityType === businessStore.getLegalType)
+    rootStore.configObject = BusinessConfigSp
 
     const wrapper = mount(DissolutionVoluntary, {
       vuetify,

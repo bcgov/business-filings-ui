@@ -4,7 +4,9 @@ import { shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useRootStore } from '@/stores'
 import { ConfirmDissolutionDialog } from '@/components/dialogs'
-import { ConfigJson } from '@/resources'
+import { BusinessConfigBen } from '@/resources/BEN'
+import { BusinessConfigGp } from '@/resources/GP'
+import { BusinessConfigSp } from '@/resources/SP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
@@ -17,7 +19,7 @@ const rootStore = useRootStore()
 describe('Confirm Dissolution Dialog - Displays Confirmation messages', () => {
   it('displays confirmation modal to users for Sole Proprietorship', () => {
     businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
-    rootStore.setConfigObject(ConfigJson.find(x => x.entityType === businessStore.getLegalType))
+    rootStore.setConfigObject(BusinessConfigSp)
 
     const wrapper = shallowMount(ConfirmDissolutionDialog,
       {
@@ -45,7 +47,7 @@ describe('Confirm Dissolution Dialog - Displays Confirmation messages', () => {
 
   it('displays confirmation modal to users for General Partnership', () => {
     businessStore.setLegalType(CorpTypeCd.PARTNERSHIP)
-    rootStore.setConfigObject(ConfigJson.find(x => x.entityType === businessStore.getLegalType))
+    rootStore.setConfigObject(BusinessConfigGp)
 
     const wrapper = shallowMount(ConfirmDissolutionDialog,
       {
@@ -73,7 +75,7 @@ describe('Confirm Dissolution Dialog - Displays Confirmation messages', () => {
 
   it('displays confirmation modal to users for Benefit Company', () => {
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.setConfigObject(ConfigJson.find(x => x.entityType === businessStore.getLegalType))
+    rootStore.setConfigObject(BusinessConfigBen)
 
     const wrapper = shallowMount(ConfirmDissolutionDialog,
       {

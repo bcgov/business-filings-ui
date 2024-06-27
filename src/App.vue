@@ -226,17 +226,19 @@ export default class App extends Mixins(
     CorpTypeCd.SOLE_PROP,
     CorpTypeCd.ULC_CONTINUE_IN
   ]
-  // store references
+  // business store references
   @Getter(useBusinessStore) getEntityName!: string
   // @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   // @Getter(useBusinessStore) getIdentifier!: string
-  @Getter(useBusinessStore) isSoleProp!: boolean
+  @Getter(useBusinessStore) isEntitySoleProp!: boolean
 
+  // configuration store references
   @Getter(useConfigurationStore) getAuthApiUrl!: string
   @Getter(useConfigurationStore) getBusinessesUrl!: string
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useConfigurationStore) getRegHomeUrl!: string
 
+  // root store references
   @Getter(useRootStore) getKeycloakRoles!: Array<string>
   @Getter(useRootStore) isBootstrapFiling!: boolean
   @Getter(useRootStore) isBootstrapTask!: boolean
@@ -695,7 +697,7 @@ export default class App extends Mixins(
     const data = filing[header.name]
 
     const description = GetCorpFullDescription(data.nameRequest.legalType)
-    const dba = this.isSoleProp ? ' / Doing Business As (DBA) ' : ' '
+    const dba = this.isEntitySoleProp ? ' / Doing Business As (DBA) ' : ' '
     const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
 
     // save display name for later

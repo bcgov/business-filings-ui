@@ -50,6 +50,21 @@ const newAmalgamationFiling = [
   }
 ]
 
+const newContinuationFiling = [
+  {
+    availableOnPaperOnly: false,
+    displayLedger: true,
+    displayName: 'BC Benefit Company Continuation Application',
+    effectiveDate: '2019-06-02 19:22:59 GMT',
+    filingId: 123,
+    isFutureEffective: false,
+    name: FilingTypes.CONTINUATION_IN,
+    status: 'PAID',
+    submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT',
+    submitter: 'Full Name 1'
+  }
+]
+
 const newRegistrationFiling = [
   {
     availableOnPaperOnly: false,
@@ -120,35 +135,36 @@ const obligationTestCases = [
     entityType: CorpTypeCd.BENEFIT_COMPANY,
     identifier: 'BC1232134',
     displaysObligations: true,
-    configKey: 0,
     filingBody: newIncorporationFiling
   },
   {
     entityType: CorpTypeCd.BENEFIT_COMPANY,
     identifier: 'BC1232134',
     displaysObligations: true,
-    configKey: 0,
     filingBody: newAmalgamationFiling
+  },
+  {
+    entityType: CorpTypeCd.BEN_CONTINUE_IN,
+    identifier: 'BC1232134',
+    displaysObligations: true,
+    filingBody: newContinuationFiling
   },
   {
     entityType: CorpTypeCd.COOP,
     identifier: 'CP1232134',
     displaysObligations: false,
-    configKey: 1,
     filingBody: newIncorporationFiling
   },
   {
     entityType: CorpTypeCd.SOLE_PROP,
     identifier: 'BC1232134',
     displaysObligations: true,
-    configKey: 2,
     filingBody: newRegistrationFiling
   },
   {
     entityType: CorpTypeCd.PARTNERSHIP,
     identifier: 'BC1232134',
     displaysObligations: true,
-    configKey: 3,
     filingBody: newRegistrationFiling
   }
 ]
@@ -160,7 +176,7 @@ for (const test of obligationTestCases) {
       businessStore.setLegalType(test.entityType)
       businessStore.setIdentifier(test.identifier)
       businessStore.setState(EntityState.ACTIVE)
-      rootStore.configObject = ConfigJson[test.configKey]
+      rootStore.configObject = ConfigJson.find(x => x.entityType === test.entityType)
     })
 
     afterAll(() => {

@@ -96,9 +96,9 @@
           lg="9"
         >
           <section id="annual-report-main-section">
-            <!-- COOPs only: -->
+            <!-- CP only: -->
             <article
-              v-if="isCoop"
+              v-if="isEntityCoop"
               class="annual-report-article"
             >
               <!-- Page Title -->
@@ -191,7 +191,7 @@
               </section>
             </article>
 
-            <!-- BEN/BC/CCC/ULC only: -->
+            <!-- BEN/BC/CC/ULC and CBEN/C/CCC/CUL only: -->
             <article
               v-else-if="isBaseCompany"
               class="annual-report-article"
@@ -253,7 +253,7 @@
             <section v-show="isBaseCompany || agmDateValid">
               <header>
                 <h2
-                  v-if="isCoop"
+                  v-if="isEntityCoop"
                   id="certify-header"
                 >
                   4. Certify
@@ -300,7 +300,7 @@
 
     <!-- Buttons ( COOP only ) -->
     <v-container
-      v-if="isCoop"
+      v-if="isEntityCoop"
       id="coop-buttons-container"
       class="list-item"
     >
@@ -363,7 +363,7 @@
       </div>
     </v-container>
 
-    <!-- Buttons ( BEN/BC/CCC/ULC only ) -->
+    <!-- Buttons ( BEN/BC/CC/ULC and CBEN/C/CCC/CUL only ) -->
     <v-container
       v-else-if="isBaseCompany"
       id="bcorp-buttons-container"
@@ -470,7 +470,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
-  @Getter(useBusinessStore) isCoop!: boolean
+  @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // variables for AgmDate component
@@ -536,7 +536,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
    * @returns date as "YYYY-MM-DD"
    */
   get asOfDate (): string {
-    if (this.isCoop) {
+    if (this.isEntityCoop) {
       // if AGM Date is set then use it
       if (this.agmDate) return this.agmDate
       // if filing is in past year then use last day in that year
@@ -563,7 +563,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    if (this.isCoop) {
+    if (this.isEntityCoop) {
       return (this.agmDateValid && this.addressesFormValid && this.directorFormValid &&
         this.certifyFormValid && !this.directorEditInProgress)
     }
@@ -611,7 +611,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       this.goToDashboard(true)
       return // don't continue
     }
-    if (this.isCoop && (!this.arMinDate || !this.arMaxDate)) {
+    if (this.isEntityCoop && (!this.arMinDate || !this.arMaxDate)) {
       // eslint-disable-next-line no-console
       console.log('Annual Report error - missing AR Min Date or AR Max Date!')
       this.goToDashboard(true)
@@ -652,7 +652,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
     this.dataLoaded = true
 
-    // for BComp, add AR filing code now
+    // for base company, add AR filing code now
     // for Coop, code is added when AGM Date becomes valid
     // use existing Priority and Waive Fees flags
     if (this.isBaseCompany) {
@@ -721,7 +721,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       // NB: ARFilingYear, arMaxDate and arMinDate were set in the store by the TodoList component
 
       // restore AGM Date
-      if (this.isCoop) {
+      if (this.isEntityCoop) {
         // set the new AGM date in the AGM Date component (may be null or empty)
         this.newAgmDate = annualReport.annualGeneralMeetingDate || ''
         // set the new No AGM flag in the AGM Date component (may be undefined)
@@ -751,7 +751,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       const changeOfAddress = filing.changeOfAddress
       if (changeOfAddress) {
         // registered office is required
-        // records office is required for BCOMP only
+        // records office is required for base company only
         const registeredOffice = changeOfAddress.offices?.registeredOffice
         const recordsOffice = changeOfAddress.offices?.recordsOffice
         if (this.isBaseCompany && registeredOffice && recordsOffice) {
@@ -1034,7 +1034,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     // save AR min and max dates (COOP only)
     // NB: save in local tz
     // NB: used by TodoList when loading draft AR
-    if (this.isCoop) {
+    if (this.isEntityCoop) {
       header.header['arMinDate'] = this.arMinDate
       header.header['arMaxDate'] = this.arMaxDate
     }
@@ -1069,7 +1069,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       }
     }
 
-    if (this.isCoop) {
+    if (this.isEntityCoop) {
       annualReport = {
         [FilingTypes.ANNUAL_REPORT]: {
           annualGeneralMeetingDate: this.agmDate || null, // API doesn't validate empty string
@@ -1090,7 +1090,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       annualReport = {
         [FilingTypes.ANNUAL_REPORT]: {
           annualReportDate: this.asOfDate,
-          nextARDate: this.nextARDate, // used by BEN/BC/CCC/ULC only
+          nextARDate: this.nextARDate, // used by BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
           // NB: there was an enrichment ticket to populate offices and directors here
           offices: {
             registeredOffice: this.originalAddresses.registeredOffice,
@@ -1304,7 +1304,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     // simply re-add the AR code with the updated Priority flag and existing Waive Fees flag
     if (this.isBaseCompany) {
       this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val.isPriority, waiveFees)
-    } else if (this.isCoop) {
+    } else if (this.isEntityCoop) {
       this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_OT, val.isPriority, waiveFees)
     }
 

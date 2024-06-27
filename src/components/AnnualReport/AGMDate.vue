@@ -1,6 +1,6 @@
 <template>
   <v-card
-    v-if="isCoop"
+    v-if="isEntityCoop"
     id="agm-date-container"
     flat
   >
@@ -174,7 +174,7 @@ export default class AgmDate extends Mixins(DateMixin) {
   @Getter(useRootStore) ARFilingYear!: number
   @Getter(useRootStore) arMinDate!: string
   @Getter(useRootStore) arMaxDate!: string
-  @Getter(useBusinessStore) isCoop!: boolean
+  @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useRootStore) getCurrentDate!: string
 
   // Local properties.

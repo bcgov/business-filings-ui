@@ -58,11 +58,11 @@ import { useBusinessStore } from '@/stores'
 export default class FrozenInformation extends Vue {
   @Prop({ required: true }) readonly showPanel!: boolean
 
-  @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isEntityFirm!: boolean
 
   get hidePhoneNumbers (): boolean {
     // hide for firms without FF
-    return (this.isFirm && !GetFeatureFlag('show-alert-phone-numbers-firm'))
+    return (this.isEntityFirm && !GetFeatureFlag('show-alert-phone-numbers-firm'))
   }
 
   @Emit('togglePanel')

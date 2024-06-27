@@ -433,16 +433,16 @@ export default class EnumUtilities {
 
   /**
    * Converts a dissolution subtype to a filing name.
-   * @param isFirm whether this entity is a firm
+   * @param isEntityFirm whether this entity is a firm
    * @param subType the dissolution subtype
    * @returns the filing name
    */
-  static dissolutionTypeToName (isFirm: boolean, subType: FilingSubTypes): string {
+  static dissolutionTypeToName (isEntityFirm: boolean, subType: FilingSubTypes): string {
     switch (subType) {
       case FilingSubTypes.DISSOLUTION_ADMINISTRATIVE: return FilingNames.DISSOLUTION_ADMINISTRATIVE
       case FilingSubTypes.DISSOLUTION_INVOLUNTARY: return 'Dissolved for Failure to File'
       case FilingSubTypes.DISSOLUTION_VOLUNTARY: return (
-        isFirm ? FilingNames.DISSOLUTION_FIRM : FilingNames.DISSOLUTION_VOLUNTARY
+        isEntityFirm ? FilingNames.DISSOLUTION_FIRM : FilingNames.DISSOLUTION_VOLUNTARY
       )
     }
     return FilingNames.UNKNOWN

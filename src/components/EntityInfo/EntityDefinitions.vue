@@ -123,11 +123,11 @@ export default class EntityDefinitions extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useRootStore) getNameRequest!: any
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
-  @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isEntityFirm!: boolean
 
   /** The registration date, if applicable. */
   get registrationDate (): string {
-    if (this.businessId && this.isFirm) {
+    if (this.businessId && this.isEntityFirm) {
       return (DateUtilities.dateToPacificDate(this.getFoundingDate, true) || 'Not Available')
     }
     return null
@@ -135,7 +135,7 @@ export default class EntityDefinitions extends Vue {
 
   /** The registration number, if applicable. */
   get registrationNumber (): string {
-    if (this.businessId && this.isFirm) {
+    if (this.businessId && this.isEntityFirm) {
       return (this.getIdentifier?.toString() || 'Not Available')
     }
     return null
@@ -151,7 +151,7 @@ export default class EntityDefinitions extends Vue {
 
   /** The incorporation number, if applicable. */
   get incorporationNumber (): string {
-    if (this.businessId && !this.isFirm) {
+    if (this.businessId && !this.isEntityFirm) {
       return (this.getIdentifier?.toString() || 'Not Available')
     }
     return null

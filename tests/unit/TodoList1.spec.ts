@@ -939,7 +939,7 @@ describe('TodoList - UI - Coops', () => {
   })
 })
 
-describe('TodoList - UI - BCOMPs', () => {
+describe('TodoList - UI - Benefit Companies', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
@@ -2175,7 +2175,7 @@ describe('TodoList - Click Tests - Coops', () => {
   })
 })
 
-describe('TodoList - Click Tests - BCOMPs', () => {
+describe('TodoList - Click Tests - Benefit Companies', () => {
   const { assign } = window.location
 
   beforeAll(() => {

@@ -449,7 +449,7 @@ describe.skip('TodoList - tests specific to Cooperatives', () => {
   //
   // FUTURE: add any Coop-specific tests here
   // eg, year in title
-  // eg, no checkbox (as with BENs)
+  // eg, no checkbox (as with BEN/BC/CC/ULC and CBEN/C/CCC/CUL)
   //
 })
 

@@ -16,7 +16,7 @@ import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
-import { ConfigJson } from '@/resources/business-config'
+import { BusinessConfigCp } from '@/resources/CP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // suppress various warnings:
@@ -73,7 +73,7 @@ describe('Annual Report - Part 1 - UI', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(AnnualReport, { mocks: { $route } })
     businessStore.setLegalType(CorpTypeCd.COOP)
-    rootStore.configObject = ConfigJson.find(x => x.entityType === businessStore.getLegalType)
+    rootStore.configObject = BusinessConfigCp
     await Vue.nextTick() // wait for DOM to update
 
     const certify: any = wrapper.findComponent(Certify)

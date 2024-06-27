@@ -180,17 +180,18 @@ export const useRootStore = defineStore('root', {
     /**
      * This is used to show Legal Obligations only for a new business
      * that has no tasks and hasn't filed anything yet (except their application).
-     **/
+     */
     isBusinessWithNoMaintenanceFilings (state: RootStateIF): boolean {
       const filingHistoryListStore = useFilingHistoryListStore()
       return (
         // no todo items
         (state.tasks.length === 0) &&
-        // only the Amalgamation or IA or Registration filing history item
+        // only the Amalgamation/IA/Registration/Continuation In filing history item
         (filingHistoryListStore.getFilings.length === 1) && (
           EnumUtilities.isTypeAmalgamationApplication(filingHistoryListStore.getFilings[0]) ||
           EnumUtilities.isTypeIncorporationApplication(filingHistoryListStore.getFilings[0]) ||
-          EnumUtilities.isTypeRegistration(filingHistoryListStore.getFilings[0])
+          EnumUtilities.isTypeRegistration(filingHistoryListStore.getFilings[0]) ||
+          EnumUtilities.isTypeContinuationIn(filingHistoryListStore.getFilings[0])
         )
       )
     },
@@ -280,7 +281,7 @@ export const useRootStore = defineStore('root', {
       /** The reason text for a business made historical by a dissolution. */
       function reasonTextDissolution (): string {
         const name = EnumUtilities.dissolutionTypeToName(
-          businessStore.isFirm,
+          businessStore.isEntityFirm,
           (stateFiling.dissolution?.dissolutionType as FilingSubTypes)
         )
         const dissolutionDate = DateUtilities.yyyyMmDdToDate(stateFiling.dissolution?.dissolutionDate)

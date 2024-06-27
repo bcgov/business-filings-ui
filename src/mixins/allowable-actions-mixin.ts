@@ -10,9 +10,9 @@ import { useBusinessStore, useRootStore } from '@/stores'
 export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) getAllowedActions!: AllowedActionsIF
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
-  @Getter(useBusinessStore) isCoop!: boolean
-  @Getter(useBusinessStore) isFirm!: boolean
-  @Getter(useBusinessStore) isSoleProp!: boolean
+  @Getter(useBusinessStore) isEntityCoop!: boolean
+  @Getter(useBusinessStore) isEntityFirm!: boolean
+  @Getter(useBusinessStore) isEntitySoleProp!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
@@ -25,7 +25,7 @@ export default class AllowableActionsMixin extends Vue {
 
     switch (action) {
       case AllowableActions.ADDRESS_CHANGE: {
-        if (this.isFirm) {
+        if (this.isEntityFirm) {
           return this.isAllowedFiling(FilingTypes.CHANGE_OF_REGISTRATION)
         }
         return this.isAllowedFiling(FilingTypes.CHANGE_OF_ADDRESS)
@@ -58,12 +58,12 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.BUSINESS_INFORMATION: {
-        if (this.isCoop) {
+        if (this.isEntityCoop) {
           // NB: this feature is targeted via LaunchDarkly
           const ff = !!GetFeatureFlag('special-resolution-ui-enabled')
           return (ff && this.isAllowedFiling(FilingTypes.SPECIAL_RESOLUTION))
         }
-        if (this.isFirm) {
+        if (this.isEntityFirm) {
           return this.isAllowedFiling(FilingTypes.CHANGE_OF_REGISTRATION)
         }
         return this.isAllowedFiling(FilingTypes.ALTERATION)
@@ -113,7 +113,7 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.DIRECTOR_CHANGE: {
-        if (this.isFirm) {
+        if (this.isEntityFirm) {
           return this.isAllowedFiling(FilingTypes.CHANGE_OF_REGISTRATION)
         }
         return this.isAllowedFiling(FilingTypes.CHANGE_OF_DIRECTORS)

@@ -15,7 +15,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
-import { ConfigJson } from '@/resources/business-config'
+import { BusinessConfigCp } from '@/resources/CP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingCodes } from '@bcrs-shared-components/enums'
 
@@ -163,7 +163,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
     businessStore.setLegalType(CorpTypeCd.COOP)
-    rootStore.configObject = ConfigJson.find(x => x.entityType === businessStore.getLegalType)
+    rootStore.configObject = BusinessConfigCp
     await Vue.nextTick()
 
     const certify = wrapper.findComponent(Certify)
