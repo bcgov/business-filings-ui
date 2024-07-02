@@ -348,7 +348,12 @@ export default class App extends Mixins(
   /** Called when component is created. */
   created (): void {
     // listen for reload data events
-    this.$root.$on('reloadData', () => this.fetchData())
+    this.$root.$on('reloadData', async () => {
+      // clear Todo List / Filing History List before fetching new data
+      this.setTasks([])
+      this.setFilings([])
+      await this.fetchData()
+    })
   }
 
   /** Called when component is mounted. */
@@ -856,7 +861,7 @@ export default class App extends Mixins(
   }
 
   /** Handles Retry click event from dialogs. */
-  onClickRetry (hard = false): void {
+  async onClickRetry (hard = false): Promise<void> {
     if (hard) {
       // clear session variables and hard-reload the page
       // to force new login and try again
@@ -868,7 +873,7 @@ export default class App extends Mixins(
       this.businessAuthErrorDialog = false
       this.nameRequestAuthErrorDialog = false
       this.nameRequestInvalidDialog = false
-      this.fetchData()
+      await this.fetchData()
     }
   }
 
