@@ -72,8 +72,8 @@ export default class FutureEffective extends Vue {
     if (EnumUtilities.isTypeContinuationIn(this.filing)) {
       return {
         subtitle: 'Future Effective Incorporation Date',
-        filingLabel: 'continuation in',
-        filingTitle: 'Continuation In Application'
+        filingLabel: 'continuation application',
+        filingTitle: 'Continuation Application'
       }
     }
     return {

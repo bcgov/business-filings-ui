@@ -64,7 +64,7 @@ export default class FutureEffectivePending extends Vue {
     if (EnumUtilities.isTypeContinuationIn(this.filing)) {
       return {
         subtitle: 'Incorporation Pending',
-        filingLabel: 'continuation in'
+        filingLabel: 'continuation application'
       }
     }
     return {

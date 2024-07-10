@@ -1617,7 +1617,7 @@ describe('Filing History List - continuation in applications', () => {
         businessIdentifier: null,
         commentsCount: 0,
         displayLedger: true,
-        displayName: 'BC Unlimited Liability Company Continuation In Application',
+        displayName: 'BC Unlimited Liability Company Continuation Application',
         effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
         filingId: 85114,
         isFutureEffective: false,

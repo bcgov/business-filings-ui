@@ -81,7 +81,7 @@
       <!-- Subtitle -->
       <div
         id="app-description"
-        aria-label="Amalgamation, Continuation In, Incorporation or Registration Description"
+        aria-label="Amalgamation, Continuation Application, Incorporation or Registration Description"
       >
         {{ appDescription }}
       </div>
