@@ -2,7 +2,10 @@ import EnumUtilities from '@/services/enum-utilities'
 
 describe('Enum Utilities', () => {
   it('returns correct values for filing state helpers', () => {
+    expect(EnumUtilities.isStatusApproved({ status: 'APPROVED' })).toBe(true)
+    expect(EnumUtilities.isStatusAwaitingReview({ status: 'AWAITING_REVIEW' })).toBe(true)
     expect(EnumUtilities.isStatusCancelled({ status: 'CANCELLED' })).toBe(true)
+    expect(EnumUtilities.isStatusChangeRequested({ status: 'CHANGE_REQUESTED' })).toBe(true)
     expect(EnumUtilities.isStatusCompleted({ status: 'COMPLETED' })).toBe(true)
     expect(EnumUtilities.isStatusCorrected({ status: 'CORRECTED' })).toBe(true)
     expect(EnumUtilities.isStatusDeleted({ status: 'DELETED' })).toBe(true)
@@ -12,6 +15,7 @@ describe('Enum Utilities', () => {
     expect(EnumUtilities.isStatusPaid({ status: 'PAID' })).toBe(true)
     expect(EnumUtilities.isStatusPending({ status: 'PENDING' })).toBe(true)
     expect(EnumUtilities.isStatusPendingCorrection({ status: 'PENDING_CORRECTION' })).toBe(true)
+    expect(EnumUtilities.isStatusRejected({ status: 'REJECTED' })).toBe(true)
     expect(EnumUtilities.isStatusWithdrawn({ status: 'WITHDRAWN' })).toBe(true)
   })
 

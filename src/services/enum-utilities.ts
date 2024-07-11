@@ -7,9 +7,24 @@ import {
 import { FilingNames, FilingTypes } from '@bcrs-shared-components/enums'
 
 export default class EnumUtilities {
+  /** Returns True if item status is Approved. */
+  static isStatusApproved (item: any): boolean {
+    return (item.status === FilingStatus.APPROVED)
+  }
+
+  /** Returns True if item status is Awaiting Review. */
+  static isStatusAwaitingReview (item: any): boolean {
+    return (item.status === FilingStatus.AWAITING_REVIEW)
+  }
+
   /** Returns True if item status is Cancelled. */
   static isStatusCancelled (item: any): boolean {
     return (item.status === FilingStatus.CANCELLED)
+  }
+
+  /** Returns True if item status is Change Rejected. */
+  static isStatusChangeRequested (item: any): boolean {
+    return (item.status === FilingStatus.CHANGE_REQUESTED)
   }
 
   /** Returns True if item status is Completed. */
@@ -55,6 +70,11 @@ export default class EnumUtilities {
   /** Returns True if item status is Pending-Correction. */
   static isStatusPendingCorrection (item: any): boolean {
     return (item.status === FilingStatus.PENDING_CORRECTION)
+  }
+
+  /** Returns True if item status is Rejected. */
+  static isStatusRejected (item: any): boolean {
+    return (item.status === FilingStatus.REJECTED)
   }
 
   /** Returns True if item status is Withdrawn. */
