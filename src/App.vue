@@ -621,7 +621,7 @@ export default class App extends Mixins(
 
     const status = filing.header.status as FilingStatus
     if (!status) {
-      throw new Error(`Invalid ${filingName} filing - filing status`)
+      throw new Error(`Invalid ${filingName} filing - missing filing status`)
     }
 
     const isAmalgamation = (filingName === FilingTypes.AMALGAMATION_APPLICATION)
@@ -631,6 +631,7 @@ export default class App extends Mixins(
 
     let entityStatus: EntityStatus
     switch (status) {
+      case FilingStatus.CHANGE_REQUESTED:
       case FilingStatus.DRAFT:
       case FilingStatus.PENDING:
         // this is a boostrap task
@@ -641,8 +642,11 @@ export default class App extends Mixins(
         else throw new Error(`Invalid ${filingName} filing - filing name`)
         break
 
+      case FilingStatus.APPROVED:
+      case FilingStatus.AWAITING_REVIEW:
       case FilingStatus.COMPLETED:
       case FilingStatus.PAID:
+      case FilingStatus.REJECTED:
         // this is a bootstrap filing
         if (isAmalgamation) entityStatus = EntityStatus.FILED_AMALGAMATION
         else if (isContinuationInApplication) entityStatus = EntityStatus.FILED_CONTINUATION_IN
@@ -652,7 +656,7 @@ export default class App extends Mixins(
         break
 
       default:
-        throw new Error(`Invalid ${filingName} filing - filing status`)
+        throw new Error(`Invalid ${filingName} filing - filing status = ${status}`)
     }
 
     // special check for amalgamation application
@@ -691,7 +695,7 @@ export default class App extends Mixins(
     // store the bootstrap data in the right list
     if (this.isBootstrapTask) this.storeBootstrapTask(response)
     else if (this.isBootstrapFiling) this.storeBootstrapFiling(response)
-    else throw new Error(`Invalid ${filingName} filing - filing status`)
+    else throw new Error(`Invalid ${filingName} filing - not a task or filing`)
   }
 
   /** Stores bootstrap task in the Todo List. */
