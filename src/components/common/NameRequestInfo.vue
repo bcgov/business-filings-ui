@@ -129,7 +129,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
       case NrRequestActionCodes.NEW_BUSINESS: return 'New Business'
       case NrRequestActionCodes.RESTORE: return 'Restoration Request'
       case NrRequestActionCodes.AMALGAMATE: return 'Amalgamation'
-      case NrRequestActionCodes.MOVE: return 'Continuation Application'
+      case NrRequestActionCodes.MOVE: return 'Continuation In'
     }
     return '' // should never happen
   }
