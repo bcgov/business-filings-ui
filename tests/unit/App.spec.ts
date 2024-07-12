@@ -3045,7 +3045,7 @@ describe('App as a draft numbered continuation in application', () => {
     expect(rootStore.tasks[0].task.filing.header.name).toBe('continuationIn')
     expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
     expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
-    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Continuation In Application')
+    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Continuation Application')
   })
 })
 
@@ -3143,7 +3143,7 @@ describe('App as a completed continuation in application', () => {
     // verify loaded filing
     expect(filingHistoryListStore.filings.length).toBe(1)
     expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
-    expect(filingHistoryListStore.filings[0].displayName).toBe('BC Limited Company Continuation In Application')
+    expect(filingHistoryListStore.filings[0].displayName).toBe('BC Limited Company Continuation Application')
     expect(filingHistoryListStore.filings[0].name).toBe('continuationIn')
     expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
     expect(filingHistoryListStore.filings[0].data.applicationDate).toBe('2020-05-20')

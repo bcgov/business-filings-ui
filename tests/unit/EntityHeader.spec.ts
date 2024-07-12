@@ -357,7 +357,7 @@ describe('Entity Header - data', () => {
       {
         task: {
           filing: {
-            displayName: 'BC Limited Company Continuation In Application'
+            displayName: 'BC Limited Company Continuation Application'
           }
         }
       } as any
@@ -370,7 +370,7 @@ describe('Entity Header - data', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('#app-name').text()).toBe('Continued In Company')
-    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Continuation In Application')
+    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Continuation Application')
   })
 
   it('displays Draft Continuation In application entity info - Numbered Company', async () => {
@@ -383,7 +383,7 @@ describe('Entity Header - data', () => {
       {
         task: {
           filing: {
-            displayName: 'BC Limited Company Continuation In Application'
+            displayName: 'BC Limited Company Continuation Application'
           }
         }
       } as any
@@ -396,7 +396,7 @@ describe('Entity Header - data', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('#app-name').text()).toBe('Numbered Limited Company')
-    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Continuation In Application')
+    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Continuation Application')
   })
 
   it('displays filed named continued in company', async () => {
@@ -408,7 +408,7 @@ describe('Entity Header - data', () => {
     filingHistoryListStore.setFilings([
       {
         displayLedger: true,
-        displayName: 'BC Limited Company Continuation In Application',
+        displayName: 'BC Limited Company Continuation Application',
         effectiveDate: '2019-06-02 19:22:59 GMT',
         name: FilingTypes.CONTINUATION_IN,
         status: FilingStatus.COMPLETED,
@@ -435,7 +435,7 @@ describe('Entity Header - data', () => {
     filingHistoryListStore.setFilings([
       {
         displayLedger: true,
-        displayName: 'BC Limited Company Continuation In Application',
+        displayName: 'BC Limited Company Continuation Application',
         effectiveDate: '2019-06-02 19:22:59 GMT',
         name: FilingTypes.CONTINUATION_IN,
         status: FilingStatus.COMPLETED,
@@ -450,7 +450,7 @@ describe('Entity Header - data', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('#app-name').text()).toBe('Numbered Limited Company')
-    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Continuation In Application')
+    expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Continuation Application')
   })
 })
 

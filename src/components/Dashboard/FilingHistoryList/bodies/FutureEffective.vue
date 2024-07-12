@@ -35,6 +35,7 @@ import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
+import { FilingNames } from '@bcrs-shared-components/enums'
 import { useBusinessStore } from '@/stores'
 
 @Component({
@@ -52,7 +53,7 @@ export default class FutureEffective extends Vue {
       return {
         subtitle: 'Future Effective Incorporation Date',
         filingLabel: 'incorporation',
-        filingTitle: 'Incorporation Application'
+        filingTitle: FilingNames.INCORPORATION_APPLICATION
       }
     }
     if (EnumUtilities.isTypeAlteration(this.filing)) {
@@ -66,14 +67,14 @@ export default class FutureEffective extends Vue {
       return {
         subtitle: 'Future Effective Voluntary Dissolution Date',
         filingLabel: 'dissolution',
-        filingTitle: 'Voluntary Dissolution'
+        filingTitle: FilingNames.VOLUNTARY_DISSOLUTION
       }
     }
     if (EnumUtilities.isTypeContinuationIn(this.filing)) {
       return {
         subtitle: 'Future Effective Incorporation Date',
-        filingLabel: 'continuation in',
-        filingTitle: 'Continuation In Application'
+        filingLabel: 'incorporation',
+        filingTitle: FilingNames.CONTINUATION_IN_APPLICATION
       }
     }
     return {
