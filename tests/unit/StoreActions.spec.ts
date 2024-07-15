@@ -11,7 +11,7 @@ describe('Business Actions', () => {
 
   it('loads dissolution state filing', async () => {
     // init store properties we need
-    businessStore.setStateFiling('dummy_url')
+    businessStore.setStateFilingUrl('dummy_url')
     rootStore.corpTypeCd = CorpTypeCd.BENEFIT_COMPANY
 
     // mock filing data and services call
@@ -40,7 +40,7 @@ describe('Business Actions', () => {
 
   it('loads consent to continuation out state filing', async () => {
     // init store properties we need
-    businessStore.setStateFiling('dummy_url')
+    businessStore.setStateFilingUrl('dummy_url')
     rootStore.corpTypeCd = CorpTypeCd.BENEFIT_COMPANY
 
     // mock filing data and services call

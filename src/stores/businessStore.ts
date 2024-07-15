@@ -366,7 +366,7 @@ export const useBusinessStore = defineStore('business', {
       this.businessInfo.state = val
     },
 
-    setStateFiling (val: string) {
+    setStateFilingUrl (val: string) {
       this.businessInfo.stateFiling = val
     },
 

@@ -276,7 +276,7 @@ import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog } from '@/components/dialogs'
-import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { LegalServices } from '@/services/'
 import { Routes, SaveErrorReasons } from '@/enums'
@@ -298,8 +298,7 @@ import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
     SbcFeeSummary
   }
 })
-export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
-  EnumMixin, FilingMixin, ResourceLookupMixin) {
+export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType,

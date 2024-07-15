@@ -350,7 +350,7 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { BusinessNameForeign, Certify, DetailComment, EffectiveDate, ForeignJurisdiction } from '@/components/common'
 import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
-import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
 import { EffectOfOrderTypes, FilingStatus, Routes, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
@@ -374,8 +374,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     SbcFeeSummary
   }
 })
-export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin,
-  EnumMixin, FilingMixin, ResourceLookupMixin) {
+export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
     businessNameForeignRef: BusinessNameForeign,

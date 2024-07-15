@@ -285,7 +285,7 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { Certify, ForeignJurisdiction } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
-import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
 import { EffectOfOrderTypes, FilingStatus, Routes, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
@@ -308,8 +308,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     StaffPaymentDialog
   }
 })
-export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixin,
-  EnumMixin, FilingMixin, ResourceLookupMixin) {
+export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType,

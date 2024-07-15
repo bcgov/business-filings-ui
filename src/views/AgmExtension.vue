@@ -172,7 +172,7 @@ import AboutTheBusiness from '@/components/AgmExtension/AboutTheBusiness.vue'
 import AgmExtensionEvaluation from '@/components/AgmExtension/AgmExtensionEvaluation.vue'
 import AgmExtensionHelp from '@/components/AgmExtension/AgmExtensionHelp.vue'
 import ExtensionRequest from '@/components/AgmExtension/ExtensionRequest.vue'
-import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
 import { Routes, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
@@ -193,8 +193,7 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
     SbcFeeSummary
   }
 })
-export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
-  EnumMixin, FilingMixin, ResourceLookupMixin) {
+export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType,

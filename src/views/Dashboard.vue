@@ -44,6 +44,23 @@
               />
             </section>
 
+            <!-- Pending section-->
+            <section
+              v-if="false"
+              id="dashboard-pending-section"
+            >
+              <header>
+                <h2 class="mb-3">
+                  <span>Pending</span>&nbsp;<span class="section-count">({{ pendingCount }})</span>
+                </h2>
+              </header>
+              <LegalObligation />
+              <PendingList
+                :highlightId="filingId"
+                @pending-count="pendingCount = $event"
+              />
+            </section>
+
             <!-- Recent Filing History section -->
             <section id="dashboard-filing-history-section">
               <header>
@@ -235,13 +252,14 @@ import CustodianListSm from '@/components/Dashboard/CustodianListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
+import PendingList from '@/components/Dashboard/PendingList.vue'
 import ProprietorPartnersListSm from '@/components/Dashboard/ProprietorPartnersListSm.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import { CoaWarningDialog } from '@/components/dialogs'
 import { Routes, AllowableActions, Roles } from '@/enums'
 import { ApiFilingIF, PartyIF } from '@/interfaces'
-import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
+import { AllowableActionsMixin, CommonMixin, DateMixin } from '@/mixins'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
@@ -253,19 +271,16 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
     DirectorListSm,
     FilingHistoryList,
     LegalObligation,
+    PendingList,
     ProprietorPartnersListSm,
     StaffNotation,
     TodoList
   }
 })
-export default class Dashboard extends Mixins(
-  AllowableActionsMixin,
-  CommonMixin,
-  DateMixin,
-  EnumMixin
-) {
+export default class Dashboard extends Mixins(AllowableActionsMixin, CommonMixin, DateMixin) {
   // local variables
   todoCount = 0
+  pendingCount = 0
   coaWarningDialog = false
   alertCount = 0
 

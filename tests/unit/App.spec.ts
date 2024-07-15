@@ -12,7 +12,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import App from '@/App.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { EntityStatus, FilingStatus, FilingSubTypes } from '@/enums'
+import { FilingStatus, FilingSubTypes } from '@/enums'
 import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
 
 import * as utils from '@/utils'
@@ -2315,7 +2315,7 @@ describe('App as a draft numbered regular amalgamation application', () => {
 
   it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
+    expect(rootStore.isDraftAmalgamation).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
@@ -2429,7 +2429,7 @@ describe('App as a draft named regular amalgamation application', () => {
 
   it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
+    expect(rootStore.isDraftAmalgamation).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
@@ -2529,7 +2529,7 @@ describe('App as a completed regular amalgamation application', () => {
 
   it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.getEntityStatus).toBe(EntityStatus.FILED_AMALGAMATION)
+    expect(rootStore.isFiledAmalgamation).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
@@ -2628,7 +2628,7 @@ describe('App as a draft horizontal amalgamation application', () => {
 
   it('fetches horizontal amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
+    expect(rootStore.isDraftAmalgamation).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
@@ -2732,7 +2732,7 @@ describe('App as a completed horizontal amalgamation application', () => {
 
   it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.getEntityStatus).toBe(EntityStatus.FILED_AMALGAMATION)
+    expect(rootStore.isFiledAmalgamation).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
@@ -2831,7 +2831,7 @@ describe('App as a draft vertical amalgamation application', () => {
 
   it('fetches vertical amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_AMALGAMATION)
+    expect(rootStore.isDraftAmalgamation).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
@@ -2935,7 +2935,7 @@ describe('App as a completed vertical amalgamation application', () => {
 
   it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.getEntityStatus).toBe(EntityStatus.FILED_AMALGAMATION)
+    expect(rootStore.isFiledAmalgamation).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
@@ -3029,7 +3029,7 @@ describe('App as a draft numbered continuation in application', () => {
 
   it('fetches continuation in filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.getEntityStatus).toBe(EntityStatus.DRAFT_CONTINUATION_IN)
+    expect(rootStore.isDraftContinuationIn).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityContinueIn).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
@@ -3132,7 +3132,7 @@ describe('App as a completed continuation in application', () => {
 
   it('fetches continuation in  filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.getEntityStatus).toBe(EntityStatus.FILED_CONTINUATION_IN)
+    expect(rootStore.isFiledContinuationIn).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityContinueIn).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
