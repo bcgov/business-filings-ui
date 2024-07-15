@@ -164,13 +164,7 @@ import {
   TaskTodoIF
 } from '@/interfaces'
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
-import {
-  EntityStatus,
-  FilingStatus,
-  NameRequestStates,
-  NigsMessage,
-  Routes
-} from '@/enums'
+import { FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -240,7 +234,8 @@ export default class App extends Mixins(
   // root store references
   @Getter(useRootStore) getKeycloakRoles!: Array<string>
   @Getter(useRootStore) isBootstrapFiling!: boolean
-  @Getter(useRootStore) isBootstrapTask!: boolean
+  @Getter(useRootStore) isBootstrapPending!: boolean
+  @Getter(useRootStore) isBootstrapTodo!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useRootStore) showFetchingDataSpinner!: boolean
   @Getter(useRootStore) showStartingAmalgamationSpinner!: boolean
@@ -382,6 +377,8 @@ export default class App extends Mixins(
 
   @Action(useRootStore) loadStateFiling!: () => Promise<void>
   @Action(useRootStore) setAuthRoles!: (x: Array<string>) => void
+  @Action(useRootStore) setBootstrapFilingStatus!: (x: FilingStatus) => void
+  @Action(useRootStore) setBootstrapFilingType!: (x: FilingTypes) => void
   @Action(useRootStore) setBusinessAddress!: (x: OfficeAddressIF) => void
   @Action(useRootStore) setBusinessEmail!: (x: string) => void
   @Action(useRootStore) setBusinessPhone!: (x: string) => void
@@ -390,7 +387,6 @@ export default class App extends Mixins(
   @Action(useRootStore) setCorpTypeCd!: (x: CorpTypeCd) => void
   @Action(useRootStore) setCurrentDate!: (x: string) => void
   @Action(useRootStore) setCurrentJsDate!: (x: Date) => void
-  @Action(useRootStore) setEntityStatus!: (x: EntityStatus) => void
   @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
   @Action(useRootStore) setKeycloakRoles!: (x: Array<string>) => void
   @Action(useRootStore) setNameRequest!: (x: any) => void
@@ -472,12 +468,12 @@ export default class App extends Mixins(
       try {
         this.nameRequestInvalidType = null // reset for new fetches
 
-        // fetch the bootstrap filing and store the bootstrap business data
+        // fetch the bootstrap filing and store the bootstrap item
         const response = await LegalServices.fetchBootstrapFiling(this.tempRegNumber)
-        this.storeBootstrapBusinessData(response)
+        this.storeBootstrapItem(response)
 
         // if it is a task (not a filing), and it has a NR, load it
-        if (this.isBootstrapTask && this.localNrNumber) {
+        if (this.isBootstrapTodo && this.localNrNumber) {
           const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
           this.storeNrData(nr, response)
         }
@@ -610,60 +606,21 @@ export default class App extends Mixins(
   }
 
   /**
-   * Verifies and stores a bootstrap filing's data to make this UI (entity dashboard)
+   * Verifies and stores a bootstrap item's data to make this UI (entity dashboard)
    * look like a business.
    */
-  storeBootstrapBusinessData (response: any): void {
+  storeBootstrapItem (response: any): void {
     const filing = response?.filing
     const filingName = filing.header?.name as FilingTypes
-
-    if (!filing || !filing.business || !filing.header || !filingName) {
-      throw new Error(`Invalid ${filingName} filing`)
-    }
-
     const status = filing.header.status as FilingStatus
-    if (!status) {
-      throw new Error(`Invalid ${filingName} filing - missing filing status`)
-    }
 
-    const isAmalgamation = (filingName === FilingTypes.AMALGAMATION_APPLICATION)
-    const isContinuationInApplication = (filingName === FilingTypes.CONTINUATION_IN)
-    const isIncorporationApplication = (filingName === FilingTypes.INCORPORATION_APPLICATION)
-    const isRegistration = (filingName === FilingTypes.REGISTRATION)
-
-    let entityStatus: EntityStatus
-    switch (status) {
-      case FilingStatus.CHANGE_REQUESTED:
-      case FilingStatus.DRAFT:
-      case FilingStatus.PENDING:
-        // this is a boostrap task
-        if (isAmalgamation) entityStatus = EntityStatus.DRAFT_AMALGAMATION
-        else if (isContinuationInApplication) entityStatus = EntityStatus.DRAFT_CONTINUATION_IN
-        else if (isIncorporationApplication) entityStatus = EntityStatus.DRAFT_INCORP_APP
-        else if (isRegistration) entityStatus = EntityStatus.DRAFT_REGISTRATION
-        else throw new Error(`Invalid status ${status} for ${filingName} filing`)
-        break
-
-      case FilingStatus.APPROVED:
-      case FilingStatus.AWAITING_REVIEW:
-      case FilingStatus.COMPLETED:
-      case FilingStatus.PAID:
-      case FilingStatus.REJECTED:
-        // this is a bootstrap filing
-        if (isAmalgamation) entityStatus = EntityStatus.FILED_AMALGAMATION
-        else if (isContinuationInApplication) entityStatus = EntityStatus.FILED_CONTINUATION_IN
-        else if (isIncorporationApplication) entityStatus = EntityStatus.FILED_INCORP_APP
-        else if (isRegistration) entityStatus = EntityStatus.FILED_REGISTRATION
-        else throw new Error(`Invalid status ${status} for ${filingName} filing`)
-        break
-
-      default:
-        throw new Error(`Invalid status ${status} for ${filingName} filing`)
+    if (!filing || !filing.business || !filing.header || !filingName || !status) {
+      throw new Error(`Invalid boostrap filing - missing required property = ${filing}`)
     }
 
     // special check for amalgamation application
-    if (isAmalgamation && !filing.amalgamationApplication.type) {
-      throw new Error('Missing amalgamation type')
+    if (filingName === FilingTypes.AMALGAMATION_APPLICATION && !filing.amalgamationApplication.type) {
+      throw new Error('Invalid bootstrap filing - missing amalgamation type')
     }
 
     // NB: different object from actual NR
@@ -673,37 +630,39 @@ export default class App extends Mixins(
       nrNumber: string
     }
     if (!nameRequest) {
-      throw new Error(`Invalid ${filingName} filing - Name Request object`)
+      throw new Error('Invalid bootstrap filing - missing name request object')
     }
 
     // verify that this is a supported entity type
     const legalType = nameRequest.legalType
     if (!legalType || !this.supportedEntityTypes.includes(legalType)) {
-      throw new Error(`Invalid ${filingName} filing - legal type`)
+      throw new Error(`Invalid bootstrap filing - missing or unsupported legal type = ${legalType}`)
     }
 
     // store business info
-    this.setEntityStatus(entityStatus)
+    this.setBootstrapFilingStatus(status)
+    this.setBootstrapFilingType(filingName)
     this.setIdentifier(this.tempRegNumber)
     this.setLegalType(legalType)
     this.setGoodStanding(true) // draft apps are always in good standing
 
     // save local NR Number if present
-    this.localNrNumber = nameRequest.nrNumber || null
+    if (nameRequest.nrNumber) this.localNrNumber = nameRequest.nrNumber
 
     // store Legal Name if present
     if (nameRequest.legalName) this.setLegalName(nameRequest.legalName)
 
-    // store the bootstrap data in the right list
-    if (this.isBootstrapTask) this.storeBootstrapTask(response)
+    // store the bootstrap item in the right list
+    if (this.isBootstrapTodo) this.storeBootstrapTask(response)
+    else if (this.isBootstrapPending) this.storeBootstrapPending(response)
     else if (this.isBootstrapFiling) this.storeBootstrapFiling(response)
-    else throw new Error(`Invalid ${filingName} filing - not a task or filing`)
+    else throw new Error(`Invalid boostrap filing - not a task or pending or filing = ${filing}`)
   }
 
-  /** Stores bootstrap task in the Todo List. */
+  /** Stores bootstrap item in the Todo List. */
   storeBootstrapTask (response: any): void {
     const filing = response.filing as TaskTodoIF
-    // NB: these were already validated in storeBootstrapBusinessData()
+    // NB: these were already validated in storeBootstrapItem()
     const header = filing.header
     const data = filing[header.name]
 
@@ -725,10 +684,15 @@ export default class App extends Mixins(
     this.setTasks([taskItem])
   }
 
-  /** Stores bootstrap filing in the Filing History List. */
+  /** Stores bootstrap item in the PendingList. */
+  storeBootstrapPending (response: any): void {
+    this.storeBootstrapFiling(response) // *** TODO: implement this
+  }
+
+  /** Stores bootstrap item in the Filing History List. */
   storeBootstrapFiling (response: any): void {
     const filing = response.filing as TaskTodoIF
-    // NB: these were already validated in storeBootstrapBusinessData()
+    // NB: these were already validated in storeBootstrapItem()
     const header = filing.header
     const data = filing[header.name]
 

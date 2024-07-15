@@ -113,10 +113,10 @@ export default class EntityHeader extends Vue {
   @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
   @Getter(useRootStore) getReasonText!: string
   @Getter(useRootStore) getTasks!: ApiTaskIF[]
-  @Getter(useRootStore) isDraftAmalgamation!: boolean
-  @Getter(useRootStore) isDraftContinuationIn!: boolean
-  @Getter(useRootStore) isFiledAmalgamation!: boolean
-  @Getter(useRootStore) isFiledContinuationIn!: boolean
+  @Getter(useRootStore) isAmalgamationTodo!: boolean
+  @Getter(useRootStore) isAmalgamationFiling!: boolean
+  @Getter(useRootStore) isContinuationInTodo!: boolean
+  @Getter(useRootStore) isContinuationInFiling!: boolean
   @Getter(useRootStore) isInLimitedRestoration!: boolean
 
   /** The business description. */
@@ -131,17 +131,17 @@ export default class EntityHeader extends Vue {
 
   /** The incorporation/registration/continuationIn/amalgamation application description. */
   get appDescription (): string {
-    if (this.isDraftAmalgamation) {
+    if (this.isAmalgamationTodo) {
       return this.getTasks[0]?.task.filing.displayName
     }
-    if (this.isFiledAmalgamation) {
+    if (this.isAmalgamationFiling) {
       return this.getFilings[0]?.displayName
     }
 
-    if (this.isDraftContinuationIn) {
+    if (this.isContinuationInTodo) {
       return this.getTasks[0]?.task.filing.displayName
     }
-    if (this.isFiledContinuationIn) {
+    if (this.isContinuationInFiling) {
       return this.getFilings[0]?.displayName
     }
 

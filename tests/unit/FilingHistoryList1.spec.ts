@@ -26,7 +26,7 @@ import ContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/Co
 import DefaultFiling from '@/components/Dashboard/FilingHistoryList/filings/DefaultFiling.vue'
 import AgmExtension from '@/components/Dashboard/FilingHistoryList/filings/AgmExtension.vue'
 import { FilingTypes } from '@bcrs-shared-components/enums'
-import { CorpTypeCd, EntityStatus, FilingStatus, FilingSubTypes } from '@/enums'
+import { CorpTypeCd, FilingStatus, FilingSubTypes } from '@/enums'
 import { LegalServices } from '@/services'
 
 Vue.use(Vuetify)
@@ -1291,10 +1291,9 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.v-expansion-panel-content').isVisible()).toBe(true)
     expect(wrapper.find('.future-effective').text()).toContain('Future Effective Incorporation Date')
 
-    rootStore.$state = {
-      ...rootStore.$state,
-      entityStatus: null // Set isBootstrapFiling to false
-    }
+    // cleanup
+    rootStore.setBootstrapFilingStatus(null) // set isBootstrapFiling to false
+    rootStore.setBootstrapFilingType(null)
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
   })
@@ -1429,10 +1428,8 @@ describe('Filing History List - incorporation applications', () => {
 
   it('displays a Completed IA (temp reg number mode), test View Button', async () => {
     // init store
-    rootStore.$state = {
-      ...rootStore.$state,
-      entityStatus: EntityStatus.FILED_INCORP_APP // Set isBootstrapFiling to true for the purpose of the test
-    }
+    rootStore.setBootstrapFilingStatus(FilingStatus.COMPLETED) // set isBootstrapFiling to true
+    rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     filingHistoryListStore.setFilings([
@@ -1461,10 +1458,10 @@ describe('Filing History List - incorporation applications', () => {
     await expandBtn.trigger('click')
     await flushPromises() // wait for expansion transition
     // expect(expandBtn.isVisible()).toBe(false)
-    rootStore.$state = {
-      ...rootStore.$state,
-      entityStatus: null // Set isBootstrapFiling to false
-    }
+
+    // cleanup
+    rootStore.setBootstrapFilingStatus(null) // set isBootstrapFiling to false
+    rootStore.setBootstrapFilingType(null)
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
   })
@@ -1605,10 +1602,8 @@ describe('Filing History List - incorporation applications', () => {
 describe('Filing History List - continuation in applications', () => {
   it('displays a Completed and Paid Cont In (temp reg number mode)', async () => {
     // init store
-    rootStore.$state = {
-      ...rootStore.$state,
-      entityStatus: EntityStatus.FILED_CONTINUATION_IN // Set isBootstrapFiling to true for the purpose of the test
-    }
+    rootStore.setBootstrapFilingStatus(FilingStatus.COMPLETED) // set isBootstrapFiling to true
+    rootStore.setBootstrapFilingType(FilingTypes.CONTINUATION_IN)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setLegalType(CorpTypeCd.ULC_CONTINUE_IN)
     filingHistoryListStore.setFilings([
@@ -1628,11 +1623,13 @@ describe('Filing History List - continuation in applications', () => {
       } as any
     ])
     const wrapper = mount(FilingHistoryList, { vuetify })
+
     // verify View and Hide button
     const expandBtn = wrapper.find('.expand-btn')
     expect(expandBtn.isVisible()).toBe(true)
     expect(wrapper.find('.view-details').text()).toBe('View')
     expect(wrapper.find('.hide-details').text()).toBe('Hide')
+
     // verify Filing History Component
     expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
     expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
@@ -1640,10 +1637,10 @@ describe('Filing History List - continuation in applications', () => {
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
     expect(wrapper.findComponent(ContinuationIn).exists()).toBe(true)
-    rootStore.$state = {
-      ...rootStore.$state,
-      entityStatus: null // Set isBootstrapFiling to false
-    }
+
+    // cleanup
+    rootStore.setBootstrapFilingStatus(null) // set isBootstrapFiling to false
+    rootStore.setBootstrapFilingType(null)
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
   })

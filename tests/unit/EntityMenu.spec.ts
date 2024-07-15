@@ -5,8 +5,9 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import EntityMenu from '@/components/EntityInfo/EntityMenu.vue'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
-import { AllowableActions, CorpTypeCd, EntityState, EntityStatus } from '@/enums'
+import { AllowableActions, CorpTypeCd, EntityState, FilingStatus } from '@/enums'
 import * as utils from '@/utils'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -25,7 +26,8 @@ describe('Entity Menu - entities', () => {
     businessStore.setGoodStanding(false)
     businessStore.setLegalName(null)
     businessStore.setLegalType(null)
-    rootStore.entityStatus = null
+    rootStore.setBootstrapFilingStatus(null)
+    rootStore.setBootstrapFilingType(null)
     businessStore.setState(null)
     rootStore.keycloakRoles = []
 
@@ -83,7 +85,8 @@ describe('Entity Menu - entities', () => {
     // set store properties
     businessStore.setLegalName('My Named Company')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
     rootStore.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method
@@ -116,7 +119,8 @@ describe('Entity Menu - entities', () => {
     // set store properties
     businessStore.setLegalName('My Future Company')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.entityStatus = EntityStatus.FILED_INCORP_APP
+    rootStore.setBootstrapFilingStatus(FilingStatus.COMPLETED)
+    rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
     rootStore.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method

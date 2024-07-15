@@ -98,7 +98,7 @@ export const useBusinessStore = defineStore('business', {
       if (!GetFeatureFlag('enable-legal-name-fix')) {
         return state.businessInfo.legalName
       }
-      if (this.isEntityFirm && !rootStore.isDraftRegistration && !rootStore.isFiledRegistration) {
+      if (this.isEntityFirm && !rootStore.isRegistrationTodo && !rootStore.isRegistrationFiling) {
         return this.getAlternateName
       } else {
         return state.businessInfo.legalName
@@ -121,7 +121,7 @@ export const useBusinessStore = defineStore('business', {
     getEntityName (): string {
       const rootStore = useRootStore()
 
-      if (rootStore.isDraftAmalgamation || rootStore.isFiledAmalgamation) {
+      if (rootStore.isAmalgamationTodo || rootStore.isAmalgamationFiling) {
         return this.getLegalName || 'Numbered Amalgamated Company'
       } else {
         return (this.getLegalName || GetCorpNumberedDescription(this.getLegalType))

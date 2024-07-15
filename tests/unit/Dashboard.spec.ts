@@ -7,7 +7,7 @@ import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils'
 import mockRouter from './mockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useRootStore } from '@/stores'
-import { AllowableActions, CorpTypeCd, EntityStatus } from '@/enums'
+import { AllowableActions, CorpTypeCd, FilingStatus } from '@/enums'
 
 // Components
 import Dashboard from '@/views/Dashboard.vue'
@@ -16,6 +16,7 @@ import TodoList from '@/components/Dashboard/TodoList.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -86,17 +87,42 @@ describe('Dashboard - UI', () => {
   // *** TODO: add tests for Pending status
   it('identifies app tasks vs app filings', () => {
     const tests = [
-      { entityStatus: EntityStatus.DRAFT_AMALGAMATION, isBootstrapTask: true },
-      { entityStatus: EntityStatus.DRAFT_INCORP_APP, isBootstrapTask: true },
-      { entityStatus: EntityStatus.DRAFT_REGISTRATION, isBootstrapTask: true },
-      { entityStatus: EntityStatus.FILED_AMALGAMATION, isBootstrapFiling: true },
-      { entityStatus: EntityStatus.FILED_INCORP_APP, isBootstrapFiling: true },
-      { entityStatus: EntityStatus.FILED_REGISTRATION, isBootstrapFiling: true }
+      {
+        status: FilingStatus.DRAFT,
+        type: FilingTypes.AMALGAMATION_APPLICATION,
+        isBootstrapTodo: true
+      },
+      {
+        status: FilingStatus.COMPLETED,
+        type: FilingTypes.AMALGAMATION_APPLICATION,
+        isBootstrapFiling: true
+      },
+      {
+        status: FilingStatus.DRAFT,
+        type: FilingTypes.INCORPORATION_APPLICATION,
+        isBootstrapTodo: true
+      },
+      {
+        status: FilingStatus.COMPLETED,
+        type: FilingTypes.INCORPORATION_APPLICATION,
+        isBootstrapFiling: true
+      },
+      {
+        status: FilingStatus.DRAFT,
+        type: FilingTypes.REGISTRATION,
+        isBootstrapTodo: true
+      },
+      {
+        status: FilingStatus.COMPLETED,
+        type: FilingTypes.REGISTRATION,
+        isBootstrapFiling: true
+      }
     ]
 
     tests.forEach((test) => {
-      rootStore.entityStatus = test.entityStatus
-      expect(vm.isBootstrapTask).toBe(!!test.isBootstrapTask)
+      rootStore.setBootstrapFilingStatus(test.status)
+      rootStore.setBootstrapFilingType(test.type)
+      expect(vm.isBootstrapTodo).toBe(!!test.isBootstrapTodo)
       expect(vm.isBootstrapFiling).toBe(!!test.isBootstrapFiling)
     })
   })
