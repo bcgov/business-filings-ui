@@ -96,6 +96,46 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.AGM_LOCATION_CHANGE)
   }
 
+  /** Returns True if filing is an Amalgamation Application. */
+  static isTypeAmalgamationApplication (item: any): boolean {
+    return (item.name === FilingTypes.AMALGAMATION_APPLICATION)
+  }
+
+  /** Returns True if filing is a Regular Amalgamation. */
+  static isTypeAmalgamationRegular (item: any): boolean {
+    return (
+      // the property in a todo item or filing item:
+      item.filingSubType === FilingSubTypes.AMALGAMATION_REGULAR ||
+      // the property in a state filing:
+      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_REGULAR
+    )
+  }
+
+  /** Returns True if filing is a Horizontal Amalgamation. */
+  static isTypeAmalgamationHorizontal (item: any): boolean {
+    return (
+      // the property in a todo item or filing item:
+      item.filingSubType === FilingSubTypes.AMALGAMATION_HORIZONTAL ||
+      // the property in a state filing:
+      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_HORIZONTAL
+    )
+  }
+
+  /** Returns True if filing is a Vertical Amalgamation. */
+  static isTypeAmalgamationVertical (item: any): boolean {
+    return (
+      // the property in a todo item or filing item:
+      item.filingSubType === FilingSubTypes.AMALGAMATION_VERTICAL ||
+      // the property in a state filing:
+      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_VERTICAL
+    )
+  }
+
+  /** Returns True if filing is an Amalgamation Out. */
+  static isTypeAmalgamationOut (item: any): boolean {
+    return (item.name === FilingTypes.AMALGAMATION_OUT)
+  }
+
   /** Returns True if filing is an Alteration. */
   static isTypeAlteration (item: any): boolean {
     return (item.name === FilingTypes.ALTERATION)
@@ -129,11 +169,6 @@ export default class EnumUtilities {
   /** Returns True if filing is a Change of Registration. */
   static isTypeChangeOfRegistration (item: any): boolean {
     return (item.name === FilingTypes.CHANGE_OF_REGISTRATION)
-  }
-
-  /** Returns True if filing is an Amalgamation Out. */
-  static isTypeAmalgamationOut (item: any): boolean {
-    return (item.name === FilingTypes.AMALGAMATION_OUT)
   }
 
   /** Returns True if filing is a Consent for Amalgamation Out. */
@@ -174,41 +209,6 @@ export default class EnumUtilities {
   /** Returns True if filing is a Dissolved. */
   static isTypeDissolved (item: any): boolean {
     return (item.name === FilingTypes.DISSOLVED)
-  }
-
-  /** Returns True if filing is an Amalgamation Application. */
-  static isTypeAmalgamationApplication (item: any): boolean {
-    return (item.name === FilingTypes.AMALGAMATION_APPLICATION)
-  }
-
-  /** Returns True if filing is a Regular Amalgamation. */
-  static isTypeAmalgamationRegular (item: any): boolean {
-    return (
-      // the property in a todo item or filing item:
-      item.filingSubType === FilingSubTypes.AMALGAMATION_REGULAR ||
-      // the property in a state filing:
-      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_REGULAR
-    )
-  }
-
-  /** Returns True if filing is a Horizontal Amalgamation. */
-  static isTypeAmalgamationHorizontal (item: any): boolean {
-    return (
-      // the property in a todo item or filing item:
-      item.filingSubType === FilingSubTypes.AMALGAMATION_HORIZONTAL ||
-      // the property in a state filing:
-      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_HORIZONTAL
-    )
-  }
-
-  /** Returns True if filing is a Vertical Amalgamation. */
-  static isTypeAmalgamationVertical (item: any): boolean {
-    return (
-      // the property in a todo item or filing item:
-      item.filingSubType === FilingSubTypes.AMALGAMATION_VERTICAL ||
-      // the property in a state filing:
-      item.amalgamationApplication?.type === FilingSubTypes.AMALGAMATION_VERTICAL
-    )
   }
 
   /** Returns True if filing is an Incorporation Application. */

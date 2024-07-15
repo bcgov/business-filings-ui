@@ -152,7 +152,7 @@ import {
   getRegistryDashboardBreadcrumb,
   getStaffDashboardBreadcrumb
 } from '@/resources'
-import { CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, NameRequestMixin } from '@/mixins'
+import { CommonMixin, DateMixin, DirectorMixin, FilingMixin, NameRequestMixin } from '@/mixins'
 import { AuthServices, EnumUtilities, LegalServices } from '@/services/'
 import {
   ApiFilingIF,
@@ -195,7 +195,6 @@ export default class App extends Mixins(
   CommonMixin,
   DateMixin,
   DirectorMixin,
-  EnumMixin,
   FilingMixin,
   NameRequestMixin
 ) {
@@ -639,7 +638,7 @@ export default class App extends Mixins(
         else if (isContinuationInApplication) entityStatus = EntityStatus.DRAFT_CONTINUATION_IN
         else if (isIncorporationApplication) entityStatus = EntityStatus.DRAFT_INCORP_APP
         else if (isRegistration) entityStatus = EntityStatus.DRAFT_REGISTRATION
-        else throw new Error(`Invalid ${filingName} filing - filing name`)
+        else throw new Error(`Invalid status ${status} for ${filingName} filing`)
         break
 
       case FilingStatus.APPROVED:
@@ -652,11 +651,11 @@ export default class App extends Mixins(
         else if (isContinuationInApplication) entityStatus = EntityStatus.FILED_CONTINUATION_IN
         else if (isIncorporationApplication) entityStatus = EntityStatus.FILED_INCORP_APP
         else if (isRegistration) entityStatus = EntityStatus.FILED_REGISTRATION
-        else throw new Error(`Invalid ${filingName} filing - filing name`)
+        else throw new Error(`Invalid status ${status} for ${filingName} filing`)
         break
 
       default:
-        throw new Error(`Invalid ${filingName} filing - filing status = ${status}`)
+        throw new Error(`Invalid status ${status} for ${filingName} filing`)
     }
 
     // special check for amalgamation application

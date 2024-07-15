@@ -94,12 +94,12 @@ import { capitalize, formatPhoneNumber } from '@/utils'
 import { NameRequestStates } from '@/enums'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { NameRequestIF, NameRequestApplicantIF } from '@/interfaces'
-import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
+import { DateMixin, NameRequestMixin } from '@/mixins'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useBusinessStore } from '@/stores'
 
 @Component({})
-export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRequestMixin) {
+export default class NameRequestInfo extends Mixins(DateMixin, NameRequestMixin) {
   @Prop({ default: () => {} }) readonly nameRequest!: NameRequestIF
 
   @Getter(useBusinessStore) isEntitySoleProp!: boolean

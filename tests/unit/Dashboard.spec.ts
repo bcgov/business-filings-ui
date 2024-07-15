@@ -83,6 +83,7 @@ describe('Dashboard - UI', () => {
     expect(wrapper.findComponent(DirectorListSm).exists()).toBe(true)
   })
 
+  // *** TODO: add tests for Pending status
   it('identifies app tasks vs app filings', () => {
     const tests = [
       { entityStatus: EntityStatus.DRAFT_AMALGAMATION, isBootstrapTask: true },

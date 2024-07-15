@@ -1,5 +1,5 @@
 <template>
-  <div id="todo-list">
+  <div id="pending-list">
     <ConfirmDialog
       ref="confirm"
       attach="#todo-list"
@@ -673,7 +673,7 @@ import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFil
     PaymentUnsuccessful
   }
 })
-export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
+export default class PendingList extends Mixins(AllowableActionsMixin, DateMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -862,7 +862,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     }
 
     // report number of items back to parent (dashboard)
-    this.$emit('todo-count', this.todoItems.length)
+    this.$emit('pending-count', this.todoItems.length)
 
     // if needed, highlight a specific task
     if (this.highlightId) this.highlightTask(this.highlightId)

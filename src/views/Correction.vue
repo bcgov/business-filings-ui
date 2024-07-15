@@ -239,7 +239,7 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, LoadCorrectionDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
-import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
 import { FilingStatus, Routes, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
@@ -259,7 +259,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     StaffPaymentDialog
   }
 })
-export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin) {
+export default class Correction extends Mixins(CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
     certifyRef: Certify,
