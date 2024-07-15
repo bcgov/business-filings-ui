@@ -112,6 +112,7 @@ export const useRootStore = defineStore('root', {
       return false // FUTURE: implement this
     },
 
+    /** The "entity status" for a bootstrap filing only. */
     getEntityStatus (state: RootStateIF): EntityStatus {
       return state.entityStatus
     },

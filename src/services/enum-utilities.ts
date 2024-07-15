@@ -7,6 +7,10 @@ import {
 import { FilingNames, FilingTypes } from '@bcrs-shared-components/enums'
 
 export default class EnumUtilities {
+  //
+  // Filing Status helpers
+  //
+
   /** Returns True if item status is Approved. */
   static isStatusApproved (item: any): boolean {
     return (item.status === FilingStatus.APPROVED)

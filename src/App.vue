@@ -467,7 +467,7 @@ export default class App extends Mixins(
       }
     }
 
-    // is this a bootstrap business? (eg, incorporation/registration/amalgamation)
+    // is this a bootstrap filing? (eg, incorporation/registration/amalgamation/continuation)
     if (this.tempRegNumber) {
       try {
         this.nameRequestInvalidType = null // reset for new fetches
@@ -508,7 +508,7 @@ export default class App extends Mixins(
     this.storeTasks(data[2])
     this.storeParties(data[4])
 
-    // now that we have business info, load state filing
+    // now that we have business info, load the state filing (if there is one)
     await this.loadStateFiling()
 
     // now that we know entity type, store config object
@@ -609,7 +609,10 @@ export default class App extends Mixins(
     }
   }
 
-  /** Verifies and stores a bootstrap business' data. */
+  /**
+   * Verifies and stores a bootstrap filing's data to make this UI (entity dashboard)
+   * look like a business.
+   */
   storeBootstrapBusinessData (response: any): void {
     const filing = response?.filing
     const filingName = filing.header?.name as FilingTypes
