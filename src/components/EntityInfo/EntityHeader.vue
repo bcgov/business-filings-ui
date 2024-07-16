@@ -141,6 +141,7 @@ export default class EntityHeader extends Vue {
     if (this.isContinuationInTodo) {
       return this.getTasks[0]?.task.filing.displayName
     }
+    // *** TODO: what needs to be done here for pending continuation bootstrap filing?
     if (this.isContinuationInFiling) {
       return this.getFilings[0]?.displayName
     }

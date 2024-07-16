@@ -472,7 +472,8 @@ export default class App extends Mixins(
         const response = await LegalServices.fetchBootstrapFiling(this.tempRegNumber)
         this.storeBootstrapItem(response)
 
-        // if it is a task (not a filing), and it has a NR, load it
+        // if it is a todo (not a filing), and it has a NR, load it
+        // (this is to display the NR details in the Todo List)
         if (this.isBootstrapTodo && this.localNrNumber) {
           const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
           this.storeNrData(nr, response)
@@ -653,14 +654,14 @@ export default class App extends Mixins(
     if (nameRequest.legalName) this.setLegalName(nameRequest.legalName)
 
     // store the bootstrap item in the right list
-    if (this.isBootstrapTodo) this.storeBootstrapTask(response)
+    if (this.isBootstrapTodo) this.storeBootstrapTodo(response)
     else if (this.isBootstrapPending) this.storeBootstrapPending(response)
     else if (this.isBootstrapFiling) this.storeBootstrapFiling(response)
     else throw new Error(`Invalid boostrap filing - not a task or pending or filing = ${filing}`)
   }
 
   /** Stores bootstrap item in the Todo List. */
-  storeBootstrapTask (response: any): void {
+  storeBootstrapTodo (response: any): void {
     const filing = response.filing as TaskTodoIF
     // NB: these were already validated in storeBootstrapItem()
     const header = filing.header
@@ -684,7 +685,7 @@ export default class App extends Mixins(
     this.setTasks([taskItem])
   }
 
-  /** Stores bootstrap item in the PendingList. */
+  /** Stores bootstrap item in the Pending List. */
   storeBootstrapPending (response: any): void {
     this.storeBootstrapFiling(response) // *** TODO: implement this
   }

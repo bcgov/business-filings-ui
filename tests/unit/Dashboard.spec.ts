@@ -84,8 +84,7 @@ describe('Dashboard - UI', () => {
     expect(wrapper.findComponent(DirectorListSm).exists()).toBe(true)
   })
 
-  // *** TODO: add tests for Pending status
-  it('identifies app tasks vs app filings', () => {
+  it('identifies todo vs pending vs filing bootstrap items', () => {
     const tests = [
       {
         status: FilingStatus.DRAFT,
@@ -95,6 +94,21 @@ describe('Dashboard - UI', () => {
       {
         status: FilingStatus.COMPLETED,
         type: FilingTypes.AMALGAMATION_APPLICATION,
+        isBootstrapFiling: true
+      },
+      {
+        status: FilingStatus.DRAFT,
+        type: FilingTypes.CONTINUATION_IN,
+        isBootstrapTodo: true
+      },
+      {
+        status: FilingStatus.AWAITING_REVIEW,
+        type: FilingTypes.CONTINUATION_IN,
+        isBootstrapPending: true
+      },
+      {
+        status: FilingStatus.COMPLETED,
+        type: FilingTypes.CONTINUATION_IN,
         isBootstrapFiling: true
       },
       {
