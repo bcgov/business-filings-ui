@@ -1,5 +1,6 @@
-import { CorpTypeCd, EntityStatus } from '@/enums'
+import { CorpTypeCd, FilingStatus } from '@/enums'
 import { ApiHeaderIF, ApiTaskIF, FilingDataIF, OfficeAddressIF, PartyIF } from '@/interfaces'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 
 /** Interface for the state filing object. */
 export interface StateFilingIF {
@@ -17,10 +18,14 @@ export interface RootStateIF {
   authRoles: Array<string>
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
   currentJsDate: Date // 'now' as of dashboard loading in UTC
-  entityStatus: EntityStatus // for amalgamations/applications/registrations only
   keycloakRoles: Array<string>
   stateFiling: StateFilingIF
   userKeycloakGuid: string
+
+  // bootstrap filing properties
+  // (amalgamations/incorp applications/registrations/continuation ins only)
+  bootstrapFilingStatus: FilingStatus
+  bootstrapFilingType: FilingTypes
 
   // entity info from auth db
   businessEmail: string

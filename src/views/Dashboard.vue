@@ -151,7 +151,7 @@
 
               <v-card flat>
                 <AddressListSm
-                  :showCompleteYourFilingMessage="isBootstrapTask"
+                  :showCompleteYourFilingMessage="isBootstrapTodo"
                   :showGrayedOut="isBootstrapFiling"
                 />
               </v-card>
@@ -194,7 +194,7 @@
               >
                 <v-card flat>
                   <ProprietorPartnersListSm
-                    :showCompleteYourFilingMessage="isBootstrapTask"
+                    :showCompleteYourFilingMessage="isBootstrapTodo"
                     :showGrayedOut="isBootstrapFiling"
                   />
                 </v-card>
@@ -229,7 +229,7 @@
               >
                 <v-card flat>
                   <DirectorListSm
-                    :showCompleteYourFilingMessage="isBootstrapTask"
+                    :showCompleteYourFilingMessage="isBootstrapTodo"
                     :showGrayedOut="isBootstrapFiling"
                   />
                 </v-card>
@@ -303,7 +303,7 @@ export default class Dashboard extends Mixins(AllowableActionsMixin, CommonMixin
 
   @Getter(useRootStore) getParties!: Array<PartyIF>
   @Getter(useRootStore) isBootstrapFiling!: boolean
-  @Getter(useRootStore) isBootstrapTask!: boolean
+  @Getter(useRootStore) isBootstrapTodo!: boolean
   // @Getter(useRootStore) isRoleStaff!: boolean
 
   /** Whether a COA is pending. */

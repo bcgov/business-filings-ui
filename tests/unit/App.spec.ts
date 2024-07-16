@@ -989,7 +989,7 @@ describe('App as a Draft IA with approved NR', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('BEN')
     expect(businessStore.getLegalName).toBe('My Name Request')
-    expect(rootStore.isBootstrapTask).toBe(true)
+    expect(rootStore.isBootstrapTodo).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -2087,7 +2087,7 @@ describe('App as a Draft Registration with approved NR', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('SP')
     expect(businessStore.getLegalName).toBe('My Name Request')
-    expect(rootStore.isBootstrapTask).toBe(true)
+    expect(rootStore.isBootstrapTodo).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -2315,13 +2315,13 @@ describe('App as a draft numbered regular amalgamation application', () => {
 
   it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.isDraftAmalgamation).toBe(true)
+    expect(rootStore.isAmalgamationTodo).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
-    expect(rootStore.isDraftAmalgamation).toBe(true)
-    expect(rootStore.isBootstrapTask).toBe(true)
+    expect(rootStore.isAmalgamationTodo).toBe(true)
+    expect(rootStore.isBootstrapTodo).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -2429,13 +2429,13 @@ describe('App as a draft named regular amalgamation application', () => {
 
   it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(rootStore.isDraftAmalgamation).toBe(true)
+    expect(rootStore.isAmalgamationTodo).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBe('My Amalgamated Company')
-    expect(rootStore.isDraftAmalgamation).toBe(true)
-    expect(rootStore.isBootstrapTask).toBe(true)
+    expect(rootStore.isAmalgamationTodo).toBe(true)
+    expect(rootStore.isBootstrapTodo).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -2529,12 +2529,12 @@ describe('App as a completed regular amalgamation application', () => {
 
   it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.isFiledAmalgamation).toBe(true)
+    expect(rootStore.isAmalgamationFiling).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
-    expect(rootStore.isFiledAmalgamation).toBe(true)
+    expect(rootStore.isAmalgamationFiling).toBe(true)
     expect(rootStore.isBootstrapFiling).toBe(true)
 
     // verify loaded filing
@@ -2628,13 +2628,13 @@ describe('App as a draft horizontal amalgamation application', () => {
 
   it('fetches horizontal amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.isDraftAmalgamation).toBe(true)
+    expect(rootStore.isAmalgamationTodo).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
-    expect(rootStore.isDraftAmalgamation).toBe(true)
-    expect(rootStore.isBootstrapTask).toBe(true)
+    expect(rootStore.isAmalgamationTodo).toBe(true)
+    expect(rootStore.isBootstrapTodo).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -2732,12 +2732,12 @@ describe('App as a completed horizontal amalgamation application', () => {
 
   it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.isFiledAmalgamation).toBe(true)
+    expect(rootStore.isAmalgamationFiling).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
-    expect(rootStore.isFiledAmalgamation).toBe(true)
+    expect(rootStore.isAmalgamationFiling).toBe(true)
     expect(rootStore.isBootstrapFiling).toBe(true)
 
     // verify loaded filing
@@ -2831,13 +2831,13 @@ describe('App as a draft vertical amalgamation application', () => {
 
   it('fetches vertical amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.isDraftAmalgamation).toBe(true)
+    expect(rootStore.isAmalgamationTodo).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
-    expect(rootStore.isDraftAmalgamation).toBe(true)
-    expect(rootStore.isBootstrapTask).toBe(true)
+    expect(rootStore.isAmalgamationTodo).toBe(true)
+    expect(rootStore.isBootstrapTodo).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -2935,12 +2935,12 @@ describe('App as a completed vertical amalgamation application', () => {
 
   it('fetches regular amalgamation filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.isFiledAmalgamation).toBe(true)
+    expect(rootStore.isAmalgamationFiling).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
-    expect(rootStore.isFiledAmalgamation).toBe(true)
+    expect(rootStore.isAmalgamationFiling).toBe(true)
     expect(rootStore.isBootstrapFiling).toBe(true)
 
     // verify loaded filing
@@ -3029,13 +3029,13 @@ describe('App as a draft numbered continuation in application', () => {
 
   it('fetches continuation in filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.isDraftContinuationIn).toBe(true)
+    expect(rootStore.isContinuationInTodo).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityContinueIn).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
-    expect(rootStore.isDraftContinuationIn).toBe(true)
-    expect(rootStore.isBootstrapTask).toBe(true)
+    expect(rootStore.isContinuationInTodo).toBe(true)
+    expect(rootStore.isBootstrapTodo).toBe(true)
 
     // verify loaded task
     expect(rootStore.tasks.length).toBe(1)
@@ -3132,12 +3132,12 @@ describe('App as a completed continuation in application', () => {
 
   it('fetches continuation in  filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
-    expect(rootStore.isFiledContinuationIn).toBe(true)
+    expect(rootStore.isContinuationInFiling).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityContinueIn).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
     expect(businessStore.getLegalName).toBeNull()
-    expect(rootStore.isFiledContinuationIn).toBe(true)
+    expect(rootStore.isContinuationInFiling).toBe(true)
     expect(rootStore.isBootstrapFiling).toBe(true)
 
     // verify loaded filing

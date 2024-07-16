@@ -28,7 +28,8 @@ describe('Entity Info component', () => {
     // set store properties
     businessStore.setLegalName(null)
     businessStore.setLegalType(null)
-    rootStore.entityStatus = null
+    rootStore.setBootstrapFilingStatus(null)
+    rootStore.setBootstrapFilingType(null)
     businessStore.setTaxId(null)
 
     // NB: router is needed for isDCRoute()

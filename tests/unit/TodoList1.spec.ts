@@ -19,7 +19,7 @@ import PaymentPending from '@/components/Dashboard/TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from '@/components/Dashboard/TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from '@/components/Dashboard/TodoList/PaymentUnsuccessful.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { EntityState, EntityStatus, FilingStatus } from '@/enums'
+import { EntityState, FilingStatus } from '@/enums'
 import { AmalgamationTypes, FilingTypes } from '@bcrs-shared-components/enums'
 
 // suppress "Avoid mutating a prop directly" warnings
@@ -2468,7 +2468,8 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
       }
     ]
     rootStore.nameRequest = { nrNum: 'NR 1234567' }
-    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
 
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
@@ -2512,7 +2513,8 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
       }
     ]
     rootStore.nameRequest = null
-    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
 
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
@@ -2580,7 +2582,8 @@ describe('TodoList - Click Tests - Amalgamation Applications', () => {
         order: 1
       }
     ]
-    rootStore.entityStatus = EntityStatus.DRAFT_AMALGAMATION
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.AMALGAMATION_APPLICATION)
 
     const wrapper = mount(TodoList, { vuetify })
     const vm = wrapper.vm as any
@@ -2624,7 +2627,8 @@ describe('TodoList - Click Tests - Amalgamation Applications', () => {
         order: 1
       }
     ]
-    rootStore.entityStatus = EntityStatus.DRAFT_AMALGAMATION
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.AMALGAMATION_APPLICATION)
 
     const wrapper = mount(TodoList, { vuetify })
     const vm = wrapper.vm as any
@@ -3045,7 +3049,8 @@ describe('TodoList - Delete draft', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setIdentifier('T123456789')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
     rootStore.tasks = [
       {
         'task': {
@@ -3294,7 +3299,8 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
       ]
 
       rootStore.keycloakRoles = ['staff']
-      rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
+      rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+      rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
 
       const wrapper = mount(TodoList, { vuetify })
       const vm = wrapper.vm as any
@@ -3376,7 +3382,8 @@ describe('TodoList - Click Tests - Restoration Extension and Conversion', () => 
       ]
 
       rootStore.keycloakRoles = ['staff']
-      rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
+      rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+      rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
 
       const wrapper = mount(TodoList, { vuetify })
       const vm = wrapper.vm as any

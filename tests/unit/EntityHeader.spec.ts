@@ -6,7 +6,7 @@ import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/sto
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
 import mockRouter from './mockRouter'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { EntityState, EntityStatus, FilingStatus, FilingSubTypes } from '@/enums'
+import { EntityState, FilingStatus, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import * as utils from '@/utils'
 
@@ -23,7 +23,8 @@ describe('Entity Header - data', () => {
     // set store properties
     businessStore.setLegalName(null)
     businessStore.setLegalType(null)
-    rootStore.entityStatus = null
+    rootStore.setBootstrapFilingStatus(null)
+    rootStore.setBootstrapFilingType(null)
 
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
@@ -56,7 +57,8 @@ describe('Entity Header - data', () => {
   it('displays Draft Incorp App entity info properly - Named Company', async () => {
     // set store properties
     businessStore.setLegalName('My Named Company')
-    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     const wrapper = shallowMount(EntityHeader, {
@@ -72,7 +74,8 @@ describe('Entity Header - data', () => {
   it('displays Draft Incorp App entity info properly - Numbered Company', async () => {
     // set store properties
     businessStore.setLegalName(null)
-    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     const wrapper = shallowMount(EntityHeader, {
@@ -88,7 +91,8 @@ describe('Entity Header - data', () => {
   it('displays Paid (Named) Incorp App entity info properly', async () => {
     // set store properties
     businessStore.setLegalName('My Future Company')
-    rootStore.entityStatus = EntityStatus.FILED_INCORP_APP
+    rootStore.setBootstrapFilingStatus(FilingStatus.COMPLETED)
+    rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     const wrapper = shallowMount(EntityHeader, {
@@ -104,7 +108,8 @@ describe('Entity Header - data', () => {
   it('displays draft numbered amalgamation application - Regular', async () => {
     // set store properties
     businessStore.setLegalName(null)
-    rootStore.entityStatus = EntityStatus.DRAFT_AMALGAMATION
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.AMALGAMATION_APPLICATION)
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     filingHistoryListStore.setFilings([])
     rootStore.setTasks([
@@ -130,7 +135,8 @@ describe('Entity Header - data', () => {
   it('displays draft named amalgamation application - Regular', async () => {
     // set store properties
     businessStore.setLegalName('My Amalgamated Company')
-    rootStore.entityStatus = EntityStatus.DRAFT_AMALGAMATION
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.AMALGAMATION_APPLICATION)
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     filingHistoryListStore.setFilings([])
     rootStore.setTasks([
@@ -156,7 +162,8 @@ describe('Entity Header - data', () => {
   it('displays filed numbered amalgamated company - Regular', async () => {
     // set store properties
     businessStore.setLegalName(null)
-    rootStore.entityStatus = EntityStatus.FILED_AMALGAMATION
+    rootStore.setBootstrapFilingStatus(FilingStatus.COMPLETED)
+    rootStore.setBootstrapFilingType(FilingTypes.AMALGAMATION_APPLICATION)
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([
@@ -183,7 +190,8 @@ describe('Entity Header - data', () => {
   it('displays filed named amalgamated company - Regular', async () => {
     // set store properties
     businessStore.setLegalName('My Amalgamated Company')
-    rootStore.entityStatus = EntityStatus.FILED_AMALGAMATION
+    rootStore.setBootstrapFilingStatus(FilingStatus.COMPLETED)
+    rootStore.setBootstrapFilingType(FilingTypes.AMALGAMATION_APPLICATION)
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([
@@ -210,7 +218,8 @@ describe('Entity Header - data', () => {
   it('displays numbered amalgamated company - Regular amalgamation', async () => {
     // set store properties
     businessStore.setLegalName(null)
-    rootStore.entityStatus = null
+    rootStore.setBootstrapFilingStatus(null)
+    rootStore.setBootstrapFilingType(null)
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([
@@ -237,7 +246,8 @@ describe('Entity Header - data', () => {
   it('displays named amalgamated company - Regular amalgamation', async () => {
     // set store properties
     businessStore.setLegalName('My Amalgamated Company')
-    rootStore.entityStatus = null
+    rootStore.setBootstrapFilingStatus(null)
+    rootStore.setBootstrapFilingType(null)
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([
@@ -266,7 +276,8 @@ describe('Entity Header - data', () => {
   it('displays draft numbered amalgamation application - Horizontal', async () => {
     // set store properties
     businessStore.setLegalName(null)
-    rootStore.entityStatus = EntityStatus.DRAFT_AMALGAMATION
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.AMALGAMATION_APPLICATION)
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     filingHistoryListStore.setFilings([])
     rootStore.setTasks([
@@ -294,7 +305,8 @@ describe('Entity Header - data', () => {
   it('displays filed numbered amalgamated company - Horizontal', async () => {
     // set store properties
     businessStore.setLegalName(null)
-    rootStore.entityStatus = EntityStatus.FILED_AMALGAMATION
+    rootStore.setBootstrapFilingStatus(FilingStatus.COMPLETED)
+    rootStore.setBootstrapFilingType(FilingTypes.AMALGAMATION_APPLICATION)
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([
@@ -323,7 +335,8 @@ describe('Entity Header - data', () => {
   it('displays numbered amalgamated company - Horizontal amalgamation', async () => {
     // set store properties
     businessStore.setLegalName(null)
-    rootStore.entityStatus = null
+    rootStore.setBootstrapFilingStatus(null)
+    rootStore.setBootstrapFilingType(null)
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([
@@ -350,7 +363,8 @@ describe('Entity Header - data', () => {
   it('displays Draft Continuation In application entity info - Named company', async () => {
     // set store properties
     businessStore.setLegalName('Continued In Company')
-    rootStore.entityStatus = EntityStatus.DRAFT_CONTINUATION_IN
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.CONTINUATION_IN)
     businessStore.setLegalType(CorpTypeCd.CONTINUE_IN)
     filingHistoryListStore.setFilings([])
     rootStore.setTasks([
@@ -376,7 +390,8 @@ describe('Entity Header - data', () => {
   it('displays Draft Continuation In application entity info - Numbered Company', async () => {
     // set store properties
     businessStore.setLegalName(null)
-    rootStore.entityStatus = EntityStatus.DRAFT_CONTINUATION_IN
+    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
+    rootStore.setBootstrapFilingType(FilingTypes.CONTINUATION_IN)
     businessStore.setLegalType(CorpTypeCd.CONTINUE_IN)
     filingHistoryListStore.setFilings([])
     rootStore.setTasks([
@@ -402,7 +417,8 @@ describe('Entity Header - data', () => {
   it('displays filed named continued in company', async () => {
     // set store properties
     businessStore.setLegalName('Continued In Company')
-    rootStore.entityStatus = EntityStatus.FILED_CONTINUATION_IN
+    rootStore.setBootstrapFilingStatus(FilingStatus.COMPLETED)
+    rootStore.setBootstrapFilingType(FilingTypes.CONTINUATION_IN)
     businessStore.setLegalType(CorpTypeCd.CONTINUE_IN)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([
@@ -429,7 +445,8 @@ describe('Entity Header - data', () => {
   it('displays filed numbered continued in company', async () => {
     // set store properties
     businessStore.setLegalName(null)
-    rootStore.entityStatus = EntityStatus.FILED_CONTINUATION_IN
+    rootStore.setBootstrapFilingStatus(FilingStatus.COMPLETED)
+    rootStore.setBootstrapFilingType(FilingTypes.CONTINUATION_IN)
     businessStore.setLegalType(CorpTypeCd.CONTINUE_IN)
     rootStore.setTasks([])
     filingHistoryListStore.setFilings([

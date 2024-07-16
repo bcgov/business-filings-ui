@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { CorpTypeCd, EntityStatus, FilingSubTypes } from '@/enums'
+import { CorpTypeCd, FilingStatus, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF,
   RootStateIF, TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
@@ -12,7 +12,8 @@ export const useRootStore = defineStore('root', {
     authRoles: [],
     currentDate: null,
     currentJsDate: null,
-    entityStatus: null,
+    bootstrapFilingStatus: null,
+    bootstrapFilingType: null,
     keycloakRoles: [],
     stateFiling: null,
     userKeycloakGuid: null,
@@ -112,54 +113,129 @@ export const useRootStore = defineStore('root', {
       return false // FUTURE: implement this
     },
 
-    /** The "entity status" for a bootstrap filing only. */
-    getEntityStatus (state: RootStateIF): EntityStatus {
-      return state.entityStatus
-    },
-
-    isDraftAmalgamation (state: RootStateIF): boolean {
-      return (state.entityStatus === EntityStatus.DRAFT_AMALGAMATION)
-    },
-
-    isDraftContinuationIn (state: RootStateIF): boolean {
-      return (state.entityStatus === EntityStatus.DRAFT_CONTINUATION_IN)
-    },
-
-    isDraftIncorpApp (state: RootStateIF): boolean {
-      return (state.entityStatus === EntityStatus.DRAFT_INCORP_APP)
-    },
-
-    isDraftRegistration (state: RootStateIF): boolean {
-      return (state.entityStatus === EntityStatus.DRAFT_REGISTRATION)
-    },
-
-    isFiledAmalgamation (state: RootStateIF): boolean {
-      return (state.entityStatus === EntityStatus.FILED_AMALGAMATION)
-    },
-
-    isFiledContinuationIn (state: RootStateIF): boolean {
-      return (state.entityStatus === EntityStatus.FILED_CONTINUATION_IN)
-    },
-
-    isFiledIncorpApp (state: RootStateIF): boolean {
-      return (state.entityStatus === EntityStatus.FILED_INCORP_APP)
-    },
-
-    isFiledRegistration (state: RootStateIF): boolean {
-      return (state.entityStatus === EntityStatus.FILED_REGISTRATION)
-    },
-
-    /** Is True if this is a bootstrap task (ie, Draft or Pending). */
-    isBootstrapTask (): boolean {
+    /** Whether this is an amalgamation bootstrap filing that belongs in the Todo List. */
+    isAmalgamationTodo (state: RootStateIF): boolean {
       return (
-        this.isDraftAmalgamation || this.isDraftIncorpApp || this.isDraftRegistration || this.isDraftContinuationIn
+        state.bootstrapFilingType === FilingTypes.AMALGAMATION_APPLICATION &&
+        (
+          state.bootstrapFilingStatus === FilingStatus.DRAFT ||
+          state.bootstrapFilingStatus === FilingStatus.PENDING
+        )
       )
     },
 
-    /** Is True if this is a bootstrap filing (ie, Completed or Paid). */
+    /** Whether this is an amalgamation bootstrap filing that belongs in the Filing History List. */
+    isAmalgamationFiling (state: RootStateIF): boolean {
+      return (
+        state.bootstrapFilingType === FilingTypes.AMALGAMATION_APPLICATION &&
+        (
+          state.bootstrapFilingStatus === FilingStatus.COMPLETED ||
+          state.bootstrapFilingStatus === FilingStatus.PAID
+        )
+      )
+    },
+
+    /** Whether this is a continuation in bootstrap filing that belongs in the Todo List. */
+    isContinuationInTodo (state: RootStateIF): boolean {
+      return (
+        state.bootstrapFilingType === FilingTypes.CONTINUATION_IN &&
+        (
+          state.bootstrapFilingStatus === FilingStatus.CHANGE_REQUESTED ||
+          state.bootstrapFilingStatus === FilingStatus.DRAFT ||
+          state.bootstrapFilingStatus === FilingStatus.PENDING
+        )
+      )
+    },
+
+    /** Whether this is a continuation in bootstrap filing that belongs in the Pending List. */
+    isContinuationInPending (state: RootStateIF): boolean {
+      return (
+        state.bootstrapFilingType === FilingTypes.CONTINUATION_IN &&
+        state.bootstrapFilingStatus === FilingStatus.AWAITING_REVIEW
+      )
+    },
+
+    /** Whether this is a continuation in bootstrap filing that belongs in the Filing History List. */
+    isContinuationInFiling (state: RootStateIF): boolean {
+      return (
+        state.bootstrapFilingType === FilingTypes.CONTINUATION_IN &&
+        (
+          state.bootstrapFilingStatus === FilingStatus.APPROVED ||
+          state.bootstrapFilingStatus === FilingStatus.COMPLETED ||
+          state.bootstrapFilingStatus === FilingStatus.PAID ||
+          state.bootstrapFilingStatus === FilingStatus.REJECTED
+        )
+      )
+    },
+
+    /** Whether this is an incorporation application bootstrap filing that belongs in the Todo List. */
+    isIncorporationApplicationTodo (state: RootStateIF): boolean {
+      return (
+        state.bootstrapFilingType === FilingTypes.INCORPORATION_APPLICATION &&
+        (
+          state.bootstrapFilingStatus === FilingStatus.DRAFT ||
+          state.bootstrapFilingStatus === FilingStatus.PENDING
+        )
+      )
+    },
+
+    /** Whether this is an incorporation application bootstrap filing that belongs in the Filing History List. */
+    isIncorporationApplicationFiling (state: RootStateIF): boolean {
+      return (
+        state.bootstrapFilingType === FilingTypes.INCORPORATION_APPLICATION &&
+        (
+          state.bootstrapFilingStatus === FilingStatus.COMPLETED ||
+          state.bootstrapFilingStatus === FilingStatus.PAID
+        )
+      )
+    },
+
+    /** Whether this is a registration bootstrap filing that belongs in the Todo List. */
+    isRegistrationTodo (state: RootStateIF): boolean {
+      return (
+        state.bootstrapFilingType === FilingTypes.REGISTRATION &&
+        (
+          state.bootstrapFilingStatus === FilingStatus.DRAFT ||
+          state.bootstrapFilingStatus === FilingStatus.PENDING
+        )
+      )
+    },
+
+    /** Whether this is a registration bootstrap filing that belongs in the Filing History List. */
+    isRegistrationFiling (state: RootStateIF): boolean {
+      return (
+        state.bootstrapFilingType === FilingTypes.REGISTRATION &&
+        (
+          state.bootstrapFilingStatus === FilingStatus.COMPLETED ||
+          state.bootstrapFilingStatus === FilingStatus.PAID
+        )
+      )
+    },
+
+    /** Is True if this is a bootstrap todo and should be displayed in the Todo List. */
+    isBootstrapTodo (): boolean {
+      return (
+        this.isAmalgamationTodo ||
+        this.isContinuationInTodo ||
+        this.isIncorporationApplicationTodo ||
+        this.isRegistrationTodo
+      )
+    },
+
+    /** Is True if this is a bootstrap pending item and should be displayed in the Pending List. */
+    isBootstrapPending (): boolean {
+      return (
+        this.isContinuationInPending
+      )
+    },
+
+    /** Is True if this is a bootstrap filing and should be displayed in the Filing History List. */
     isBootstrapFiling (): boolean {
       return (
-        this.isFiledAmalgamation || this.isFiledIncorpApp || this.isFiledRegistration || this.isFiledContinuationIn
+        this.isAmalgamationFiling ||
+        this.isContinuationInFiling ||
+        this.isIncorporationApplicationFiling ||
+        this.isRegistrationFiling
       )
     },
 
@@ -393,8 +469,12 @@ export const useRootStore = defineStore('root', {
       this.arMinDate = date
     },
 
-    setEntityStatus (entityStatus: EntityStatus) {
-      this.entityStatus = entityStatus
+    setBootstrapFilingStatus (status: FilingStatus) {
+      this.bootstrapFilingStatus = status
+    },
+
+    setBootstrapFilingType (type: FilingTypes) {
+      this.bootstrapFilingType = type
     },
 
     setBusinessEmail (businessEmail: string) {
