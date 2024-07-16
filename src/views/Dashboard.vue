@@ -46,19 +46,15 @@
 
             <!-- Pending section-->
             <section
-              v-if="false"
+              v-if="getPendingsList.length > 0"
               id="dashboard-pending-section"
             >
               <header>
                 <h2 class="mb-3">
-                  <span>Pending</span>&nbsp;<span class="section-count">({{ pendingCount }})</span>
+                  <span>Pending</span>&nbsp;<span class="section-count">({{ getPendingsList.length }})</span>
                 </h2>
               </header>
-              <LegalObligation />
-              <PendingList
-                :highlightId="filingId"
-                @pending-count="pendingCount = $event"
-              />
+              <PendingList :highlightId="filingId" />
             </section>
 
             <!-- Recent Filing History section -->
@@ -152,7 +148,7 @@
               <v-card flat>
                 <AddressListSm
                   :showCompleteYourFilingMessage="isBootstrapTodo"
-                  :showGrayedOut="isBootstrapFiling"
+                  :showGrayedOut="isBootstrapFiling || isBootstrapPending"
                 />
               </v-card>
             </section>
@@ -195,7 +191,7 @@
                 <v-card flat>
                   <ProprietorPartnersListSm
                     :showCompleteYourFilingMessage="isBootstrapTodo"
-                    :showGrayedOut="isBootstrapFiling"
+                    :showGrayedOut="isBootstrapFiling || isBootstrapPending"
                   />
                 </v-card>
               </div>
@@ -230,7 +226,7 @@
                 <v-card flat>
                   <DirectorListSm
                     :showCompleteYourFilingMessage="isBootstrapTodo"
-                    :showGrayedOut="isBootstrapFiling"
+                    :showGrayedOut="isBootstrapFiling || isBootstrapPending"
                   />
                 </v-card>
               </div>
@@ -280,7 +276,6 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
 export default class Dashboard extends Mixins(AllowableActionsMixin, CommonMixin, DateMixin) {
   // local variables
   todoCount = 0
-  pendingCount = 0
   coaWarningDialog = false
   alertCount = 0
 
@@ -302,7 +297,9 @@ export default class Dashboard extends Mixins(AllowableActionsMixin, CommonMixin
   @Getter(useFilingHistoryListStore) getPendingCoa!: ApiFilingIF
 
   @Getter(useRootStore) getParties!: Array<PartyIF>
+  @Getter(useRootStore) getPendingsList!: Array<any>
   @Getter(useRootStore) isBootstrapFiling!: boolean
+  @Getter(useRootStore) isBootstrapPending!: boolean
   @Getter(useRootStore) isBootstrapTodo!: boolean
   // @Getter(useRootStore) isRoleStaff!: boolean
 

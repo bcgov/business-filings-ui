@@ -343,8 +343,9 @@ export default class App extends Mixins(
   created (): void {
     // listen for reload data events
     this.$root.$on('reloadData', async () => {
-      // clear Todo List / Filing History List before fetching new data
+      // clear lists before fetching new data
       this.setTasks([])
+      this.setPendings([])
       this.setFilings([])
       await this.fetchData()
     })
@@ -391,6 +392,7 @@ export default class App extends Mixins(
   @Action(useRootStore) setKeycloakRoles!: (x: Array<string>) => void
   @Action(useRootStore) setNameRequest!: (x: any) => void
   @Action(useRootStore) setParties!: (x: Array<PartyIF>) => void
+  @Action(useRootStore) setPendings!: (x: Array<any>) => void
   @Action(useRootStore) setRecordsAddress!: (x: OfficeAddressIF) => void
   @Action(useRootStore) setRegisteredAddress!: (x: OfficeAddressIF) => void
   @Action(useRootStore) setTasks!: (x: Array<ApiTaskIF>) => void
@@ -687,7 +689,25 @@ export default class App extends Mixins(
 
   /** Stores bootstrap item in the Pending List. */
   storeBootstrapPending (response: any): void {
-    this.storeBootstrapFiling(response) // *** TODO: implement this
+    const filing = response.filing as TaskTodoIF
+    // NB: these were already validated in storeBootstrapItem()
+    const header = filing.header
+    const data = filing[header.name]
+
+    // set addresses
+    this.storeAddresses({ data: data.offices || [] })
+
+    // set parties
+    this.storeParties({ data: { parties: data.parties || [] } })
+
+    const description = GetCorpFullDescription(data.nameRequest.legalType)
+    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
+
+    // save display name for later
+    filing.displayName = `${description} ${filingName}`
+
+    // add this as a pending item
+    this.setPendings([filing])
   }
 
   /** Stores bootstrap item in the Filing History List. */
