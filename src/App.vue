@@ -345,7 +345,7 @@ export default class App extends Mixins(
     this.$root.$on('reloadData', async () => {
       // clear lists before fetching new data
       this.setTasks([])
-      this.setPendings([])
+      this.setPendingsList([])
       this.setFilings([])
       await this.fetchData()
     })
@@ -392,7 +392,7 @@ export default class App extends Mixins(
   @Action(useRootStore) setKeycloakRoles!: (x: Array<string>) => void
   @Action(useRootStore) setNameRequest!: (x: any) => void
   @Action(useRootStore) setParties!: (x: Array<PartyIF>) => void
-  @Action(useRootStore) setPendings!: (x: Array<any>) => void
+  @Action(useRootStore) setPendingsList!: (x: Array<any>) => void
   @Action(useRootStore) setRecordsAddress!: (x: OfficeAddressIF) => void
   @Action(useRootStore) setRegisteredAddress!: (x: OfficeAddressIF) => void
   @Action(useRootStore) setTasks!: (x: Array<ApiTaskIF>) => void
@@ -707,7 +707,7 @@ export default class App extends Mixins(
     filing.displayName = `${description} ${filingName}`
 
     // add this as a pending item
-    this.setPendings([filing])
+    this.setPendingsList([filing])
   }
 
   /** Stores bootstrap item in the Filing History List. */

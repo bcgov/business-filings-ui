@@ -495,7 +495,7 @@ export const useRootStore = defineStore('root', {
       this.businessPhoneExtension = businessPhoneExtension
     },
 
-    setPendings (pendings: Array<any>) {
+    setPendingsList (pendings: Array<any>) {
       this.pendings = pendings
     },
 
