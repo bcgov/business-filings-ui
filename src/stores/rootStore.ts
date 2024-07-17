@@ -34,13 +34,19 @@ export const useRootStore = defineStore('root', {
     parties: [],
     recordsAddress: null,
     registeredAddress: null,
+    pendingsList: [],
     tasks: [],
     userInfo: null
   }),
 
   getters: {
-    /** The list of tasks from the API. */
-    getTasks (state: RootStateIF): ApiTaskIF[] {
+    /** The list of pending items. */
+    getPendingsList (state: RootStateIF): Array<any> {
+      return state.pendingsList
+    },
+
+    /** The list of tasks (todo items). */
+    getTasks (state: RootStateIF): Array<ApiTaskIF> {
       return state.tasks
     },
 
@@ -212,7 +218,7 @@ export const useRootStore = defineStore('root', {
       )
     },
 
-    /** Is True if this is a bootstrap todo and should be displayed in the Todo List. */
+    /** Is True if this is a bootstrap todo item and should be displayed in the Todo List. */
     isBootstrapTodo (): boolean {
       return (
         this.isAmalgamationTodo ||
@@ -229,7 +235,7 @@ export const useRootStore = defineStore('root', {
       )
     },
 
-    /** Is True if this is a bootstrap filing and should be displayed in the Filing History List. */
+    /** Is True if this is a bootstrap filing item and should be displayed in the Filing History List. */
     isBootstrapFiling (): boolean {
       return (
         this.isAmalgamationFiling ||
@@ -487,6 +493,10 @@ export const useRootStore = defineStore('root', {
 
     setBusinessPhoneExtension (businessPhoneExtension: string) {
       this.businessPhoneExtension = businessPhoneExtension
+    },
+
+    setPendingsList (pendingsList: Array<any>) {
+      this.pendingsList = pendingsList
     },
 
     setTasks (tasks: Array<ApiTaskIF>) {

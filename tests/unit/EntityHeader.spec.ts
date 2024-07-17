@@ -360,7 +360,7 @@ describe('Entity Header - data', () => {
     expect(wrapper.find('#business-description').text()).toBe('BC Limited Company')
   })
 
-  it('displays Draft Continuation In application entity info - Named company', async () => {
+  it('displays Draft Continuation In entity info - Named company', async () => {
     // set store properties
     businessStore.setLegalName('Continued In Company')
     rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
@@ -387,7 +387,7 @@ describe('Entity Header - data', () => {
     expect(wrapper.find('#app-description').text()).toBe('BC Limited Company Continuation Application')
   })
 
-  it('displays Draft Continuation In application entity info - Numbered Company', async () => {
+  it('displays Draft Continuation In entity info - Numbered Company', async () => {
     // set store properties
     businessStore.setLegalName(null)
     rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)

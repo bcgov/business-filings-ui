@@ -69,7 +69,7 @@
           :class="{'invalid-section ml-n1 pl-1 rounded-0': showInvalidSection(item)}"
         >
           <div class="list-item">
-            <div class="todo-label">
+            <div class="todo-label pt-1">
               <!-- title -->
               <h3 class="list-item__title">
                 {{ item.title }}
@@ -758,7 +758,10 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     return this.todoItems.sort((a, b) => (a.order - b.order))
   }
 
-  /** Whether to show Name Request Info section. */
+  /**
+   * Whether to show Name Request Info section.
+   * Can only be called if an expand button was rendered.
+   */
   isFilingWithNr (item: TodoItemIF): boolean {
     return (
       EnumUtilities.isTypeAmalgamationApplication(item) ||
@@ -1916,7 +1919,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
         return
 
       case FilingTypes.CONTINUATION_IN: {
-        // navigate to Create UI to resume this Continuation In Application
+        // navigate to Create UI to resume this Continuation In
         const continuationInUrl = `${this.getCreateUrl}/continuation-in-business-home?id=${this.tempRegNumber}`
         navigate(continuationInUrl)
         return
@@ -2219,7 +2222,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
 
   @Watch('getTasks', { immediate: true })
   async onTasksChanged (): Promise<void> {
-    // load data initially and when tasks list changes
+    // load data initially and when task list changes
     await this.loadData()
   }
 
@@ -2301,7 +2304,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
 
   .v-btn {
     // adjust button position so it fits within the title height
-    margin-top: -8px;
+    margin-top: -4px;
     margin-bottom: -4px;
   }
 }

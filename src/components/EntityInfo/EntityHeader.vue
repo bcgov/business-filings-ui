@@ -81,9 +81,9 @@
       <!-- Subtitle -->
       <div
         id="app-description"
-        aria-label="Amalgamation, Continuation Application, Incorporation or Registration Description"
+        aria-label="Amalgamation, Continuation In, Incorporation Application or Registration Description"
       >
-        {{ appDescription }}
+        {{ bootstrapFilingDescription }}
       </div>
     </template>
   </header>
@@ -107,16 +107,18 @@ export default class EntityHeader extends Vue {
   @Getter(useBusinessStore) isEntitySoleProp!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
 
-  @Getter(useFilingHistoryListStore) getFilings!: ApiFilingIF[]
+  @Getter(useFilingHistoryListStore) getFilings!: Array<ApiFilingIF>
   @Getter(useFilingHistoryListStore) isAuthorizedToContinueOut!: boolean
 
   @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
   @Getter(useRootStore) getReasonText!: string
-  @Getter(useRootStore) getTasks!: ApiTaskIF[]
-  @Getter(useRootStore) isAmalgamationTodo!: boolean
+  @Getter(useRootStore) getPendingsList!: Array<any>
+  @Getter(useRootStore) getTasks!: Array<ApiTaskIF>
   @Getter(useRootStore) isAmalgamationFiling!: boolean
-  @Getter(useRootStore) isContinuationInTodo!: boolean
+  @Getter(useRootStore) isAmalgamationTodo!: boolean
   @Getter(useRootStore) isContinuationInFiling!: boolean
+  @Getter(useRootStore) isContinuationInPending!: boolean
+  @Getter(useRootStore) isContinuationInTodo!: boolean
   @Getter(useRootStore) isInLimitedRestoration!: boolean
 
   /** The business description. */
@@ -129,22 +131,14 @@ export default class EntityHeader extends Vue {
     }
   }
 
-  /** The incorporation/registration/continuationIn/amalgamation application description. */
-  get appDescription (): string {
-    if (this.isAmalgamationTodo) {
-      return this.getTasks[0]?.task.filing.displayName
-    }
-    if (this.isAmalgamationFiling) {
-      return this.getFilings[0]?.displayName
-    }
+  /** The amalgamation / continuation in / incorporation application / registration description. */
+  get bootstrapFilingDescription (): string {
+    if (this.isAmalgamationTodo) return this.getTasks[0]?.task.filing.displayName
+    if (this.isAmalgamationFiling) return this.getFilings[0]?.displayName
 
-    if (this.isContinuationInTodo) {
-      return this.getTasks[0]?.task.filing.displayName
-    }
-    // *** TODO: what needs to be done here for pending continuation bootstrap filing?
-    if (this.isContinuationInFiling) {
-      return this.getFilings[0]?.displayName
-    }
+    if (this.isContinuationInTodo) return this.getTasks[0]?.task.filing.displayName
+    if (this.isContinuationInPending) return this.getPendingsList[0].displayName
+    if (this.isContinuationInFiling) return this.getFilings[0]?.displayName
 
     const filingName = [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP].includes(this.getLegalType)
       ? FilingNames.REGISTRATION

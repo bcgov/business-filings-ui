@@ -352,7 +352,9 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
       return [] // All panels closed by default
     } else if (this.disabled) {
       return [OPEN_PANEL, CLOSE_PANEL]
-    } else return [OPEN_PANEL]
+    } else {
+      return [OPEN_PANEL]
+    }
   }
 }
 </script>

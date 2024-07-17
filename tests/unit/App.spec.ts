@@ -2955,7 +2955,7 @@ describe('App as a completed vertical amalgamation application', () => {
   })
 })
 
-describe('App as a draft numbered continuation in application', () => {
+describe('App as a draft numbered continuation in', () => {
   let wrapper: Wrapper<Vue>
 
   beforeAll(() => {
@@ -3049,7 +3049,7 @@ describe('App as a draft numbered continuation in application', () => {
   })
 })
 
-describe('App as a completed continuation in application', () => {
+describe('App as a completed continuation in', () => {
   // Intermediate scenario - still using Temp Reg Number
   let wrapper: Wrapper<Vue>
 
