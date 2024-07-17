@@ -49,8 +49,8 @@ export interface RootStateIF {
   parties: Array<PartyIF>
   recordsAddress: OfficeAddressIF
   registeredAddress: OfficeAddressIF
-  // *** TODO: declare a type for pendings
-  pendings: Array<any> // pending list from bootstrap filing
+  // *** TODO: declare a type for pendingsList
+  pendingsList: Array<any> // pendings list from bootstrap filing
   tasks: Array<ApiTaskIF> // "tasks" list from API (or bootstrap filing)
   userInfo: any // from auth db
 }

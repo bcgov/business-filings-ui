@@ -34,7 +34,7 @@ export const useRootStore = defineStore('root', {
     parties: [],
     recordsAddress: null,
     registeredAddress: null,
-    pendings: [],
+    pendingsList: [],
     tasks: [],
     userInfo: null
   }),
@@ -42,7 +42,7 @@ export const useRootStore = defineStore('root', {
   getters: {
     /** The list of pending items. */
     getPendingsList (state: RootStateIF): Array<any> {
-      return state.pendings
+      return state.pendingsList
     },
 
     /** The list of tasks (todo items). */
@@ -495,8 +495,8 @@ export const useRootStore = defineStore('root', {
       this.businessPhoneExtension = businessPhoneExtension
     },
 
-    setPendingsList (pendings: Array<any>) {
-      this.pendings = pendings
+    setPendingsList (pendingsList: Array<any>) {
+      this.pendingsList = pendingsList
     },
 
     setTasks (tasks: Array<ApiTaskIF>) {
