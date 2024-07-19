@@ -15,6 +15,7 @@ export interface TodoItemIF {
   status: string
   title: string
   comments?: Array<any> // always [] and never used
+  isDefaultTask?: boolean // for generic fallback handling
 
   // Todo ARs and Draft IAs only
   subtitle?: string
@@ -61,4 +62,9 @@ export interface TodoItemIF {
     fromOrgName: string
     additionalMessage?: string
   }
+
+  // continuation ins only
+  submitter?: string
+  submittedDate?: Date
+  latestReviewComment?: string
 }

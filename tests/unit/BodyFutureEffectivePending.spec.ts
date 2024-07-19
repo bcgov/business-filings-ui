@@ -4,7 +4,7 @@ import Vuetify from 'vuetify'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore } from '@/stores'
 import { mount } from '@vue/test-utils'
-import FutureEffectivePending from '@/components/Dashboard/FilingHistoryList/bodies/FutureEffectivePending.vue'
+import BodyFutureEffectivePending from '@/components/Dashboard/FilingHistoryList/bodies/BodyFutureEffectivePending.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
@@ -13,9 +13,9 @@ const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 
-describe.skip('Future Effective Pending', () => {
+describe.skip('Body Future Effective Pending', () => {
   it('Displays expected content with a null filing', () => {
-    const wrapper = mount(FutureEffectivePending, {
+    const wrapper = mount(BodyFutureEffectivePending, {
       vuetify,
       propsData: { filing: null }
     })
@@ -28,7 +28,7 @@ describe.skip('Future Effective Pending', () => {
   })
 
   it('Displays expected content with an empty filing', () => {
-    const wrapper = mount(FutureEffectivePending, {
+    const wrapper = mount(BodyFutureEffectivePending, {
       vuetify,
       propsData: { filing: {} }
     })
@@ -49,7 +49,7 @@ describe.skip('Future Effective Pending', () => {
   it('Displays expected content with a FE named IA', () => {
     businessStore.setLegalName('My Incorporation')
 
-    const wrapper = mount(FutureEffectivePending, {
+    const wrapper = mount(BodyFutureEffectivePending, {
       vuetify,
       propsData: {
         filing: {
@@ -75,7 +75,7 @@ describe.skip('Future Effective Pending', () => {
   it('Displays expected content with a FE numbered IA', () => {
     businessStore.setLegalName(null)
 
-    const wrapper = mount(FutureEffectivePending, {
+    const wrapper = mount(BodyFutureEffectivePending, {
       vuetify,
       propsData: {
         filing: {
@@ -101,7 +101,7 @@ describe.skip('Future Effective Pending', () => {
   it('Displays expected content with a FE Alteration', () => {
     businessStore.setLegalName('My Alteration')
 
-    const wrapper = mount(FutureEffectivePending, {
+    const wrapper = mount(BodyFutureEffectivePending, {
       vuetify,
       propsData: {
         filing: {

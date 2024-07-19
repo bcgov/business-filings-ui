@@ -34,7 +34,8 @@ export interface ApiHeaderIF {
   paymentToken?: any // NB: may be UUID in future
   priority?: boolean // alterations and corrections only
   status: FilingStatus
-  submitter: string // FUTURE: is this obsolete?
+  submitter: string
+  latestReviewComment?: string // for change-requested tasks
 }
 
 /**

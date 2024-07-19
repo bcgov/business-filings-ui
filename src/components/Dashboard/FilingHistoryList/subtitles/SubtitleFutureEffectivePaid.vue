@@ -1,5 +1,5 @@
 <template>
-  <div class="future-effective-paid">
+  <div class="subtitle-future-effective-paid">
     <span v-if="isTypeIncorporationApplication">FUTURE EFFECTIVE INCORPORATION</span>
     <span v-else-if="isTypeAlteration">FUTURE EFFECTIVE ALTERATION</span>
     <span v-else-if="isTypeDissolutionVoluntary">FUTURE EFFECTIVE DISSOLUTION</span>
@@ -33,7 +33,7 @@ import { useFilingHistoryListStore, useRootStore } from '@/stores'
 @Component({
   components: { FiledLabel }
 })
-export default class FutureEffectivePaid extends Vue {
+export default class SubtitleFutureEffectivePaid extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
@@ -60,7 +60,7 @@ export default class FutureEffectivePaid extends Vue {
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
 
-.future-effective-paid {
+.subtitle-future-effective-paid {
   color: $gray7;
 }
 

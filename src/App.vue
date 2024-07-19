@@ -751,7 +751,8 @@ export default class App extends Mixins(
         applicationDate: this.dateToYyyyMmDd(this.apiToDate(header.date)),
         legalFilings: [header.name],
         order: data.courtOrder
-      }
+      },
+      latestReviewComment: header.latestReviewComment
     } as ApiFilingIF
     this.setFilings([filingItem])
   }

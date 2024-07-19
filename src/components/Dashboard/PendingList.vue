@@ -7,6 +7,7 @@
         :key="index"
         :item="item"
         :index="index"
+        @toggle-panel="togglePanel(index)"
       />
     </v-expansion-panels>
   </div>
@@ -50,7 +51,7 @@ export default class PendingList extends Vue {
     if (this.highlightId) {
       const index = this.getPendingsList.findIndex(p => (p.header.filingId === this.highlightId))
       if (index >= 0) { // safety check
-        this.toggleItem(index)
+        this.togglePanel(index)
       }
     } else {
       // otherwise, open up the first item
@@ -58,9 +59,9 @@ export default class PendingList extends Vue {
     }
   }
 
-  private toggleItem (index: number): void {
+  togglePanel (item: number): void {
     // if panel is open, close it, else open it
-    this.panel = (this.panel === index) ? null : index
+    this.panel = (this.panel === item) ? null : item
   }
 }
 </script>
@@ -72,10 +73,6 @@ export default class PendingList extends Vue {
   min-height: auto !important;
   padding: 0;
   margin-top: 0.25rem;
-
-  .v-expansion-panel-header__icon {
-    display: none;
-  }
 }
 
 :deep(.v-expansion-panel-content__wrap) {

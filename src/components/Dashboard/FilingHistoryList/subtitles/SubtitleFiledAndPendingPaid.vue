@@ -1,5 +1,5 @@
 <template>
-  <div class="filed-and-pending-paid">
+  <div class="subtitle-filed-and-pending-paid">
     <span class="orange--text text--darken-2">FILED AND PENDING</span>
     <span class="vert-pipe" />
     <span>PAID <FiledLabel :filing="filing" /></span>
@@ -29,7 +29,7 @@ import { useFilingHistoryListStore, useRootStore } from '@/stores'
 @Component({
   components: { FiledLabel }
 })
-export default class FiledAndPendingPaid extends Vue {
+export default class SubtitleFiledAndPendingPaid extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
@@ -41,7 +41,7 @@ export default class FiledAndPendingPaid extends Vue {
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
 
-.filed-and-pending-paid {
+.subtitle-filed-and-pending-paid {
   color: $gray7;
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="filed-and-paid">
+  <div class="subtitle-filed-and-paid">
     <span>FILED AND PAID <FiledLabel :filing="filing" /></span>
   </div>
 </template>
@@ -12,7 +12,7 @@ import FiledLabel from '../FiledLabel.vue'
 @Component({
   components: { FiledLabel }
 })
-export default class FiledAndPaid extends Vue {
+export default class SubtitleFiledAndPaid extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 }
@@ -21,7 +21,7 @@ export default class FiledAndPaid extends Vue {
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
 
-.filed-and-paid {
+.subtitle-filed-and-paid {
   color: $gray7;
 }
 </style>

@@ -5,15 +5,22 @@
     :index="index"
   >
     <template #subtitle>
-      <FiledAndPendingPaid
+      <SubtitleFiledAndPendingPaid
         v-if="isFutureEffectivePending"
         class="item-header-subtitle"
         :filing="filing"
         :index="index"
       />
 
-      <FutureEffectivePaid
+      <SubtitleFutureEffectivePaid
         v-else-if="isFutureEffective"
+        class="item-header-subtitle"
+        :filing="filing"
+        :index="index"
+      />
+
+      <SubtitleRejected
+        v-else-if="isStatusRejected"
         class="item-header-subtitle"
         :filing="filing"
         :index="index"
@@ -21,16 +28,34 @@
     </template>
 
     <template #body>
-      <FutureEffectivePending
+      <BodyFutureEffectivePending
         v-if="isFutureEffectivePending"
         :filing="filing"
       />
 
-      <FutureEffective
+      <BodyFutureEffective
         v-else-if="isFutureEffective"
         :filing="filing"
       />
 
+      <!-- rejected bootstrap filing -->
+      <div
+        v-else-if="isStatusRejected"
+        class="rejected-continuation-in-details"
+      >
+        <p class="mt-0">
+          This {{ filing.displayName }} is rejected for the following reasons:
+        </p>
+        <p>
+          {{ filing.latestReviewComment || '[undefined staff rejection message]' }}
+        </p>
+        <p>
+          You will receive a refund within 10 business days. Please submit a new application if you would
+          like to continue your business into B.C.
+        </p>
+      </div>
+
+      <!-- completed bootstrap filing -->
       <div
         v-else-if="!!tempRegNumber && isStatusCompleted"
         class="completed-continuation-in-details"
@@ -63,20 +88,22 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
-import FiledAndPendingPaid from '../subtitles/FiledAndPendingPaid.vue'
+import SubtitleFiledAndPendingPaid from '../subtitles/SubtitleFiledAndPendingPaid.vue'
 import FilingTemplate from '../FilingTemplate.vue'
-import FutureEffective from '../bodies/FutureEffective.vue'
-import FutureEffectivePaid from '../subtitles/FutureEffectivePaid.vue'
-import FutureEffectivePending from '../bodies/FutureEffectivePending.vue'
+import BodyFutureEffective from '../bodies/BodyFutureEffective.vue'
+import SubtitleFutureEffectivePaid from '../subtitles/SubtitleFutureEffectivePaid.vue'
+import BodyFutureEffectivePending from '../bodies/BodyFutureEffectivePending.vue'
 import { useBusinessStore, useConfigurationStore } from '@/stores'
+import SubtitleRejected from '../subtitles/SubtitleRejected.vue'
 
 @Component({
   components: {
-    FiledAndPendingPaid,
+    BodyFutureEffective,
+    BodyFutureEffectivePending,
     FilingTemplate,
-    FutureEffective,
-    FutureEffectivePaid,
-    FutureEffectivePending
+    SubtitleFiledAndPendingPaid,
+    SubtitleFutureEffectivePaid,
+    SubtitleRejected
   }
 })
 export default class ContinuationIn extends Vue {
@@ -92,6 +119,11 @@ export default class ContinuationIn extends Vue {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
+  /** Whether this filing is in Rejected status. */
+  get isStatusRejected (): boolean {
+    return EnumUtilities.isStatusRejected(this.filing)
+  }
+
   /** Whether this filing is in Complete status. */
   get isStatusCompleted (): boolean {
     return EnumUtilities.isStatusCompleted(this.filing)
@@ -100,7 +132,10 @@ export default class ContinuationIn extends Vue {
   /** Whether this filing is Future Effective Pending (overdue). */
   get isFutureEffectivePending (): boolean {
     return (
-      EnumUtilities.isStatusPaid(this.filing) &&
+      (
+        EnumUtilities.isStatusApproved(this.filing) ||
+        EnumUtilities.isStatusPaid(this.filing)
+      ) &&
       this.filing.isFutureEffective &&
       DateUtilities.isDatePast(this.filing.effectiveDate)
     )
@@ -109,7 +144,10 @@ export default class ContinuationIn extends Vue {
   /** Whether this filing is Future Effective (not yet completed). */
   get isFutureEffective (): boolean {
     return (
-      EnumUtilities.isStatusPaid(this.filing) &&
+      (
+        EnumUtilities.isStatusApproved(this.filing) ||
+        EnumUtilities.isStatusPaid(this.filing)
+      ) &&
       this.filing.isFutureEffective &&
       DateUtilities.isDateFuture(this.filing.effectiveDate)
     )

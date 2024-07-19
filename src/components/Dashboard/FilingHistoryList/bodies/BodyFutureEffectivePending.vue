@@ -1,5 +1,5 @@
 <template>
-  <div class="future-effective-pending body-2">
+  <div class="body-future-effective-pending body-2">
     <h4>{{ _.subtitle }}</h4>
 
     <p>
@@ -35,7 +35,7 @@ import { useBusinessStore } from '@/stores'
 @Component({
   components: { ContactInfo }
 })
-export default class FutureEffectivePending extends Vue {
+export default class BodyFutureEffectivePending extends Vue {
   @Getter(useBusinessStore) getLegalName!: string
 
   /** The subject filing. */

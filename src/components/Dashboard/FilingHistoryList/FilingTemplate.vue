@@ -13,13 +13,13 @@
           </h3>
 
           <slot name="subtitle">
-            <FiledAndPendingPaid
+            <SubtitleFiledAndPendingPaid
               v-if="isStatusPaid"
               class="item-header-subtitle"
               :filing="filing"
               :index="index"
             />
-            <FiledAndPaid
+            <SubtitleFiledAndPaid
               v-else
               class="item-header-subtitle"
               :filing="filing"
@@ -63,7 +63,7 @@
       <slot name="body">
         <!-- is this a generic paid (not yet completed) filing? -->
         <div
-          v-if="isStatusPaid"
+          v-if="isStatusPaid || isStatusApproved"
           class="body-2"
         >
           <h4>Filing Pending</h4>
@@ -137,21 +137,21 @@ import { ApiFilingIF } from '@/interfaces'
 import { EnumUtilities } from '@/services'
 import { FilingNames } from '@bcrs-shared-components/enums'
 import { ContactInfo } from '@/components/common'
+import { useFilingHistoryListStore } from '@/stores'
 import DetailsList from './DetailsList.vue'
 import DocumentsList from './DocumentsList.vue'
-import FiledAndPaid from './subtitles/FiledAndPaid.vue'
-import FiledAndPendingPaid from './subtitles/FiledAndPendingPaid.vue'
 import HeaderActions from './HeaderActions.vue'
-import { useFilingHistoryListStore } from '@/stores'
+import SubtitleFiledAndPaid from './subtitles/SubtitleFiledAndPaid.vue'
+import SubtitleFiledAndPendingPaid from './subtitles/SubtitleFiledAndPendingPaid.vue'
 
 @Component({
   components: {
     ContactInfo,
     DetailsList,
     DocumentsList,
-    FiledAndPaid,
-    FiledAndPendingPaid,
-    HeaderActions
+    HeaderActions,
+    SubtitleFiledAndPaid,
+    SubtitleFiledAndPendingPaid
   }
 })
 export default class FilingTemplate extends Vue {
@@ -163,6 +163,11 @@ export default class FilingTemplate extends Vue {
   /** Whether this filing is in Paid status. */
   get isStatusPaid (): boolean {
     return EnumUtilities.isStatusPaid(this.filing)
+  }
+
+  /** Whether this filing is in Approved status. */
+  get isStatusApproved (): boolean {
+    return EnumUtilities.isStatusApproved(this.filing)
   }
 
   /** The title of this filing. */

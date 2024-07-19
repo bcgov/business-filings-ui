@@ -14,8 +14,8 @@ import { FilingTypes } from '@bcrs-shared-components/enums'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 // import CompletedAlteration from '@/components/Dashboard/FilingHistoryList/CompletedAlteration.vue'
 // import CompletedIa from '@/components/Dashboard/FilingHistoryList/CompletedIa.vue'
-import FutureEffective from '@/components/Dashboard/FilingHistoryList/bodies/FutureEffective.vue'
-import FutureEffectivePending from '@/components/Dashboard/FilingHistoryList/bodies/FutureEffectivePending.vue'
+import BodyFutureEffective from '@/components/Dashboard/FilingHistoryList/bodies/BodyFutureEffective.vue'
+import BodyFutureEffectivePending from '@/components/Dashboard/FilingHistoryList/bodies/BodyFutureEffectivePending.vue'
 import PaperFiling from '@/components/Dashboard/FilingHistoryList/filings/PaperFiling.vue'
 // import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
 import StaffFiling from '@/components/Dashboard/FilingHistoryList/filings/StaffFiling.vue'
@@ -310,13 +310,13 @@ filings.forEach((filing: any, index: number) => {
       // } else if (item.isCompletedIa) {
       //   expect(wrapper.findComponent(CompletedIa).exists()).toBe(true)
       } else if (item.isFutureEffectiveIaPending) {
-        expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(true)
+        expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(true)
       } else if (item.isFutureEffectiveIa) {
-        expect(wrapper.findComponent(FutureEffective).exists()).toBe(true)
+        expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(true)
       } else if (item.isFutureEffectiveAlterationPending) {
-        expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(true)
+        expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(true)
       } else if (item.isFutureEffectiveAlteration) {
-        expect(wrapper.findComponent(FutureEffective).exists()).toBe(true)
+        expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(true)
       // } else if (item.status === 'PAID') {
       //   expect(wrapper.findComponent(PendingFiling).exists()).toBe(true)
       // } else if (item.name === 'alteration') {

@@ -4,7 +4,7 @@ import Vuetify from 'vuetify'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore } from '@/stores'
 import { mount } from '@vue/test-utils'
-import FutureEffective from '@/components/Dashboard/FilingHistoryList/bodies/FutureEffective.vue'
+import BodyFutureEffective from '@/components/Dashboard/FilingHistoryList/bodies/BodyFutureEffective.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
@@ -13,9 +13,9 @@ const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 
-describe.skip('Future Effective', () => {
+describe.skip('Body Future Effective', () => {
   it('Displays expected content with a null filing', () => {
-    const wrapper = mount(FutureEffective, {
+    const wrapper = mount(BodyFutureEffective, {
       vuetify,
       propsData: { filing: null }
     })
@@ -28,7 +28,7 @@ describe.skip('Future Effective', () => {
   })
 
   it('Displays expected content with an empty filing', () => {
-    const wrapper = mount(FutureEffective, {
+    const wrapper = mount(BodyFutureEffective, {
       vuetify,
       propsData: { filing: {} }
     })
@@ -50,7 +50,7 @@ describe.skip('Future Effective', () => {
 
   it('Displays expected content with a FE named IA', () => {
     businessStore.setLegalName('My Incorporation')
-    const wrapper = mount(FutureEffective, {
+    const wrapper = mount(BodyFutureEffective, {
       vuetify,
       propsData: {
         filing: {
@@ -77,7 +77,7 @@ describe.skip('Future Effective', () => {
 
   it('Displays expected content with a FE numbered IA', () => {
     businessStore.setLegalName(null)
-    const wrapper = mount(FutureEffective, {
+    const wrapper = mount(BodyFutureEffective, {
       vuetify,
       propsData: {
         filing: {
@@ -104,7 +104,7 @@ describe.skip('Future Effective', () => {
 
   it('Displays expected content with a FE alteration', () => {
     businessStore.setLegalName('My Alteration')
-    const wrapper = mount(FutureEffective, {
+    const wrapper = mount(BodyFutureEffective, {
       vuetify,
       propsData: {
         filing: {
