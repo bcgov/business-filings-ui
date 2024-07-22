@@ -1,5 +1,8 @@
 <template>
-  <div class="filed-label d-inline">
+  <div
+    v-if="!!filing"
+    class="filed-label d-inline"
+  >
     <template v-if="isTypeStaff">
       <template v-if="putBackOnOrAdminDissolution">
         <span> (filed by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />)</span>
