@@ -2359,6 +2359,13 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
       margin-top: 1rem;
     }
   }
+
+  // specifically enable tooltips for this page
+  :deep() {
+    .v-tooltip + div {
+      pointer-events: auto;
+    }
+  }
 }
 
 .todo-item .list-item {

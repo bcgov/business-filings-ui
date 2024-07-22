@@ -4,7 +4,7 @@
     <span class="vert-pipe" />
     <span>PAID (filed by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />)</span>
 
-    <v-btn
+    <!-- <v-btn
       class="details-btn"
       outlined
       color="orange darken-2"
@@ -14,7 +14,7 @@
       <v-icon>mdi-alert</v-icon>
       <span class="view-details ml-1">View Details</span>
       <span class="hide-details ml-1">Hide Details</span>
-    </v-btn>
+    </v-btn> -->
   </div>
 </template>
 

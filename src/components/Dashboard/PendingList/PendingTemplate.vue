@@ -91,13 +91,20 @@ export default class PendingTemplate extends Vue {
       padding-top: 1px;
       border: none;
 
-      // explicitly enable button on this disabled expansion panel
+      // specifically enable button on this disabled expansion panel
       pointer-events: auto;
     }
   }
 
   .item-header-subtitle {
     color: $gray7;
+  }
+}
+
+// specifically enable tooltips for this page
+:deep() {
+  .v-tooltip + div {
+    pointer-events: auto;
   }
 }
 

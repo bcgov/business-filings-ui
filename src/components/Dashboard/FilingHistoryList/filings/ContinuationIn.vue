@@ -85,7 +85,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Action, Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
 import SubtitleFiledAndPendingPaid from '../subtitles/SubtitleFiledAndPendingPaid.vue'
@@ -93,7 +93,7 @@ import FilingTemplate from '../FilingTemplate.vue'
 import BodyFutureEffective from '../bodies/BodyFutureEffective.vue'
 import SubtitleFutureEffectivePaid from '../subtitles/SubtitleFutureEffectivePaid.vue'
 import BodyFutureEffectivePending from '../bodies/BodyFutureEffectivePending.vue'
-import { useBusinessStore, useConfigurationStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore } from '@/stores'
 import SubtitleRejected from '../subtitles/SubtitleRejected.vue'
 
 @Component({
@@ -113,6 +113,8 @@ export default class ContinuationIn extends Vue {
   @Getter(useBusinessStore) getEntityName!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getDashboardUrl!: string
+
+  @Action(useFilingHistoryListStore) setPanel!: (x: number) => void
 
   /** The Temporary Registration Number string (may be null). */
   get tempRegNumber (): string {
@@ -158,6 +160,14 @@ export default class ContinuationIn extends Vue {
     if (this.getLegalName) return this.getLegalName
     if (this.getEntityName) return `A ${this.getEntityName}`
     return 'Unknown Name'
+  }
+
+  mounted (): void {
+    if (this.tempRegNumber) {
+      // expand bootstrap filing by default
+      // assumes this the only filing in the Filing History list (which it should be)
+      this.setPanel(0)
+    }
   }
 
   /** Reloads Filings UI using business id instead of temporary registration number. */
