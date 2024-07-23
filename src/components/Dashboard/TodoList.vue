@@ -115,6 +115,7 @@
                 />
               </div>
 
+              <!-- all other subtitles -->
               <div
                 v-else
                 class="list-item__subtitle"
@@ -212,7 +213,7 @@
                   <span>DRAFT</span>
                 </div>
 
-                <!-- pending filing -->
+                <!-- pending (or pending correction) filing -->
                 <div
                   v-else-if="EnumUtilities.isStatusPending(item) || EnumUtilities.isStatusPendingCorrection(item)"
                   class="todo-subtitle"
@@ -253,6 +254,16 @@
                   <span v-if="inProcessFiling === item.filingId">PROCESSING...</span>
                   <span v-else>PAID</span>
                 </div>
+
+                <!-- change-requested filing -->
+                <div
+                  v-else-if="EnumUtilities.isStatusChangeRequested(item)"
+                  class="todo-subtitle pt-1"
+                >
+                  <span>CHANGE REQUESTED</span>
+                  <span class="vert-pipe" />
+                  <span>PAID (filed by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
+                </div>
               </div> <!-- end of other subtitles -->
             </div> <!-- end of todo label -->
 
@@ -279,7 +290,7 @@
               </v-btn>
             </div>
 
-            <!-- Not affiliation invite (ie, rest of the todo actions) -->
+            <!-- all other todo actions -->
             <div
               v-else
               class="list-item__actions"
@@ -304,6 +315,16 @@
                     loading
                     disabled
                   />
+                </template>
+
+                <!-- default task -->
+                <template v-if="item.isDefaultTask">
+                  <!-- no action button in this case -->
+                </template>
+
+                <!-- non-staff see no buttons for staff filings (cont out, conversion, correction, restoration) -->
+                <template v-else-if="!isRoleStaff && isStaffFiling(item)">
+                  <!-- no action button in this case -->
                 </template>
 
                 <!-- new annual report -->
@@ -332,12 +353,7 @@
                   </v-btn>
                 </template>
 
-                <!-- non-staff see no buttons for staff filings -->
-                <template v-else-if="!isRoleStaff && isStaffFiling(item)">
-                  <!-- no action button in this case -->
-                </template>
-
-                <!-- draft filing - show Delete only -->
+                <!-- draft filing - Show Delete conditions only -->
                 <template v-else-if="EnumUtilities.isStatusDraft(item) && showDeleteOnly(item)">
                   <v-btn
                     class="btn-draft-delete"
@@ -504,6 +520,18 @@
                 <template v-else-if="EnumUtilities.isStatusPaid(item)">
                   <!-- no action button in this case -->
                 </template>
+
+                <!-- change-requested filing -->
+                <template v-else-if="EnumUtilities.isStatusChangeRequested(item)">
+                  <v-btn
+                    class="btn-draft-resume rounded-r"
+                    color="primary"
+                    :disabled="!item.enabled"
+                    @click.native.stop="doResumeFiling(item)"
+                  >
+                    <span>Make Changes</span>
+                  </v-btn>
+                </template>
               </div>
             </div> <!-- end of actions -->
           </div> <!-- end of list item -->
@@ -532,10 +560,7 @@
 
           <!-- is this a draft correction? -->
           <template v-else-if="EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeCorrection(item)">
-            <div
-              data-test-class="correction-draft"
-              class="todo-list-detail body-2"
-            >
+            <div class="todo-list-detail body-2">
               <p class="list-item__subtitle">
                 This filing is in review and has been saved as a draft.<br>
                 Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
@@ -548,10 +573,7 @@
 
           <!-- is this a correction in any other status? -->
           <template v-else-if="EnumUtilities.isTypeCorrection(item)">
-            <div
-              data-test-class="correction-pending"
-              class="todo-list-detail body-2"
-            >
+            <div class="todo-list-detail body-2">
               <p class="list-item__subtitle">
                 This filing is pending review by Registry Staff.<br>
                 Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
@@ -579,6 +601,18 @@
               class="mb-6"
             />
             <PaymentPending v-else />
+          </template>
+
+          <!-- is this a change-requested item? -->
+          <template v-else-if="EnumUtilities.isStatusChangeRequested(item)">
+            <div class="todo-list-detail body-2">
+              <p class="list-item__subtitle">
+                This {{ item.title }} is paid but requires you to make the following changes:
+              </p>
+              <p class="list-item__subtitle">
+                {{ item.comment || '[undefined staff change request message]' }}
+              </p>
+            </div>
           </template>
 
           <!-- does this item have an unsuccessful payment? -->
@@ -619,7 +653,7 @@ import axios from '@/axios-auth'
 import { GetFeatureFlag, navigate } from '@/utils'
 import { AffiliationErrorDialog, CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog }
   from '@/components/dialogs'
-import { ContactInfo, NameRequestInfo } from '@/components/common'
+import { ContactInfo, DateTooltip, NameRequestInfo } from '@/components/common'
 import AffiliationInvitationDetails from './TodoList/AffiliationInvitationDetails.vue'
 import ConversionDetails from './TodoList/ConversionDetails.vue'
 import CorrectionComment from './TodoList/CorrectionComment.vue'
@@ -664,6 +698,7 @@ import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFil
     AffiliationInvitationDetails,
     ConversionDetails,
     CorrectionComment,
+    DateTooltip,
     NameRequestInfo,
     ContactInfo,
     PaymentIncomplete,
@@ -799,18 +834,26 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
 
   /** Whether to show the details button with blue color. */
   showDetailsBtnBlue (item: TodoItemIF): boolean {
-    if (EnumUtilities.isStatusNew(item) && EnumUtilities.isTypeConversion(item)) return true
-    if (EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeConversion(item)) return true
-    if (EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeAmalgamationApplication(item) &&
-      item.nameRequest) return true
-    if (EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item) &&
-      item.nameRequest) return true
-    if (EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeIncorporationApplication(item) &&
-      item.nameRequest) return true
-    if (EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeRegistration(item) &&
-      item.nameRequest) return true
+    if (EnumUtilities.isStatusNew(item)) {
+      if (EnumUtilities.isTypeConversion(item)) return true
+    }
+
+    if (EnumUtilities.isStatusDraft(item)) {
+      if (EnumUtilities.isTypeConversion(item)) return true
+      if (EnumUtilities.isTypeAmalgamationApplication(item) && item.nameRequest) return true
+      if (EnumUtilities.isTypeContinuationIn(item) && item.nameRequest) return true
+      if (EnumUtilities.isTypeIncorporationApplication(item) && item.nameRequest) return true
+      if (EnumUtilities.isTypeRegistration(item) && item.nameRequest) return true
+    }
+
+    if (EnumUtilities.isStatusChangeRequested(item)) {
+      if (EnumUtilities.isTypeContinuationIn(item)) return true
+    }
+
     if (EnumUtilities.isStatusPending(item)) return true
+
     if (this.isAffiliationInvitation(item)) return true
+
     return false
   }
 
@@ -1123,7 +1166,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
           await this.loadContinuationOut(task)
           break
         case FilingTypes.CONTINUATION_IN:
-          await this.loadContinuationInApplication(task)
+          await this.loadContinuationIn(task)
           break
         case FilingTypes.CONVERSION:
           await this.loadConversion(task)
@@ -1147,8 +1190,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
           await this.loadSpecialResolution(task)
           break
         default:
-          // eslint-disable-next-line no-console
-          console.log('ERROR - invalid name in filing header =', header)
+          await this.loadDefaultTask(task)
           break
       }
     } else {
@@ -1187,7 +1229,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
-      console.log('ERROR - invalid header or dissolution or business in task =', task)
+      console.log('ERROR - invalid header or dissolution or business in filing =', filing)
     }
   }
 
@@ -1235,7 +1277,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
-      console.log('ERROR - invalid header or alteration or business in task =', task)
+      console.log('ERROR - invalid header or alteration or business in filing =', filing)
     }
   }
 
@@ -1477,7 +1519,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     }
   }
 
-  async loadContinuationInApplication (task: ApiTaskIF): Promise<void> {
+  async loadContinuationIn (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
     const continuationIn = filing.continuationIn
@@ -1497,11 +1539,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
 
       // NB: continuationIn application may be undefined
       const haveData = Boolean(
-        continuationIn?.offices ||
+        continuationIn?.authorization ||
         continuationIn?.contactPoint ||
+        continuationIn?.foreignJurisdiction ||
+        continuationIn?.offices ||
         continuationIn?.parties ||
-        continuationIn?.shareClasses ||
-        continuationIn?.foreignJurisdiction
+        continuationIn?.shareStructure
       )
 
       const item: TodoItemIF = {
@@ -1518,12 +1561,21 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
         payErrorObj,
         isPayCompleted: (paymentStatusCode === 'COMPLETED'),
         isEmptyFiling: !haveData,
-        nameRequest: this.getNameRequest
+        nameRequest: this.getNameRequest,
+        submitter: header.submitter,
+        submittedDate: new Date(header.date), // API format
+        latestReviewComment: header?.latestReviewComment
       }
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
       console.log('ERROR - invalid header in filing =', filing)
+    }
+
+    if (header.status === FilingStatus.CHANGE_REQUESTED) {
+      // special case: expand this task by default
+      // this assumes this the only task in the Todo list
+      this.panel = 0
     }
   }
 
@@ -1772,7 +1824,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
-      console.log('ERROR - invalid header or business in filing =', filing)
+      console.log('ERROR - invalid header or continuationOut in filing =', filing)
     }
   }
 
@@ -1805,7 +1857,42 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
-      console.log('ERROR - invalid header or specialResolution in task =', task)
+      console.log('ERROR - invalid header or specialResolution in filing =', filing)
+    }
+  }
+
+  async loadDefaultTask (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const business = filing.business
+
+    if (header) {
+      const corpFullDescription = GetCorpFullDescription(business.legalType)
+
+      const title = EnumUtilities.filingTypeToName(header.name)
+
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
+
+      const item: TodoItemIF = {
+        name: header.name,
+        filingId: header.filingId,
+        legalType: corpFullDescription,
+        title,
+        draftTitle: title,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        isPayCompleted: (paymentStatusCode === 'COMPLETED'),
+        isDefaultTask: true
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header in filing =', filing)
     }
   }
 
@@ -1841,7 +1928,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
-      console.log('ERROR - invalid header or restoration in task =', task)
+      console.log('ERROR - invalid header or restoration in filing =', filing)
     }
   }
 
@@ -2220,9 +2307,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     return title
   }
 
+  /** Loads data initially and when task list changes. */
   @Watch('getTasks', { immediate: true })
   async onTasksChanged (): Promise<void> {
-    // load data initially and when task list changes
     await this.loadData()
   }
 
@@ -2270,6 +2357,13 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     p {
       color: $gray7;
       margin-top: 1rem;
+    }
+  }
+
+  // specifically enable tooltips for this page
+  :deep() {
+    .v-tooltip + div {
+      pointer-events: auto;
     }
   }
 }

@@ -5,7 +5,7 @@
     :index="index"
   >
     <template #subtitle>
-      <CoaFiledAndPending
+      <SubtitleCoaFiledAndPending
         v-if="isFutureEffective"
         class="item-header-subtitle"
         :filing="filing"
@@ -26,14 +26,14 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
-import CoaFiledAndPending from '../subtitles/CoaFiledAndPending.vue'
+import SubtitleCoaFiledAndPending from '../subtitles/SubtitleCoaFiledAndPending.vue'
 import FilingTemplate from '../FilingTemplate.vue'
 import { useBusinessStore } from '@/stores'
 
 @Component({
   components: {
-    CoaFiledAndPending,
-    FilingTemplate
+    FilingTemplate,
+    SubtitleCoaFiledAndPending
   }
 })
 export default class ChangeOfAddress extends Vue {

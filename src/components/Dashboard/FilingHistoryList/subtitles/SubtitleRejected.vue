@@ -1,12 +1,11 @@
 <template>
-  <div class="filed-and-pending-paid">
-    <span class="orange--text text--darken-2">FILED AND PENDING</span>
+  <div class="subtitle-rejected">
+    <span class="orange--text text--darken-2">REJECTED</span>
     <span class="vert-pipe" />
-    <span>PAID <FiledLabel :filing="filing" /></span>
+    <span>PAID (filed by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />)</span>
 
-    <v-btn
+    <!-- <v-btn
       class="details-btn"
-      :class="{ 'bootstrap-filing': isBootstrapFiling }"
       outlined
       color="orange darken-2"
       :ripple="false"
@@ -15,33 +14,40 @@
       <v-icon>mdi-alert</v-icon>
       <span class="view-details ml-1">View Details</span>
       <span class="hide-details ml-1">Hide Details</span>
-    </v-btn>
+    </v-btn> -->
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Action } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
+import { useFilingHistoryListStore } from '@/stores'
+import { DateTooltip } from '@/components/common'
 import FiledLabel from '../FiledLabel.vue'
-import { useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
-  components: { FiledLabel }
+  components: {
+    DateTooltip,
+    FiledLabel
+  }
 })
-export default class FiledAndPendingPaid extends Vue {
+export default class SubtitleRejected extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter(useRootStore) isBootstrapFiling!: boolean
   @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: (x: number) => Promise<void>
+
+  get submittedDate (): Date {
+    return new Date(this.filing.submittedDate)
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
 
-.filed-and-pending-paid {
+.subtitle-rejected {
   color: $gray7;
 }
 

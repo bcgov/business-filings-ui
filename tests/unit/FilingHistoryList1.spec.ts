@@ -14,8 +14,8 @@ import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 // import CompletedIa from '@/components/Dashboard/FilingHistoryList/CompletedIa.vue'
 import DetailsList from '@/components/Dashboard/FilingHistoryList/DetailsList.vue'
 import DocumentsList from '@/components/Dashboard/FilingHistoryList/DocumentsList.vue'
-import FutureEffective from '@/components/Dashboard/FilingHistoryList/bodies/FutureEffective.vue'
-import FutureEffectivePending from '@/components/Dashboard/FilingHistoryList/bodies/FutureEffectivePending.vue'
+import BodyFutureEffective from '@/components/Dashboard/FilingHistoryList/bodies/BodyFutureEffective.vue'
+import BodyFutureEffectivePending from '@/components/Dashboard/FilingHistoryList/bodies/BodyFutureEffectivePending.vue'
 import PaperFiling from '@/components/Dashboard/FilingHistoryList/filings/PaperFiling.vue'
 // import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
 import StaffFiling from '@/components/Dashboard/FilingHistoryList/filings/StaffFiling.vue'
@@ -262,8 +262,8 @@ describe('Filing History List - misc functionality', () => {
     expect(vm.getPanel).toBe(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(true)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -317,8 +317,8 @@ describe('Filing History List - misc functionality', () => {
     expect(vm.getPanel).toBe(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -451,8 +451,8 @@ describe('Filing History List - misc functionality', () => {
     expect(vm.getFilings.length).toEqual(1)
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -1248,8 +1248,8 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.getPanel).toEqual(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(true)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(true)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -1279,6 +1279,7 @@ describe('Filing History List - incorporation applications', () => {
         submitter: 'Cameron'
       } as any
     ])
+    filingHistoryListStore.setPanel(null) // so we can re-open it
 
     const wrapper = mount(FilingHistoryList, { vuetify })
 
@@ -1286,10 +1287,10 @@ describe('Filing History List - incorporation applications', () => {
     expect(detailsBtn.text()).toContain('View Details')
 
     await detailsBtn.trigger('click')
-    await Vue.nextTick()
+    await flushPromises() // wait for expansion transition
 
     expect(wrapper.findAll('.v-expansion-panel-content').isVisible()).toBe(true)
-    expect(wrapper.find('.future-effective').text()).toContain('Future Effective Incorporation Date')
+    expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation Date')
 
     // cleanup
     rootStore.setBootstrapFilingStatus(null) // set isBootstrapFiling to false
@@ -1351,8 +1352,8 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.getPanel).toEqual(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(true)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(true)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -1415,8 +1416,8 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.getPanel).toEqual(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(true)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -1519,8 +1520,8 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.getPanel).toEqual(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(true)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -1587,8 +1588,8 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.getPanel).toEqual(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -1631,8 +1632,8 @@ describe('Filing History List - continuation in applications', () => {
     expect(wrapper.find('.hide-details').text()).toBe('Hide')
 
     // verify Filing History Component
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
@@ -1706,8 +1707,8 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toEqual(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(true)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -1767,8 +1768,8 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toEqual(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(true)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -1833,8 +1834,8 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toEqual(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(true)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(true)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -1899,8 +1900,8 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toEqual(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(true)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(true)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -1964,8 +1965,8 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toEqual(0) // first row is expanded
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(true)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
@@ -2021,8 +2022,8 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toBe(0)
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(true)
@@ -2078,8 +2079,8 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toBe(0)
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(true)
@@ -2135,8 +2136,8 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toBe(0)
     // expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
     // expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
-    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(BodyFutureEffectivePending).exists()).toBe(false)
     expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
     // expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(true)

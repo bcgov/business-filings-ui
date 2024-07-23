@@ -433,12 +433,6 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
 
 .staff-notation-container {
   display: inline-block;
-
-  .expand-btn {
-    letter-spacing: -0.01rem;
-    font-size: $px-14;
-    font-weight: 700;
-  }
 }
 
 // This class will be applied when addScrollbarOffset prop is true.

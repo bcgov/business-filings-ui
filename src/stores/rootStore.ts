@@ -119,13 +119,17 @@ export const useRootStore = defineStore('root', {
       return false // FUTURE: implement this
     },
 
+    getBootstrapFilingStatus (state: RootStateIF): FilingStatus {
+      return state.bootstrapFilingStatus
+    },
+
     /** Whether this is an amalgamation bootstrap filing that belongs in the Todo List. */
     isAmalgamationTodo (state: RootStateIF): boolean {
       return (
         state.bootstrapFilingType === FilingTypes.AMALGAMATION_APPLICATION &&
         (
-          state.bootstrapFilingStatus === FilingStatus.DRAFT ||
-          state.bootstrapFilingStatus === FilingStatus.PENDING
+          this.getBootstrapFilingStatus === FilingStatus.DRAFT ||
+          this.getBootstrapFilingStatus === FilingStatus.PENDING
         )
       )
     },
@@ -135,8 +139,8 @@ export const useRootStore = defineStore('root', {
       return (
         state.bootstrapFilingType === FilingTypes.AMALGAMATION_APPLICATION &&
         (
-          state.bootstrapFilingStatus === FilingStatus.COMPLETED ||
-          state.bootstrapFilingStatus === FilingStatus.PAID
+          this.getBootstrapFilingStatus === FilingStatus.COMPLETED ||
+          this.getBootstrapFilingStatus === FilingStatus.PAID
         )
       )
     },
@@ -146,9 +150,9 @@ export const useRootStore = defineStore('root', {
       return (
         state.bootstrapFilingType === FilingTypes.CONTINUATION_IN &&
         (
-          state.bootstrapFilingStatus === FilingStatus.CHANGE_REQUESTED ||
-          state.bootstrapFilingStatus === FilingStatus.DRAFT ||
-          state.bootstrapFilingStatus === FilingStatus.PENDING
+          this.getBootstrapFilingStatus === FilingStatus.CHANGE_REQUESTED ||
+          this.getBootstrapFilingStatus === FilingStatus.DRAFT ||
+          this.getBootstrapFilingStatus === FilingStatus.PENDING
         )
       )
     },
@@ -157,7 +161,7 @@ export const useRootStore = defineStore('root', {
     isContinuationInPending (state: RootStateIF): boolean {
       return (
         state.bootstrapFilingType === FilingTypes.CONTINUATION_IN &&
-        state.bootstrapFilingStatus === FilingStatus.AWAITING_REVIEW
+        this.getBootstrapFilingStatus === FilingStatus.AWAITING_REVIEW
       )
     },
 
@@ -166,10 +170,10 @@ export const useRootStore = defineStore('root', {
       return (
         state.bootstrapFilingType === FilingTypes.CONTINUATION_IN &&
         (
-          state.bootstrapFilingStatus === FilingStatus.APPROVED ||
-          state.bootstrapFilingStatus === FilingStatus.COMPLETED ||
-          state.bootstrapFilingStatus === FilingStatus.PAID ||
-          state.bootstrapFilingStatus === FilingStatus.REJECTED
+          this.getBootstrapFilingStatus === FilingStatus.APPROVED ||
+          this.getBootstrapFilingStatus === FilingStatus.COMPLETED ||
+          this.getBootstrapFilingStatus === FilingStatus.PAID ||
+          this.getBootstrapFilingStatus === FilingStatus.REJECTED
         )
       )
     },
@@ -179,8 +183,8 @@ export const useRootStore = defineStore('root', {
       return (
         state.bootstrapFilingType === FilingTypes.INCORPORATION_APPLICATION &&
         (
-          state.bootstrapFilingStatus === FilingStatus.DRAFT ||
-          state.bootstrapFilingStatus === FilingStatus.PENDING
+          this.getBootstrapFilingStatus === FilingStatus.DRAFT ||
+          this.getBootstrapFilingStatus === FilingStatus.PENDING
         )
       )
     },
@@ -190,8 +194,8 @@ export const useRootStore = defineStore('root', {
       return (
         state.bootstrapFilingType === FilingTypes.INCORPORATION_APPLICATION &&
         (
-          state.bootstrapFilingStatus === FilingStatus.COMPLETED ||
-          state.bootstrapFilingStatus === FilingStatus.PAID
+          this.getBootstrapFilingStatus === FilingStatus.COMPLETED ||
+          this.getBootstrapFilingStatus === FilingStatus.PAID
         )
       )
     },
@@ -201,8 +205,8 @@ export const useRootStore = defineStore('root', {
       return (
         state.bootstrapFilingType === FilingTypes.REGISTRATION &&
         (
-          state.bootstrapFilingStatus === FilingStatus.DRAFT ||
-          state.bootstrapFilingStatus === FilingStatus.PENDING
+          this.getBootstrapFilingStatus === FilingStatus.DRAFT ||
+          this.getBootstrapFilingStatus === FilingStatus.PENDING
         )
       )
     },
@@ -212,8 +216,8 @@ export const useRootStore = defineStore('root', {
       return (
         state.bootstrapFilingType === FilingTypes.REGISTRATION &&
         (
-          state.bootstrapFilingStatus === FilingStatus.COMPLETED ||
-          state.bootstrapFilingStatus === FilingStatus.PAID
+          this.getBootstrapFilingStatus === FilingStatus.COMPLETED ||
+          this.getBootstrapFilingStatus === FilingStatus.PAID
         )
       )
     },

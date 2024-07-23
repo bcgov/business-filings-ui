@@ -5,14 +5,14 @@
     :index="index"
   >
     <template #subtitle>
-      <FiledAndPendingPaid
+      <SubtitleFiledAndPendingPaid
         v-if="isFutureEffectivePending"
         class="item-header-subtitle"
         :filing="filing"
         :index="index"
       />
 
-      <FutureEffectivePaid
+      <SubtitleFutureEffectivePaid
         v-else-if="isFutureEffective"
         class="item-header-subtitle"
         :filing="filing"
@@ -21,12 +21,12 @@
     </template>
 
     <template #body>
-      <FutureEffectivePending
+      <BodyFutureEffectivePending
         v-if="isFutureEffectivePending"
         :filing="filing"
       />
 
-      <FutureEffective
+      <BodyFutureEffective
         v-else-if="isFutureEffective"
         :filing="filing"
       />
@@ -63,20 +63,20 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
-import FiledAndPendingPaid from '../subtitles/FiledAndPendingPaid.vue'
+import SubtitleFiledAndPendingPaid from '../subtitles/SubtitleFiledAndPendingPaid.vue'
 import FilingTemplate from '../FilingTemplate.vue'
-import FutureEffective from '../bodies/FutureEffective.vue'
-import FutureEffectivePaid from '../subtitles/FutureEffectivePaid.vue'
-import FutureEffectivePending from '../bodies/FutureEffectivePending.vue'
+import BodyFutureEffective from '../bodies/BodyFutureEffective.vue'
+import SubtitleFutureEffectivePaid from '../subtitles/SubtitleFutureEffectivePaid.vue'
+import BodyFutureEffectivePending from '../bodies/BodyFutureEffectivePending.vue'
 import { useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
-    FiledAndPendingPaid,
+    BodyFutureEffective,
+    BodyFutureEffectivePending,
     FilingTemplate,
-    FutureEffective,
-    FutureEffectivePaid,
-    FutureEffectivePending
+    SubtitleFiledAndPendingPaid,
+    SubtitleFutureEffectivePaid
   }
 })
 export default class IncorporationApplication extends Vue {

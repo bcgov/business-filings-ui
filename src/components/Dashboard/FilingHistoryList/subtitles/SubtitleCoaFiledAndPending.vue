@@ -1,5 +1,5 @@
 <template>
-  <div class="coa-filed-and-pending">
+  <div class="subtitle-coa-filed-and-pending">
     <span>FILED AND PENDING <FiledLabel :filing="filing" /></span>
 
     <v-tooltip
@@ -31,7 +31,7 @@ import FiledLabel from '../FiledLabel.vue'
 @Component({
   components: { FiledLabel }
 })
-export default class CoaFiledAndPending extends Vue {
+export default class SubtitleCoaFiledAndPending extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 

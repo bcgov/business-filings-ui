@@ -219,19 +219,10 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
   max-height: 60rem;
 }
 
-.filing-history-item {
-  padding: 1.25rem 1.5rem;
-  pointer-events: none; // disable expansion generally
-}
-
 :deep(.v-expansion-panel-header) {
   min-height: auto !important;
   padding: 0;
   margin-top: 0.25rem;
-
-  .v-expansion-panel-header__icon {
-    display: none;
-  }
 }
 
 // specifically enable anchors, buttons, the pending alert icon and tooltips

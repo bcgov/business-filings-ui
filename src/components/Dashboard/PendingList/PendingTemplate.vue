@@ -1,6 +1,6 @@
 <template>
   <v-expansion-panel
-    class="pending-template py-5 px-6"
+    class="pending-template align-items-top py-5 px-6"
     :disabled="true"
   >
     <v-expansion-panel-header>
@@ -9,6 +9,16 @@
           <h3 class="item-header-title">
             <slot name="title">
               <span>{{ item.displayName }}</span>
+              <v-btn
+                class="expand-btn ml-1"
+                outlined
+                color="primary"
+                :ripple="false"
+                @click.stop="$emit('toggle-panel')"
+              >
+                <v-icon>mdi-information-outline</v-icon>
+                <span>{{ (0 === index) ? "Hide Details" : "View Details" }}</span>
+              </v-btn>
             </slot>
           </h3>
 
@@ -18,10 +28,6 @@
               <span class="vert-pipe" />
               <span>PAID (filed by {{ submitter }} on <DateTooltip :date="submittedDate" />)</span>
             </div>
-          </slot>
-
-          <slot name="details-button">
-            <!-- no default details button at this time -->
           </slot>
         </div>
 
@@ -76,15 +82,30 @@ export default class PendingTemplate extends Vue {
 
 .item-header {
   line-height: 1.25rem;
+
+  .item-header-title {
+    font-weight: bold;
+
+    .expand-btn {
+      margin-top: -1px;
+      padding-top: 1px;
+      border: none;
+
+      // specifically enable button on this disabled expansion panel
+      pointer-events: auto;
+    }
+  }
+
+  .item-header-subtitle {
+    color: $gray7;
+  }
 }
 
-.item-header-title {
-  font-weight: bold;
-}
-
-.item-header-subtitle {
-  color: $gray7;
-  margin-top: 0.5rem;
+// specifically enable tooltips for this page
+:deep() {
+  .v-tooltip + div {
+    pointer-events: auto;
+  }
 }
 
 p {
