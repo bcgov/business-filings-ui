@@ -164,7 +164,7 @@ export default class ContinuationIn extends Vue {
 
   mounted (): void {
     if (this.tempRegNumber) {
-      // expand bootstrap filing by default
+      // auto-expand bootstrap filing
       // assumes this the only filing in the Filing History list (which it should be)
       this.setPanel(0)
     }
