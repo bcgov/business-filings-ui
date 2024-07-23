@@ -46,7 +46,7 @@
         <p class="mt-0">
           This {{ filing.displayName }} is rejected for the following reasons:
         </p>
-        <p>
+        <p class="font-italic">
           {{ filing.latestReviewComment || '[undefined staff rejection message]' }}
         </p>
         <p>
