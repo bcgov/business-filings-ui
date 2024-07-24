@@ -260,7 +260,7 @@
                   v-else-if="EnumUtilities.isStatusChangeRequested(item)"
                   class="todo-subtitle pt-1"
                 >
-                  <span>CHANGE REQUESTED</span>
+                  <span class="orange--text text--darken-2">CHANGE REQUESTED</span>
                   <span class="vert-pipe" />
                   <span>PAID (filed by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
                 </div>
@@ -609,8 +609,8 @@
               <p class="list-item__subtitle">
                 This {{ item.title }} is paid but requires you to make the following changes:
               </p>
-              <p class="list-item__subtitle">
-                {{ item.comment || '[undefined staff change request message]' }}
+              <p class="list-item__subtitle font-italic">
+                {{ item.latestReviewComment || '[undefined staff change request message]' }}
               </p>
             </div>
           </template>
