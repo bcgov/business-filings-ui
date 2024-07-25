@@ -18,6 +18,7 @@ const defaultFlagSet: LDFlagSet = {
   'supported-agm-location-chg-entities': [],
   'supported-amalgamation-entities': [],
   'supported-amalgamation-out-entities': [],
+  'supported-ar-correction-entities': [],
   'supported-business-summary-entities': [],
   'supported-consent-amalgamation-out-entities': [],
   'supported-consent-continuation-out-entities': [],

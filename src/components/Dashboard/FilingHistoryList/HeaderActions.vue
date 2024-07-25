@@ -84,6 +84,7 @@ import { ApiFilingIF } from '@/interfaces'
 import { AllowableActionsMixin } from '@/mixins'
 import { EnumUtilities } from '@/services'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { GetFeatureFlag } from '@/utils'
 
 @Component({})
 export default class HeaderActions extends Mixins(AllowableActionsMixin) {
@@ -92,6 +93,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
+  // @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useRootStore) isBootstrapFiling!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
@@ -142,7 +144,10 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
         if (!this.isBaseCompany) return true
         return false
       case EnumUtilities.isTypeAmalgamationOut(this.filing): return true // not supported
-      case EnumUtilities.isTypeAnnualReport(this.filing): return true // not supported
+      case EnumUtilities.isTypeAnnualReport(this.filing):
+        // enable AR corrections for specified legal types only
+        if (GetFeatureFlag('supported-ar-correction-entities').includes(this.getLegalType)) return false
+        return true
       case EnumUtilities.isTypeChangeOfAddress(this.filing): return false
       case EnumUtilities.isTypeChangeOfCompanyInfo(this.filing): return true // not supported
       case EnumUtilities.isTypeChangeOfDirectors(this.filing): return false
