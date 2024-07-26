@@ -46,9 +46,15 @@
         <p class="mt-0">
           This {{ filing.displayName }} is rejected for the following reasons:
         </p>
-        <p class="font-italic">
-          {{ filing.latestReviewComment || '[undefined staff rejection message]' }}
-        </p>
+        <textarea
+          v-if="isShowTextarea"
+          v-auto-resize
+          class="font-16 font-italic"
+          readonly
+          rows="1"
+          :value="filing.latestReviewComment || '[undefined staff change request message]'"
+        />
+
         <p>
           You will receive a refund within 10 business days. Please submit a new application if you would
           like to continue your business into B.C.
@@ -95,6 +101,7 @@ import SubtitleFutureEffectivePaid from '../subtitles/SubtitleFutureEffectivePai
 import BodyFutureEffectivePending from '../bodies/BodyFutureEffectivePending.vue'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore } from '@/stores'
 import SubtitleRejected from '../subtitles/SubtitleRejected.vue'
+import AutoResize from 'vue-auto-resize'
 
 @Component({
   components: {
@@ -104,6 +111,9 @@ import SubtitleRejected from '../subtitles/SubtitleRejected.vue'
     SubtitleFiledAndPendingPaid,
     SubtitleFutureEffectivePaid,
     SubtitleRejected
+  },
+  directives: {
+    AutoResize
   }
 })
 export default class ContinuationIn extends Vue {
@@ -114,7 +124,10 @@ export default class ContinuationIn extends Vue {
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getDashboardUrl!: string
 
-  @Action(useFilingHistoryListStore) setPanel!: (x: number) => void
+  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: (x: number) => Promise<void>
+
+  // local variable(s)
+  isShowTextarea = false
 
   /** The Temporary Registration Number string (may be null). */
   get tempRegNumber (): string {
@@ -162,12 +175,15 @@ export default class ContinuationIn extends Vue {
     return 'Unknown Name'
   }
 
-  mounted (): void {
+  async mounted (): Promise<void> {
     if (this.tempRegNumber) {
       // auto-expand bootstrap filing
       // assumes this the only filing in the Filing History list (which it should be)
-      this.setPanel(0)
+      await this.toggleFilingHistoryItem(0)
     }
+
+    // work-around because textarea sometimes doesn't initially auto-resize
+    this.isShowTextarea = true
   }
 
   /** Reloads Filings UI using business id instead of temporary registration number. */
@@ -191,5 +207,14 @@ p {
   color: $gray7;
   font-size: $px-15;
   margin-top: 1rem !important;
+}
+
+textarea {
+  color: $gray7;
+  width: 100%;
+  resize: none;
+  // FUTURE: use field-sizing instead of "v-auto-resize" directive
+  // ref: https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing
+  // field-sizing: content;
 }
 </style>
