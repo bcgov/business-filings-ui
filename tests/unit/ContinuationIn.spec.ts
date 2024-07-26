@@ -112,7 +112,7 @@ describe('Continuation In - in To Do list', () => {
     // verify expansion panel content
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('This BC Limited Company Continuation Application is')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('paid but requires you to make the following changes:')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Authorization document is not legible.')
+    expect((wrapper.find('textarea').element as any)._value).toBe('Authorization document is not legible.')
 
     // cleanup
     wrapper.destroy()
@@ -279,7 +279,8 @@ describe('Continuation In - in Recent Filing History list', () => {
     // verify expansion panel content
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('This BC Limited Company Continuation Application is')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('rejected for the following reasons:')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Authorization is invalid.')
+    expect((wrapper.find('textarea').element as any)._value).toBe('Authorization is invalid.')
+
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('You will receive a refund within 10 business days.')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Please submit a new application if you would like to')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('continue your business into B.C.')
