@@ -609,9 +609,13 @@
               <p class="list-item__subtitle">
                 This {{ item.title }} is paid but requires you to make the following changes:
               </p>
-              <p class="list-item__subtitle font-italic">
-                {{ item.latestReviewComment || '[undefined staff change request message]' }}
-              </p>
+              <textarea
+                v-auto-resize
+                class="font-16 font-italic"
+                readonly
+                rows="1"
+                :value="item.latestReviewComment || '[undefined staff change request message]'"
+              />
             </div>
           </template>
 
@@ -686,6 +690,7 @@ import {
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFilingHistoryListStore,
   useRootStore } from '@/stores'
+import AutoResize from 'vue-auto-resize'
 
 @Component({
   components: {
@@ -706,6 +711,9 @@ import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFil
     PaymentPending,
     PaymentPendingOnlineBanking,
     PaymentUnsuccessful
+  },
+  directives: {
+    AutoResize
   }
 })
 export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
@@ -2464,5 +2472,14 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
 
 .pay-error {
   border-top: solid #a94442 3px;
+}
+
+textarea {
+  color: $gray7;
+  width: 100%;
+  resize: none;
+  // FUTURE: use field-sizing instead of "v-auto-resize" directive
+  // ref: https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing
+  // field-sizing: content;
 }
 </style>

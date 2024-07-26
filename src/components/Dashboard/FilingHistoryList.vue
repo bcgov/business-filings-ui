@@ -196,12 +196,12 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
    * If there is a filing ID to highlight then it finds it and expands its panel.
    */
   @Watch('getFilings', { immediate: true })
-  onFilingsChange (): void {
+  async onFilingsChange (): Promise<void> {
     // if needed, highlight a specific filing
     if (this.highlightId) {
       const index = this.getFilings.findIndex(f => (f.filingId === this.highlightId))
       if (index >= 0) { // safety check
-        this.toggleFilingHistoryItem(index)
+        await this.toggleFilingHistoryItem(index)
       }
     }
   }
