@@ -10,7 +10,7 @@ export default class DateMixin extends Vue {
   @Getter(useRootStore) getCurrentJsDate!: Date
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Fetches and returns the web server's current date (in UTC).
    * Used to bypass the user's local clock/timezone.
    * Ref: https://www.npmjs.com/package/serverdate
@@ -21,7 +21,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Creates and returns a new Date object in UTC, given parameters in Pacific timezone.
    * (This works regardless of user's local clock/timezone.)
    * @example "2021, 0, 1, 0, 0" -> "2021-01-01T08:00:00.000Z"
@@ -32,7 +32,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts a date string (YYYY-MM-DD) to a Date object at 12:00:00 am Pacific time.
    * @example 2021-11-22 -> 2021-11-22T08:00:00.00Z
    */
@@ -41,7 +41,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts a Date object to a date string (YYYY-MM-DD) in Pacific timezone.
    * @example "2021-01-01 07:00:00 GMT" -> "2020-12-31"
    * @example "2021-01-01 08:00:00 GMT" -> "2021-01-01"
@@ -51,7 +51,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts a date string (YYYY-MM-DD) to a formatted date string (Month Day, Year).
    * @example "2020-01-01" -> "Jan 1, 2020"
    */
@@ -60,7 +60,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts a Date object to a date string (Month Day, Year) in Pacific timezone.
    * @param date
    * @param longMonth whether to show long month name (eg, December vs Dec)
@@ -73,7 +73,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts a Date object to a time string (HH:MM am/pm) in Pacific timezone.
    * @example "2021-01-01 07:00:00 GMT" -> "11:00 pm"
    * @example "2021-01-01 08:00:00 GMT" -> "12:00 am"
@@ -83,7 +83,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts a Date object to a date and time string (Month Day, Year at HH:MM am/pm
    * Pacific time).
    * @example "2021-01-01 07:00:00 GMT" -> "December 31, 2020 at 11:00 pm Pacific time"
@@ -104,7 +104,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts a Date object to an API datetime string.
    * @example 2021-08-05T16:56:50Z -> 2021-08-05T16:56:50+00:00
    */
@@ -113,7 +113,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts an API datetime string (in UTC) to a Date object.
    * @example 2021-08-05T16:56:50.783101+00:00 -> 2021-08-05T16:56:50Z
    */
@@ -122,7 +122,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts an API datetime string (in UTC) to a date string (Month Day, Year).
    * @example "2021-01-01T00:00:00.000000+00:00" -> "Dec 31, 2020" (PST example)
    * @example "2021-07-01T00:00:00.000000+00:00" -> "Jun 30, 2021" (PDT example)
@@ -132,7 +132,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts an API datetime string (in UTC) to a date and time string (Month Day, Year at HH:MM am/pm
    * Pacific time).
    * @example "2021-01-01T00:00:00.000000+00:00" -> "Dec 31, 2020 at 04:00 pm Pacific time" (PST example)
@@ -143,7 +143,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts an API datetime string (in UTC) to a UTC string.
    * @example "2021-10-01T19:26:24.530803+00:00" -> "Fri, 01 Oct 2021 19:26:24 GMT"
    */
@@ -152,7 +152,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts an API datetime string (in UTC) to a date string (YYYY-MM-DD) in Pacific timezone.
    * @example "2021-11-17T08:00:00+00:00" -> "2021-11-17"
    */
@@ -161,7 +161,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Converts a date string (YYYY-MM-DD) to an API datetime string (in UTC).
    * @example "2021-01-01" -> 2021-01-01T08:00:00+00:00" // PST
    * @example "2021-07-01" -> 2021-07-01T07:00:00+00:00" // PDT
@@ -171,7 +171,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Compares two date strings (YYYY-MM-DD).
    * @param date1 the first date to compare
    * @param date2 the second date to compare
@@ -183,7 +183,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Returns the earliest of two date strings (YYYY-MM-DD).
    * @param date1 first date
    * @param date2 second date
@@ -193,7 +193,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Returns the latest of two date strings (YYYY-MM-DD).
    * @param date1 first date
    * @param date2 second date
@@ -203,7 +203,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * DEPRECATED - call resources/date-utilities instead
+   * DEPRECATED - call services/date-utilities instead
    * Returns the number of days that 'date' is from today in Pacific timezone.
    * @returns -1 for yesterday
    * @returns 0 for today

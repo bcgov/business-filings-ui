@@ -47,6 +47,7 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { BusinessWarningIF } from '@/interfaces'
 import { ContactInfo } from '@/components/common'
+import { DateUtilities } from '@/services'
 import { Getter } from 'pinia-class'
 import { useBusinessStore, useRootStore } from '@/stores'
 import { WarningTypes } from '@/enums'
@@ -65,9 +66,9 @@ export default class InDissolution extends Vue {
     const warning = this.getBusinessWarnings.find(item =>
       item.warningType?.includes(WarningTypes.INVOLUNTARY_DISSOLUTION)
     )
-    const targetDissolutionDate = warning?.data?.targetDissolutionDate
+    const targetDissolutionDate = DateUtilities.yyyyMmDdToDate(warning?.data?.targetDissolutionDate)
 
-    if (targetDissolutionDate) return targetDissolutionDate
+    if (targetDissolutionDate) return DateUtilities.dateToPacificDate(targetDissolutionDate, true)
     return 'Unknown'
   }
 
