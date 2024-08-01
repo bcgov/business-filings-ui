@@ -11,7 +11,7 @@
         >
           mdi-alert
         </v-icon>
-        <span>Urgent - this business is in the process of being dissolved</span>
+        <span>This business is in the process of being dissolved</span>
       </h3>
       <v-btn
         text
@@ -31,13 +31,12 @@
 
     <v-expansion-panel-content eager>
       <p class="mb-0">
-        This means that the business will be struck from the Corporate Registry in
-        <strong>{{ daysLeft }} days</strong> due to overdue annual reports.
-        Please file the annual reports immediately to bring this business back into good standing
-        or request a delay of dissolution if more time is needed.
+        This business will be struck from the Business Registry as soon as <strong>{{ targetDissolutionDate }}</strong>
+        due to overdue annual reports. Please file the annual reports immediately to bring this business back into good
+        standing or request a delay of dissolution if more time is needed.
       </p>
       <p class="mb-0 pt-5">
-        For assistance, please contact BC Registries staff:
+        If further action is required, please contact BC Registries staff:
       </p>
       <ContactInfo class="pt-5" />
     </v-expansion-panel-content>
@@ -48,9 +47,9 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { BusinessWarningIF } from '@/interfaces'
 import { ContactInfo } from '@/components/common'
+import { DateUtilities } from '@/services'
 import { Getter } from 'pinia-class'
 import { useBusinessStore, useRootStore } from '@/stores'
-import { DateUtilities } from '@/services'
 import { WarningTypes } from '@/enums'
 
 @Component({
@@ -62,16 +61,14 @@ export default class InDissolution extends Vue {
   @Getter(useBusinessStore) getBusinessWarnings!: BusinessWarningIF[]
   @Getter(useRootStore) getCurrentDate!: string
 
-  /** Return the number of days left for the business until it is dissolved. */
-  get daysLeft (): string {
+  /** Return the target dissolution date for the business in dissolution. */
+  get targetDissolutionDate (): string {
     const warning = this.getBusinessWarnings.find(item =>
       item.warningType?.includes(WarningTypes.INVOLUNTARY_DISSOLUTION)
     )
-    const targetDissolutionDate = warning?.data?.targetDissolutionDate
-    const daysDifference = DateUtilities.daysBetweenTwoDates(
-      new Date(this.getCurrentDate), new Date(targetDissolutionDate))
+    const targetDissolutionDate = DateUtilities.yyyyMmDdToDate(warning?.data?.targetDissolutionDate)
 
-    if (daysDifference >= 0) return String(daysDifference)
+    if (targetDissolutionDate) return DateUtilities.dateToPacificDate(targetDissolutionDate, true)
     return 'Unknown'
   }
 
@@ -126,6 +123,7 @@ p {
   .v-icon {
     font-size: $px-16 !important;
   }
+
   span {
     font-size: $px-14 !important;
   }
