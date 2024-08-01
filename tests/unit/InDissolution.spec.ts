@@ -38,7 +38,7 @@ describe('Missing Information alert', () => {
     // verify content
     expect(wrapper.findAll('.v-expansion-panel').length).toBe(1)
     expect(wrapper.find('.v-expansion-panel').attributes('id')).toBe('in-dissolution-panel')
-    expect(wrapper.find('h3').text()).toBe('Urgent - this business is in the process of being dissolved')
+    expect(wrapper.find('h3').text()).toBe('This business is in the process of being dissolved')
     expect(wrapper.find('button.details-btn').text()).toBe('View Details')
 
     wrapper.destroy()
@@ -53,12 +53,12 @@ describe('Missing Information alert', () => {
     // verify content
     expect(wrapper.findAll('.v-expansion-panel').length).toBe(1)
     expect(wrapper.find('.v-expansion-panel').attributes('id')).toBe('in-dissolution-panel')
-    expect(wrapper.find('h3').text()).toBe('Urgent - this business is in the process of being dissolved')
+    expect(wrapper.find('h3').text()).toBe('This business is in the process of being dissolved')
     expect(wrapper.find('button.details-btn').text()).toBe('Hide Details')
     expect(wrapper.findAll('.v-expansion-panel-content p').at(0).text()).toContain(
-      'This means that the business will be struck')
+      'This business will be struck')
     expect(wrapper.findAll('.v-expansion-panel-content p').at(1).text()).toContain(
-      'For assistance, please contact BC Registries staff:')
+      'If further action is required, please contact BC Registries staff:')
     expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
