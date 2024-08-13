@@ -51,7 +51,7 @@
             >
               <header>
                 <h2 class="mb-3">
-                  <span>Pending</span>&nbsp;<span class="section-count">({{ getPendingsList.length }})</span>
+                  <span>Pending Staff Review</span>&nbsp;<span class="section-count">({{ pendingCount }})</span>
                 </h2>
               </header>
               <PendingList :highlightId="filingId" />
@@ -302,6 +302,10 @@ export default class Dashboard extends Mixins(AllowableActionsMixin, CommonMixin
   @Getter(useRootStore) isBootstrapPending!: boolean
   @Getter(useRootStore) isBootstrapTodo!: boolean
   // @Getter(useRootStore) isRoleStaff!: boolean
+
+  get pendingCount (): number {
+    return this.getPendingsList.length
+  }
 
   /** Whether a COA is pending. */
   get isCoaPending (): boolean {
