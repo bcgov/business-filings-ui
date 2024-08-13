@@ -924,37 +924,41 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
 
   /**
    * Identifies the specified task as "in progress" and starts a
-   * process to check if the task changes to a completed filing.
+   * process to check if the task has been processed.
    */
   highlightTask (id: number): void {
-    // first ensure filing is in todo list
+    // ensure task is in todo list
     const index = this.todoItems.findIndex(h => h.filingId === id)
     if (index >= 0) {
       this.inProcessFiling = id
 
-      // start check process
-      this.checkIfCompleted(id, 0)
+      // start the check process
+      this.checkIfProcessed(id)
     }
   }
 
   /**
-   * Checks whether the subject filing is now Completed.
+   * Checks whether the subject task no longer belongs in the Todo List.
    * Retries after 1 second for up to 5 iterations.
    */
-  checkIfCompleted (id: number, count: number): void {
+  checkIfProcessed (id: number, count = 0): void {
     // stop this cycle after 5 iterations
     if (++count > 5) {
       this.inProcessFiling = null
       // eslint-disable-next-line no-console
-      console.log(`filing ${id} is not completed after 5 iterations`)
+      console.log(`filing ${id} is not updated after 5 iterations`)
       return
     }
 
     // get filing's status
-    let url = `businesses/${this.getIdentifier}/filings/${id}`
+    const url = `businesses/${this.getIdentifier}/filings/${id}`
     LegalServices.fetchFiling(url).then(filing => {
-      // if the filing is now COMPLETED, emit event to reload all data
-      if (filing?.header?.status === FilingStatus.COMPLETED) {
+      // if the filing is in one of these statuses, emit event to reload all data
+      if (
+        filing?.header?.status === FilingStatus.PAID ||
+        filing?.header?.status === FilingStatus.COMPLETED ||
+        filing?.header?.status === FilingStatus.AWAITING_REVIEW
+      ) {
         this.$root.$emit('reloadData')
       } else {
         throw new Error() // filing not yet completed
@@ -962,7 +966,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     }).catch(() => {
       // call this function again in 1 second
       this.checkTimer = setTimeout(() => {
-        this.checkIfCompleted(id, count)
+        this.checkIfProcessed(id, count)
       }, 1000)
     })
   }
