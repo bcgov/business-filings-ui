@@ -169,22 +169,6 @@ export default [
     }
   },
   {
-    path: '/correction',
-    name: Routes.CORRECTION,
-    component: Correction,
-    meta: {
-      requiresAuth: true,
-      breadcrumb: [
-        {
-          text: FilingNames.CORRECTION,
-          disabled: false,
-          exact: true,
-          to: { name: Routes.CORRECTION }
-        }
-      ]
-    }
-  },
-  {
     // this route is selected by router.beforeEach()
     path: '/signin',
     name: Routes.SIGNIN,
