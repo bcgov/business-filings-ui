@@ -8,7 +8,6 @@ import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling
 import ConsentAmalgamationOut from '@/views/ConsentAmalgamationOut.vue'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
 import ContinuationOut from '@/views/ContinuationOut.vue'
-import Correction from '@/views/Correction.vue'
 import Signin from '@/views/auth/Signin.vue'
 import Signout from '@/views/auth/Signout.vue'
 import { DigitalCredentialRoutes } from '@/resources/DigitalCredentialRoutes'

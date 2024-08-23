@@ -1953,10 +1953,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
         // file the subject Annual Report
-        this.$router.push({ name: Routes.ANNUAL_REPORT, query: {
-          filingId: '0', // 0 means "new AR"
-          arFilingYear: item.ARFilingYear.toString()
-        } })
+        this.$router.push({ name: Routes.ANNUAL_REPORT,
+          query: {
+            filingId: '0', // 0 means "new AR"
+            arFilingYear: item.ARFilingYear.toString()
+          }
+        })
         break
       case FilingTypes.CONVERSION: {
         // go to conversion filing
@@ -1983,10 +1985,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
 
       case FilingTypes.ANNUAL_REPORT:
         // resume this Annual Report locally
-        this.$router.push({ name: Routes.ANNUAL_REPORT, query: {
-          filingId: item.filingId.toString(),
-          arFilingYear: item.ARFilingYear.toString()
-        } })
+        this.$router.push({ name: Routes.ANNUAL_REPORT,
+          query: {
+            filingId: item.filingId.toString(),
+            arFilingYear: item.ARFilingYear.toString()
+          }
+        })
         return
 
       case FilingTypes.CHANGE_OF_DIRECTORS:
