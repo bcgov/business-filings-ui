@@ -1915,7 +1915,7 @@ describe('TodoList - Click Tests - Coops', () => {
 
     // verify routing to Annual Report page with id=0
     expect(vm.$route.name).toBe('annual-report')
-    expect(vm.$route.params.filingId).toBe('0')
+    expect(vm.$route.query.filingId).toBe('0')
 
     wrapper.destroy()
   })
@@ -1968,7 +1968,7 @@ describe('TodoList - Click Tests - Coops', () => {
 
     // verify routing to Annual Report page with id=123
     expect(vm.$route.name).toBe('annual-report')
-    expect(vm.$route.params.filingId).toBe('123')
+    expect(vm.$route.query.filingId).toBe('123')
 
     wrapper.destroy()
   })
@@ -2266,7 +2266,7 @@ describe('TodoList - Click Tests - Benefit Companies', () => {
 
     // verify routing to Annual Report page with id=0
     expect(vm.$route.name).toBe('annual-report')
-    expect(vm.$route.params.filingId).toBe('0')
+    expect(vm.$route.query.filingId).toBe('0')
 
     wrapper.destroy()
   })
@@ -2316,7 +2316,7 @@ describe('TodoList - Click Tests - Benefit Companies', () => {
 
     // verify routing to Annual Report page with id=123
     expect(vm.$route.name).toBe('annual-report')
-    expect(vm.$route.params.filingId).toBe('123')
+    expect(vm.$route.query.filingId).toBe('123')
 
     wrapper.destroy()
   })

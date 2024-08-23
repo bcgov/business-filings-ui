@@ -20,7 +20,7 @@ describe('AmalgamationSelection', () => {
 
   beforeEach(() => {
     const router = mockRouter.mock()
-    router.push({ name: 'amalgamation-selection', params: { filingId: '0' } })
+    router.push({ name: 'amalgamation-selection' })
     wrapper = mount(AmalgamationSelection,
       {
         localVue,

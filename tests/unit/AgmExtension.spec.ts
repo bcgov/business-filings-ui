@@ -50,7 +50,7 @@ describe('AGM Extension view', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'agm-extension', params: { filingId: '0' } })
+    router.push({ name: 'agm-extension', query: { filingId: '0' } })
 
     wrapper = mount(AgmExtension, {
       localVue,

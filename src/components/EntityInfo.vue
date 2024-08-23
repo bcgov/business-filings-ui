@@ -77,7 +77,6 @@ export default class EntityInfo extends Vue {
       this.$route?.name === Routes.ANNUAL_REPORT ||
       this.$route?.name === Routes.CONSENT_CONTINUATION_OUT ||
       this.$route?.name === Routes.CONTINUATION_OUT ||
-      this.$route?.name === Routes.CORRECTION ||
       this.$route?.name === Routes.STANDALONE_ADDRESSES ||
       this.$route?.name === Routes.STANDALONE_DIRECTORS
     )

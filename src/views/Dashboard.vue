@@ -339,7 +339,7 @@ export default class Dashboard extends Mixins(AllowableActionsMixin, CommonMixin
   }
 
   goToStandaloneDirectors () {
-    this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: '0' } }) // 0 means "new COD filing"
+    this.$router.push({ name: Routes.STANDALONE_DIRECTORS, query: { filingId: '0' } }) // 0 means "new COD filing"
   }
 
   goToChangeFiling () {
@@ -348,7 +348,7 @@ export default class Dashboard extends Mixins(AllowableActionsMixin, CommonMixin
   }
 
   goToStandaloneAddresses () {
-    this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: '0' } }) // 0 means "new COA filing"
+    this.$router.push({ name: Routes.STANDALONE_ADDRESSES, query: { filingId: '0' } }) // 0 means "new COA filing"
   }
 
   reloadDataIfNeeded (needed: boolean) {

@@ -12,6 +12,8 @@ export const useBusinessStore = defineStore('business', {
     businessInfo: {
       adminFreeze: null,
       allowedActions: null,
+      arMaxDate: null,
+      arMinDate: null,
       associationType: null,
       foundingDate: null,
       goodStanding: null,
@@ -36,6 +38,19 @@ export const useBusinessStore = defineStore('business', {
   }),
 
   getters: {
+    arMaxDate (state: BusinessStateIF): string {
+      return state.businessInfo.arMaxDate
+    },
+
+    arMinDate (state: BusinessStateIF): string {
+      return state.businessInfo.arMinDate
+    },
+
+    /** The next Annual Report data, used for BEN/BC/CC/ULC and CBEN/C/CCC/CUL only. */
+    nextARDate (state: BusinessStateIF): string {
+      return DateUtilities.apiToYyyyMmDd(state.businessInfo.nextAnnualReport)
+    },
+
     /** The Allowed Actions object. */
     getAllowedActions (state: BusinessStateIF): AllowedActionsIF {
       return state.businessInfo.allowedActions

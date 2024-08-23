@@ -39,8 +39,8 @@ export interface ApiBusinessIF {
   allowedActions: AllowedActionsIF
   alternateNames?: Array<AlternateNameIF>
   amalgamatedInto?: AmalgamatedIntoIF
-  arMaxDate?: IsoDatePacific // not used
-  arMinDate?: IsoDatePacific // not used
+  arMaxDate: IsoDatePacific // COOP only
+  arMinDate: IsoDatePacific // COOP only
   associationType: string // COOP only
   complianceWarnings?: Array<any> // not used
   dissolutionDate?: IsoDatePacific // not used
@@ -62,7 +62,7 @@ export interface ApiBusinessIF {
   naicsCode: string // firm only
   naicsDescription: string // firm only
   naicsKey: string // firm only
-  nextAnnualReport: ApiDateTimeUtc // BCOMP only
+  nextAnnualReport: ApiDateTimeUtc // BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
   state: EntityState
   stateFiling: string // the state filing URL
   startDate: ApiDateTimeUtc

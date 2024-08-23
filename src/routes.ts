@@ -8,7 +8,6 @@ import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling
 import ConsentAmalgamationOut from '@/views/ConsentAmalgamationOut.vue'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
 import ContinuationOut from '@/views/ContinuationOut.vue'
-import Correction from '@/views/Correction.vue'
 import Signin from '@/views/auth/Signin.vue'
 import Signout from '@/views/auth/Signout.vue'
 import { DigitalCredentialRoutes } from '@/resources/DigitalCredentialRoutes'
@@ -164,22 +163,6 @@ export default [
           disabled: false,
           exact: true,
           to: { name: Routes.CONTINUATION_OUT }
-        }
-      ]
-    }
-  },
-  {
-    path: '/correction',
-    name: Routes.CORRECTION,
-    component: Correction,
-    meta: {
-      requiresAuth: true,
-      breadcrumb: [
-        {
-          text: FilingNames.CORRECTION,
-          disabled: false,
-          exact: true,
-          to: { name: Routes.CORRECTION }
         }
       ]
     }

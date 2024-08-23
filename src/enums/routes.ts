@@ -9,7 +9,6 @@ export enum CoreRoutes {
   CONSENT_AMALGAMATION_OUT = 'consent-amalgamation-out',
   CONSENT_CONTINUATION_OUT = 'consent-continuation-out',
   CONTINUATION_OUT = 'continuation-out',
-  CORRECTION = 'correction',
   DASHBOARD = 'dashboard',
   STANDALONE_ADDRESSES = 'standalone-addresses',
   STANDALONE_DIRECTORS = 'standalone-directors',

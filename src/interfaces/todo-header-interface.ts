@@ -1,7 +1,7 @@
 import { FilingStatus } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 
-/** A todo's header object from the APIe, ie, `todo.header`. */
+/** A todo's header object from the API, ie, `todo.header`. */
 export interface TodoHeaderIF {
   ARFilingYear: number // eg, 2021
   arMaxDate: string // eg, "2021-09-02"

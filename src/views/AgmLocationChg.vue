@@ -407,7 +407,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
 
     // this is the id of THIS filing
     // it must be 0 (meaning new filing) -- we do not support resuming a draft filing
-    this.filingId = +this.$route.params.filingId // number or NaN
+    this.filingId = +this.$route.query.filingId // number or NaN
 
     // if required data isn't set, go back to dashboard
     if (!this.getIdentifier || this.filingId !== 0) {

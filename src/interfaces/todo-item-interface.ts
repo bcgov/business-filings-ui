@@ -29,12 +29,7 @@ export interface TodoItemIF {
   // ARs only
   ARFilingYear?: number // YYYY
 
-  // COOP ARs only
-  arMinDate?: string // YYYY-MM-DD
-  arMaxDate?: string // YYYY-MM-DD
-
   // BCOMP ARs only
-  nextArDate?: string // YYYY-MM-DD
   arDueDate?: string // eg, "Apr 9, 2021"
 
   // corrections only
