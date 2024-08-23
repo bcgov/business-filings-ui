@@ -608,15 +608,9 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   /** Called when component is mounted. */
   async mounted (): Promise<void> {
     // if tombstone data isn't set, go to dashboard
-    if (!this.getIdentifier) {
+    if (!this.getIdentifier || isNaN(this.ARFilingYear) || isNaN(this.filingId)) {
       // eslint-disable-next-line no-console
-      console.log('Annual Report error - missing Identifier!')
-      this.goToDashboard(true)
-      return // don't continue
-    }
-    if (isNaN(this.filingId) || isNaN(this.ARFilingYear)) {
-      // eslint-disable-next-line no-console
-      console.log('Annual Report error - missing Filing ID or AR Filing Year!')
+      console.log('Annual Report error - missing Identifier, AR Filing Year or Filing ID!')
       this.goToDashboard(true)
       return // don't continue
     }
