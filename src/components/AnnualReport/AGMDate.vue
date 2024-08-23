@@ -170,10 +170,12 @@ export default class AgmDate extends Mixins(DateMixin) {
   /** Whether to allow changing the directors. */
   @Prop({ default: true }) readonly allowCod!: boolean
 
+  /** The Annual Report filing year. */
+  @Prop({ required: true }) readonly ARFilingYear!: number
+
   // Getters
-  @Getter(useRootStore) ARFilingYear!: number
-  @Getter(useRootStore) arMinDate!: string
-  @Getter(useRootStore) arMaxDate!: string
+  @Getter(useBusinessStore) arMinDate!: string
+  @Getter(useBusinessStore) arMaxDate!: string
   @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useRootStore) getCurrentDate!: string
 

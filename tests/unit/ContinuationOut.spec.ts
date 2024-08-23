@@ -43,7 +43,7 @@ describe('Continuation Out view', () => {
   })
 
   it('mounts the sub-components properly', async () => {
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -69,7 +69,7 @@ describe('Continuation Out view', () => {
   })
 
   it('sets filing data properly', async () => {
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -94,7 +94,7 @@ describe('Continuation Out view', () => {
 
   it('sets computed states properly', () => {
     // mock $route
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -211,7 +211,7 @@ describe('Continuation Out view', () => {
     })
 
     // mock $route
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     // create local Vue and mock router
     createLocalVue().use(VueRouter)
@@ -275,7 +275,7 @@ describe('Continuation Out view', () => {
     })
 
     // mock $route
-    const $route = { params: { filingId: '456' } }
+    const $route = { query: { filingId: '456' } }
 
     // create local Vue and mock router
     createLocalVue().use(VueRouter)

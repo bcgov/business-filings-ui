@@ -114,7 +114,7 @@ describe('AGM Location Chg view', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route, $router } })
 
@@ -130,7 +130,7 @@ describe('AGM Location Chg view', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route, $router } })
     const vm: any = wrapper.vm
@@ -150,7 +150,7 @@ describe('AGM Location Chg view', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route, $router } })
     const vm: any = wrapper.vm
@@ -200,7 +200,7 @@ describe('AGM Location Chg view', () => {
   })
 
   it('saves a new filing and redirects to Pay URL when the File & Pay button is clicked', async () => {
-    const $route = { params: { filingId: '0' } } // new filing id
+    const $route = { query: { filingId: '0' } } // new filing id
 
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm

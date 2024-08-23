@@ -49,7 +49,7 @@ describe('Consent to Continuation Out view', () => {
   })
 
   it('mounts the sub-components properly', async () => {
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -74,7 +74,7 @@ describe('Consent to Continuation Out view', () => {
   })
 
   it('sets filing data properly', async () => {
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -99,7 +99,7 @@ describe('Consent to Continuation Out view', () => {
 
   it('sets computed states properly', () => {
     // mock $route
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -173,7 +173,7 @@ describe('Consent to Continuation Out view', () => {
     })
 
     // mock $route
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     // create local Vue and mock router
     createLocalVue().use(VueRouter)
@@ -236,7 +236,7 @@ describe('Consent to Continuation Out view', () => {
     })
 
     // mock $route
-    const $route = { params: { filingId: '456' } }
+    const $route = { query: { filingId: '456' } }
 
     // create local Vue and mock router
     createLocalVue().use(VueRouter)
@@ -356,7 +356,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
   })
 
   it('mounts the sub-components properly', async () => {
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -399,7 +399,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     })
 
     // mock $route
-    const $route = { params: { filingId: '0' } }
+    const $route = { query: { filingId: '0' } }
 
     // create local Vue and mock router
     createLocalVue().use(VueRouter)
@@ -439,7 +439,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'consent-continuation-out', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'consent-continuation-out', query: { filingId: '0' } }) // new filing id
 
     const wrapper = mount(ConsentContinuationOut, {
       localVue,

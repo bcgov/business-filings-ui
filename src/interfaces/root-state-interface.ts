@@ -33,12 +33,6 @@ export interface RootStateIF {
   businessPhoneExtension: string
   corpTypeCd: CorpTypeCd
 
-  // set by Todo List
-  ARFilingYear: number // YYYY
-  arMaxDate: string // YYYY-MM-DD // CPs only
-  arMinDate: string // YYYY-MM-DD // CPs only
-  nextARDate: string // YYYY-MM-DD // BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
-
   // other global data
   businessAddress: OfficeAddressIF
   configObject: any
@@ -49,7 +43,7 @@ export interface RootStateIF {
   parties: Array<PartyIF>
   recordsAddress: OfficeAddressIF
   registeredAddress: OfficeAddressIF
-  // *** TODO: declare a type for pendingsList
+  // *** FUTURE: declare a type for pendingsList
   pendingsList: Array<any> // pendings list from bootstrap filing
   tasks: Array<ApiTaskIF> // "tasks" list from API (or bootstrap filing)
   userInfo: any // from auth db

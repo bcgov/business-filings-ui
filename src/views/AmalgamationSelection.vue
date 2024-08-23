@@ -379,11 +379,4 @@ h1 {
   right: 0;
   text-align: center;
 }
-
-// TODO: Remove disabled styling when short form amalgamations are implemented.
-.theme--light.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
-  color: white !important;
-  background-color: $app-blue !important;
-  opacity: 0.4;
-}
 </style>

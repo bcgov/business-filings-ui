@@ -89,7 +89,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 
   it('renders the filing sub-components properly', () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
 
     expect(wrapper.findComponent(CodDate).exists()).toBe(true)
@@ -100,7 +100,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 
   it('enables page valid flags when sub-component flags are valid', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -120,7 +120,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 
   it('disables page valid flags when COD Date component is invalid', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -140,7 +140,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 
   it('disables page valid flags when Directors component is invalid', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -160,7 +160,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 
   it('Verify COD Certify contains correct section codes', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
     businessStore.setLegalType(CorpTypeCd.COOP)
     rootStore.configObject = BusinessConfigCp
@@ -175,7 +175,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 
   it('disables page valid flags when Certify component is invalid', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -195,7 +195,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 
   it('disables page valid flags when no filing changes were made (ie: nothing to file)', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -215,7 +215,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 
   it('enables File & Pay button when page valid flag is true', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
       mocks: { $route },
       stubs: {
@@ -249,7 +249,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 
   it('disables File & Pay button when page valid flag is false', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
       mocks: { $route },
       stubs: {
@@ -325,7 +325,7 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
   })
 
   it('fetches a draft Standalone Directors filing with FAS staff payment', async () => {
-    const $route = { params: { filingId: '123' } } // draft filing id
+    const $route = { query: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
     const vm = wrapper.vm as any
     await flushPromises() // wait for draft to be fetched
@@ -346,7 +346,7 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
   })
 
   it('updates filing data properly', async () => {
-    const $route = { params: { filingId: '123' } } // draft filing id
+    const $route = { query: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
     const vm = wrapper.vm as any
     await Vue.nextTick()
@@ -414,7 +414,7 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
   })
 
   it('fetches a draft Standalone Directors filing with BCOL staff payment', async () => {
-    const $route = { params: { filingId: '123' } } // draft filing id
+    const $route = { query: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
     const vm = wrapper.vm as any
     await flushPromises() // wait for draft to be fetched
@@ -437,7 +437,7 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
   })
 
   it('updates filing data properly', async () => {
-    const $route = { params: { filingId: '123' } } // draft filing id
+    const $route = { query: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
     const vm = wrapper.vm as any
     await Vue.nextTick()
@@ -502,7 +502,7 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
   })
 
   it('fetches a draft Standalone Directors filing with No Fee staff payment', async () => {
-    const $route = { params: { filingId: '123' } } // draft filing id
+    const $route = { query: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
     const vm = wrapper.vm as any
     await flushPromises() // wait for draft to be fetched
@@ -522,7 +522,7 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
   })
 
   it('updates filing data properly', async () => {
-    const $route = { params: { filingId: '123' } } // draft filing id
+    const $route = { query: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
     const vm = wrapper.vm as any
     await Vue.nextTick()
@@ -698,7 +698,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // init store
     businessStore.setLegalType(CorpTypeCd.COOP)
 
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
       mocks: { $route },
       stubs: {
@@ -764,7 +764,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // init store
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
       mocks: { $route },
       stubs: {
@@ -832,7 +832,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-directors', params: { filingId: '123' } }) // existing filing id
+    router.push({ name: 'standalone-directors', query: { filingId: '123' } }) // existing filing id
 
     const wrapper = mount(StandaloneDirectorsFiling, {
       localVue,
@@ -959,7 +959,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-directors', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-directors', query: { filingId: '0' } }) // new filing id
 
     const wrapper = shallowMount(StandaloneDirectorsFiling, { localVue, router })
     const vm: any = wrapper.vm as any
@@ -1066,7 +1066,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
 
   it('saves a new filing and stays on current page when the Save button is clicked',
     async () => {
-      const $route = { params: { filingId: 0 } } // new filing id
+      const $route = { query: { filingId: 0 } } // new filing id
       const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
       const vm = wrapper.vm as any
 
@@ -1107,7 +1107,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-directors', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-directors', query: { filingId: '0' } }) // new filing id
 
     const wrapper = shallowMount(StandaloneDirectorsFiling, { localVue, router })
     const vm = wrapper.vm as any
@@ -1184,7 +1184,7 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-directors', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-directors', query: { filingId: '0' } }) // new filing id
 
     wrapper = shallowMount(StandaloneDirectorsFiling, { localVue, router })
     vm = wrapper.vm
@@ -1451,7 +1451,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
 
   it('sets the required fields to display errors from the api after a POST call',
     async () => {
-      const $route = { params: { filingId: 0 } } // new filing id
+      const $route = { query: { filingId: 0 } } // new filing id
       const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
       const vm = wrapper.vm as any
 
@@ -1488,7 +1488,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
 
   it('sets the required fields to display errors from the api after a PUT call',
     async () => {
-      const $route = { params: { filingId: 123 } } // existing filing id
+      const $route = { query: { filingId: 123 } } // existing filing id
       const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
       const vm = wrapper.vm as any
 
@@ -1544,8 +1544,6 @@ describe('Standalone Directors Filing - payment required error', () => {
     businessStore.setLegalName('Legal Name - CP0001191')
     rootStore.currentDate = '2019-07-15'
 
-    rootStore.ARFilingYear = 2017
-
     // mock "file post" endpoint, with a pay error response
     const p1 = Promise.reject({
       response: {
@@ -1590,7 +1588,7 @@ describe('Standalone Directors Filing - payment required error', () => {
     get.withArgs('businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
       mocks: { $route },
       stubs: {

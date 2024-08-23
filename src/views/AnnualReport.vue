@@ -130,6 +130,7 @@
                   :newNoAgm="newNoAgm"
                   :allowCoa="allowChange('coa')"
                   :allowCod="allowChange('cod')"
+                  :ARFilingYear="ARFilingYear"
                   @agmDate="onAgmDateChange($event)"
                   @agmExtension="onAgmExtensionChange($event)"
                   @noAgm="onNoAgmChange($event)"
@@ -457,11 +458,8 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     officeAddressesComponent: OfficeAddresses
   }
 
-  // FUTURE: change these to getters
-  @Getter(useRootStore) ARFilingYear!: number
-  @Getter(useRootStore) arMinDate!: string
-  @Getter(useRootStore) arMaxDate!: string
-  @Getter(useRootStore) nextARDate!: string
+  @Getter(useBusinessStore) arMaxDate!: string
+  @Getter(useBusinessStore) arMinDate!: string
   @Getter(useRootStore) getCurrentYear!: number
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
@@ -472,6 +470,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useBusinessStore) nextARDate!: string
 
   // variables for AgmDate component
   newAgmDate = null // for resuming draft
@@ -510,7 +509,8 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
   // other variables
   totalFee = 0
-  filingId: number = null
+  filingId = NaN
+  ARFilingYear = NaN
   savedFiling: any = null // filing during save
   loadingMessage = ''
   dataLoaded = false
@@ -599,15 +599,24 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     }
 
     // Filing ID may be 0, a number or NaN
-    this.filingId = +this.$route.params.filingId
+    this.filingId = +this.$route.query.filingId
+
+    // AR Filing Year may be a number or NaN
+    this.ARFilingYear = +this.$route.query.arFilingYear
   }
 
   /** Called when component is mounted. */
   async mounted (): Promise<void> {
     // if tombstone data isn't set, go to dashboard
-    if (!this.getIdentifier || !this.ARFilingYear || isNaN(this.filingId)) {
+    if (!this.getIdentifier) {
       // eslint-disable-next-line no-console
-      console.log('Annual Report error - missing Entity Inc No, AR Filing Year, or Filing ID!')
+      console.log('Annual Report error - missing Identifier!')
+      this.goToDashboard(true)
+      return // don't continue
+    }
+    if (isNaN(this.filingId) || isNaN(this.ARFilingYear)) {
+      // eslint-disable-next-line no-console
+      console.log('Annual Report error - missing Filing ID or AR Filing Year!')
       this.goToDashboard(true)
       return // don't continue
     }
@@ -717,8 +726,6 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
           option: StaffPaymentOptions.NONE
         } as StaffPaymentIF
       }
-
-      // NB: ARFilingYear, arMaxDate and arMinDate were set in the store by the TodoList component
 
       // restore AGM Date
       if (this.isEntityCoop) {

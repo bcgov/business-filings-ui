@@ -652,7 +652,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { GetFeatureFlag, navigate } from '@/utils'
 import { AffiliationErrorDialog, CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog }
@@ -755,11 +755,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
   @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
   // @Getter(useAuthenticationStore) isRoleStaff!: boolean
-
-  @Action(useRootStore) setARFilingYear!: (x: number) => void
-  @Action(useRootStore) setArMinDate!: (x: string) => void
-  @Action(useRootStore) setArMaxDate!: (x: string) => void
-  @Action(useRootStore) setNextARDate!: (x: string) => void
 
   // for template
   readonly AllowableActions = AllowableActions
@@ -1026,12 +1021,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
         ARFilingYear,
         // NB: get min/max AR dates from header object (not business object)
         // same as loading a draft AR
-        arMinDate: header.arMinDate, // COOP only
-        arMaxDate: header.arMaxDate, // COOP only
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled && !this.isDisableNonBenCorps,
         order: task.order,
-        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
         arDueDate: this.formatYyyyMmDd(header.arMaxDate)
       }
       this.todoItems.push(item)
@@ -1314,12 +1306,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
         title: `File ${ARFilingYear} Annual Report`,
         draftTitle: `${ARFilingYear} Annual Report`,
         ARFilingYear,
-        arMinDate: header.arMinDate, // COOP only
-        arMaxDate: header.arMaxDate, // COOP only
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
-        nextArDate: annualReport.nextARDate, // BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
@@ -1964,11 +1953,10 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
         // file the subject Annual Report
-        this.setARFilingYear(item.ARFilingYear)
-        this.setArMinDate(item.arMinDate) // COOP only
-        this.setArMaxDate(item.arMaxDate) // COOP only
-        this.setNextARDate(item.nextArDate) // BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
-        this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: '0' } }) // 0 means "new AR"
+        this.$router.push({ name: Routes.ANNUAL_REPORT, query: {
+          filingId: '0', // 0 means "new AR"
+          arFilingYear: item.ARFilingYear.toString()
+        } })
         break
       case FilingTypes.CONVERSION: {
         // go to conversion filing
@@ -1995,26 +1983,25 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
 
       case FilingTypes.ANNUAL_REPORT:
         // resume this Annual Report locally
-        this.setARFilingYear(item.ARFilingYear)
-        this.setArMinDate(item.arMinDate) // COOP only
-        this.setArMaxDate(item.arMaxDate) // COOP only
-        this.setNextARDate(item.nextArDate) // BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
-        this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: item.filingId.toString() } })
+        this.$router.push({ name: Routes.ANNUAL_REPORT, query: {
+          filingId: item.filingId.toString(),
+          arFilingYear: item.ARFilingYear.toString()
+        } })
         return
 
       case FilingTypes.CHANGE_OF_DIRECTORS:
         // resume this Change Of Directors locally
-        this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: item.filingId.toString() } })
+        this.$router.push({ name: Routes.STANDALONE_DIRECTORS, query: { filingId: item.filingId.toString() } })
         return
 
       case FilingTypes.CHANGE_OF_ADDRESS:
         // resume this Change Of Address locally
-        this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: item.filingId.toString() } })
+        this.$router.push({ name: Routes.STANDALONE_ADDRESSES, query: { filingId: item.filingId.toString() } })
         return
 
       case FilingTypes.CONSENT_CONTINUATION_OUT:
         // resume this Consent to Continuation Out locally
-        this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
+        this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, query: { filingId: item.filingId.toString() } })
         return
 
       case FilingTypes.CONTINUATION_IN: {
@@ -2026,7 +2013,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
 
       case FilingTypes.CONTINUATION_OUT:
         // resume this Continuation Out locally
-        this.$router.push({ name: Routes.CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
+        this.$router.push({ name: Routes.CONTINUATION_OUT, query: { filingId: item.filingId.toString() } })
         return
 
       case FilingTypes.CORRECTION: {

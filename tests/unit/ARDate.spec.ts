@@ -17,7 +17,7 @@ describe('AnnualReport - UI', () => {
     // init store
     rootStore.currentJsDate = new Date('2019-07-15T12:00:00')
     rootStore.currentDate = '2019-07-15'
-    rootStore.nextARDate = '2020-09-18'
+    businessStore.businessInfo.nextAnnualReport = '2020-09-18T12:00'
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
   })
 
@@ -25,7 +25,7 @@ describe('AnnualReport - UI', () => {
     const wrapper = shallowMount(ArDate)
 
     expect(rootStore.getCurrentDate).toEqual('2019-07-15')
-    expect(rootStore.nextARDate).toEqual('2020-09-18')
+    expect(businessStore.nextARDate).toEqual('2020-09-18')
 
     wrapper.destroy()
   })

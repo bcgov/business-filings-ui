@@ -22,7 +22,7 @@ import { useBusinessStore, useRootStore } from '@/stores'
 @Component({})
 export default class ArDate extends Mixins(DateMixin) {
   // Getters
-  @Getter(useRootStore) nextARDate!: string
+  @Getter(useBusinessStore) nextARDate!: string
   @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useRootStore) getCurrentDate!: string
 }

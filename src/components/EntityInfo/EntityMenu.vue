@@ -449,22 +449,22 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   goToConsentAmalgamationOutFiling (): void {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.CONSENT_AMALGAMATION_OUT, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.CONSENT_AMALGAMATION_OUT, query: { filingId: '0' } })
   }
 
   goToConsentContinuationOutFiling (): void {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, query: { filingId: '0' } })
   }
 
   goToAgmExtensionFiling (): void {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.AGM_EXTENSION, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.AGM_EXTENSION, query: { filingId: '0' } })
   }
 
   goToAgmLocationChgFiling (): void {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.AGM_LOCATION_CHANGE, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.AGM_LOCATION_CHANGE, query: { filingId: '0' } })
   }
 
   /** Emits an event to confirm dissolution. */

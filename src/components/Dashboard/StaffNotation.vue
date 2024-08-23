@@ -355,22 +355,22 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
 
   goToConsentAmalgamationOutFiling (): void {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.CONSENT_AMALGAMATION_OUT, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.CONSENT_AMALGAMATION_OUT, query: { filingId: '0' } })
   }
 
   goToAmalgamationOutFiling ():void {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.AMALGAMATION_OUT, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.AMALGAMATION_OUT, query: { filingId: '0' } })
   }
 
   goToConsentContinuationOutFiling (): void {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, query: { filingId: '0' } })
   }
 
   goToContinuationOutFiling ():void {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.CONTINUATION_OUT, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.CONTINUATION_OUT, query: { filingId: '0' } })
   }
 
   async goToRestorationFiling (applicationName: ApplicationTypes, restorationType: FilingSubTypes): Promise<void> {

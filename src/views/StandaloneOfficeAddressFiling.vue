@@ -285,7 +285,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
 
   // local variables
   updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
-  filingId: number = null
+  filingId = NaN
   savedFiling: any = null // filing during save
   loadingMessage = ''
   dataLoaded = false
@@ -368,7 +368,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     }
 
     // Filing ID may be 0, a number or NaN
-    this.filingId = +this.$route.params.filingId
+    this.filingId = +this.$route.query.filingId
   }
 
   /** Called when component is mounted. */

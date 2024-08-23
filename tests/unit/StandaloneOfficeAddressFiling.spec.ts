@@ -63,7 +63,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 
   it('renders the filing sub-components properly', () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route } })
 
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
@@ -73,7 +73,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 
   it('enables Validated flag when properties are valid', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -91,7 +91,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when Office Address form is invalid', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -109,7 +109,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when Certify form is invalid', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -127,7 +127,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when filing data is invalid', async () => {
-    const $route = { params: { filingId: 0 } } // new filing id
+    const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -146,7 +146,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
 
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       localVue,
@@ -182,7 +182,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
 
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       localVue,
@@ -217,7 +217,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
 
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       localVue,
@@ -294,7 +294,7 @@ describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff p
   })
 
   it('fetches a draft Standalone Office Address filing with FAS staff payment', async () => {
-    const $route = { params: { filingId: '123' } } // draft filing id
+    const $route = { query: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await flushPromises() // wait for draft to be fetched
@@ -367,7 +367,7 @@ describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff 
   })
 
   it('fetches a draft Standalone Office Address filing with BCOL staff payment', async () => {
-    const $route = { params: { filingId: '123' } } // draft filing id
+    const $route = { query: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await flushPromises() // wait for draft to be fetched
@@ -439,7 +439,7 @@ describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staf
   })
 
   it('fetches a draft Standalone Office Address filing with No Fee staff payment', async () => {
-    const $route = { params: { filingId: '123' } } // draft filing id
+    const $route = { query: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await flushPromises() // wait for draft to be fetched
@@ -511,7 +511,7 @@ describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => 
   })
 
   it('fetches a draft Standalone Office Address filing', async () => {
-    const $route = { params: { filingId: '123' } } // draft filing id
+    const $route = { query: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await flushPromises() // wait for draft to be fetched
@@ -694,7 +694,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
 
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       localVue,
@@ -755,7 +755,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '123' } }) // existing filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '123' } }) // existing filing id
 
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       localVue,
@@ -987,7 +987,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
 
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       localVue,
@@ -1048,7 +1048,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '123' } }) // existing filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '123' } }) // existing filing id
 
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       localVue,
@@ -1180,7 +1180,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
 
   it('saves a new filing when this is a new filing and the Save button is clicked',
     async () => {
-      const $route = { params: { filingId: 0 } } // new filing id
+      const $route = { query: { filingId: 0 } } // new filing id
       const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
       const vm = wrapper.vm as any
 
@@ -1212,7 +1212,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
 
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { localVue, router, vuetify })
     const vm = wrapper.vm as any
@@ -1318,7 +1318,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
 
   it('saves a new filing when this is a new filing and the Save button is clicked',
     async () => {
-      const $route = { params: { filingId: 0 } } // new filing id
+      const $route = { query: { filingId: 0 } } // new filing id
       const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
       const vm = wrapper.vm as any
 
@@ -1350,7 +1350,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
 
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { localVue, router, vuetify })
     const vm = wrapper.vm as any
@@ -1417,7 +1417,7 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
 
     wrapper = shallowMount(StandaloneOfficeAddressFiling, { localVue, router, vuetify })
     vm = wrapper.vm
@@ -1509,7 +1509,7 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
 
     wrapper = shallowMount(StandaloneOfficeAddressFiling, { localVue, router, vuetify })
     vm = wrapper.vm
@@ -1700,7 +1700,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
 
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       localVue,
@@ -1750,7 +1750,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '123' } }) // existing filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '123' } }) // existing filing id
 
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       localVue,
@@ -1815,7 +1815,6 @@ describe('Standalone Office Address Filing - payment required error', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setLegalName('Legal Name - CP0001191')
-    rootStore.ARFilingYear = 2017
 
     // mock "file post" endpoint, with a pay error response
     const p1 = Promise.reject({
@@ -1864,7 +1863,7 @@ describe('Standalone Office Address Filing - payment required error', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
 
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       localVue,

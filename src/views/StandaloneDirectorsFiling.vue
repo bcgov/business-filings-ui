@@ -424,7 +424,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   certifyFormValid = false
   directorFormValid = true
   directorEditInProgress = false
-  filingId: number = null
+  filingId = NaN
   savedFiling: any = null // filing during save
   loadingMessage = ''
   dataLoaded = false
@@ -508,7 +508,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
     }
 
     // Filing ID may be 0, a number or NaN
-    this.filingId = +this.$route.params.filingId
+    this.filingId = +this.$route.query.filingId
   }
 
   /** Called when component is mounted. */

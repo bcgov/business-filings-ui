@@ -25,13 +25,12 @@ describe('AgmDate', () => {
 
   beforeEach(() => {
     // init store
-    rootStore.ARFilingYear = 2019
-    rootStore.arMinDate = '2019-01-01'
-    rootStore.arMaxDate = '2019-12-31'
+    businessStore.businessInfo.arMinDate = '2019-01-01'
+    businessStore.businessInfo.arMaxDate = '2019-12-31'
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setLastAnnualReportDate('2018-07-15')
 
-    wrapper = mount(AgmDate, { vuetify })
+    wrapper = mount(AgmDate, { vuetify, propsData: { ARFilingYear: '2019' } })
     vm = wrapper.vm
   })
 

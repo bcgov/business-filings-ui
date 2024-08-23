@@ -450,7 +450,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     // this is the id of THIS filing
     // if 0, this is a new filing
     // otherwise it's a draft filing
-    this.filingId = +this.$route.params.filingId // number or NaN
+    this.filingId = +this.$route.query.filingId // number or NaN
 
     // if required data isn't set, go back to dashboard
     if (!this.getIdentifier || isNaN(this.filingId)) {

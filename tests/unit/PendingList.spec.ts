@@ -6,7 +6,7 @@ import PendingList from '@/components/Dashboard/PendingList.vue'
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
-// *** TODO: implement this
+// *** FUTURE: implement this
 describe.skip('PendingList component', () => {
   it('handles empty data', () => {
     const wrapper = mount(PendingList, { vuetify })

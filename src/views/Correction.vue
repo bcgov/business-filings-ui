@@ -393,13 +393,11 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingMix
     // this is the id of THIS correction filing
     // if 0, this is a new correction filing
     // otherwise it's a draft correction filing
-    this.filingId = +this.$route.params.filingId || 0 // number or NaN
+    this.filingId = +this.$route.query.filingId || 0 // number or NaN
 
     // this is the id of the original filing to correct
-    this.correctedFilingId = +this.$route.params.correctedFilingId // number (may be NaN)
+    this.correctedFilingId = +this.$route.query.correctedFilingId // number (may be NaN)
 
-    // this is the correction type of either client or staff
-    // this.correctionType = this.$route.params.correctionUserType
     // if required data isn't set, go back to dashboard
     if (!this.getIdentifier || isNaN(this.correctedFilingId)) {
       this.$router.push({ name: Routes.DASHBOARD })

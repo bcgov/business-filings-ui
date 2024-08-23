@@ -21,10 +21,6 @@ export const useRootStore = defineStore('root', {
     businessPhone: null,
     businessPhoneExtension: null,
     corpTypeCd: null,
-    ARFilingYear: null,
-    arMaxDate: null,
-    arMinDate: null,
-    nextARDate: null,
     businessAddress: null,
     configObject: null,
     fetchingDataSpinner: false,
@@ -459,24 +455,8 @@ export const useRootStore = defineStore('root', {
       this.currentDate = currentDate
     },
 
-    setNextARDate (nextARDate: string) {
-      this.nextARDate = nextARDate
-    },
-
     setNameRequest (nameRequest: any) {
       this.nameRequest = nameRequest
-    },
-
-    setARFilingYear (year: number) {
-      this.ARFilingYear = year
-    },
-
-    setArMaxDate (date: string) {
-      this.arMaxDate = date
-    },
-
-    setArMinDate (date: string) {
-      this.arMinDate = date
     },
 
     setBootstrapFilingStatus (status: FilingStatus) {
