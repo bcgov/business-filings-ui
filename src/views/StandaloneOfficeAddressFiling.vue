@@ -654,6 +654,12 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
+        if (GetFeatureFlag('use-business-dashboard')) {
+          const dashboardFilingUrl =
+          `${this.getBusinessDashUrl}/${this.getIdentifier}?filing_id=${this.filingId.toString()}`
+          navigate(dashboardFilingUrl)
+          return
+        }
         this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })
       }
     } else {
