@@ -277,6 +277,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   }
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
+  @Getter(useConfigurationStore) getBusinessDashUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean

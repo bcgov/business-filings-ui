@@ -32,6 +32,10 @@ export const useConfigurationStore = defineStore('configuration', {
       return state.configuration?.VUE_APP_BUSINESSES_URL || ''
     },
 
+    getBusinessDashUrl (state: ConfigurationStateIF): string {
+      return state.configuration.VUE_APP_BUSINESS_DASH_URL
+    },
+
     getCorporateOnlineUrl (state: ConfigurationStateIF): string {
       return state.configuration?.VUE_APP_CORPORATE_ONLINE_URL || ''
     },
