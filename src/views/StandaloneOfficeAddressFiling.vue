@@ -243,7 +243,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { navigate } from '@/utils'
+import { GetFeatureFlag, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, OfficeAddresses } from '@/components/common'
 import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
@@ -777,6 +777,11 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
+      if (GetFeatureFlag('use-business-dashboard')) {
+        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
+        navigate(dashboardUIUrl)
+        return
+      }
       this.$router.push({ name: Routes.DASHBOARD })
         .catch(() => {}) // ignore error in case navigation was aborted
       return
@@ -801,6 +806,11 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
       // ignore changes
       this.haveChanges = false
       // route to dashboard
+      if (GetFeatureFlag('use-business-dashboard')) {
+        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
+        navigate(dashboardUIUrl)
+        return
+      }
       this.$router.push({ name: Routes.DASHBOARD })
         .catch(() => {}) // ignore error in case navigation was aborted
     })
