@@ -417,7 +417,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { navigate } from '@/utils'
+import { GetFeatureFlag, navigate } from '@/utils'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import Directors from '@/components/common/Directors.vue'
@@ -462,6 +462,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useBusinessStore) arMinDate!: string
   @Getter(useRootStore) getCurrentYear!: number
   @Getter(useConfigurationStore) getAuthWebUrl!: string
+  @Getter(useConfigurationStore) getBusinessDashUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLastAddressChangeDate!: string
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
@@ -988,6 +989,12 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
+        if (GetFeatureFlag('use-business-dashboard')) {
+          const dashboardFilingUrl =
+          `${this.getBusinessDashUrl}/${this.getIdentifier}?filing_id=${this.filingId.toString()}`
+          navigate(dashboardFilingUrl)
+          return
+        }
         this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })
       }
     } else {
@@ -1155,6 +1162,13 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
+      if (GetFeatureFlag('use-business-dashboard')) {
+        // Disable 'beforeunload' event
+        window.onbeforeunload = null
+        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
+        navigate(dashboardUIUrl)
+        return
+      }
       this.$router.push({ name: Routes.DASHBOARD })
         .catch(() => {}) // ignore error in case navigation was aborted
       return
@@ -1179,6 +1193,11 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       // ignore changes
       this.haveChanges = false
       // route to dashboard
+      if (GetFeatureFlag('use-business-dashboard')) {
+        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
+        navigate(dashboardUIUrl)
+        return
+      }
       this.$router.push({ name: Routes.DASHBOARD })
         .catch(() => {}) // ignore error in case navigation was aborted
     })
