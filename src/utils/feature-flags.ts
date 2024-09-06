@@ -27,7 +27,7 @@ const defaultFlagSet: LDFlagSet = {
   'supported-dissolution-entities': [],
   'supported-put-back-on-entities': [],
   'supported-restoration-entities': [],
-  'use-business-dashboard': true
+  'use-business-dashboard': false
 }
 
 /**
