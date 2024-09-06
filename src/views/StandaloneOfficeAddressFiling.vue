@@ -784,6 +784,8 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     if (!this.haveChanges || force) {
       // route to dashboard
       if (GetFeatureFlag('use-business-dashboard')) {
+        // Disable 'beforeunload' event
+        window.onbeforeunload = null
         const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
         navigate(dashboardUIUrl)
         return
