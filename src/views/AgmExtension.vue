@@ -163,7 +163,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { navigate } from '@/utils'
+import { GetFeatureFlag, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { Certify } from '@/components/common'
@@ -202,6 +202,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useConfigurationStore) getBusinessDashUrl!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getUserInfo!: any
   @Getter(useBusinessStore) isGoodStanding!: boolean
@@ -278,6 +279,11 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
 
     // if required data isn't set, go back to dashboard
     if (!this.getIdentifier || this.filingId !== 0) {
+      if (GetFeatureFlag('use-business-dashboard')) {
+        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
+        navigate(dashboardUIUrl)
+        return
+      }
       this.$router.push({ name: Routes.DASHBOARD })
     }
   }
@@ -384,6 +390,12 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
+        if (GetFeatureFlag('use-business-dashboard')) {
+          const dashboardFilingUrl =
+          `${this.getBusinessDashUrl}/${this.getIdentifier}?filing_id=${this.filingId.toString()}`
+          navigate(dashboardFilingUrl)
+          return
+        }
         this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })
       }
     } else {
@@ -476,6 +488,13 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
+      if (GetFeatureFlag('use-business-dashboard')) {
+        // Disable 'beforeunload' event
+        window.onbeforeunload = null
+        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
+        navigate(dashboardUIUrl)
+        return
+      }
       this.$router.push({ name: Routes.DASHBOARD })
         .catch(() => {}) // ignore error in case navigation was aborted
       return
@@ -500,6 +519,11 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
       // ignore changes
       this.haveChanges = false
       // route to dashboard
+      if (GetFeatureFlag('use-business-dashboard')) {
+        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
+        navigate(dashboardUIUrl)
+        return
+      }
       this.$router.push({ name: Routes.DASHBOARD })
         .catch(() => {}) // ignore error in case navigation was aborted
     })
