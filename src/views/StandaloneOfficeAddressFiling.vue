@@ -580,6 +580,8 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   onClickSaveResumeFinish (): void {
     // safety check
     if (this.filingId > 0) {
+      // changes were saved, so clear flag
+      this.haveChanges = false
       // changes were saved, so go to dashboard
       this.goToDashboard(true)
     } else {
