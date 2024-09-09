@@ -417,7 +417,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { GetFeatureFlag, navigate } from '@/utils'
+import { navigate } from '@/utils'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import Directors from '@/components/common/Directors.vue'
@@ -427,7 +427,7 @@ import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { FilingStatus, Routes, SaveErrorReasons } from '@/enums'
+import { FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -462,7 +462,6 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useBusinessStore) arMinDate!: string
   @Getter(useRootStore) getCurrentYear!: number
   @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useConfigurationStore) getBusinessDashUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLastAddressChangeDate!: string
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
@@ -989,13 +988,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
-        if (GetFeatureFlag('use-business-dashboard')) {
-          const dashboardFilingUrl =
-          `${this.getBusinessDashUrl}/${this.getIdentifier}?filing_id=${this.filingId.toString()}`
-          navigate(dashboardFilingUrl)
-          return
-        }
-        this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })
+        this.navigateToDashboard(this.getIdentifier, this.filingId)
       }
     } else {
       // eslint-disable-next-line no-console
@@ -1162,15 +1155,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
-      if (GetFeatureFlag('use-business-dashboard')) {
-        // Disable 'beforeunload' event
-        window.onbeforeunload = null
-        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
-        navigate(dashboardUIUrl)
-        return
-      }
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToDashboard(this.getIdentifier)
       return
     }
 
@@ -1193,13 +1178,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       // ignore changes
       this.haveChanges = false
       // route to dashboard
-      if (GetFeatureFlag('use-business-dashboard')) {
-        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
-        navigate(dashboardUIUrl)
-        return
-      }
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToDashboard(this.getIdentifier)
     })
   }
 

@@ -367,7 +367,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { GetFeatureFlag, navigate } from '@/utils'
+import { navigate } from '@/utils'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
@@ -376,7 +376,7 @@ import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { Routes, SaveErrorReasons } from '@/enums'
+import { SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -405,7 +405,6 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   }
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useConfigurationStore) getBusinessDashUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
@@ -793,13 +792,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
-        if (GetFeatureFlag('use-business-dashboard')) {
-          const dashboardFilingUrl =
-          `${this.getBusinessDashUrl}/${this.getIdentifier}?filing_id=${this.filingId.toString()}`
-          navigate(dashboardFilingUrl)
-          return
-        }
-        this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })
+        this.navigateToDashboard(this.getIdentifier, this.filingId)
       }
     } else {
       // eslint-disable-next-line no-console
@@ -907,15 +900,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
-      if (GetFeatureFlag('use-business-dashboard')) {
-        // Disable 'beforeunload' event
-        window.onbeforeunload = null
-        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
-        navigate(dashboardUIUrl)
-        return
-      }
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToDashboard(this.getIdentifier)
       return
     }
     // open confirmation dialog and wait for response
@@ -937,13 +922,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
       // ignore changes
       this.haveChanges = false
       // route to dashboard
-      if (GetFeatureFlag('use-business-dashboard')) {
-        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
-        navigate(dashboardUIUrl)
-        return
-      }
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToDashboard(this.getIdentifier)
     })
   }
 

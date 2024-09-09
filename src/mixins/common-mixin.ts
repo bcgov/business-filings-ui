@@ -1,12 +1,18 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { isEqual } from 'lodash'
 import omit from 'lodash.omit'
+import { Getter } from 'pinia-class'
+import { useConfigurationStore } from '@/stores'
+import { GetFeatureFlag, navigate } from '@/utils'
+import { Routes } from '@/enums'
 
 /**
  * Mixin that provides some useful common utilities.
  */
 @Component({})
 export default class CommonMixin extends Vue {
+  @Getter(useConfigurationStore) getBusinessDashUrl!: string
+
   /** True if Vitest is running the code. */
   get isVitestRunning (): boolean {
     return (import.meta.env.VITEST !== undefined)
@@ -67,5 +73,28 @@ export default class CommonMixin extends Vue {
       return false
     }
     return true
+  }
+
+  /**
+   * Navigates to the dashboard page, optionally with a filing ID.
+   * @param identifier The identifier to include in the dashboard URL
+   * @param filingId The filing ID to include in the dashboard URL (optional)
+   */
+  protected navigateToDashboard (identifier: string, filingId?: number): void {
+    if (GetFeatureFlag('use-business-dashboard')) {
+      // Disable 'beforeunload' event
+      window.onbeforeunload = null
+      let dashboardUrl = `${this.getBusinessDashUrl}/${identifier}`
+      if (filingId !== undefined) {
+        dashboardUrl += `?filing_id=${filingId.toString()}`
+      }
+      navigate(dashboardUrl)
+    } else {
+      const route: any = { name: Routes.DASHBOARD }
+      if (filingId !== undefined) {
+        route.query = { filing_id: filingId.toString() }
+      }
+      this.$router.push(route).catch(() => {}) // Ignore potential navigation abort errors
+    }
   }
 }

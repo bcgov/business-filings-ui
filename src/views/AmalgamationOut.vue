@@ -345,14 +345,14 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { GetFeatureFlag, navigate } from '@/utils'
+import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { BusinessNameForeign, Certify, DetailComment, EffectiveDate, ForeignJurisdiction } from '@/components/common'
 import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
-import { EffectOfOrderTypes, FilingStatus, Routes, SaveErrorReasons } from '@/enums'
+import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -386,7 +386,6 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
   }
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useConfigurationStore) getBusinessDashUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
@@ -517,12 +516,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
 
     // if required data isn't set, go back to dashboard
     if (!this.getIdentifier || isNaN(this.filingId)) {
-      if (GetFeatureFlag('use-business-dashboard')) {
-        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
-        navigate(dashboardUIUrl)
-        return
-      }
-      this.$router.push({ name: Routes.DASHBOARD })
+      this.navigateToDashboard(this.getIdentifier)
     }
   }
 
@@ -766,13 +760,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
-        if (GetFeatureFlag('use-business-dashboard')) {
-          const dashboardFilingUrl =
-          `${this.getBusinessDashUrl}/${this.getIdentifier}?filing_id=${this.filingId.toString()}`
-          navigate(dashboardFilingUrl)
-          return
-        }
-        this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })
+        this.navigateToDashboard(this.getIdentifier, this.filingId)
       }
     } else {
       // eslint-disable-next-line no-console
@@ -872,15 +860,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
-      if (GetFeatureFlag('use-business-dashboard')) {
-        // Disable 'beforeunload' event
-        window.onbeforeunload = null
-        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
-        navigate(dashboardUIUrl)
-        return
-      }
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToDashboard(this.getIdentifier)
       return
     }
 
@@ -903,13 +883,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
       // ignore changes
       this.haveChanges = false
       // route to dashboard
-      if (GetFeatureFlag('use-business-dashboard')) {
-        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
-        navigate(dashboardUIUrl)
-        return
-      }
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToDashboard(this.getIdentifier)
     })
   }
 
