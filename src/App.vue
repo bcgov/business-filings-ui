@@ -308,11 +308,11 @@ export default class App extends Mixins(
   /** The route breadcrumbs list. */
   get breadcrumbs (): Array<BreadcrumbIF> {
     const breadcrumbs = this.$route?.meta?.breadcrumb
+    const dashboardCrumb: BreadcrumbIF = GetFeatureFlag('use-business-dashboard')
+      ? { text: this.getEntityName || 'Unknown Name', href: `${this.getBusinessDashUrl}/${this.getIdentifier}` }
+      : { text: this.getEntityName || 'Unknown Name', to: { name: Routes.DASHBOARD } }
     const crumbs: Array<BreadcrumbIF> = [
-      {
-        text: this.getEntityName || 'Unknown Name',
-        to: { name: Routes.DASHBOARD }
-      },
+      dashboardCrumb,
       ...(breadcrumbs || [])
     ]
 
