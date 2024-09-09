@@ -274,9 +274,8 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
 
     // this is the id of THIS filing
     // it must be 0 (meaning new filing) -- we do not support resuming a draft filing
+    // otherwise, go back to dashboard
     this.filingId = +this.$route.query.filingId // number or NaN
-
-    // if required data isn't set, go back to dashboard
     if (this.filingId !== 0) {
       this.navigateToBusinessDashboard(this.getIdentifier)
     }
