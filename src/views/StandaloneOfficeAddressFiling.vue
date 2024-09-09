@@ -653,7 +653,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
-        this.navigateToDashboard(this.getIdentifier, this.filingId)
+        this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)
       }
     } else {
       // eslint-disable-next-line no-console
@@ -776,7 +776,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
-      this.navigateToDashboard(this.getIdentifier)
+      this.navigateToBusinessDashboard(this.getIdentifier)
       return
     }
 
@@ -799,7 +799,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
       // ignore changes
       this.haveChanges = false
       // route to dashboard
-      this.navigateToDashboard(this.getIdentifier)
+      this.navigateToBusinessDashboard(this.getIdentifier)
     })
   }
 

@@ -423,8 +423,8 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
     this.filingId = +this.$route.query.filingId // number or NaN
 
     // if required data isn't set, go back to dashboard
-    if (!this.getIdentifier || isNaN(this.filingId)) {
-      this.navigateToDashboard(this.getIdentifier)
+    if (isNaN(this.filingId)) {
+      this.navigateToBusinessDashboard(this.getIdentifier)
     }
   }
 
@@ -686,7 +686,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
-        this.navigateToDashboard(this.getIdentifier, this.filingId)
+        this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)
       }
     } else {
       // eslint-disable-next-line no-console
@@ -802,7 +802,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
-      this.navigateToDashboard(this.getIdentifier)
+      this.navigateToBusinessDashboard(this.getIdentifier)
       return
     }
 
@@ -825,7 +825,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
       // ignore changes
       this.haveChanges = false
       // route to dashboard
-      this.navigateToDashboard(this.getIdentifier)
+      this.navigateToBusinessDashboard(this.getIdentifier)
     })
   }
 

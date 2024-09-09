@@ -410,8 +410,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
     this.filingId = +this.$route.query.filingId // number or NaN
 
     // if required data isn't set, go back to dashboard
-    if (!this.getIdentifier || this.filingId !== 0) {
-      this.navigateToDashboard(this.getIdentifier)
+    if (this.filingId !== 0) {
+      this.navigateToBusinessDashboard(this.getIdentifier)
     }
   }
 
@@ -501,7 +501,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
-        this.navigateToDashboard(this.getIdentifier, this.filingId)
+        this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)
       }
     } else {
       // eslint-disable-next-line no-console
@@ -583,7 +583,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
-      this.navigateToDashboard(this.getIdentifier)
+      this.navigateToBusinessDashboard(this.getIdentifier)
       return
     }
 
@@ -606,7 +606,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
       // ignore changes
       this.haveChanges = false
       // route to dashboard
-      this.navigateToDashboard(this.getIdentifier)
+      this.navigateToBusinessDashboard(this.getIdentifier)
     })
   }
 
