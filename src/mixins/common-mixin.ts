@@ -78,20 +78,20 @@ export default class CommonMixin extends Vue {
   /**
    * Navigates to the dashboard page, optionally with a filing ID.
    * @param identifier The identifier to include in the dashboard URL
-   * @param filingId The filing ID to include in the dashboard URL (optional)
+   * @param filingId The filing ID to include in the dashboard URL (optional, defaults to null)
    */
-  protected navigateToDashboard (identifier: string, filingId?: number): void {
+  protected navigateToDashboard (identifier: string, filingId: number | null = null): void {
     if (GetFeatureFlag('use-business-dashboard')) {
       // Disable 'beforeunload' event
       window.onbeforeunload = null
       let dashboardUrl = `${this.getBusinessDashUrl}/${identifier}`
-      if (filingId !== undefined) {
+      if (filingId !== null) {
         dashboardUrl += `?filing_id=${filingId.toString()}`
       }
       navigate(dashboardUrl)
     } else {
       const route: any = { name: Routes.DASHBOARD }
-      if (filingId !== undefined) {
+      if (filingId !== null) {
         route.query = { filing_id: filingId.toString() }
       }
       this.$router.push(route).catch(() => {}) // Ignore potential navigation abort errors
