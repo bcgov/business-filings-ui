@@ -18,6 +18,7 @@ import mockRouter from './mockRouter'
 import { BusinessConfigCp } from '@/resources/CP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingCodes } from '@bcrs-shared-components/enums'
+import * as utils from '@/utils'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -951,6 +952,8 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
   })
 
   afterEach(() => {
+    // restore feature flag
+    vi.restoreAllMocks()
     sinon.restore()
   })
 
@@ -984,6 +987,40 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
 
     // verify route param
     expect(vm.$route.query).toEqual({ filing_id: '123' })
+
+    wrapper.destroy()
+  })
+
+  it('When FF is true, saves a new filing and navigates to new Dashboard when ' +
+    'this is a new filing and the File & Pay button is clicked', async () => {
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'standalone-directors', query: { filingId: '0' } }) // new filing id
+
+    const wrapper = shallowMount(StandaloneDirectorsFiling, { localVue, router })
+    const vm: any = wrapper.vm as any
+
+    // make sure form is validated
+    await wrapper.setData({
+      codDateValid: true,
+      inFilingReview: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    // verify navigate to the new business dashboard when FF is true
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'use-business-dashboard') return true
+    })
+    // Mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+    rootStore.setFilingData([{} as any]) // dummy data
+    await vm.onClickFilePay()
+
+    const expectedUrl = '/CP0001191?filing_id=123'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
     wrapper.destroy()
   })

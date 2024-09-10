@@ -10,6 +10,7 @@ import { CorpTypeCd } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { LegalServices } from '@/services'
 import flushPromises from 'flush-promises'
+import * as utils from '@/utils'
 
 // components
 import AgmExtension from '@/views/AgmExtension.vue'
@@ -73,6 +74,8 @@ describe('AGM Extension view', () => {
   })
 
   afterEach(() => {
+    // restore feature flag
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
@@ -240,5 +243,46 @@ describe('AGM Extension view', () => {
 
     // verify redirection to dashboard
     expect(wrapper.vm.$route.name).toBe('dashboard')
+  })
+
+  it('navigates to new business dashboard when feature flag is true', async () => {
+    // mock hasPendingTasks()
+    LegalServices.hasPendingTasks = vi.fn().mockResolvedValue(false)
+
+    // mock createFiling()
+    LegalServices.createFiling = vi.fn().mockResolvedValue({
+      agmExtension: {},
+      business: {},
+      header: {
+        filingId: 1123,
+        isPaymentActionRequired: false
+      }
+    })
+
+    // simulate eligible data and valid component
+    wrapper.setData({
+      data: { isEligible: true },
+      extensionRequestValid: true
+    })
+
+    // simulate valid certify data and component
+    wrapper.setData({ certifiedBy: 'Full Name', isCertified: true, certifyFormValid: true })
+
+    // verify navigate to the new business dashboard when FF is true
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'use-business-dashboard') return true
+    })
+    // Mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+
+    await wrapper.find('#file-pay-btn').trigger('click')
+
+    // wait for save to complete and everything to update
+    await flushPromises()
+
+    const expectedUrl = '/BC1234567?filing_id=1123'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
   })
 })
