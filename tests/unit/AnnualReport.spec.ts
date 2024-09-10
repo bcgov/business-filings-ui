@@ -18,6 +18,7 @@ import ArDate from '@/components/AnnualReport/ARDate.vue'
 import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
 import { BusinessConfigCp } from '@/resources/CP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import * as utils from '@/utils'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -1210,6 +1211,8 @@ describe('Annual Report - Part 4 - Saving', () => {
   })
 
   afterEach(() => {
+    // restore feature flag
+    vi.restoreAllMocks()
     sinon.restore()
     wrapper.destroy()
   })
@@ -1277,6 +1280,67 @@ describe('Annual Report - Part 4 - Saving', () => {
 
     // verify routing back to Dashboard URL
     expect(vm.$route.name).toBe('dashboard')
+  })
+
+  it('saves a filing and navigates to new business Dashboard when the FF is true', async () => {
+    // make sure form is validated
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+
+    // stub address data
+    await wrapper.setData({
+      addresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        },
+        recordsOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
+      }
+    })
+    // verify navigate to the new business dashboard when FF is true
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'use-business-dashboard') return true
+    })
+    // Mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+    await vm.onClickSaveResume()
+    const expectedUrl = '/CP0001191'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
+  })
+
+  it('navigates to new business Dashboard with FF being true when the Cancel button is clicked', async () => {
+    // make sure form is validated
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    // verify navigate to the new business dashboard when FF is true
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'use-business-dashboard') return true
+    })
+    // Mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+    // click the Cancel button
+    // await wrapper.find('#ar-cancel-btn').trigger('click')
+    // work-around because click trigger isn't working
+    await vm.goToDashboard()
+
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/CP0001191'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
   })
 
   it('routes to Dashboard URL when the Cancel button is clicked', async () => {

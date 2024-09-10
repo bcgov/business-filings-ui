@@ -15,6 +15,7 @@ import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { BusinessConfigBen } from '@/resources/BEN'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import * as utils from '@/utils'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -676,6 +677,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
   })
 
   afterEach(() => {
+    // restore feature flag
+    vi.restoreAllMocks()
     sinon.restore()
   })
 
@@ -807,6 +810,69 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
     // verify routing back to Dashboard URL
     expect(vm.$route.name).toBe('dashboard')
+
+    wrapper.destroy()
+  })
+
+  it('updates an existing filing and navigates to the new dashboard when this is a draft filing ' +
+    'and the File & Pay button is clicked and payment action is not required', async () => {
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+
+    // create local Vue and mock router
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'standalone-addresses', query: { filingId: '123' } }) // existing filing id
+
+    const wrapper = mount(StandaloneOfficeAddressFiling, {
+      localVue,
+      router,
+      stubs: {
+        OfficeAddresses: true,
+        Certify: true,
+        Affix: true,
+        SbcFeeSummary: true,
+        ConfirmDialog: true,
+        PaymentErrorDialog: true,
+        ResumeErrorDialog: true,
+        SaveErrorDialog: true
+      },
+      vuetify
+    })
+    const vm: any = wrapper.vm
+
+    // make sure form is validated
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
+    rootStore.setFilingData([{} as any]) // dummy data
+
+    // make sure a fee is required
+    vm.totalFee = 100
+
+    // FUTURE: verify that draft filing was fetched
+
+    const button = wrapper.find('#coa-file-pay-btn')
+    await Vue.nextTick()
+    expect(button.attributes('disabled')).toBeUndefined()
+
+    // verify navigate to the new business dashboard when FF is true
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'use-business-dashboard') return true
+    })
+    // Mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+    // click the File & Pay button
+    await button.trigger('click')
+    await flushPromises() // wait for save to complete and everything to update
+
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/CP0001191?filing_id=123'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
     wrapper.destroy()
   })

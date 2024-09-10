@@ -287,7 +287,7 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, 
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
-import { EffectOfOrderTypes, FilingStatus, Routes, SaveErrorReasons } from '@/enums'
+import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -423,8 +423,8 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     this.filingId = +this.$route.query.filingId // number or NaN
 
     // if required data isn't set, go back to dashboard
-    if (!this.getIdentifier || isNaN(this.filingId)) {
-      this.$router.push({ name: Routes.DASHBOARD })
+    if (isNaN(this.filingId)) {
+      this.navigateToBusinessDashboard(this.getIdentifier)
     }
   }
 
@@ -602,6 +602,8 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   onClickSaveResumeFinish (): void {
     // safety check
     if (this.filingId > 0) {
+      // changes were saved, so clear flag
+      this.haveChanges = false
       // changes were saved, so go to dashboard
       this.goToDashboard(true)
     } else {
@@ -686,7 +688,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
-        this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })
+        this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)
       }
     } else {
       // eslint-disable-next-line no-console
@@ -802,8 +804,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToBusinessDashboard(this.getIdentifier)
       return
     }
 
@@ -826,8 +827,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       // ignore changes
       this.haveChanges = false
       // route to dashboard
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToBusinessDashboard(this.getIdentifier)
     })
   }
 

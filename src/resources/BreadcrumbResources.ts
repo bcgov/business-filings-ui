@@ -2,6 +2,7 @@ import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
 import { Routes } from '@/enums'
 import { createPinia, setActivePinia } from 'pinia'
 import { useAuthenticationStore } from '@/stores'
+import { GetFeatureFlag } from '@/utils'
 
 setActivePinia(createPinia())
 const authenticationStore = useAuthenticationStore()
@@ -42,5 +43,20 @@ export function getDigitalCredentialBreadcrumb (): BreadcrumbIF {
   return {
     text: 'Business Digital Credentials',
     to: { name: Routes.DIGITAL_CREDENTIALS }
+  }
+}
+
+/** Returns the breadcrumb to the appropriate dashboard based on the feature flag. */
+export function getDashboardBreadcrumb (entityName: string, businessDashUrl: string, identifier: string): BreadcrumbIF {
+  if (GetFeatureFlag('use-business-dashboard')) {
+    return {
+      text: entityName || 'Unknown Name',
+      href: `${businessDashUrl}/${identifier}`
+    }
+  } else {
+    return {
+      text: entityName || 'Unknown Name',
+      to: { name: Routes.DASHBOARD }
+    }
   }
 }

@@ -148,6 +148,7 @@ import {
 } from '@/components/dialogs'
 import {
   ConfigJson,
+  getDashboardBreadcrumb,
   getMyBusinessRegistryBreadcrumb,
   getRegistryDashboardBreadcrumb,
   getStaffDashboardBreadcrumb
@@ -309,10 +310,7 @@ export default class App extends Mixins(
   get breadcrumbs (): Array<BreadcrumbIF> {
     const breadcrumbs = this.$route?.meta?.breadcrumb
     const crumbs: Array<BreadcrumbIF> = [
-      {
-        text: this.getEntityName || 'Unknown Name',
-        to: { name: Routes.DASHBOARD }
-      },
+      getDashboardBreadcrumb(this.getEntityName, this.getBusinessDashUrl, this.getIdentifier),
       ...(breadcrumbs || [])
     ]
 

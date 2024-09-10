@@ -279,7 +279,7 @@ import { ConfirmDialog, PaymentErrorDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { LegalServices } from '@/services/'
-import { Routes, SaveErrorReasons } from '@/enums'
+import { SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -407,11 +407,10 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
 
     // this is the id of THIS filing
     // it must be 0 (meaning new filing) -- we do not support resuming a draft filing
+    // otherwise, go back to dashboard
     this.filingId = +this.$route.query.filingId // number or NaN
-
-    // if required data isn't set, go back to dashboard
-    if (!this.getIdentifier || this.filingId !== 0) {
-      this.$router.push({ name: Routes.DASHBOARD })
+    if (this.filingId !== 0) {
+      this.navigateToBusinessDashboard(this.getIdentifier)
     }
   }
 
@@ -501,7 +500,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
-        this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })
+        this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)
       }
     } else {
       // eslint-disable-next-line no-console
@@ -583,8 +582,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToBusinessDashboard(this.getIdentifier)
       return
     }
 
@@ -607,8 +605,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
       // ignore changes
       this.haveChanges = false
       // route to dashboard
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToBusinessDashboard(this.getIdentifier)
     })
   }
 

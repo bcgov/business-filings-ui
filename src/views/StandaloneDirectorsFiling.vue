@@ -376,7 +376,7 @@ import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { Routes, SaveErrorReasons } from '@/enums'
+import { SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -719,6 +719,8 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   onClickSaveResumeFinish (): void {
     // safety check
     if (this.filingId > 0) {
+      // changes were saved, so clear flag
+      this.haveChanges = false
       // changes were saved, so go to dashboard
       this.goToDashboard(true)
     } else {
@@ -792,7 +794,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
         navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
-        this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })
+        this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)
       }
     } else {
       // eslint-disable-next-line no-console
@@ -900,11 +902,9 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToBusinessDashboard(this.getIdentifier)
       return
     }
-
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Unsaved Changes',
@@ -924,8 +924,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
       // ignore changes
       this.haveChanges = false
       // route to dashboard
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
+      this.navigateToBusinessDashboard(this.getIdentifier)
     })
   }
 

@@ -151,7 +151,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { AmalgamationTypes, CorrectNameOptions, FilingTypes } from '@bcrs-shared-components/enums'
 import { AmlRoles, AmlTypes, Routes } from '@/enums'
 import { LegalServices } from '@/services'
-import { navigate } from '@/utils'
+import { GetFeatureFlag, navigate } from '@/utils'
 import { TechnicalErrorDialog } from '@/components/dialogs'
 
 @Component({
@@ -162,6 +162,7 @@ import { TechnicalErrorDialog } from '@/components/dialogs'
 export default class AmalgamationSelection extends Vue {
   @Getter(useAuthenticationStore) getAccountId!: string
   @Getter(useConfigurationStore) getCreateUrl!: string
+  @Getter(useConfigurationStore) getBusinessDashUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useRootStore) getFullPhoneNumber!: string
   @Getter(useBusinessStore) getIdentifier!: string
@@ -188,6 +189,11 @@ export default class AmalgamationSelection extends Vue {
   created (): void {
     // if required data isn't set, go back to dashboard
     if (!this.getIdentifier) {
+      if (GetFeatureFlag('use-business-dashboard')) {
+        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
+        navigate(dashboardUIUrl)
+        return
+      }
       this.$router.push({ name: Routes.DASHBOARD })
     }
   }
