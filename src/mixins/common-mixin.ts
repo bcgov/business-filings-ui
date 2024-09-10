@@ -82,7 +82,6 @@ export default class CommonMixin extends Vue {
    */
   protected navigateToBusinessDashboard (identifier: string, filingId: number = null): void {
     if (GetFeatureFlag('use-business-dashboard')) {
-      // Disable 'beforeunload' event
       let dashboardUrl = `${this.getBusinessDashUrl}/${identifier}`
       if (filingId !== null) {
         dashboardUrl += `?filing_id=${filingId.toString()}`
