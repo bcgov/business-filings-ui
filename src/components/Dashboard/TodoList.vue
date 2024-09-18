@@ -2086,54 +2086,34 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     console.log('doResumeFiling(), invalid filing type =', item)
   }
 
-  /* Handles the restoration flow inside of doResumeFiling */
-  navigateForResumeRestoration (item: TodoItemIF): void {
-    let restorationType: FilingSubTypes
-    /**
-     * Type assertion is done to fix TypeScript error.
-     * "This condition will always return 'false' since the types
-     * 'FilingSubTypes' and 'RestorationTypes' have no overlap."
-     */
-    if (item.filingSubType === FilingSubTypes.FULL_RESTORATION) {
-      restorationType = FilingSubTypes.FULL_RESTORATION
-    }
-
-    if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION) {
-      restorationType = FilingSubTypes.LIMITED_RESTORATION
-    }
-
-    if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_EXTENSION) {
-      restorationType = FilingSubTypes.LIMITED_RESTORATION_EXTENSION
-    }
-
-    if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL) {
-      restorationType = FilingSubTypes.LIMITED_RESTORATION_TO_FULL
-    }
-
-    navigate(this.buildRestorationUrl(item, restorationType))
-  }
-
-  // navigate to Create UI if Full/Limited restoration or to Edit UI if Limited extension/Full to Limited conversion
-  buildRestorationUrl (item: TodoItemIF, restorationType: FilingSubTypes): string {
+  /* Called to resume draft restoration filing. */
+  private navigateForResumeRestoration (item: TodoItemIF): void {
     let url: string
 
-    switch (restorationType) {
-      case FilingSubTypes.FULL_RESTORATION:
-      case FilingSubTypes.LIMITED_RESTORATION: {
-        url = `${this.getCreateUrl}?id=${this.getIdentifier}`
-        break
-      }
-      case FilingSubTypes.LIMITED_RESTORATION_EXTENSION:
-      case FilingSubTypes.LIMITED_RESTORATION_TO_FULL: {
-        url = `${this.getEditUrl}${this.getIdentifier}/` + restorationType + `?restoration-id=${item.filingId}`
-        break
-      }
+    // navigate to Create UI to resume full restoration filing
+    if (item.filingSubType === FilingSubTypes.FULL_RESTORATION) {
+      url = `${this.getCreateUrl}?id=${this.getIdentifier}`
     }
 
-    return url
+    // navigate to Create UI to resume limited restoration filing
+    if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION) {
+      url = `${this.getCreateUrl}?id=${this.getIdentifier}`
+    }
+
+    // navigate to Edit UI to resume limited restoration extension filing
+    if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_EXTENSION) {
+      url = `${this.getEditUrl}${this.getIdentifier}/limitedRestorationExtension?restoration-id=${item.filingId}`
+    }
+
+    // navigate to Edit UI to resume limited restoration to full filing
+    if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL) {
+      url = `${this.getEditUrl}${this.getIdentifier}/limitedRestorationToFull?restoration-id=${item.filingId}`
+    }
+
+    navigate(url)
   }
 
-  // this is called for both Resume Payment and Retry Payment
+  /** Called to change payment type, resume payment or retry payment. */
   doResumePayment (item: TodoItemIF): boolean {
     const paymentToken = item.paymentToken
 
