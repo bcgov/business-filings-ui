@@ -2098,7 +2098,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     } else if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL) {
       url = `${this.getEditUrl}${this.getIdentifier}/limitedRestorationToFull?restoration-id=${item.filingId}`
     } else {
-      url = `${this.getCreateUrl}?id=${this.getIdentifier}`
+      url = `${this.getCreateUrl}restoration-business-name?id=${this.getIdentifier}`
     }
 
     navigate(url)

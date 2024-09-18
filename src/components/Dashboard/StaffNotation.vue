@@ -389,7 +389,7 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
       } else if (restorationType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL) {
         url = `${this.getEditUrl}${this.getIdentifier}/limitedRestorationToFull?restoration-id=${id}`
       } else {
-        url = `${this.getCreateUrl}?id=${this.getIdentifier}`
+        url = `${this.getCreateUrl}restoration-business-name?id=${this.getIdentifier}`
       }
 
       navigate(url)

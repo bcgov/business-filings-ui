@@ -668,7 +668,7 @@ describe('StaffNotation', () => {
     await Vue.nextTick()
 
     // verify redirection
-    expect(window.location.assign).toHaveBeenCalledWith('https://create.url/?id=BC1234567')
+    expect(window.location.assign).toHaveBeenCalledWith('https://create.url/restoration-business-name?id=BC1234567')
 
     wrapper.destroy()
     sinon.restore()
