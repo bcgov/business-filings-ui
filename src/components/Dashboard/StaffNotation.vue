@@ -138,7 +138,7 @@
               v-if="isHistorical"
               data-type="restoration"
               :disabled="!isAllowed(AllowableActions.RESTORATION)"
-              @click="goToRestorationFiling(ApplicationTypes.CREATE_UI, FilingSubTypes.FULL_RESTORATION)"
+              @click="goToRestorationFiling()"
             >
               <v-list-item-title>
                 <span class="app-blue">Restore Company</span>
@@ -212,7 +212,7 @@
             <v-list-item
               v-if="isAllowed(AllowableActions.LIMITED_RESTORATION_EXTENSION)"
               data-type="extend-limited-restoration"
-              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)"
+              @click="goToRestorationFiling(FilingSubTypes.LIMITED_RESTORATION_EXTENSION)"
             >
               <v-list-item-title>
                 <span class="app-blue">Extend Limited Restoration</span>
@@ -222,7 +222,7 @@
             <v-list-item
               v-if="isAllowed(AllowableActions.LIMITED_RESTORATION_TO_FULL)"
               data-type="convert-full-restoration"
-              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.LIMITED_RESTORATION_TO_FULL)"
+              @click="goToRestorationFiling(FilingSubTypes.LIMITED_RESTORATION_TO_FULL)"
             >
               <v-list-item-title>
                 <span class="app-blue">Convert to Full Restoration</span>
@@ -239,12 +239,7 @@
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag, navigate } from '@/utils'
-import {
-  AllowableActions,
-  ApplicationTypes,
-  FilingSubTypes,
-  Routes
-} from '@/enums'
+import { AllowableActions, FilingSubTypes, Routes } from '@/enums'
 import { FilingNames, FilingTypes } from '@bcrs-shared-components/enums'
 import { AddStaffNotationDialog } from '@/components/dialogs'
 import { AllowableActionsMixin, FilingMixin } from '@/mixins'
@@ -265,7 +260,6 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
 
   // enums for template
   readonly AllowableActions = AllowableActions
-  readonly ApplicationTypes = ApplicationTypes
   readonly FilingNames = FilingNames
   readonly FilingSubTypes = FilingSubTypes
   readonly FilingTypes = FilingTypes
@@ -373,9 +367,10 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
     this.$router.push({ name: Routes.CONTINUATION_OUT, query: { filingId: '0' } })
   }
 
-  async goToRestorationFiling (applicationName: ApplicationTypes, restorationType: FilingSubTypes): Promise<void> {
-    let url: string
+  async goToRestorationFiling (restorationType: FilingSubTypes = null): Promise<void> {
     try {
+      let url: string
+
       // show spinner since the network calls below can take a few seconds
       this.setFetchingDataSpinner(true)
 
@@ -386,13 +381,15 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
 
       if (isNaN(id)) throw new Error('Invalid API response')
 
-      // navigate to Create UI if Full/Limited restoration
-      // navigate to Edit UI if Limited extension/Full to Limited conversion
-      if (applicationName === ApplicationTypes.CREATE_UI) {
-        url = `${this.getCreateUrl}?id=${this.getIdentifier}`
-      }
-      if (applicationName === ApplicationTypes.EDIT_UI) {
-        url = `${this.getEditUrl}${this.getIdentifier}/` + restorationType + `?restoration-id=${id}`
+      // navigate to Edit UI for limited restoration extension filing
+      // navigate to Edit UI for limited restoration to full filing
+      // navigate to Create UI for full or limited restoration filing
+      if (restorationType === FilingSubTypes.LIMITED_RESTORATION_EXTENSION) {
+        url = `${this.getEditUrl}${this.getIdentifier}/limitedRestorationExtension?restoration-id=${id}`
+      } else if (restorationType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL) {
+        url = `${this.getEditUrl}${this.getIdentifier}/limitedRestorationToFull?restoration-id=${id}`
+      } else {
+        url = `${this.getCreateUrl}restoration-business-name?id=${this.getIdentifier}`
       }
 
       navigate(url)

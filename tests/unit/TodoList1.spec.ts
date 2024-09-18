@@ -3315,7 +3315,7 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
 
       // verify redirection
       const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-      const createUrl = `https://create.url/?id=${test.businessId}`
+      const createUrl = `https://create.url/restoration-business-name?id=${test.businessId}`
       expect(window.location.assign).toHaveBeenCalledWith(createUrl + '&accountid=' + accountId)
 
       wrapper.destroy()
