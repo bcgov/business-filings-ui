@@ -368,9 +368,9 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
   }
 
   async goToRestorationFiling (restorationType: FilingSubTypes = null): Promise<void> {
-    let url: string
-
     try {
+      let url: string
+
       // show spinner since the network calls below can take a few seconds
       this.setFetchingDataSpinner(true)
 

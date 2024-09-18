@@ -2090,24 +2090,15 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
   private navigateForResumeRestoration (item: TodoItemIF): void {
     let url: string
 
-    // navigate to Create UI to resume full restoration filing
-    if (item.filingSubType === FilingSubTypes.FULL_RESTORATION) {
-      url = `${this.getCreateUrl}?id=${this.getIdentifier}`
-    }
-
-    // navigate to Create UI to resume limited restoration filing
-    if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION) {
-      url = `${this.getCreateUrl}?id=${this.getIdentifier}`
-    }
-
     // navigate to Edit UI to resume limited restoration extension filing
+    // navigate to Edit UI to resume limited restoration to full filing
+    // navigate to Create UI to resume full or limited restoration filing
     if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_EXTENSION) {
       url = `${this.getEditUrl}${this.getIdentifier}/limitedRestorationExtension?restoration-id=${item.filingId}`
-    }
-
-    // navigate to Edit UI to resume limited restoration to full filing
-    if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL) {
+    } else if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL) {
       url = `${this.getEditUrl}${this.getIdentifier}/limitedRestorationToFull?restoration-id=${item.filingId}`
+    } else {
+      url = `${this.getCreateUrl}?id=${this.getIdentifier}`
     }
 
     navigate(url)
