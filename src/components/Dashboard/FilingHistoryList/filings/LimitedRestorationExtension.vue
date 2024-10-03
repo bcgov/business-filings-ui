@@ -16,6 +16,20 @@
       </p>
 
       <ContactInfo class="mt-4" />
+
+      <p
+        v-if="fileNumber"
+        class="mt-4 mb-0"
+      >
+        Court Order Number: {{ fileNumber }}
+      </p>
+
+      <p
+        v-if="hasEffectOfOrder"
+        class="mt-0"
+      >
+        Pursuant to a Plan of Arrangement
+      </p>
     </template>
   </FilingTemplate>
 </template>
@@ -42,6 +56,16 @@ export default class LimitedRestorationExtension extends Vue {
     const expiry = this.filing.data?.restoration?.expiry
     const date = DateUtilities.yyyyMmDdToDate(expiry)
     return (DateUtilities.dateToPacificDate(date, true) || '[unknown]')
+  }
+
+  /** The court order file number. */
+  get fileNumber (): string {
+    return this.filing.data?.order?.fileNumber
+  }
+
+  /** Whether the court order has an effect of order. */
+  get hasEffectOfOrder (): boolean {
+    return Boolean(this.filing.data?.order?.effectOfOrder)
   }
 }
 </script>
