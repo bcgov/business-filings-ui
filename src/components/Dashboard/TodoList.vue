@@ -677,7 +677,7 @@
                 readonly
                 rows="1"
                 :value="item.latestReviewComment || '[undefined staff change request message]'"
-                class="grey-background px-5 py-2"
+                class="grey-background px-5 py-3"
               />
             </div>
           </template>
