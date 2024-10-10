@@ -648,6 +648,18 @@
             <PaymentPending v-else />
           </template>
 
+          <!-- is this an NR approved continuation draft item? -->
+          <template v-else-if="EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item)">
+            <div class="todo-list-detail body-2">
+              <p
+                v-if="getNameRequest"
+                class="list-item__subtitle"
+              >
+                NR APPROVED - {{ expiresText(getNameRequest) }}
+              </p>
+            </div>
+          </template>
+
           <!-- is this an authorization approved continuation item? -->
           <template v-else-if="EnumUtilities.isStatusApproved(item)">
             <div class="todo-list-detail body-2">
