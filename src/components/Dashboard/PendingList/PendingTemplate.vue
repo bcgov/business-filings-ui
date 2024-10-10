@@ -26,7 +26,7 @@
             <div class="item-header-subtitle">
               <span>PENDING STAFF REVIEW</span>
               <span class="vert-pipe" />
-              <span>PAID (filed by {{ submitter }} on <DateTooltip :date="submittedDate" />)</span>
+              <span>Submitted on <DateTooltip :date="submittedDate" />)</span>
             </div>
           </slot>
         </div>

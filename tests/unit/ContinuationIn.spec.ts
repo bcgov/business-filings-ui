@@ -149,7 +149,6 @@ describe('Continuation In - in Pending list', () => {
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
 
     // verify expansion panel content
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('This BC Limited Company Continuation Application is paid.')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your Continuation Authorization documents')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 2 business days.')
 

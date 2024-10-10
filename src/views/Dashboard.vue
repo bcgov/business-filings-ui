@@ -51,7 +51,7 @@
             >
               <header>
                 <h2 class="mb-3">
-                  <span>Pending Staff Review</span>&nbsp;<span class="section-count">({{ pendingCount }})</span>
+                  <span>Pending</span>&nbsp;<span class="section-count">({{ pendingCount }})</span>
                 </h2>
               </header>
               <PendingList :highlightId="filingId" />
