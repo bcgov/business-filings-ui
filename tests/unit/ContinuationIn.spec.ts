@@ -110,8 +110,8 @@ describe('Continuation In - in To Do list', () => {
     expect(wrapper.find('.list-item__actions .btn-draft-resume').text()).toBe('Make Changes')
 
     // verify expansion panel content
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('This BC Limited Company Continuation Application is')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('paid but requires you to make the following changes:')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('NR APPROVED - Expires in')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries staff require the following changes to your')
     expect((wrapper.find('textarea').element as any)._value).toBe('Authorization document is not legible.')
 
     // cleanup
