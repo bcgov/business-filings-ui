@@ -648,18 +648,6 @@
             <PaymentPending v-else />
           </template>
 
-          <!-- is this an NR approved continuation draft item? -->
-          <template v-else-if="EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item)">
-            <div class="todo-list-detail body-2">
-              <p
-                v-if="getNameRequest"
-                class="list-item__subtitle"
-              >
-                NR APPROVED - {{ expiresText(getNameRequest) }}
-              </p>
-            </div>
-          </template>
-
           <!-- is this an authorization approved continuation item? -->
           <template v-else-if="EnumUtilities.isStatusApproved(item)">
             <div class="todo-list-detail body-2">
@@ -668,9 +656,6 @@
                 class="list-item__subtitle"
               >
                 NR APPROVED - {{ expiresText(getNameRequest) }}
-              </p>
-              <p class="list-item__subtitle">
-                Authorization APPROVED - Expires in {} days
               </p>
             </div>
           </template>
@@ -692,6 +677,7 @@
                 readonly
                 rows="1"
                 :value="item.latestReviewComment || '[undefined staff change request message]'"
+                class="grey-background px-5 py-2"
               />
             </div>
           </template>
@@ -2523,12 +2509,14 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
 
 textarea {
   color: $gray7;
-  background-color: $gray1;
-  padding: 10px 10px 10px 20px;
   width: 100%;
   resize: none;
   // FUTURE: use field-sizing instead of "v-auto-resize" directive
   // ref: https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing
   // field-sizing: content;
+}
+
+.grey-background {
+  background-color: $gray1;
 }
 </style>
