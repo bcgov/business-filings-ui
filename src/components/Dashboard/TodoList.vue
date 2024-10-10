@@ -264,6 +264,19 @@
                   <span class="vert-pipe" />
                   <span>PAID (filed by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
                 </div>
+
+                <!-- approved continuation filing -->
+                <div
+                  v-else-if="EnumUtilities.isStatusApproved(item)"
+                  class="todo-subtitle pt-1"
+                >
+                  <span
+                    v-if="getNameRequest"
+                    class="list-item__subtitle"
+                  >
+                    NR APPROVED - {{ expiresText(getNameRequest) }}
+                  </span>
+                </div>
               </div> <!-- end of other subtitles -->
             </div> <!-- end of todo label -->
 
@@ -616,14 +629,7 @@
 
           <!-- is this an authorization approved continuation item? -->
           <template v-else-if="EnumUtilities.isStatusApproved(item)">
-            <div class="todo-list-detail body-2">
-              <p
-                v-if="getNameRequest"
-                class="list-item__subtitle"
-              >
-                NR APPROVED - {{ expiresText(getNameRequest) }}
-              </p>
-            </div>
+            <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
 
           <!-- is this a change-requested item? -->
