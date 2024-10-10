@@ -383,8 +383,7 @@
                       <span>Register using this NR</span>
                     </template>
                     <template v-else-if="EnumUtilities.isTypeContinuationIn(item) && item.isEmptyFiling">
-                      <span v-if="getNameRequest">Continue In using this NR</span>
-                      <span v-else>Continue In as a Numbered Company</span>
+                      <span>Begin Continuation</span>
                     </template>
                     <span v-else>Resume</span>
                   </v-btn>
@@ -521,6 +520,52 @@
                   <!-- no action button in this case -->
                 </template>
 
+                <!-- authorization approved continuation filing -->
+                <template v-else-if="EnumUtilities.isStatusApproved(item)">
+                  <v-btn
+                    class="btn-draft-resume"
+                    color="primary"
+                    :disabled="!item.enabled"
+                    @click.native.stop="doResumeFiling(item)"
+                  >
+                    <span>Resume</span>
+                  </v-btn>
+                  <!-- dropdown menu -->
+                  <v-menu
+                    offset-y
+                    left
+                  >
+                    <template #activator="{ on }">
+                      <v-btn
+                        id="menu-activator"
+                        class="actions__more-actions__btn px-0"
+                        color="primary"
+                        :disabled="!item.enabled"
+                        v-on="on"
+                      >
+                        <v-icon>mdi-menu-down</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list class="actions__more-actions py-2">
+                      <v-list-item
+                        id="btn-delete-application"
+                        @click.stop="confirmDeleteApplication(item)"
+                      >
+                        <v-icon
+                          class="pr-1"
+                          color="primary"
+                          size="18px"
+                        >
+                          mdi-delete-forever
+                        </v-icon>
+                        <v-list-item-title>
+                          Delete {{ EnumUtilities.filingTypeToName(item.name) }}
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </template>
+
                 <!-- change-requested filing -->
                 <template v-else-if="EnumUtilities.isStatusChangeRequested(item)">
                   <v-btn
@@ -603,15 +648,35 @@
             <PaymentPending v-else />
           </template>
 
+          <!-- is this an authorization approved continuation item? -->
+          <template v-else-if="EnumUtilities.isStatusApproved(item)">
+            <div class="todo-list-detail body-2">
+              <p
+                v-if="getNameRequest"
+                class="list-item__subtitle"
+              >
+                NR APPROVED - {{ expiresText(getNameRequest) }}
+              </p>
+              <p class="list-item__subtitle">
+                Authorization APPROVED - Expires in {} days
+              </p>
+            </div>
+          </template>
+
           <!-- is this a change-requested item? -->
           <template v-else-if="EnumUtilities.isStatusChangeRequested(item)">
             <div class="todo-list-detail body-2">
+              <p
+                v-if="getNameRequest"
+                class="list-item__subtitle"
+              >
+                NR APPROVED - {{ expiresText(getNameRequest) }}
+              </p>
               <p class="list-item__subtitle">
-                This {{ item.title }} is paid but requires you to make the following changes:
+                BC Registries staff require the following changes to your authorization documentation
               </p>
               <textarea
                 v-auto-resize
-                class="font-16 font-italic"
                 readonly
                 rows="1"
                 :value="item.latestReviewComment || '[undefined staff change request message]'"
@@ -850,6 +915,10 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     }
 
     if (EnumUtilities.isStatusChangeRequested(item)) {
+      if (EnumUtilities.isTypeContinuationIn(item)) return true
+    }
+
+    if (EnumUtilities.isStatusApproved(item)) {
       if (EnumUtilities.isTypeContinuationIn(item)) return true
     }
 
@@ -2442,6 +2511,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
 
 textarea {
   color: $gray7;
+  background-color: $gray1;
+  padding: 10px 10px 10px 20px;
   width: 100%;
   resize: none;
   // FUTURE: use field-sizing instead of "v-auto-resize" directive
