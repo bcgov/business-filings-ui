@@ -530,40 +530,6 @@
                   >
                     <span>Resume</span>
                   </v-btn>
-                  <!-- dropdown menu -->
-                  <v-menu
-                    offset-y
-                    left
-                  >
-                    <template #activator="{ on }">
-                      <v-btn
-                        id="menu-activator"
-                        class="actions__more-actions__btn px-0"
-                        color="primary"
-                        :disabled="!item.enabled"
-                        v-on="on"
-                      >
-                        <v-icon>mdi-menu-down</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list class="actions__more-actions py-2">
-                      <v-list-item
-                        id="btn-delete-application"
-                        @click.stop="confirmDeleteApplication(item)"
-                      >
-                        <v-icon
-                          class="pr-1"
-                          color="primary"
-                          size="18px"
-                        >
-                          mdi-delete-forever
-                        </v-icon>
-                        <v-list-item-title>
-                          Delete {{ EnumUtilities.filingTypeToName(item.name) }}
-                        </v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
                 </template>
 
                 <!-- change-requested filing -->
