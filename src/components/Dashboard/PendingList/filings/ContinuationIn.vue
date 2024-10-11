@@ -15,7 +15,7 @@
           class="mb-0"
           :class="{ 'mt-4': isFutureEffectivePast || isFutureEffective }"
         >
-          This {{ entityType }} Continuation Application is paid. BC Registries will review your
+          BC Registries will review your
           Continuation Authorization documents and contact you with the results within 2 business days.
         </p>
 

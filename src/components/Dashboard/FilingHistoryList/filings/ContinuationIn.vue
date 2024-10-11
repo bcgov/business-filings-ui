@@ -49,7 +49,7 @@
         <textarea
           v-if="isShowTextarea"
           v-auto-resize
-          class="font-16 font-italic"
+          class="grey-background px-5 py-3"
           readonly
           rows="1"
           :value="filing.latestReviewComment || '[undefined staff change request message]'"
@@ -216,5 +216,9 @@ textarea {
   // FUTURE: use field-sizing instead of "v-auto-resize" directive
   // ref: https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing
   // field-sizing: content;
+}
+
+.grey-background {
+  background-color: $gray1;
 }
 </style>

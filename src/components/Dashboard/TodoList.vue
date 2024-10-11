@@ -264,6 +264,19 @@
                   <span class="vert-pipe" />
                   <span>PAID (filed by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
                 </div>
+
+                <!-- approved continuation filing -->
+                <div
+                  v-else-if="EnumUtilities.isStatusApproved(item)"
+                  class="todo-subtitle pt-1"
+                >
+                  <span
+                    v-if="getNameRequest"
+                    class="list-item__subtitle"
+                  >
+                    NR APPROVED - {{ expiresText(getNameRequest) }}
+                  </span>
+                </div>
               </div> <!-- end of other subtitles -->
             </div> <!-- end of todo label -->
 
@@ -383,8 +396,7 @@
                       <span>Register using this NR</span>
                     </template>
                     <template v-else-if="EnumUtilities.isTypeContinuationIn(item) && item.isEmptyFiling">
-                      <span v-if="getNameRequest">Continue In using this NR</span>
-                      <span v-else>Continue In as a Numbered Company</span>
+                      <span>Begin Continuation</span>
                     </template>
                     <span v-else>Resume</span>
                   </v-btn>
@@ -521,6 +533,18 @@
                   <!-- no action button in this case -->
                 </template>
 
+                <!-- authorization approved continuation filing -->
+                <template v-else-if="EnumUtilities.isStatusApproved(item)">
+                  <v-btn
+                    class="btn-draft-resume"
+                    color="primary"
+                    :disabled="!item.enabled"
+                    @click.native.stop="doResumeFiling(item)"
+                  >
+                    <span>Resume</span>
+                  </v-btn>
+                </template>
+
                 <!-- change-requested filing -->
                 <template v-else-if="EnumUtilities.isStatusChangeRequested(item)">
                   <v-btn
@@ -603,18 +627,29 @@
             <PaymentPending v-else />
           </template>
 
+          <!-- is this an authorization approved continuation item? -->
+          <template v-else-if="EnumUtilities.isStatusApproved(item)">
+            <NameRequestInfo :nameRequest="item.nameRequest" />
+          </template>
+
           <!-- is this a change-requested item? -->
           <template v-else-if="EnumUtilities.isStatusChangeRequested(item)">
             <div class="todo-list-detail body-2">
+              <p
+                v-if="getNameRequest"
+                class="list-item__subtitle"
+              >
+                NR APPROVED - {{ expiresText(getNameRequest) }}
+              </p>
               <p class="list-item__subtitle">
-                This {{ item.title }} is paid but requires you to make the following changes:
+                BC Registries staff require the following changes to your authorization documentation
               </p>
               <textarea
                 v-auto-resize
-                class="font-16 font-italic"
                 readonly
                 rows="1"
                 :value="item.latestReviewComment || '[undefined staff change request message]'"
+                class="grey-background px-5 py-3"
               />
             </div>
           </template>
@@ -850,6 +885,10 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     }
 
     if (EnumUtilities.isStatusChangeRequested(item)) {
+      if (EnumUtilities.isTypeContinuationIn(item)) return true
+    }
+
+    if (EnumUtilities.isStatusApproved(item)) {
       if (EnumUtilities.isTypeContinuationIn(item)) return true
     }
 
@@ -2447,5 +2486,9 @@ textarea {
   // FUTURE: use field-sizing instead of "v-auto-resize" directive
   // ref: https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing
   // field-sizing: content;
+}
+
+.grey-background {
+  background-color: $gray1;
 }
 </style>
