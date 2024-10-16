@@ -148,8 +148,8 @@ describe('Continuation In - in Pending list', () => {
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
 
     // verify expansion panel content
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your Continuation Authorization documents')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 2 business days.')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your documents')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 5 business days.')
 
     // cleanup
     wrapper.destroy()
@@ -189,8 +189,8 @@ describe('Continuation In - in Pending list', () => {
 
     // verify expansion panel content
     expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your Continuation Authorization documents')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 2 business days.')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your documents')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 5 business days.')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If approved, the incorporation date and time for this company will be')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('July 23, 2024 at 5:00 pm Pacific time')
 
@@ -233,8 +233,8 @@ describe('Continuation In - in Pending list', () => {
 
     // verify expansion panel content
     expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your Continuation Authorization documents')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 2 business days.')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your documents')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 5 business days.')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If approved, the incorporation date and time for this company will be recorded as')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('July 23, 2024 at 5:00 pm Pacific time')
 

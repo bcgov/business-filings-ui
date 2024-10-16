@@ -16,8 +16,7 @@
           class="mb-0"
           :class="{ 'mt-4': isFutureEffectivePast || isFutureEffective }"
         >
-          BC Registries will review your
-          Continuation Authorization documents and contact you with the results within 2 business days.
+          BC Registries will review your documents and contact you with the results within 5 business days.
         </p>
 
         <p
