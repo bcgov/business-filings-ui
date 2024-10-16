@@ -1,6 +1,7 @@
 <template>
   <div class="subtitle-future-effective-paid">
     <span v-if="isTypeIncorporationApplication">FUTURE EFFECTIVE INCORPORATION</span>
+    <span v-else-if="isTypeContinuationApplication">FUTURE EFFECTIVE</span>
     <span v-else-if="isTypeAlteration">FUTURE EFFECTIVE ALTERATION</span>
     <span v-else-if="isTypeDissolutionVoluntary">FUTURE EFFECTIVE DISSOLUTION</span>
     <span v-else>FUTURE EFFECTIVE FILING</span>
@@ -43,6 +44,11 @@ export default class SubtitleFutureEffectivePaid extends Vue {
   /** Whether this is an incorporation application. */
   get isTypeIncorporationApplication (): boolean {
     return EnumUtilities.isTypeIncorporationApplication(this.filing)
+  }
+
+  /** Whether this is an continuation application. */
+  get isTypeContinuationApplication (): boolean {
+    return EnumUtilities.isTypeContinuationIn(this.filing)
   }
 
   /** Whether this is an alteration. */
