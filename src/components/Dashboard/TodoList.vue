@@ -271,6 +271,12 @@
                   class="todo-subtitle pt-1"
                 >
                   <span
+                    class="list-item__subtitle"
+                  >
+                    Continuation Authorization APPROVED |
+                    Filed by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />
+                  </span>
+                  <span
                     v-if="getNameRequest"
                     class="list-item__subtitle"
                   >
@@ -889,7 +895,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     }
 
     if (EnumUtilities.isStatusApproved(item)) {
-      if (EnumUtilities.isTypeContinuationIn(item)) return true
+      if (EnumUtilities.isTypeContinuationIn(item) && item.nameRequest) return true
     }
 
     if (EnumUtilities.isStatusPending(item)) return true
