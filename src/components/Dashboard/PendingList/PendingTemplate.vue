@@ -27,6 +27,9 @@
               <span>PENDING STAFF REVIEW</span>
               <span class="vert-pipe" />
               <span>Submitted by {{ item.header.submitter }} on <DateTooltip :date="submittedDate" />)</span>
+              <p v-if="getNameRequest">
+                Name Request APPROVED -  {{ expiresText(getNameRequest) }}
+              </p>
             </div>
           </slot>
         </div>
@@ -57,15 +60,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
 import { DateTooltip } from '@/components/common'
+import { DateMixin } from '@/mixins'
+import { Getter } from 'pinia-class'
+import { useRootStore } from '@/stores'
 
 @Component({
   components: { DateTooltip }
 })
-export default class PendingTemplate extends Vue {
+export default class PendingTemplate extends Mixins(DateMixin) {
   @Prop({ required: true }) readonly item!: any
   @Prop({ required: true }) readonly index!: number
+
+  @Getter(useRootStore) getNameRequest!: any
 
   get submitter (): Date {
     return this.item.header.submitter
@@ -73,6 +81,21 @@ export default class PendingTemplate extends Vue {
 
   get submittedDate (): Date {
     return new Date(this.item.header.date)
+  }
+
+  expiresText (nameRequest: any): string {
+    const date = this.apiToDate(nameRequest.expirationDate)
+    const expireDays = this.daysFromToday(date)
+    // NB: 0 means NR expires today
+    if (isNaN(expireDays) || expireDays < 0) {
+      return 'Expired'
+    } else if (expireDays < 1) {
+      return 'Expires today'
+    } else if (expireDays < 2) {
+      return 'Expires tomorrow'
+    } else {
+      return `Expires in ${expireDays} days`
+    }
   }
 }
 </script>
