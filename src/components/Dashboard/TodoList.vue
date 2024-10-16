@@ -268,19 +268,18 @@
                 <!-- approved continuation filing -->
                 <div
                   v-else-if="EnumUtilities.isStatusApproved(item)"
-                  class="todo-subtitle pt-1"
+                  class="pt-1"
                 >
-                  <span
-                    class="list-item__subtitle"
-                  >
+                  <span class="list-item__subtitle">
                     Continuation Authorization APPROVED |
                     Filed by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />
                   </span>
+                  <br>
                   <span
                     v-if="getNameRequest"
                     class="list-item__subtitle"
                   >
-                    NR APPROVED - {{ expiresText(getNameRequest) }}
+                    Name Request APPROVED - {{ expiresText(getNameRequest) }}
                   </span>
                 </div>
               </div> <!-- end of other subtitles -->
@@ -645,7 +644,7 @@
                 v-if="getNameRequest"
                 class="list-item__subtitle"
               >
-                NR APPROVED - {{ expiresText(getNameRequest) }}
+                Name Request APPROVED - {{ expiresText(getNameRequest) }}
               </p>
               <p class="list-item__subtitle">
                 BC Registries staff require the following changes to your authorization documentation
@@ -1574,7 +1573,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
       let subtitle: string = null
       if (EnumUtilities.isStatusDraft(header)) {
         if (this.getNameRequest) {
-          subtitle = `NR APPROVED - ${this.expiresText(this.getNameRequest)}`
+          subtitle = `Name Request APPROVED - ${this.expiresText(this.getNameRequest)}`
         } else {
           subtitle = 'DRAFT'
         }
