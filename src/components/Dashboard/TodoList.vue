@@ -659,6 +659,7 @@
                 :value="item.latestReviewComment || '[undefined staff change request message]'"
                 class="grey-background px-5 py-3"
               />
+              <ContactInfo class="mt-4 contact-info-warning" />
             </div>
           </template>
 
