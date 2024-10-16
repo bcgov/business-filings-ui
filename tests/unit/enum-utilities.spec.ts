@@ -74,7 +74,7 @@ describe('Enum Utilities', () => {
     expect(EnumUtilities.filingTypeToName(('changeOfCompanyInfo' as any))).toBe('Change of Company Information')
     expect(EnumUtilities.filingTypeToName(('changeOfDirectors' as any))).toBe('Director Change')
     expect(EnumUtilities.filingTypeToName(('changeOfName' as any))).toBe('Legal Name Change')
-    expect(EnumUtilities.filingTypeToName(('continuationIn' as any))).toBe('Continuation Application')
+    expect(EnumUtilities.filingTypeToName(('continuationIn' as any))).toBe('Continuation Authorization')
     expect(EnumUtilities.filingTypeToName(('conversion' as any))).toBe('Record Conversion')
     expect(EnumUtilities.filingTypeToName(('correction' as any))).toBe('Correction')
     expect(EnumUtilities.filingTypeToName(('courtOrder' as any))).toBe('Court Order')

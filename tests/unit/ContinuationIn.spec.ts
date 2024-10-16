@@ -64,7 +64,7 @@ describe('Continuation In - in To Do list', () => {
     // verify expansion panel header
     expect(wrapper.find('.list-item__title').text()).toContain('BC Limited Company Continuation Application')
     expect(wrapper.find('.expand-btn').text()).toBe('View Details')
-    expect(wrapper.find('.list-item__subtitle').text()).toBe('NR APPROVED - Expires in 8 days')
+    expect(wrapper.find('.list-item__subtitle').text()).toBe('Name Request APPROVED - Expires in 8 days')
     expect(wrapper.find('.list-item__actions .btn-draft-resume').text()).toBe('Resume')
 
     // cleanup
@@ -104,14 +104,13 @@ describe('Continuation In - in To Do list', () => {
     expect(wrapper.find('.list-item__title').text()).toContain('BC Limited Company Continuation Application')
     expect(wrapper.find('.expand-btn').text()).toBe('Hide Details')
     expect(wrapper.find('.list-item__subtitle').text()).toContain('CHANGE REQUESTED')
-    expect(wrapper.find('.list-item__subtitle').text()).toContain('PAID')
-    expect(wrapper.find('.list-item__subtitle').text()).toContain('(filed by Joe Smith on')
+    expect(wrapper.find('.list-item__subtitle').text()).toContain('Submitted by Joe Smith on')
     expect(wrapper.find('.list-item__subtitle').text()).toContain('Jul 23, 2024')
     expect(wrapper.find('.list-item__actions .btn-draft-resume').text()).toBe('Make Changes')
 
     // verify expansion panel content
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('NR APPROVED - Expires in')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries staff require the following changes to your')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Name Request APPROVED - Expires in')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Please make the following updates to your')
     expect((wrapper.find('textarea').element as any)._value).toBe('Authorization document is not legible.')
 
     // cleanup
@@ -144,7 +143,7 @@ describe('Continuation In - in Pending list', () => {
     expect(wrapper.find('.item-header-title').text()).toContain('BC Limited Company Continuation Application')
     expect(wrapper.find('.expand-btn').text()).toBe('Hide Details') // open by default
     expect(wrapper.find('.item-header-subtitle').text()).toContain('PENDING STAFF REVIEW')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('Submitted on')
+    expect(wrapper.find('.item-header-subtitle').text()).toContain('Submitted by Joe Smith')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
 
     // verify expansion panel content
@@ -184,7 +183,7 @@ describe('Continuation In - in Pending list', () => {
     expect(wrapper.find('.item-header-title').text()).toContain('BC Limited Company Continuation Application')
     expect(wrapper.find('.expand-btn').text()).toBe('Hide Details') // open by default
     expect(wrapper.find('.item-header-subtitle').text()).toContain('PENDING STAFF REVIEW')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('Submitted on')
+    expect(wrapper.find('.item-header-subtitle').text()).toContain('Submitted by Joe Smith')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
 
     // verify expansion panel content
@@ -344,7 +343,7 @@ describe('Continuation In - in Recent Filing History list', () => {
 
     // verify expansion panel header
     expect(wrapper.find('.item-header-title').text()).toContain('BC Limited Company Continuation Application')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('FUTURE EFFECTIVE FILING')
+    expect(wrapper.find('.item-header-subtitle').text()).toContain('FUTURE EFFECTIVE')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('PAID')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('(filed by Joe Smith on')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
