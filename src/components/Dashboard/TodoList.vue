@@ -260,27 +260,27 @@
                   v-else-if="EnumUtilities.isStatusChangeRequested(item)"
                   class="todo-subtitle pt-1"
                 >
-                  <span class="orange--text text--darken-2">CHANGE REQUESTED</span>
+                  <span class="orange--text text--darken-2 font-weight-bold">CHANGE REQUESTED</span>
                   <span class="vert-pipe" />
-                  <span>PAID (filed by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
+                  <span>Submitted by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
                 </div>
 
                 <!-- approved continuation filing -->
                 <div
                   v-else-if="EnumUtilities.isStatusApproved(item)"
-                  class="pt-1"
+                  class="todo-list-detail pt-1"
                 >
                   <span class="list-item__subtitle">
                     Continuation Authorization APPROVED |
                     Filed by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />
                   </span>
-                  <br>
-                  <span
+                  <p
                     v-if="getNameRequest"
                     class="list-item__subtitle"
+                    style="margin-bottom: 0"
                   >
                     Name Request APPROVED - {{ expiresText(getNameRequest) }}
-                  </span>
+                  </p>
                 </div>
               </div> <!-- end of other subtitles -->
             </div> <!-- end of todo label -->
@@ -617,6 +617,7 @@
           <template
             v-else-if="EnumUtilities.isStatusDraft(item) && isFilingWithNr(item)"
           >
+            <v-divider class="my-4" />
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
 
@@ -634,20 +635,22 @@
 
           <!-- is this an authorization approved continuation item? -->
           <template v-else-if="EnumUtilities.isStatusApproved(item)">
+            <v-divider class="my-4" />
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
 
           <!-- is this a change-requested item? -->
           <template v-else-if="EnumUtilities.isStatusChangeRequested(item)">
             <div class="todo-list-detail body-2">
-              <p
+              <span
                 v-if="getNameRequest"
                 class="list-item__subtitle"
               >
                 Name Request APPROVED - {{ expiresText(getNameRequest) }}
-              </p>
+              </span>
+              <v-divider class="my-4" />
               <p class="list-item__subtitle">
-                BC Registries staff require the following changes to your authorization documentation
+                Please make the following updates to your continuation authorization document.
               </p>
               <textarea
                 v-auto-resize
