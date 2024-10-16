@@ -7,6 +7,7 @@
   >
     <template #body>
       <div class="body-2">
+        <v-divider class="mt-1 mb-4" />
         <h4 v-if="isFutureEffectivePast || isFutureEffective">
           Future Effective Incorporation
         </h4>
@@ -34,6 +35,7 @@
           If approved, the incorporation date and time for {{ getLegalName || 'this company' }} will be
           <strong>{{ effectiveDateTime || '[unknown]' }}</strong>.
         </p>
+        <ContactInfo class="mt-4 contact-info-warning" />
       </div>
     </template>
   </PendingTemplate>
@@ -41,6 +43,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { ContactInfo } from '@/components/common'
 import { Getter } from 'pinia-class'
 import { useBusinessStore } from '@/stores'
 import { DateUtilities } from '@/services'
@@ -49,6 +52,7 @@ import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module
 
 @Component({
   components: {
+    ContactInfo,
     PendingTemplate
   }
 })

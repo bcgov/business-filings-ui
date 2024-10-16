@@ -26,7 +26,7 @@
             <div class="item-header-subtitle">
               <span>PENDING STAFF REVIEW</span>
               <span class="vert-pipe" />
-              <span>Submitted on <DateTooltip :date="submittedDate" />)</span>
+              <span>Submitted by {{ item.header.submitter }} on <DateTooltip :date="submittedDate" />)</span>
             </div>
           </slot>
         </div>
