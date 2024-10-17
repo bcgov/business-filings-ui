@@ -264,6 +264,12 @@
                   <span class="vert-pipe" />
                   <span>Submitted by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
                 </div>
+                <div
+                  v-if="getNameRequest"
+                  class="list-item__subtitle"
+                >
+                  Name Request APPROVED - {{ expiresText(getNameRequest) }}
+                </div>
 
                 <!-- approved continuation filing -->
                 <div
@@ -642,12 +648,6 @@
           <!-- is this a change-requested item? -->
           <template v-else-if="EnumUtilities.isStatusChangeRequested(item)">
             <div class="todo-list-detail body-2">
-              <span
-                v-if="getNameRequest"
-                class="list-item__subtitle"
-              >
-                Name Request APPROVED - {{ expiresText(getNameRequest) }}
-              </span>
               <v-divider class="my-4" />
               <p class="list-item__subtitle">
                 Please make the following updates to your continuation authorization document.
