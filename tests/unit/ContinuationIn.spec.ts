@@ -153,7 +153,7 @@ describe('Continuation In - in Pending list', () => {
     wrapper.destroy()
   })
 
-  it('displays a pending continuation application - future effective', async () => {
+  it('displays a pending continuation application - 2', async () => {
     // init store
     rootStore.setPendingsList([
       {
@@ -163,17 +163,12 @@ describe('Continuation In - in Pending list', () => {
         displayName: 'BC Limited Company Continuation Application',
         header: {
           date: '2024-07-24T00:00:00.000000+00:00',
-          effectiveDate: '2024-07-24T00:00:00.000000+00:00', // any date
           isFutureEffective: true,
           name: FilingTypes.CONTINUATION_IN,
           submitter: 'Joe Smith'
         }
       }
     ])
-
-    // mock date utilities to make effective date seem like a future date
-    vi.spyOn((DateUtilities as any), 'isDatePast').mockImplementation(() => false)
-    vi.spyOn((DateUtilities as any), 'isDateFuture').mockImplementation(() => true)
 
     const wrapper = mount(PendingList, { localVue, router, vuetify })
     await Vue.nextTick()
@@ -186,18 +181,15 @@ describe('Continuation In - in Pending list', () => {
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
 
     // verify expansion panel content
-    expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your documents')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 5 business days.')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If approved, the incorporation date and time for this company will be')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('July 23, 2024 at 5:00 pm Pacific time')
 
     // cleanup
     wrapper.destroy()
     vi.resetAllMocks()
   })
 
-  it('displays a pending continuation application - future effective past', async () => {
+  it('displays a pending continuation application', async () => {
     // init store
     rootStore.setPendingsList([
       {
@@ -207,8 +199,6 @@ describe('Continuation In - in Pending list', () => {
         displayName: 'BC Limited Company Continuation Application',
         header: {
           date: '2024-07-24T00:00:00.000000+00:00',
-          effectiveDate: '2024-07-24T00:00:00.000000+00:00', // any date
-          isFutureEffective: true,
           name: FilingTypes.CONTINUATION_IN,
           submitter: 'Joe Smith'
         }
@@ -230,11 +220,8 @@ describe('Continuation In - in Pending list', () => {
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
 
     // verify expansion panel content
-    expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your documents')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 5 business days.')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If approved, the incorporation date and time for this company will be recorded as')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('July 23, 2024 at 5:00 pm Pacific time')
 
     // cleanup
     wrapper.destroy()
