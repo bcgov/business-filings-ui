@@ -472,9 +472,9 @@ export default class App extends Mixins(
         const response = await LegalServices.fetchBootstrapFiling(this.tempRegNumber)
         this.storeBootstrapItem(response)
 
-        // if it is a todo (not a filing), and it has a NR, load it
-        // (this is to display the NR details in the Todo List)
-        if (this.isBootstrapTodo && this.localNrNumber) {
+        // if it is a todo or a pending filing, and it has a NR, load it
+        // (this is to display the NR details in the Todo List/Pending List)
+        if ((this.isBootstrapTodo || this.isBootstrapPending) && this.localNrNumber) {
           const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
           this.storeNrData(nr, response)
         }
