@@ -472,9 +472,9 @@ export default class App extends Mixins(
         const response = await LegalServices.fetchBootstrapFiling(this.tempRegNumber)
         this.storeBootstrapItem(response)
 
-        // if it is a todo (not a filing), and it has a NR, load it
-        // (this is to display the NR details in the Todo List)
-        if (this.isBootstrapTodo && this.localNrNumber) {
+        // if it is a todo or a pending filing, and it has a NR, load it
+        // (this is to display the NR details in the Todo List/Pending List)
+        if ((this.isBootstrapTodo || this.isBootstrapPending) && this.localNrNumber) {
           const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
           this.storeNrData(nr, response)
         }
@@ -666,10 +666,11 @@ export default class App extends Mixins(
     // NB: these were already validated in storeBootstrapItem()
     const header = filing.header
     const data = filing[header.name]
+    const status = header.status
 
     const description = GetCorpFullDescription(data.nameRequest.legalType)
     const dba = this.isEntitySoleProp ? ' / Doing Business As (DBA) ' : ' '
-    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
+    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type, status)
 
     // save display name for later
     filing.displayName = EnumUtilities.isTypeAmalgamationApplication(header)
@@ -691,6 +692,7 @@ export default class App extends Mixins(
     // NB: these were already validated in storeBootstrapItem()
     const header = filing.header
     const data = filing[header.name]
+    const status = header.status
 
     // set addresses
     this.storeAddresses({ data: data.offices || [] })
@@ -699,7 +701,7 @@ export default class App extends Mixins(
     this.storeParties({ data: { parties: data.parties || [] } })
 
     const description = GetCorpFullDescription(data.nameRequest.legalType)
-    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
+    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type, status)
 
     // save display name for later
     filing.displayName = `${description} ${filingName}`
@@ -714,6 +716,7 @@ export default class App extends Mixins(
     // NB: these were already validated in storeBootstrapItem()
     const header = filing.header
     const data = filing[header.name]
+    const status = header.status
 
     // set addresses
     this.storeAddresses({ data: data.offices || [] })
@@ -722,7 +725,7 @@ export default class App extends Mixins(
     this.storeParties({ data: { parties: data.parties || [] } })
 
     const description = GetCorpFullDescription(data.nameRequest.legalType)
-    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
+    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type, status)
     const displayName = EnumUtilities.isTypeAmalgamationApplication(header)
       ? filingName
       : `${description} ${filingName}`

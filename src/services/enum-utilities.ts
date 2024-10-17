@@ -389,9 +389,12 @@ export default class EnumUtilities {
    * @param type the filing type to convert
    * @param agmYear the AGM Year to be appended to the filing name (optional)
    * @param subType the filing subtype (optional)
+   * @param filingStatus the filing status (optional)
    * @returns the filing name
    */
-  static filingTypeToName (type: FilingTypes, agmYear = null as string, subType: FilingSubTypes = null): string {
+  static filingTypeToName (type: FilingTypes, agmYear = null as string, subType: FilingSubTypes = null,
+    filingStatus: FilingStatus = null
+  ): string {
     if (!type) return 'Unknown Type' // safety check
     switch (type) {
       case FilingTypes.ADMIN_FREEZE:
@@ -417,7 +420,12 @@ export default class EnumUtilities {
       case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.CHANGE_OF_DIRECTORS
       case FilingTypes.CHANGE_OF_NAME: return FilingNames.CHANGE_OF_NAME
       case FilingTypes.CHANGE_OF_REGISTRATION: return FilingNames.CHANGE_OF_REGISTRATION
-      case FilingTypes.CONTINUATION_IN: return FilingNames.CONTINUATION_IN_APPLICATION
+      case FilingTypes.CONTINUATION_IN:
+        if (filingStatus === FilingStatus.DRAFT || filingStatus === FilingStatus.AWAITING_REVIEW ||
+          filingStatus === FilingStatus.CHANGE_REQUESTED
+        ) {
+          return FilingNames.CONTINUATION_AUTHORIZATION
+        } else { return FilingNames.CONTINUATION_IN_APPLICATION }
       case FilingTypes.CONVERSION: return FilingNames.CONVERSION
       case FilingTypes.CORRECTION: return FilingNames.CORRECTION
       case FilingTypes.COURT_ORDER: return FilingNames.COURT_ORDER

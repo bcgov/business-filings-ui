@@ -7,33 +7,14 @@
   >
     <template #body>
       <div class="body-2">
-        <h4 v-if="isFutureEffectivePast || isFutureEffective">
-          Future Effective Incorporation
-        </h4>
-
+        <v-divider class="mt-1 mb-4" />
         <p
           class="mb-0"
           :class="{ 'mt-4': isFutureEffectivePast || isFutureEffective }"
         >
-          BC Registries will review your
-          Continuation Authorization documents and contact you with the results within 2 business days.
+          BC Registries will review your documents and contact you with the results within 5 business days.
         </p>
-
-        <p
-          v-if="isFutureEffectivePast"
-          class="mt-4 mb-0"
-        >
-          If approved, the incorporation date and time for {{ getLegalName || 'this company' }} will be
-          recorded as <strong>{{ effectiveDateTime || '[unknown]' }}</strong>.
-        </p>
-
-        <p
-          v-if="isFutureEffective"
-          class="mt-4 mb-0"
-        >
-          If approved, the incorporation date and time for {{ getLegalName || 'this company' }} will be
-          <strong>{{ effectiveDateTime || '[unknown]' }}</strong>.
-        </p>
+        <ContactInfo class="mt-4 contact-info-warning" />
       </div>
     </template>
   </PendingTemplate>
@@ -41,6 +22,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { ContactInfo } from '@/components/common'
 import { Getter } from 'pinia-class'
 import { useBusinessStore } from '@/stores'
 import { DateUtilities } from '@/services'
@@ -49,6 +31,7 @@ import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module
 
 @Component({
   components: {
+    ContactInfo,
     PendingTemplate
   }
 })
