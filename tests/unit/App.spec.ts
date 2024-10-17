@@ -3143,7 +3143,7 @@ describe('App as a completed continuation in', () => {
     // verify loaded filing
     expect(filingHistoryListStore.filings.length).toBe(1)
     expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
-    expect(filingHistoryListStore.filings[0].displayName).toBe('BC Limited Company Continuation Authorization')
+    expect(filingHistoryListStore.filings[0].displayName).toBe('BC Limited Company Continuation Application')
     expect(filingHistoryListStore.filings[0].name).toBe('continuationIn')
     expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
     expect(filingHistoryListStore.filings[0].data.applicationDate).toBe('2020-05-20')

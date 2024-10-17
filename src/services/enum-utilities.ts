@@ -421,9 +421,11 @@ export default class EnumUtilities {
       case FilingTypes.CHANGE_OF_NAME: return FilingNames.CHANGE_OF_NAME
       case FilingTypes.CHANGE_OF_REGISTRATION: return FilingNames.CHANGE_OF_REGISTRATION
       case FilingTypes.CONTINUATION_IN:
-        if (filingStatus === FilingStatus.APPROVED || filingStatus === FilingStatus.REJECTED) {
-          return FilingNames.CONTINUATION_IN_APPLICATION
-        } else { return FilingNames.CONTINUATION_AUTHORIZATION }
+        if (filingStatus === FilingStatus.DRAFT || filingStatus === FilingStatus.AWAITING_REVIEW ||
+          filingStatus === FilingStatus.CHANGE_REQUESTED
+        ) {
+          return FilingNames.CONTINUATION_AUTHORIZATION
+        } else { return FilingNames.CONTINUATION_IN_APPLICATION }
       case FilingTypes.CONVERSION: return FilingNames.CONVERSION
       case FilingTypes.CORRECTION: return FilingNames.CORRECTION
       case FilingTypes.COURT_ORDER: return FilingNames.COURT_ORDER
