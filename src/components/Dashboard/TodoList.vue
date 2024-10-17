@@ -258,17 +258,18 @@
                 <!-- change-requested filing -->
                 <div
                   v-else-if="EnumUtilities.isStatusChangeRequested(item)"
-                  class="pt-1"
+                  class="todo-list-detail pt-1"
                 >
                   <span class="orange--text text--darken-2 font-weight-bold">CHANGE REQUESTED</span>
                   <span class="vert-pipe" />
                   <span>Submitted by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
-                  <div
+                  <p
                     v-if="getNameRequest"
                     class="list-item__subtitle"
+                    style="margin-bottom: 0"
                   >
                     Name Request APPROVED - {{ expiresText(getNameRequest) }}
-                  </div>
+                  </p>
                 </div>
 
                 <!-- approved continuation filing -->
@@ -278,7 +279,7 @@
                 >
                   <span class="list-item__subtitle">
                     Continuation Authorization APPROVED |
-                    Filed by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />
+                    Submitted by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />
                   </span>
                   <p
                     v-if="getNameRequest && !nameRequestExpired()"
