@@ -393,7 +393,8 @@ export default class EnumUtilities {
    * @returns the filing name
    */
   static filingTypeToName (type: FilingTypes, agmYear = null as string, subType: FilingSubTypes = null,
-    filingStatus: FilingStatus = null): string {
+    filingStatus: FilingStatus = null
+  ): string {
     if (!type) return 'Unknown Type' // safety check
     switch (type) {
       case FilingTypes.ADMIN_FREEZE:

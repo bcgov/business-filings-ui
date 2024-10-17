@@ -167,7 +167,6 @@ export const useRootStore = defineStore('root', {
       return (
         state.bootstrapFilingType === FilingTypes.CONTINUATION_IN &&
         (
-          this.getBootstrapFilingStatus === FilingStatus.APPROVED ||
           this.getBootstrapFilingStatus === FilingStatus.COMPLETED ||
           this.getBootstrapFilingStatus === FilingStatus.PAID ||
           this.getBootstrapFilingStatus === FilingStatus.REJECTED
