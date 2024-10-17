@@ -281,7 +281,7 @@
                     Filed by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />
                   </span>
                   <p
-                    v-if="getNameRequest"
+                    v-if="getNameRequest && !nameRequestExpired()"
                     class="list-item__subtitle"
                     style="margin-bottom: 0"
                   >
@@ -710,7 +710,7 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
-import { AllowableActionsMixin, DateMixin } from '@/mixins'
+import { AllowableActionsMixin, DateMixin, NameRequestMixin } from '@/mixins'
 import { AuthServices, EnumUtilities, LegalServices, PayServices } from '@/services/'
 import {
   AffiliationInvitationStatus,
@@ -719,6 +719,7 @@ import {
   CorpTypeCd,
   FilingStatus,
   FilingSubTypes,
+  NameRequestStates,
   Routes
 } from '@/enums'
 import { FilingNames, FilingTypes } from '@bcrs-shared-components/enums'
@@ -760,7 +761,7 @@ import AutoResize from 'vue-auto-resize'
     AutoResize
   }
 })
-export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
+export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, NameRequestMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -2324,6 +2325,13 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
   beforeDestroy (): void {
     // cancel the check timer if it is running
     clearTimeout(this.checkTimer)
+  }
+
+  /** Check whether the NR has expired */
+  nameRequestExpired (): boolean {
+    const nrState = this.getNrState(this.getNameRequest) as NameRequestStates
+    if (nrState === NameRequestStates.EXPIRED) { return true }
+    return false
   }
 }
 </script>
