@@ -10,7 +10,6 @@
         <v-divider class="mt-1 mb-4" />
         <p
           class="mb-0"
-          :class="{ 'mt-4': isFutureEffectivePast || isFutureEffective }"
         >
           BC Registries will review your documents and contact you with the results within 5 business days.
         </p>
@@ -25,7 +24,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
 import { Getter } from 'pinia-class'
 import { useBusinessStore } from '@/stores'
-import { DateUtilities } from '@/services'
 import PendingTemplate from '../PendingTemplate.vue'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 
@@ -43,25 +41,6 @@ export default class ContinuationIn extends Vue {
 
   get entityType (): string {
     return GetCorpFullDescription(this.item.business.legalType)
-  }
-
-  get isFutureEffectivePast (): boolean {
-    return (
-      this.item.header.isFutureEffective &&
-      DateUtilities.isDatePast(this.item.header.effectiveDate)
-    )
-  }
-
-  get isFutureEffective (): boolean {
-    return (
-      this.item.header.isFutureEffective &&
-      DateUtilities.isDateFuture(this.item.header.effectiveDate)
-    )
-  }
-
-  get effectiveDateTime (): string {
-    const effectiveDate = this.item.header.effectiveDate
-    return effectiveDate ? DateUtilities.dateToPacificDateTime(new Date(effectiveDate)) : '[unknown]'
   }
 }
 </script>
