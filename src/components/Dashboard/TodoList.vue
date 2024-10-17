@@ -1981,21 +1981,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     }
   }
 
-  expiresText (nameRequest: any): string {
-    const date = this.apiToDate(nameRequest.expirationDate)
-    const expireDays = this.daysFromToday(date)
-    // NB: 0 means NR expires today
-    if (isNaN(expireDays) || expireDays < 0) {
-      return 'Expired'
-    } else if (expireDays < 1) {
-      return 'Expires today'
-    } else if (expireDays < 2) {
-      return 'Expires tomorrow'
-    } else {
-      return `Expires in ${expireDays} days`
-    }
-  }
-
   /** Files a new filing (todo item). */
   doFileNow (item: TodoItemIF): void {
     switch (item.name) {
