@@ -666,7 +666,7 @@ export default class App extends Mixins(
     // NB: these were already validated in storeBootstrapItem()
     const header = filing.header
     const data = filing[header.name]
-    const status = header.status as FilingStatus
+    const status = header.status
 
     const description = GetCorpFullDescription(data.nameRequest.legalType)
     const dba = this.isEntitySoleProp ? ' / Doing Business As (DBA) ' : ' '
@@ -692,7 +692,7 @@ export default class App extends Mixins(
     // NB: these were already validated in storeBootstrapItem()
     const header = filing.header
     const data = filing[header.name]
-    const status = header.status as FilingStatus
+    const status = header.status
 
     // set addresses
     this.storeAddresses({ data: data.offices || [] })
@@ -716,7 +716,7 @@ export default class App extends Mixins(
     // NB: these were already validated in storeBootstrapItem()
     const header = filing.header
     const data = filing[header.name]
-    const status = header.status as FilingStatus
+    const status = header.status
 
     // set addresses
     this.storeAddresses({ data: data.offices || [] })
