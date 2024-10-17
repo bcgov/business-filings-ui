@@ -197,17 +197,9 @@
                   <span>{{ item.subtitle }}</span>
                 </div>
 
-                <!-- draft continuation in -->
+                <!-- draft other (continuation subtitle is handled separately) -->
                 <div
-                  v-else-if="EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item)"
-                  class="todo-subtitle"
-                >
-                  <span>{{ item.subtitle }}</span>
-                </div>
-
-                <!-- draft other -->
-                <div
-                  v-else-if="EnumUtilities.isStatusDraft(item)"
+                  v-else-if="EnumUtilities.isStatusDraft(item) && !EnumUtilities.isTypeContinuationIn(item)"
                   class="todo-subtitle"
                 >
                   <span>DRAFT</span>
@@ -255,7 +247,26 @@
                   <span v-else>PAID</span>
                 </div>
 
-                <!-- change-requested filing -->
+                <!-- draft continuation filing -->
+                <div
+                  v-else-if="EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item)"
+                  class="todo-list-detail pt-1"
+                >
+                  <span
+                    v-if="getNameRequest"
+                    class="list-item__subtitle"
+                  >
+                    Name Request APPROVED - {{ expiresText(getNameRequest) }}
+                  </span>
+                  <span
+                    v-else
+                    class="list-item__subtitle"
+                  >
+                    DRAFT
+                  </span>
+                </div>
+
+                <!-- change-requested continuation filing -->
                 <div
                   v-else-if="EnumUtilities.isStatusChangeRequested(item)"
                   class="todo-list-detail pt-1"
@@ -1577,14 +1588,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, N
 
     if (header) {
       let subtitle: string = null
-      if (EnumUtilities.isStatusDraft(header)) {
-        if (this.getNameRequest) {
-          subtitle = `Name Request APPROVED - ${this.expiresText(this.getNameRequest)}`
-        } else {
-          subtitle = 'DRAFT'
-        }
-      }
-
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
