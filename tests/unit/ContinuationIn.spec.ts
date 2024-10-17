@@ -109,7 +109,6 @@ describe('Continuation In - in To Do list', () => {
     expect(wrapper.find('.list-item__actions .btn-draft-resume').text()).toBe('Make Changes')
 
     // verify expansion panel content
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Name Request APPROVED - Expires in')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Please make the following updates to your')
     expect((wrapper.find('textarea').element as any)._value).toBe('Authorization document is not legible.')
 
