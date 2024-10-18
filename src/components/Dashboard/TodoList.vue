@@ -218,7 +218,7 @@
 
                 <!-- draft other -->
                 <div
-                  v-else-if="EnumUtilities.isStatusDraft(item) && !EnumUtilities.isTypeContinuationIn(item)"
+                  v-else-if="EnumUtilities.isStatusDraft(item)"
                   class="todo-subtitle"
                 >
                   <span>DRAFT</span>
