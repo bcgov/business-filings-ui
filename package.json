@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "7.3.26",
+  "version": "7.3.27",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
@@ -21,7 +21,7 @@
     "@bcrs-shared-components/court-order-poa": "2.1.4",
     "@bcrs-shared-components/date-picker": "1.2.39",
     "@bcrs-shared-components/document-delivery": "1.2.1",
-    "@bcrs-shared-components/enums": "1.1.11",
+    "@bcrs-shared-components/enums": "1.1.12",
     "@bcrs-shared-components/expandable-help": "1.0.1",
     "@bcrs-shared-components/folio-number-input": "1.1.18",
     "@bcrs-shared-components/interfaces": "1.1.13",

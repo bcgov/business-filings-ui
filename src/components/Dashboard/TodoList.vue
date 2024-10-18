@@ -197,12 +197,23 @@
                   <span>{{ item.subtitle }}</span>
                 </div>
 
-                <!-- draft continuation in -->
+                <!-- draft continuation filing -->
                 <div
                   v-else-if="EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item)"
-                  class="todo-subtitle"
+                  class="todo-list-detail pt-1"
                 >
-                  <span>{{ item.subtitle }}</span>
+                  <span
+                    v-if="getNameRequest"
+                    class="list-item__subtitle"
+                  >
+                    Name Request APPROVED - {{ expiresText(getNameRequest) }}
+                  </span>
+                  <span
+                    v-else
+                    class="list-item__subtitle"
+                  >
+                    DRAFT
+                  </span>
                 </div>
 
                 <!-- draft other -->
@@ -258,24 +269,34 @@
                 <!-- change-requested filing -->
                 <div
                   v-else-if="EnumUtilities.isStatusChangeRequested(item)"
-                  class="todo-subtitle pt-1"
+                  class="todo-list-detail pt-1"
                 >
-                  <span class="orange--text text--darken-2">CHANGE REQUESTED</span>
+                  <span class="orange--text text--darken-2 font-weight-bold">CHANGE REQUESTED</span>
                   <span class="vert-pipe" />
-                  <span>PAID (filed by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
+                  <span>Submitted by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
+                  <p
+                    v-if="getNameRequest"
+                    class="list-item__subtitle mb-0 mt-2"
+                  >
+                    Name Request APPROVED - {{ expiresText(getNameRequest) }}
+                  </p>
                 </div>
 
-                <!-- approved continuation filing -->
+                <!-- approved filing -->
                 <div
                   v-else-if="EnumUtilities.isStatusApproved(item)"
-                  class="todo-subtitle pt-1"
+                  class="todo-list-detail pt-1"
                 >
-                  <span
-                    v-if="getNameRequest"
-                    class="list-item__subtitle"
-                  >
-                    NR APPROVED - {{ expiresText(getNameRequest) }}
+                  <span class="list-item__subtitle">
+                    Continuation Authorization APPROVED |
+                    Submitted by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />
                   </span>
+                  <p
+                    v-if="getNameRequest && !nameRequestExpired()"
+                    class="list-item__subtitle mb-0"
+                  >
+                    Name Request APPROVED - {{ expiresText(getNameRequest) }}
+                  </p>
                 </div>
               </div> <!-- end of other subtitles -->
             </div> <!-- end of todo label -->
@@ -612,6 +633,7 @@
           <template
             v-else-if="EnumUtilities.isStatusDraft(item) && isFilingWithNr(item)"
           >
+            <v-divider class="my-4" />
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
 
@@ -629,20 +651,16 @@
 
           <!-- is this an authorization approved continuation item? -->
           <template v-else-if="EnumUtilities.isStatusApproved(item)">
+            <v-divider class="my-4" />
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
 
           <!-- is this a change-requested item? -->
           <template v-else-if="EnumUtilities.isStatusChangeRequested(item)">
             <div class="todo-list-detail body-2">
-              <p
-                v-if="getNameRequest"
-                class="list-item__subtitle"
-              >
-                NR APPROVED - {{ expiresText(getNameRequest) }}
-              </p>
+              <v-divider class="my-4" />
               <p class="list-item__subtitle">
-                BC Registries staff require the following changes to your authorization documentation
+                Please make the following updates to your continuation authorization document.
               </p>
               <textarea
                 v-auto-resize
@@ -651,6 +669,7 @@
                 :value="item.latestReviewComment || '[undefined staff change request message]'"
                 class="grey-background px-5 py-3"
               />
+              <ContactInfo class="mt-4 contact-info-warning" />
             </div>
           </template>
 
@@ -701,7 +720,7 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
-import { AllowableActionsMixin, DateMixin } from '@/mixins'
+import { AllowableActionsMixin, DateMixin, NameRequestMixin } from '@/mixins'
 import { AuthServices, EnumUtilities, LegalServices, PayServices } from '@/services/'
 import {
   AffiliationInvitationStatus,
@@ -710,6 +729,7 @@ import {
   CorpTypeCd,
   FilingStatus,
   FilingSubTypes,
+  NameRequestStates,
   Routes
 } from '@/enums'
 import { FilingNames, FilingTypes } from '@bcrs-shared-components/enums'
@@ -751,7 +771,7 @@ import AutoResize from 'vue-auto-resize'
     AutoResize
   }
 })
-export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
+export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, NameRequestMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -889,7 +909,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     }
 
     if (EnumUtilities.isStatusApproved(item)) {
-      if (EnumUtilities.isTypeContinuationIn(item)) return true
+      if (EnumUtilities.isTypeContinuationIn(item) && item.nameRequest) return true
     }
 
     if (EnumUtilities.isStatusPending(item)) return true
@@ -1565,15 +1585,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     const continuationIn = filing.continuationIn
 
     if (header) {
-      let subtitle: string = null
-      if (EnumUtilities.isStatusDraft(header)) {
-        if (this.getNameRequest) {
-          subtitle = `NR APPROVED - ${this.expiresText(this.getNameRequest)}`
-        } else {
-          subtitle = 'DRAFT'
-        }
-      }
-
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
@@ -1591,8 +1602,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
         name: FilingTypes.CONTINUATION_IN,
         filingId: header.filingId,
         title: filing.displayName,
-        subtitle,
-        draftTitle: FilingNames.CONTINUATION_IN_APPLICATION,
+        draftTitle: FilingNames.CONTINUATION_AUTHORIZATION,
         status: header.status,
         enabled: task.enabled,
         order: task.order,
@@ -1972,21 +1982,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
     }
   }
 
-  expiresText (nameRequest: any): string {
-    const date = this.apiToDate(nameRequest.expirationDate)
-    const expireDays = this.daysFromToday(date)
-    // NB: 0 means NR expires today
-    if (isNaN(expireDays) || expireDays < 0) {
-      return 'Expired'
-    } else if (expireDays < 1) {
-      return 'Expires today'
-    } else if (expireDays < 2) {
-      return 'Expires tomorrow'
-    } else {
-      return `Expires in ${expireDays} days`
-    }
-  }
-
   /** Files a new filing (todo item). */
   doFileNow (item: TodoItemIF): void {
     switch (item.name) {
@@ -2330,6 +2325,13 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin) {
   beforeDestroy (): void {
     // cancel the check timer if it is running
     clearTimeout(this.checkTimer)
+  }
+
+  /** Check whether the NR has expired */
+  nameRequestExpired (): boolean {
+    const nrState = this.getNrState(this.getNameRequest) as NameRequestStates
+    if (nrState === NameRequestStates.EXPIRED) { return true }
+    return false
   }
 }
 </script>

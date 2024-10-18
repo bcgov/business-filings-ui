@@ -63,8 +63,8 @@ export default class BodyFutureEffectivePending extends Vue {
     }
     if (EnumUtilities.isTypeContinuationIn(this.filing)) {
       return {
-        subtitle: 'Incorporation Pending',
-        filingLabel: 'incorporation'
+        subtitle: 'Continuation Pending',
+        filingLabel: 'filing'
       }
     }
     return {

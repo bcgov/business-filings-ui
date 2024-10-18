@@ -64,7 +64,7 @@ describe('Continuation In - in To Do list', () => {
     // verify expansion panel header
     expect(wrapper.find('.list-item__title').text()).toContain('BC Limited Company Continuation Application')
     expect(wrapper.find('.expand-btn').text()).toBe('View Details')
-    expect(wrapper.find('.list-item__subtitle').text()).toBe('NR APPROVED - Expires in 8 days')
+    expect(wrapper.find('.list-item__subtitle').text()).toBe('Name Request APPROVED - Expires in 8 days')
     expect(wrapper.find('.list-item__actions .btn-draft-resume').text()).toBe('Resume')
 
     // cleanup
@@ -104,14 +104,12 @@ describe('Continuation In - in To Do list', () => {
     expect(wrapper.find('.list-item__title').text()).toContain('BC Limited Company Continuation Application')
     expect(wrapper.find('.expand-btn').text()).toBe('Hide Details')
     expect(wrapper.find('.list-item__subtitle').text()).toContain('CHANGE REQUESTED')
-    expect(wrapper.find('.list-item__subtitle').text()).toContain('PAID')
-    expect(wrapper.find('.list-item__subtitle').text()).toContain('(filed by Joe Smith on')
+    expect(wrapper.find('.list-item__subtitle').text()).toContain('Submitted by Joe Smith on')
     expect(wrapper.find('.list-item__subtitle').text()).toContain('Jul 23, 2024')
     expect(wrapper.find('.list-item__actions .btn-draft-resume').text()).toBe('Make Changes')
 
     // verify expansion panel content
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('NR APPROVED - Expires in')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries staff require the following changes to your')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Please make the following updates to your')
     expect((wrapper.find('textarea').element as any)._value).toBe('Authorization document is not legible.')
 
     // cleanup
@@ -144,18 +142,18 @@ describe('Continuation In - in Pending list', () => {
     expect(wrapper.find('.item-header-title').text()).toContain('BC Limited Company Continuation Application')
     expect(wrapper.find('.expand-btn').text()).toBe('Hide Details') // open by default
     expect(wrapper.find('.item-header-subtitle').text()).toContain('PENDING STAFF REVIEW')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('Submitted on')
+    expect(wrapper.find('.item-header-subtitle').text()).toContain('Submitted by Joe Smith')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
 
     // verify expansion panel content
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your Continuation Authorization documents')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 2 business days.')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your documents')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 5 business days.')
 
     // cleanup
     wrapper.destroy()
   })
 
-  it('displays a pending continuation application - future effective', async () => {
+  it('displays a pending continuation application - 2', async () => {
     // init store
     rootStore.setPendingsList([
       {
@@ -165,17 +163,12 @@ describe('Continuation In - in Pending list', () => {
         displayName: 'BC Limited Company Continuation Application',
         header: {
           date: '2024-07-24T00:00:00.000000+00:00',
-          effectiveDate: '2024-07-24T00:00:00.000000+00:00', // any date
           isFutureEffective: true,
           name: FilingTypes.CONTINUATION_IN,
           submitter: 'Joe Smith'
         }
       }
     ])
-
-    // mock date utilities to make effective date seem like a future date
-    vi.spyOn((DateUtilities as any), 'isDatePast').mockImplementation(() => false)
-    vi.spyOn((DateUtilities as any), 'isDateFuture').mockImplementation(() => true)
 
     const wrapper = mount(PendingList, { localVue, router, vuetify })
     await Vue.nextTick()
@@ -184,22 +177,19 @@ describe('Continuation In - in Pending list', () => {
     expect(wrapper.find('.item-header-title').text()).toContain('BC Limited Company Continuation Application')
     expect(wrapper.find('.expand-btn').text()).toBe('Hide Details') // open by default
     expect(wrapper.find('.item-header-subtitle').text()).toContain('PENDING STAFF REVIEW')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('Submitted on')
+    expect(wrapper.find('.item-header-subtitle').text()).toContain('Submitted by Joe Smith')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
 
     // verify expansion panel content
-    expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your Continuation Authorization documents')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 2 business days.')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If approved, the incorporation date and time for this company will be')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('July 23, 2024 at 5:00 pm Pacific time')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your documents')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 5 business days.')
 
     // cleanup
     wrapper.destroy()
     vi.resetAllMocks()
   })
 
-  it('displays a pending continuation application - future effective past', async () => {
+  it('displays a pending continuation application', async () => {
     // init store
     rootStore.setPendingsList([
       {
@@ -209,8 +199,6 @@ describe('Continuation In - in Pending list', () => {
         displayName: 'BC Limited Company Continuation Application',
         header: {
           date: '2024-07-24T00:00:00.000000+00:00',
-          effectiveDate: '2024-07-24T00:00:00.000000+00:00', // any date
-          isFutureEffective: true,
           name: FilingTypes.CONTINUATION_IN,
           submitter: 'Joe Smith'
         }
@@ -232,11 +220,8 @@ describe('Continuation In - in Pending list', () => {
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
 
     // verify expansion panel content
-    expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your Continuation Authorization documents')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 2 business days.')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If approved, the incorporation date and time for this company will be recorded as')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('July 23, 2024 at 5:00 pm Pacific time')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries will review your documents')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and contact you with the results within 5 business days.')
 
     // cleanup
     wrapper.destroy()
@@ -265,8 +250,7 @@ describe('Continuation In - in Recent Filing History list', () => {
     // verify expansion panel header
     expect(wrapper.find('.item-header-title').text()).toContain('BC Limited Company Continuation Application')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('REJECTED')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('PAID')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('(filed by Joe Smith on')
+    expect(wrapper.find('.item-header-subtitle').text()).toContain('Submitted by Joe Smith on')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
     expect(wrapper.find('.expand-btn').text()).toBe('')
 
@@ -344,7 +328,7 @@ describe('Continuation In - in Recent Filing History list', () => {
 
     // verify expansion panel header
     expect(wrapper.find('.item-header-title').text()).toContain('BC Limited Company Continuation Application')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('FUTURE EFFECTIVE FILING')
+    expect(wrapper.find('.item-header-subtitle').text()).toContain('FUTURE EFFECTIVE')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('PAID')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('(filed by Joe Smith on')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
@@ -354,12 +338,12 @@ describe('Continuation In - in Recent Filing History list', () => {
     expect(wrapper.find('.details-btn .hide-details').text()).toBe('Hide Details')
 
     // verify expansion panel content
-    expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation Date')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('The incorporation date and time for this company will be')
+    expect(wrapper.find('h4').text()).toBe('Future Effective Continuation Date')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('The filing date and time for this company will be')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('July 23, 2024 at 5:00 pm Pacific time')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If you wish to change the information in this incorporation,')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If you wish to change the information in this filing,')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('you must contact BC Registries staff to file a withdrawal.')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Withdrawing this Continuation Application will remove this incorporation')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Withdrawing this Continuation Application will remove this filing')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and all associated information, and will incur a $20.00 fee.')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries Contact Information:')
     expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
@@ -400,8 +384,8 @@ describe('Continuation In - in Recent Filing History list', () => {
     expect(wrapper.find('.expand-btn').text()).toBe('')
 
     // verify expansion panel content
-    expect(wrapper.find('h4').text()).toBe('Incorporation Pending')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('The incorporation date and time for this company has been recorded as')
+    expect(wrapper.find('h4').text()).toBe('Continuation Pending')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('The filing date and time for this company has been recorded as')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('July 23, 2024 at 5:00 pm Pacific time')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('It may take up to one hour to process this filing.')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If this issue persists, please contact us.')

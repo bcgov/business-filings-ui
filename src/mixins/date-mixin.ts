@@ -213,4 +213,24 @@ export default class DateMixin extends Vue {
   daysFromToday (date: Date): number {
     return DateUtilities.daysBetweenTwoDates(this.getCurrentJsDate, date)
   }
+
+  /**
+   * Converts the Name Request expiration date into a readable text.
+   * @param nameRequest - The name request object containing an expiration date.
+   * @returns A string indicating when the name request expires.
+   */
+  expiresText (nameRequest: any): string {
+    const date = this.apiToDate(nameRequest.expirationDate)
+    const expireDays = this.daysFromToday(date)
+    // NB: 0 means NR expires today
+    if (isNaN(expireDays) || expireDays < 0) {
+      return 'Expired'
+    } else if (expireDays < 1) {
+      return 'Expires today'
+    } else if (expireDays < 2) {
+      return 'Expires tomorrow'
+    } else {
+      return `Expires in ${expireDays} days`
+    }
+  }
 }

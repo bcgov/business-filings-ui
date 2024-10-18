@@ -3045,7 +3045,7 @@ describe('App as a draft numbered continuation in', () => {
     expect(rootStore.tasks[0].task.filing.header.name).toBe('continuationIn')
     expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
     expect(rootStore.tasks[0].task.filing.amalgamationApplication).not.toBeNull()
-    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Continuation Application')
+    expect(rootStore.tasks[0].task.filing.displayName).toBe('BC Limited Company Continuation Authorization')
   })
 })
 
