@@ -1585,7 +1585,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, N
     const continuationIn = filing.continuationIn
 
     if (header) {
-      let subtitle: string = null
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
@@ -1603,8 +1602,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, N
         name: FilingTypes.CONTINUATION_IN,
         filingId: header.filingId,
         title: filing.displayName,
-        subtitle,
-        draftTitle: FilingNames.CONTINUATION_IN_APPLICATION,
+        draftTitle: FilingNames.CONTINUATION_AUTHORIZATION,
         status: header.status,
         enabled: task.enabled,
         order: task.order,
