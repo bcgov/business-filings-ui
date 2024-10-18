@@ -276,7 +276,7 @@
                   <span>Submitted by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
                   <p
                     v-if="getNameRequest"
-                    class="list-item__subtitle mb-0"
+                    class="list-item__subtitle mb-0 mt-2"
                   >
                     Name Request APPROVED - {{ expiresText(getNameRequest) }}
                   </p>
