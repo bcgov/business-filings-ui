@@ -340,12 +340,12 @@ describe('Continuation In - in Recent Filing History list', () => {
     expect(wrapper.find('.details-btn .hide-details').text()).toBe('Hide Details')
 
     // verify expansion panel content
-    expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation Date')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('The incorporation date and time for this company will be')
+    expect(wrapper.find('h4').text()).toBe('Future Effective Continuation Date')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('The filing date and time for this company will be')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('July 23, 2024 at 5:00 pm Pacific time')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If you wish to change the information in this incorporation,')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If you wish to change the information in this filing,')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('you must contact BC Registries staff to file a withdrawal.')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Withdrawing this Continuation Application will remove this incorporation')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('Withdrawing this Continuation Application will remove this filing')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('and all associated information, and will incur a $20.00 fee.')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('BC Registries Contact Information:')
     expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
