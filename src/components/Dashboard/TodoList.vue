@@ -276,8 +276,7 @@
                   <span>Submitted by {{ item.submitter }} on <DateTooltip :date="item.submittedDate" />)</span>
                   <p
                     v-if="getNameRequest"
-                    class="list-item__subtitle"
-                    style="margin-bottom: 0"
+                    class="list-item__subtitle mb-0"
                   >
                     Name Request APPROVED - {{ expiresText(getNameRequest) }}
                   </p>
@@ -294,8 +293,7 @@
                   </span>
                   <p
                     v-if="getNameRequest && !nameRequestExpired()"
-                    class="list-item__subtitle"
-                    style="margin-bottom: 0"
+                    class="list-item__subtitle mb-0"
                   >
                     Name Request APPROVED - {{ expiresText(getNameRequest) }}
                   </p>
