@@ -2,7 +2,16 @@
   <div class="subtitle-rejected">
     <span class="orange--text text--darken-2">REJECTED</span>
     <span class="vert-pipe" />
-    <span>PAID (filed by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />)</span>
+    <!-- Handle Continuation Filings -->
+    <span v-if="EnumUtilities.isTypeContinuationIn(filing)">
+      <span v-if="filing.paymentStatusCode === 'COMPLETED'">
+        PAID (submitted by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />)
+      </span>
+      <span v-else>
+        Submitted by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />
+      </span>
+    </span>
+    <span v-else>PAID (filed by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />)</span>
 
     <!-- <v-btn
       class="details-btn"
@@ -24,6 +33,7 @@ import { Action } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { useFilingHistoryListStore } from '@/stores'
 import { DateTooltip } from '@/components/common'
+import { EnumUtilities } from '@/services/'
 import FiledLabel from '../FiledLabel.vue'
 
 @Component({
@@ -37,6 +47,8 @@ export default class SubtitleRejected extends Vue {
   @Prop({ required: true }) readonly index!: number
 
   @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: (x: number) => Promise<void>
+
+  readonly EnumUtilities = EnumUtilities
 
   get submittedDate (): Date {
     return new Date(this.filing.submittedDate)

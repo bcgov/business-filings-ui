@@ -745,6 +745,7 @@ export default class App extends Mixins(
       filingSubType: data.type,
       isFutureEffective: header.isFutureEffective,
       name: header.name,
+      paymentStatusCode: header.paymentStatusCode,
       status: header.status,
       submittedDate: this.apiToUtcString(header.date),
       submitter: header.submitter,

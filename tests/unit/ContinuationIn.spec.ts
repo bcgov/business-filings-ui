@@ -237,6 +237,7 @@ describe('Continuation In - in Recent Filing History list', () => {
         displayName: 'BC Limited Company Continuation Application',
         effectiveDate: '2024-07-24T00:00:00.000000+00:00', // any date
         name: FilingTypes.CONTINUATION_IN,
+        paymentStatusCode: 'COMPLETED',
         status: FilingStatus.REJECTED,
         submittedDate: '2024-07-24T00:00:00.000000+00:00',
         submitter: 'Joe Smith',
@@ -251,7 +252,7 @@ describe('Continuation In - in Recent Filing History list', () => {
     expect(wrapper.find('.item-header-title').text()).toContain('BC Limited Company Continuation Application')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('REJECTED')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('PAID')
-    expect(wrapper.find('.item-header-subtitle').text()).toContain('(filed by Joe Smith on')
+    expect(wrapper.find('.item-header-subtitle').text()).toContain('(submitted by Joe Smith on')
     expect(wrapper.find('.item-header-subtitle').text()).toContain('Jul 23, 2024')
     expect(wrapper.find('.expand-btn').text()).toBe('')
 
