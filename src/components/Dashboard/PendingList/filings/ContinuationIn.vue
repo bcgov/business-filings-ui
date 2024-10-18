@@ -22,8 +22,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
-import { Getter } from 'pinia-class'
-import { useBusinessStore } from '@/stores'
 import PendingTemplate from '../PendingTemplate.vue'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 
@@ -36,8 +34,6 @@ import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module
 export default class ContinuationIn extends Vue {
   @Prop({ required: true }) readonly item!: any
   @Prop({ required: true }) readonly index!: number
-
-  @Getter(useBusinessStore) getLegalName!: string
 
   get entityType (): string {
     return GetCorpFullDescription(this.item.business.legalType)
