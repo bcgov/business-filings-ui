@@ -4,12 +4,7 @@
     <span class="vert-pipe" />
     <!-- Handle Continuation Filings -->
     <span v-if="EnumUtilities.isTypeContinuationIn(filing)">
-      <span v-if="filing.paymentStatusCode === 'COMPLETED'">
-        PAID (submitted by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />)
-      </span>
-      <span v-else>
-        Submitted by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />
-      </span>
+      Submitted by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />
     </span>
     <span v-else>PAID (filed by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />)</span>
 

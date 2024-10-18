@@ -22,7 +22,6 @@ export interface ApiFilingIF {
   filingSubType: FilingSubTypes
   isFutureEffective: boolean
   name: FilingTypes
-  paymentStatusCode?: string
   status: FilingStatus
   submittedDate: FormattedDateTimeGmt
   submitter: string
