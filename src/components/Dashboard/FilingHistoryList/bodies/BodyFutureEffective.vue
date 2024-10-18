@@ -72,8 +72,8 @@ export default class BodyFutureEffective extends Vue {
     }
     if (EnumUtilities.isTypeContinuationIn(this.filing)) {
       return {
-        subtitle: 'Future Effective Incorporation Date',
-        filingLabel: 'incorporation',
+        subtitle: 'Future Effective Continuation Date',
+        filingLabel: 'filing',
         filingTitle: FilingNames.CONTINUATION_IN_APPLICATION
       }
     }
