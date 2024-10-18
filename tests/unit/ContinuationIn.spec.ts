@@ -386,8 +386,8 @@ describe('Continuation In - in Recent Filing History list', () => {
     expect(wrapper.find('.expand-btn').text()).toBe('')
 
     // verify expansion panel content
-    expect(wrapper.find('h4').text()).toBe('Incorporation Pending')
-    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('The incorporation date and time for this company has been recorded as')
+    expect(wrapper.find('h4').text()).toBe('Continuation Pending')
+    expect(wrapper.find('.v-expansion-panel-content').text()).toContain('The filing date and time for this company has been recorded as')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('July 23, 2024 at 5:00 pm Pacific time')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('It may take up to one hour to process this filing.')
     expect(wrapper.find('.v-expansion-panel-content').text()).toContain('If this issue persists, please contact us.')
