@@ -197,7 +197,26 @@
                   <span>{{ item.subtitle }}</span>
                 </div>
 
-                <!-- draft other (continuation subtitle is handled separately) -->
+                <!-- draft continuation filing -->
+                <div
+                  v-else-if="EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item)"
+                  class="todo-list-detail pt-1"
+                >
+                  <span
+                    v-if="getNameRequest"
+                    class="list-item__subtitle"
+                  >
+                    Name Request APPROVED - {{ expiresText(getNameRequest) }}
+                  </span>
+                  <span
+                    v-else
+                    class="list-item__subtitle"
+                  >
+                    DRAFT
+                  </span>
+                </div>
+
+                <!-- draft other -->
                 <div
                   v-else-if="EnumUtilities.isStatusDraft(item) && !EnumUtilities.isTypeContinuationIn(item)"
                   class="todo-subtitle"
@@ -247,26 +266,7 @@
                   <span v-else>PAID</span>
                 </div>
 
-                <!-- draft continuation filing -->
-                <div
-                  v-else-if="EnumUtilities.isStatusDraft(item) && EnumUtilities.isTypeContinuationIn(item)"
-                  class="todo-list-detail pt-1"
-                >
-                  <span
-                    v-if="getNameRequest"
-                    class="list-item__subtitle"
-                  >
-                    Name Request APPROVED - {{ expiresText(getNameRequest) }}
-                  </span>
-                  <span
-                    v-else
-                    class="list-item__subtitle"
-                  >
-                    DRAFT
-                  </span>
-                </div>
-
-                <!-- change-requested continuation filing -->
+                <!-- change-requested filing -->
                 <div
                   v-else-if="EnumUtilities.isStatusChangeRequested(item)"
                   class="todo-list-detail pt-1"
@@ -282,7 +282,7 @@
                   </p>
                 </div>
 
-                <!-- approved continuation filing -->
+                <!-- approved filing -->
                 <div
                   v-else-if="EnumUtilities.isStatusApproved(item)"
                   class="todo-list-detail pt-1"
