@@ -1,79 +1,19 @@
-name: BUSINESS FILINGS UI CI
+name: Business Filings UI CI
 
 on:
   pull_request:
-    types: [assigned, synchronize]
+    branches:
+      - main
+      - feature*
+  workflow_dispatch:
 
 defaults:
   run:
     shell: bash
 
 jobs:
-  setup-job:
-    runs-on: ubuntu-20.04
-
-    if: github.repository == 'bcgov/business-filings-ui'
-
-    steps:
-      - uses: actions/checkout@v3
-      - run: "true"
-
-  linting:
-    needs: setup-job
-    runs-on: ubuntu-20.04
-
-    strategy:
-      matrix:
-        node-version: [20.5.1]
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
-        run: |
-          make setup
-      - name: Linting
-        run: |
-          make lint
-
-  testing-coverage:
-    needs: setup-job
-    runs-on: ubuntu-20.04
-
-    strategy:
-      matrix:
-        node-version: [20.5.1]
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
-        run: |
-          make setup
-      - name: Test with Vitest
-        id: test
-        run: |
-          make test
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          name: codecov-business-filings
-          fail_ci_if_error: false
-          token: ${{ secrets.CODECOV_TOKEN}}
-
-  build-check:
-    needs: setup-job
-    runs-on: ubuntu-20.04
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: build to check strictness
-        id: build
-        run: |
-          make build-nc
+  business-filings-ui-ci:
+    uses: bcgov/bcregistry-sre/.github/workflows/frontend-ci.yaml@main
+    with:
+      node_version: "20.5.1"
+      app_name: "business-filings-ui"

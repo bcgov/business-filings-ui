@@ -1,16 +1,20 @@
 {
   "name": "business-filings-ui",
-  "version": "7.3.27",
+  "version": "7.4.0",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --ext .js,.ts,.vue",
+    "build-check": "vite build",
+    "preview": "vite preview --port 8080",
+    "lint": "eslint . --ext js,ts,vue --no-fix",
+    "lint:fix": "eslint . --ext js,ts,vue --fix src",
+    "test": "vitest run",
     "test:unit": "vitest run",
-    "test:coverage": "vitest run --coverage --silent"
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@babel/compat-data": "^7.21.5",
