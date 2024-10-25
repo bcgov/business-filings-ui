@@ -19,7 +19,7 @@ on:
         - prod
 
 jobs:
-  business-filings-cd:
+  business-filings-ui-cd:
     uses: bcgov/bcregistry-sre/.github/workflows/frontend-cd.yaml@main
     with:
       target: ${{ inputs.target }}
