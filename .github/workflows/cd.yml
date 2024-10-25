@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - feature*
-      - hotfix *
+      - hotfix*
   workflow_dispatch:
     inputs:
       target:
