@@ -1,13 +1,15 @@
-name: BUSINESS FILINGS UI CD
+name: Business Filings UI CD
 
 on:
   push:
     branches:
       - main
+      - feature*
+      - hotfix*
   workflow_dispatch:
     inputs:
-      environment:
-        description: "Environment"
+      target:
+        description: "Deploy To"
         required: true
         type: choice
         options:
@@ -15,18 +17,13 @@ on:
         - test
         - sandbox
         - prod
-      tagname:
-        description: "Specify a previous version (git tag) to deploy"
-        required: false
-        default: ""
 
 jobs:
   business-filings-cd:
-    uses: bcgov/bcregistry-sre/.github/workflows/ui-cd-node20.yaml@main
+    uses: bcgov/bcregistry-sre/.github/workflows/frontend-cd.yaml@main
     with:
-      environment: ${{ inputs.environment }}
-      tagname: ${{ inputs.tagname }}
+      target: ${{ inputs.target }}
+      app_name: "business-filings-ui"
     secrets:
-      APP_NAME: "business-filings"
-      OP_CONNECT_URL: ${{ secrets.OP_CONNECT_URL }}
-      OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
+      WORKLOAD_IDENTIFY_POOLS_PROVIDER: ${{ secrets.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
+      GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}

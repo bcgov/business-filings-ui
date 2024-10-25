@@ -1,6 +1,6 @@
 codecov:
   require_ci_to_pass: true
-  branch: master
+  branch: main
   max_report_age: false
 
 coverage:
