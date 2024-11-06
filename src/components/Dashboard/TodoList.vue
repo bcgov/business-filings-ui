@@ -347,7 +347,11 @@
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
                 <!-- this loading button pre-empts all buttons below -->
-                <template v-if="inProcessFiling === item.filingId">
+                <!-- special case to not show spinner for approved continuation in drafts -->
+                <template 
+                  v-if="inProcessFiling === item.filingId && 
+                    !(EnumUtilities.isTypeContinuationIn(item) && EnumUtilities.isStatusApproved(item))"
+                  >
                   <v-btn
                     text
                     loading
