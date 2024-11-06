@@ -352,7 +352,7 @@
                 </template>
 
                 <!-- default task -->
-                <template v-if="item.isDefaultTask">
+                <template v-else-if="item.isDefaultTask">
                   <!-- no action button in this case -->
                 </template>
 
