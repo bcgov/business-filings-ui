@@ -310,6 +310,8 @@
               <v-btn
                 class="ma-1 affiliation-invitation-action-button"
                 color="primary"
+                :loading="isAuthorizeLoading"
+                :disabled="isAuthorizeLoading || isDoNotAuthorizeLoading"
                 @click.native.stop="authorizeAffiliationInvitation(true, item)"
               >
                 <span>Authorize</span>
@@ -318,8 +320,8 @@
                 class="ma-1 affiliation-invitation-action-button"
                 outlined
                 color="primary"
-                :loading="isAffiliationLoading"
-                :disabled="isAffiliationLoading"
+                :loading="isDoNotAuthorizeLoading"
+                :disabled="isDoNotAuthorizeLoading || isAuthorizeLoading"
                 @click.native.stop="authorizeAffiliationInvitation(false, item)"
               >
                 <span>Do not authorize</span>
@@ -791,7 +793,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, N
   panel: number = null // currently expanded panel
   checkTimer = null // may be type number or NodeJS.Timeout
   inProcessFiling: number = null
-  isAffiliationLoading = false
+  isAuthorizeLoading = false
+  isDoNotAuthorizeLoading = false
   fetchAffiliationInvitationsErrorDialog = false
   authorizeAffiliationInvitationErrorDialog = false
 
@@ -1102,8 +1105,10 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, N
   }
 
   async authorizeAffiliationInvitation (isAuthorized: boolean, affiliationInvitationTodo: TodoItemIF) {
-    if (!isAuthorized) {
-      this.isAffiliationLoading = true
+    if (isAuthorized) {
+      this.isAuthorizeLoading = true
+    } else {
+      this.isDoNotAuthorizeLoading = true
     }
     const response = await AuthServices.authorizeAffiliationInvitation(
       this.getAuthApiUrl,
@@ -1115,7 +1120,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, N
       this.authorizeAffiliationInvitationErrorDialog = true
       return null
     }).finally(() => {
-      this.isAffiliationLoading = false
+      this.isAuthorizeLoading = false
+      this.isDoNotAuthorizeLoading = false
     })
 
     const index = this.todoItems.indexOf(affiliationInvitationTodo)
