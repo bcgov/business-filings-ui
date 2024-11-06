@@ -347,11 +347,7 @@
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
                 <!-- this loading button pre-empts all buttons below -->
-                <!-- special case to not show spinner for approved continuation in drafts -->
-                <template 
-                  v-if="inProcessFiling === item.filingId && 
-                    !(EnumUtilities.isTypeContinuationIn(item) && EnumUtilities.isStatusApproved(item))"
-                  >
+                <template v-if="inProcessFiling === item.filingId">
                   <v-btn
                     text
                     loading
@@ -994,6 +990,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, N
     // ensure task is in todo list
     const index = this.todoItems.findIndex(h => h.filingId === id)
     if (index >= 0) {
+      // special case to not show spinner for continuation in drafts
+      if (EnumUtilities.isTypeContinuationIn(this.todoItems[index]) &&
+          !EnumUtilities.isStatusPending(this.todoItems[index])) {
+        return
+      }
+
       this.inProcessFiling = id
 
       // start the check process
