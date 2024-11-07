@@ -990,6 +990,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, N
     // ensure task is in todo list
     const index = this.todoItems.findIndex(h => h.filingId === id)
     if (index >= 0) {
+      // special case to not show spinner for continuation in drafts
+      if (EnumUtilities.isTypeContinuationIn(this.todoItems[index]) &&
+          !EnumUtilities.isStatusPending(this.todoItems[index])) {
+        return
+      }
+
       this.inProcessFiling = id
 
       // start the check process
