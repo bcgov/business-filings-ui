@@ -101,10 +101,11 @@
       v-if="bannerText"
       tile
       dense
-      type="warning"
+      class="mb-0"
+      color="#fb8c00"
     >
       <div
-        class="mb-0 text-center color-dk-text"
+        class="text-center color-white"
         v-html="bannerText"
       />
     </v-alert>
@@ -900,5 +901,9 @@ export default class App extends Mixins(
   opacity: 0.46;
   background-color: rgb(33, 33, 33); // grey darken-4
   border-color: rgb(33, 33, 33); // grey darken-4
+}
+
+.color-white {
+  color: white;
 }
 </style>
