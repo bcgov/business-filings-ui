@@ -4,7 +4,6 @@ import { FilingCodes } from '@bcrs-shared-components/enums'
 // FUTURE: this object needs an interface or type
 export const BusinessConfigBc = {
   entityType: CorpTypeCd.BC_COMPANY,
-  displayName: 'Limited Company',
   flows: [
     {
       feeCode: FilingCodes.ADDRESS_CHANGE_BC,

@@ -36,14 +36,14 @@
               class="certify-stmt"
             >
               <strong>{{ trimmedCertifiedBy || "[Legal Name]" }}</strong> certifies that they have relevant
-              knowledge of the {{ entityDisplay || "association" }} and are authorized to make this filing.
+              knowledge of the {{ entityDisplay || "business" }} and are authorized to make this filing.
             </div>
             <div
               v-else
               class="certify-stmt"
             >
               I, <strong>{{ trimmedCertifiedBy || "[Legal Name]" }}</strong>, certify that I have relevant
-              knowledge of the {{ entityDisplay || "association" }} and I am authorized to make this filing.
+              knowledge of the {{ entityDisplay || "business" }} and I am authorized to make this filing.
             </div>
           </template>
         </v-checkbox>
