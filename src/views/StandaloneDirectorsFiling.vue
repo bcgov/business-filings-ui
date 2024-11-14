@@ -266,6 +266,7 @@
                   </header>
                   <Certify
                     :isCertified.sync="isCertified"
+                    :isStaff="isRoleStaff"
                     :certifiedBy.sync="certifiedBy"
                     :entityDisplay="displayName()"
                     :message="certifyText(feeCode)"
