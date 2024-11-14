@@ -448,6 +448,15 @@ export default class App extends Mixins(
       console.log('Error fetching user info or updating Launch Darkly =', error)
     }
 
+    // now that LaunchDarkly has been updated (ie, in case of user targeting),
+    // check whether to use this Entity Dashboard or the new Business Dashboard
+    if (GetFeatureFlag('use-business-dashboard')) {
+      const identifier = (this.businessId || this.tempRegNumber)
+      const dashboardUrl = `${this.getBusinessDashUrl}/${identifier}${this.$route.fullPath}`
+      navigate(dashboardUrl)
+      return
+    }
+
     // is this a business entity?
     if (this.businessId) {
       try {
