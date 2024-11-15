@@ -213,7 +213,6 @@
                 <Certify
                   ref="certifyRef"
                   :isCertified.sync="isCertified"
-                  :isStaff="isRoleStaff"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-component': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"

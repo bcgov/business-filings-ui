@@ -32,7 +32,7 @@
         >
           <template #label>
             <div
-              v-if="isStaff"
+              v-if="isRoleStaff"
               class="certify-stmt"
             >
               <strong>{{ trimmedCertifiedBy || "[Legal Name]" }}</strong> certifies that they have relevant
@@ -73,9 +73,7 @@ export default class Certify extends Vue {
   }
 
   @Getter(useRootStore) getCurrentDate!: string
-
-  /** Is Staff prop. */
-  @Prop({ default: false }) readonly isStaff!: boolean
+  @Getter(useRootStore) isRoleStaff!: boolean
 
   /** Certified By prop. */
   @Prop({ default: '' }) readonly certifiedBy!: string

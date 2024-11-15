@@ -145,7 +145,6 @@
                 :certifiedBy.sync="certifiedBy"
                 :entityDisplay="displayName()"
                 :message="certifyText(feeCode)"
-                :isStaff="isRoleStaff"
                 @valid="certifyFormValid=$event"
               />
             </section>
