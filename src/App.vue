@@ -450,9 +450,9 @@ export default class App extends Mixins(
 
     // now that LaunchDarkly has been updated (ie, in case of user targeting),
     // check whether to use this Entity Dashboard or the new Business Dashboard
-    if (GetFeatureFlag('use-business-dashboard')) {
+    if (GetFeatureFlag('use-business-dashboard') && (this.$route.name === Routes.DASHBOARD)) {
       const identifier = (this.businessId || this.tempRegNumber)
-      const dashboardUrl = `${this.getBusinessDashUrl}/${identifier}${this.$route.fullPath}`
+      const dashboardUrl = `${this.getBusinessDashUrl}${identifier}${this.$route.fullPath}`
       navigate(dashboardUrl)
       return
     }
