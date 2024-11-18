@@ -280,18 +280,13 @@ export const useBusinessStore = defineStore('business', {
     },
 
     /**
-     * Is True for non-BEN corps if FF is disabled.
-     * Is False for BENs and other entity types.
+     * Is True for any business in the FF list, else False.
      * Used to apply special pre-go-live functionality.
      */
     isDisableNonBenCorps (): boolean {
-      if (
-        this.isEntityBcCompany || this.isEntityBcCcc || this.isEntityBcUlcCompany ||
-        this.isEntityContinueIn || this.isEntityCccContinueIn || this.isEntityUlcContinueIn
-      ) {
-        return !GetFeatureFlag('enable-non-ben-corps')
-      }
-      return false
+      // initially, this was True for all non-BEN corps (when FF was off)
+      // now, this is True for the specified businesses only
+      return !!GetFeatureFlag('businesses-to-manage-in-colin')?.includes(this.getIdentifier)
     },
 
     //

@@ -17,9 +17,11 @@ describe('Corporate Online alert', () => {
   beforeAll(() => {
     businessStore.$state.businessInfo.goodStanding = true
     businessStore.$state.businessInfo.legalType = CorpTypeCd.BC_COMPANY
+    businessStore.$state.businessInfo.identifier = 'BC1234567'
+
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-      if (flag === 'enable-non-ben-corps') return false
-      return null
+      if (flag === 'businesses-to-manage-in-colin') return ['BC1234567']
+      return []
     })
   })
 
