@@ -137,31 +137,30 @@
               </div>
             </section>
 
-            <!-- Court Order and Plan of Arrangement -->
-            <section v-if="isRoleStaff">
+            <!-- Withdrawal of Arrangement Records -->
+            <section>
               <header>
-                <h2>Court Order and Plan of Arrangement</h2>
+                <h2>Withdrawal of Arrangement Records</h2>
                 <p class="grey-text">
-                  If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
-                  to a plan of arrangement, enter the court order number and select Plan of Arrangement.
+                  Indicate if the record to be withdrawn is pursuant to a plan of arrangement and
+                  if one or more of the provisions of the arrangement have come into effect.
                 </p>
               </header>
               <div
                 id="court-order-section"
-                :class="{ 'invalid-section': !courtOrderValid && showErrors }"
+                :class="{ 'invalid-section': showErrors }"
               >
                 <v-card
                   flat
                   class="py-8 px-5"
                 >
-                  <CourtOrderPoa
+                  <PlanOfArrangement
                     :autoValidation="showErrors"
-                    :courtOrderNumberRequired="false"
-                    :draftCourtOrderNumber="fileNumber"
                     :hasDraftPlanOfArrangement="hasPlanOfArrangement"
-                    @emitCourtNumber="fileNumber=$event"
+                    :hasDraftComeIntoEffect="hasComeIntoEffect"
+                    :hasComeIntoEffect="hasComeIntoEffect"
                     @emitPoa="hasPlanOfArrangement=$event"
-                    @emitValid="courtOrderValid=$event"
+                    @emitEffect="hasComeIntoEffect=$event"
                   />
                 </v-card>
               </div>
@@ -271,7 +270,7 @@ import { EnumUtilities, LegalServices } from '@/services/'
 import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
+import PlanOfArrangement from '@/components/NoticeOfWithdraw/PlanOfArrangement.vue'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
@@ -279,7 +278,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     components: {
       Certify,
       ConfirmDialog,
-      CourtOrderPoa,
+      PlanOfArrangement,
       DocumentDelivery,
       ForeignJurisdiction,
       PaymentErrorDialog,
@@ -313,17 +312,9 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     isCertified = false
     certifyFormValid = false
 
-    // variables for Courder Order POA component
-    fileNumber = ''
+    // variables for POA component
     hasPlanOfArrangement = false
-    courtOrderValid = true
-
-    // variables for Foreign Jurisdiction component
-    draftCountry = ''
-    draftRegion = ''
-    selectedCountry = ''
-    selectedRegion = ''
-    foreignJurisdictionValid = false
+    hasComeIntoEffect = false
 
     // variables for Document Delivery component
     documentDeliveryValid = true
@@ -369,7 +360,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     get isPageValid (): boolean {
       return (
         this.certifyFormValid &&
-        this.foreignJurisdictionValid &&
         this.documentDeliveryValid &&
         this.courtOrderValid
       )
@@ -493,12 +483,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         if (courtOrder) {
           this.fileNumber = courtOrder.fileNumber
           this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
-        }
-
-        const foreignJurisdiction = filing.consentContinuationOut.foreignJurisdiction
-        if (foreignJurisdiction) {
-          this.draftCountry = foreignJurisdiction.country
-          this.draftRegion = foreignJurisdiction.region
         }
 
         if (filing.header.documentOptionalEmail) {
@@ -746,8 +730,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       const data: any = {
         consentContinuationOut: {
           foreignJurisdiction: {
-            country: this.selectedCountry,
-            region: this.selectedRegion
           }
         }
       }
@@ -882,7 +864,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     /** Object of valid flags. Must match validComponents. */
     get validFlags (): object {
       return {
-        foreignJurisdiction: this.foreignJurisdictionValid,
         documentDelivery: this.documentDeliveryValid,
         certifyForm: this.certifyFormValid,
         courtOrder: this.courtOrderValid
@@ -912,7 +893,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
   <style lang="scss" scoped>
   @import '@/assets/styles/theme.scss';
 
-  #notice-of-withdraw {
+  #notice-of-withdrawal {
     /* Set "header-counter" to 0 */
     counter-reset: header-counter;
   }

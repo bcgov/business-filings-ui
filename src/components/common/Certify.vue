@@ -51,7 +51,7 @@
           <strong>Date:</strong> {{ formattedCurrentDate || '[unknown]' }}
         </p>
         <p class="certify-clause">
-          <strong>Note:</strong> {{ message }}
+          <strong v-if="message">Note:</strong> {{ message }}
         </p>
       </v-col>
     </v-row>
