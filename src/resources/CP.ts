@@ -9,21 +9,21 @@ export const BusinessConfigCp = {
     {
       feeCode: FilingCodes.ADDRESS_CHANGE_OT,
       displayName: 'Change Of Address',
-      certifyText: 'Note: It is an offence to make a false or misleading statement in ' +
+      certifyText: 'It is an offence to make a false or misleading statement in ' +
           'respect of a material fact in a record submitted to the Corporate Registry for filing. ' +
           'See Section 27 of the Cooperative Association Act.'
     },
     {
       feeCode: FilingCodes.ANNUAL_REPORT_OT,
       displayName: 'Annual Report',
-      certifyText: 'Note: It is an offence to make a false or misleading statement in ' +
+      certifyText: 'It is an offence to make a false or misleading statement in ' +
           'respect of a material fact in a record submitted to the Corporate Registry for filing. ' +
           'See Section 126 of the Cooperative Association Act.'
     },
     {
       feeCode: FilingCodes.DIRECTOR_CHANGE_OT,
       displayName: 'Change Of Directors',
-      certifyText: 'Note: It is an offence to make a false or misleading statement in ' +
+      certifyText: 'It is an offence to make a false or misleading statement in ' +
           'respect of a material fact in a record submitted to the Corporate Registry for filing. ' +
           'See Section 78 of the Cooperative Association Act.',
       warnings: {
@@ -55,7 +55,7 @@ export const BusinessConfigCp = {
     {
       feeCode: FilingCodes.NOTICE_OF_WITHDRAWAL,
       displayName: 'Notice of Withdrawal',
-      certifyText: 'Note: It is an offence to make a false or misleading statement in ' +
+      certifyText: 'It is an offence to make a false or misleading statement in ' +
           'respect of a material fact in a record submitted to the Corporate Registry for filing. ' +
           'See section 427 of the Business Corporations Act.'
     }
