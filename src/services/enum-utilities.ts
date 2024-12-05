@@ -220,6 +220,11 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.INCORPORATION_APPLICATION)
   }
 
+  /** Returns True if filing is a Notice of Withdraw. */
+  static isTypeNoticeOfWithdrawal (item: any): boolean {
+    return (item.name === FilingTypes.NOTICE_OF_WITHDRAWAL)
+  }
+
   /** Returns True if filing is a Registration. */
   static isTypeRegistration (item: any): boolean {
     return (item.name === FilingTypes.REGISTRATION)

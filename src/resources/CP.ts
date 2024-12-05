@@ -51,6 +51,13 @@ export const BusinessConfigCp = {
         multiCompliance: {
         }
       }
+    },
+    {
+      feeCode: FilingCodes.NOTICE_OF_WITHDRAWAL,
+      displayName: 'Notice of Withdrawal',
+      certifyText: 'Note: It is an offence to make a false or misleading statement in ' +
+          'respect of a material fact in a record submitted to the Corporate Registry for filing. ' +
+          'See section 427 of the Business Corporations Act.'
     }
   ],
   dissolutionConfirmation: {

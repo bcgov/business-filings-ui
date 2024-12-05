@@ -55,6 +55,13 @@ export const BusinessConfigBen = {
       certifyText: 'Note: It is an offence to make or assist in making a false or' +
         ' misleading statement in a record filed under the Business Corporations Act.' +
         ' A person who commits this offence is subject to a maximum fine of $5,000.'
+    },
+    {
+      feeCode: FilingCodes.NOTICE_OF_WITHDRAWAL,
+      displayName: 'Notice of Withdrawal',
+      certifyText: 'Note: It is an offence to make a false or misleading statement in ' +
+          'respect of a material fact in a record submitted to the Corporate Registry for filing. ' +
+          'See section 427 of the Business Corporations Act.'
     }
   ],
   obligations: {
