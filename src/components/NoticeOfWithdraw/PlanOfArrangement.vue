@@ -60,7 +60,7 @@ export default class PlanOfArrangement extends Vue {
     @Prop({ default: false }) readonly hasDraftPlanOfArrangement!: boolean
 
     /** Draft come into effect. */
-    @Prop({ default: false }) readonly hasComeIntoEffect!: boolean
+    @Prop({ default: false }) readonly hasDraftComeIntoEffect!: boolean
 
     /** Prompt Error. */
     @Prop({ default: false }) readonly invalidSection!: boolean
@@ -74,7 +74,7 @@ export default class PlanOfArrangement extends Vue {
     mounted (): void {
       // Set default draft values if they exist
       if (this.hasDraftPlanOfArrangement) this.planOfArrangement = this.hasDraftPlanOfArrangement
-      if (this.hasComeIntoEffect) this.comeIntoEffect = this.hasComeIntoEffect
+      if (this.hasDraftComeIntoEffect) this.comeIntoEffect = this.hasDraftComeIntoEffect
     }
 
     @Watch('planOfArrangement')
@@ -110,7 +110,6 @@ export default class PlanOfArrangement extends Vue {
   <style lang="scss" scoped>
   @import '@/assets/styles/theme.scss';
 
-  #court-order-label,
   #poa-label {
     font-size: $px-16;
     font-weight: bold;

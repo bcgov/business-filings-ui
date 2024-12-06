@@ -158,9 +158,34 @@
                     :autoValidation="showErrors"
                     :hasDraftPlanOfArrangement="hasPlanOfArrangement"
                     :hasDraftComeIntoEffect="hasComeIntoEffect"
-                    :hasComeIntoEffect="hasComeIntoEffect"
                     @emitPoa="hasPlanOfArrangement=$event"
                     @emitEffect="hasComeIntoEffect=$event"
+                  />
+                </v-card>
+              </div>
+            </section>
+
+            <!-- Folio or Reference Number -->
+            <section>
+              <header>
+                <h2>Folio or Reference Number</h2>
+                <p class="grey-text">
+                  You can add a folio or reference number for your own tracking purposes.
+                  The number will appear on your withdrawal documents and receipt.
+                </p>
+              </header>
+              <div
+                id="reference-number-section"
+                :class="{ 'invalid-section': showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
+                  <ReferenceNumber
+                    :autoValidation="showErrors"
+                    :draftReferenceNumber="referenceNumber"
+                    @emitReferenceNumber="referenceNumber=$event"
                   />
                 </v-card>
               </div>
@@ -271,6 +296,7 @@ import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import PlanOfArrangement from '@/components/NoticeOfWithdraw/PlanOfArrangement.vue'
+import ReferenceNumber from '@/components/NoticeOfWithdraw/ReferenceNumber.vue'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
@@ -284,6 +310,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
       PaymentErrorDialog,
       ResumeErrorDialog,
       RecordToBeWithdrawn,
+      ReferenceNumber,
       SaveErrorDialog,
       SbcFeeSummary,
       StaffPaymentDialog
@@ -315,6 +342,9 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     // variables for POA component
     hasPlanOfArrangement = false
     hasComeIntoEffect = false
+
+    // variable for Reference Number component
+    referenceNumber = ''
 
     // variables for Document Delivery component
     documentDeliveryValid = true
