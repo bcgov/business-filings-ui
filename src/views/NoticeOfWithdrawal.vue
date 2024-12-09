@@ -235,6 +235,8 @@
         <v-btn
           id="consent-save-btn"
           large
+          outlined
+          color="primary"
           :disabled="busySaving"
           :loading="saving"
           @click="onClickSave()"
@@ -244,6 +246,8 @@
         <v-btn
           id="consent-save-resume-btn"
           large
+          outlined
+          color="primary"
           :disabled="busySaving"
           :loading="savingResuming"
           @click="onClickSaveResume()"
@@ -264,6 +268,16 @@
               v-on="on"
             >
               <v-btn
+                id="consent-cancel-btn"
+                large
+                outlined
+                color="primary"
+                :disabled="busySaving"
+                @click="goToDashboard()"
+              >
+                <span>Cancel</span>
+              </v-btn>
+              <v-btn
                 id="consent-file-pay-btn"
                 color="primary"
                 large
@@ -271,22 +285,13 @@
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
-                <span>{{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}</span>
+                <span>Submit</span>
               </v-btn>
             </div>
           </template>
           Ensure all of your information is entered correctly before you File.<br>
           There is no opportunity to change information beyond this point.
         </v-tooltip>
-
-        <v-btn
-          id="consent-cancel-btn"
-          large
-          :disabled="busySaving"
-          @click="goToDashboard()"
-        >
-          <span>Cancel</span>
-        </v-btn>
       </div>
     </v-container>
   </div>
