@@ -6,7 +6,7 @@
     <StaffPaymentShared
       :staffPaymentData="staffPaymentData"
       :validate="validate"
-      :displaySideLabel="false"
+      :displaySideLabel="true"
       :displayPriorityCheckbox="true"
       @update:staffPaymentData="emitStaffPaymentData($event)"
       @valid="staffPaymentFormValid=$event"
