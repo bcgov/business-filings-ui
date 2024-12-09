@@ -7,7 +7,7 @@
 
     <PaymentErrorDialog
       attach="#notice-of-withdrawal"
-      filingName="Consent to Continuation Out"
+      filingName="Notice of Withdrawal"
       :dialog="paymentErrorDialog"
       :errors="saveErrors"
       :warnings="saveWarnings"
@@ -22,7 +22,7 @@
 
     <SaveErrorDialog
       attach="#notice-of-withdrawal"
-      filingName="Consent to Continuation Out"
+      filingName="Notice of Withdrawal"
       :dialog="!!saveErrorReason"
       :disableRetry="busySaving"
       :errors="saveErrors"
@@ -30,15 +30,6 @@
       @exit="saveErrorReason=null"
       @retry="onSaveErrorDialogRetry()"
       @okay="onSaveErrorDialogOkay()"
-    />
-
-    <StaffPaymentDialog
-      :staffPaymentData.sync="staffPaymentData"
-      attach="#notice-of-withdrawal"
-      :dialog="staffPaymentDialog"
-      :loading="filingPaying"
-      @exit="staffPaymentDialog=false"
-      @submit="onClickFilePay(true)"
     />
 
     <!-- Initial Page Load Transition -->
@@ -190,6 +181,27 @@
                 </v-card>
               </div>
             </section>
+
+            <!-- Staff Payment -->
+            <section>
+              <header>
+                <h2>Staff Payment</h2>
+              </header>
+              <div
+                id="reference-number-section"
+                :class="{ 'invalid-section': showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
+                  <StaffPayment
+                    class="py-8 px-6"
+                    :staffPaymentData.sync="staffPaymentData"
+                  />
+                </v-card>
+              </div>
+            </section>
           </article>
         </v-col>
 
@@ -288,6 +300,7 @@ import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, ForeignJurisdiction } from '@/components/common'
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdraw/RecordToBeWithdrawn.vue'
+import StaffPayment from '@/components/NoticeOfWithdraw/StaffPayment.vue'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -311,6 +324,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
       ResumeErrorDialog,
       RecordToBeWithdrawn,
       ReferenceNumber,
+      StaffPayment,
       SaveErrorDialog,
       SbcFeeSummary,
       StaffPaymentDialog
@@ -457,7 +471,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       // always include consent continue out code
       // use existing Priority and Waive Fees flags
-      this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, this.staffPaymentData.isPriority,
+      this.updateFilingData('add', FilingCodes.NOTICE_OF_WITHDRAWAL, this.staffPaymentData.isPriority,
         (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     }
 
