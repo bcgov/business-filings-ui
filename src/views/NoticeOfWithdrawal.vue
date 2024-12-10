@@ -917,7 +917,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
 
       // add Waive Fees flag to all filing codes
-      this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, val.isPriority, waiveFees)
+      this.updateFilingData('add', FilingCodes.NOTICE_OF_WITHDRAWAL, val.isPriority, waiveFees)
 
       this.haveChanges = true
     }
