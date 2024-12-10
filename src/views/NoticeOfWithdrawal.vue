@@ -167,7 +167,6 @@
               </header>
               <div
                 id="reference-number-section"
-                :class="{ 'invalid-section': showErrors }"
               >
                 <v-card
                   flat
@@ -177,19 +176,20 @@
                     :autoValidation="showErrors"
                     :draftReferenceNumber="referenceNumber"
                     @emitReferenceNumber="referenceNumber=$event"
+                    @valid="referenceNumberValid=$event"
                   />
                 </v-card>
               </div>
             </section>
 
             <!-- Staff Payment -->
-            <section>
+            <section v-if="isRoleStaff">
               <header>
                 <h2>Staff Payment</h2>
               </header>
               <div
-                id="reference-number-section"
-                :class="{ 'invalid-section': showErrors }"
+                id="staff-payment-section"
+                :class="{ 'invalid-section': !staffPaymentValid && showErrors }"
               >
                 <v-card
                   flat
@@ -198,6 +198,7 @@
                   <StaffPayment
                     class="py-8 px-6"
                     :staffPaymentData.sync="staffPaymentData"
+                    @staffPaymentFormValid="staffPaymentValid=$event"
                   />
                 </v-card>
               </div>
@@ -283,7 +284,7 @@
                 large
                 :disabled="busySaving"
                 :loading="filingPaying"
-                @click="onClickFilePay()"
+                @click="onClickSubmit()"
               >
                 <span>Submit</span>
               </v-btn>
@@ -303,14 +304,14 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, ForeignJurisdiction } from '@/components/common'
+import { Certify } from '@/components/common'
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdraw/RecordToBeWithdrawn.vue'
 import StaffPayment from '@/components/NoticeOfWithdraw/StaffPayment.vue'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
+import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { EnumUtilities, LegalServices } from '@/services/'
-import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
+import { LegalServices } from '@/services/'
+import { FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import PlanOfArrangement from '@/components/NoticeOfWithdraw/PlanOfArrangement.vue'
@@ -324,23 +325,20 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
       ConfirmDialog,
       PlanOfArrangement,
       DocumentDelivery,
-      ForeignJurisdiction,
       PaymentErrorDialog,
       ResumeErrorDialog,
       RecordToBeWithdrawn,
       ReferenceNumber,
       StaffPayment,
       SaveErrorDialog,
-      SbcFeeSummary,
-      StaffPaymentDialog
+      SbcFeeSummary
     }
   })
 export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin) {
     // Refs
     $refs!: {
       confirm: ConfirmDialogType,
-      certifyRef: Certify,
-      foreignJurisdictionRef: ForeignJurisdiction
+      certifyRef: Certify
     }
 
     @Getter(useConfigurationStore) getAuthWebUrl!: string
@@ -363,6 +361,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     hasComeIntoEffect = false
 
     // variable for Reference Number component
+    referenceNumberValid = true
     referenceNumber = ''
 
     // variables for Document Delivery component
@@ -370,8 +369,8 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     documentOptionalEmail = ''
 
     // variables for staff payment
+    staffPaymentValid = false
     staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
-    staffPaymentDialog = false
 
     // variables for displaying dialogs
     resumeErrorDialog = false
@@ -382,7 +381,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     totalFee = 0
     dataLoaded = false
     loadingMessage = ''
-    filingId = 0 // id of this consent to continuation out filing
+    filingId = 0 // id of this Notice if Withdrawal filing
     savedFiling: any = null // filing during save
     saving = false // true only when saving
     savingResuming = false // true only when saving and resuming
@@ -410,19 +409,14 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       return (
         this.certifyFormValid &&
         this.documentDeliveryValid &&
-        this.courtOrderValid
+        this.referenceNumberValid &&
+        this.staffPaymentValid
       )
     }
 
     /** True when saving, saving and resuming, or filing and paying. */
     get busySaving (): boolean {
       return (this.saving || this.savingResuming || this.filingPaying)
-    }
-
-    /** True if payment is required, else False. */
-    get isPayRequired (): boolean {
-      // FUTURE: modify rule here as needed
-      return (this.totalFee > 0)
     }
 
     /** Called when component is created. */
@@ -457,9 +451,9 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       await this.$nextTick()
 
       if (this.filingId > 0) {
-        this.loadingMessage = 'Resuming Your Consent to Continuation Out'
+        this.loadingMessage = 'Resuming Your Notice of Withdrawal'
       } else {
-        this.loadingMessage = 'Preparing Your Consent to Continuation Out'
+        this.loadingMessage = 'Preparing Your Notice of Withdrawal'
       }
 
       // fetch draft (which may overwrite some properties)
@@ -486,7 +480,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       window.onbeforeunload = null
     }
 
-    /** Fetches the draft consent filing. */
+    /** Fetches the draft NOW filing. */
     async fetchDraftFiling (): Promise<void> {
       const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
       await LegalServices.fetchFiling(url).then(filing => {
@@ -494,8 +488,8 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         if (!filing) throw new Error('Missing filing')
         if (!filing.header) throw new Error('Missing header')
         if (!filing.business) throw new Error('Missing business')
-        if (!filing.consentContinuationOut) throw new Error('Missing consent continuation out object')
-        if (filing.header.name !== FilingTypes.CONSENT_CONTINUATION_OUT) throw new Error('Invalid filing type')
+        if (!filing.noticeOfWithdraw) throw new Error('Missing notice of withdraw object')
+        if (filing.header.name !== FilingTypes.NOTICE_OF_WITHDRAWAL) throw new Error('Invalid filing type')
         if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
         if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
         if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
@@ -528,12 +522,13 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
           } as StaffPaymentIF
         }
 
-        const courtOrder = filing.consentContinuationOut.courtOrder
-        if (courtOrder) {
-          this.fileNumber = courtOrder.fileNumber
-          this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
+        // load Folio/Reference Number properties
+        const referenceNumber = filing.noticeOfWithdraw.referenceNumber
+        if (referenceNumber) {
+          this.referenceNumber = referenceNumber
         }
 
+        // load Documents Delivery
         if (filing.header.documentOptionalEmail) {
           this.documentOptionalEmail = filing.header.documentOptionalEmail
         }
@@ -629,11 +624,10 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     }
 
     /**
-     * Called when user clicks File and Pay button
+     * Called when user clicks Submit button
      * or when user retries from Save Error dialog
-     * or when user submits from Staff Payment dialog.
      */
-    async onClickFilePay (fromStaffPayment = false): Promise<void> {
+    async onClickSubmit (): Promise<void> {
       // if there is an invalid component, scroll to it
       if (!this.isPageValid) {
         this.showErrors = true
@@ -647,13 +641,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       // prevent double saving
       if (this.busySaving) return
-
-      // if this is a staff user clicking File and Pay (not Submit)
-      // then detour via Staff Payment dialog
-      if (this.isRoleStaff && !fromStaffPayment) {
-        this.staffPaymentDialog = true
-        return
-      }
 
       this.filingPaying = true
 
@@ -735,7 +722,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       const header: any = {
         header: {
-          name: FilingTypes.CONSENT_CONTINUATION_OUT,
+          name: FilingTypes.NOTICE_OF_WITHDRAWAL,
           certifiedBy: this.certifiedBy || '',
           email: this.getBusinessEmail || '',
           date: this.getCurrentDate // NB: API will reassign this date according to its clock
@@ -777,21 +764,18 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       }
 
       const data: any = {
-        consentContinuationOut: {
-          foreignJurisdiction: {
-          }
+        noticeOfWithdrawal: {
+          filingToBeWithdrawn: this.filingToBeWithdrawn
         }
       }
 
-      if (this.fileNumber !== '') {
-        data.consentContinuationOut.courtOrder = {
-          fileNumber: this.fileNumber,
-          effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string
-        }
+      if (this.referenceNumber !== '') {
+        data.noticeOfWithdrawal.referenceNumber = this.referenceNumber
       }
 
       // build filing
       const filing = Object.assign({}, header, business, data)
+      console.log(filing)
       try {
         let ret
         if (this.filingId > 0) {
@@ -875,8 +859,8 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         case SaveErrorReasons.FILE_PAY:
           // close the dialog and retry file-pay
           this.saveErrorReason = null
-          if (this.isRoleStaff) await this.onClickFilePay(true)
-          else await this.onClickFilePay()
+          if (this.isRoleStaff) await this.onClickSubmit()
+          else await this.onClickSubmit()
           break
       }
     }
@@ -904,10 +888,10 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
     /** Array of valid components. Must match validFlags. */
     readonly validComponents = [
-      'foreign-jurisdiction-section',
       'document-delivery-section',
       'certify-form-section',
-      'court-order-section'
+      'reference-number-section',
+      'staff-payment-section'
     ]
 
     /** Object of valid flags. Must match validComponents. */
@@ -915,14 +899,15 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       return {
         documentDelivery: this.documentDeliveryValid,
         certifyForm: this.certifyFormValid,
-        courtOrder: this.courtOrderValid
+        referenceNumber: this.referenceNumberValid,
+        staffPayment: this.staffPaymentValid
       }
     }
 
     @Watch('certifyFormValid')
-    @Watch('courtOrderValid')
+    @Watch('referenceNumberValid')
     @Watch('documentDeliveryValid')
-    @Watch('foreignJurisdictionValid')
+    @Watch('staffPaymentValid')
     onHaveChanges (): void {
       this.haveChanges = true
     }

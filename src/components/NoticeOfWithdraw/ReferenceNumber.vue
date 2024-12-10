@@ -8,7 +8,6 @@
       >
         <label
           id="reference-number-label"
-          :class="{'error-text': invalidSection}"
         >Folio or Reference Number</label>
       </v-col>
       <v-col
