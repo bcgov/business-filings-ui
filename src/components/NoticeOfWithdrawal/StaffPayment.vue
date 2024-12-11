@@ -47,7 +47,8 @@ export default class StaffPayment extends Vue {
 
   /** Emit payment data to the parent */
   @Emit('update:staffPaymentData')
-  emitStaffPaymentData (): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  emitStaffPaymentData (staffPaymentData: StaffPaymentIF): void {}
 
   /** Emit form validity state to the parent */
   @Emit('staffPaymentFormValid')

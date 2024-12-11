@@ -214,7 +214,7 @@
         >
           <aside>
             <affix
-              relative-element-selector="#consent-article"
+              relative-element-selector="#withdrawal-article"
               :offset="{ top: 120, bottom: 40 }"
             >
               <SbcFeeSummary
@@ -230,12 +230,12 @@
 
     <!-- Buttons -->
     <v-container
-      id="consent-buttons-container"
+      id="withdrawal-buttons-container"
       class="list-item"
     >
       <div class="buttons-left">
         <v-btn
-          id="consent-save-btn"
+          id="withdrawal-save-btn"
           large
           outlined
           color="primary"
@@ -246,7 +246,7 @@
           <span>Save</span>
         </v-btn>
         <v-btn
-          id="consent-save-resume-btn"
+          id="withdrawal-save-resume-btn"
           large
           outlined
           color="primary"
@@ -270,7 +270,7 @@
               v-on="on"
             >
               <v-btn
-                id="consent-cancel-btn"
+                id="withdrawal-cancel-btn"
                 large
                 outlined
                 color="primary"
@@ -280,7 +280,7 @@
                 <span>Cancel</span>
               </v-btn>
               <v-btn
-                id="consent-file-pay-btn"
+                id="withdrawal-file-pay-btn"
                 color="primary"
                 large
                 :disabled="busySaving"
@@ -475,7 +475,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
       }
 
-      // always include consent continue out code
+      // always include NOW out code
       // use existing Priority and Waive Fees flags
       this.updateFilingData('add', FilingCodes.NOTICE_OF_WITHDRAWAL, this.staffPaymentData.isPriority,
         (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
@@ -816,7 +816,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
         'Unsaved Changes',
-        'You have unsaved changes in your Consent to Continue Out. Do you want to exit your filing?',
+        'You have unsaved changes in your Notice of Withdrawal. Do you want to exit your filing?',
         {
           width: '45rem',
           persistent: true,
@@ -974,7 +974,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
   }
 
   // Save & Filing Buttons
-  #consent-buttons-container {
+  #withdrawal-buttons-container {
     padding-top: 2rem;
     border-top: 1px solid $gray5;
 
@@ -990,7 +990,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       margin-left: 0.5rem;
     }
 
-    #consent-cancel-btn {
+    #withdrawal-cancel-btn {
       margin-left: 0.5rem;
     }
   }
