@@ -25,7 +25,7 @@
     "@bcrs-shared-components/court-order-poa": "2.1.4",
     "@bcrs-shared-components/date-picker": "1.2.39",
     "@bcrs-shared-components/document-delivery": "1.2.1",
-    "@bcrs-shared-components/enums": "^1.1.17",
+    "@bcrs-shared-components/enums": "1.1.17",
     "@bcrs-shared-components/expandable-help": "1.0.1",
     "@bcrs-shared-components/folio-number-input": "1.1.18",
     "@bcrs-shared-components/interfaces": "1.1.13",

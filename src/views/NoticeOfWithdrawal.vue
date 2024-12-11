@@ -391,7 +391,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     haveChanges = false
     saveErrors = []
     saveWarnings = []
-    filingToBeWithdrawn = this.$route.params.filingToBeWithdrawn
+    filingToBeWithdrawn = this.$route.params.filingToBeWithdrawn || ''
 
     /** True if loading container should be shown, else False. */
     get showLoadingContainer (): boolean {
