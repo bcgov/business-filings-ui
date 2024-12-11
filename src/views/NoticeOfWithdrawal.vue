@@ -167,16 +167,17 @@
               </header>
               <div
                 id="reference-number-section"
+                :class="{ 'invalid-section': !referenceNumberValid && showErrors }"
               >
                 <v-card
                   flat
                   class="py-8 px-5"
                 >
                   <ReferenceNumber
-                    :autoValidation="showErrors"
+                    :autoValidation="true"
                     :draftReferenceNumber="referenceNumber"
                     @emitReferenceNumber="referenceNumber=$event"
-                    @valid="referenceNumberValid=$event"
+                    @emitValid="referenceNumberValid=$event"
                   />
                 </v-card>
               </div>

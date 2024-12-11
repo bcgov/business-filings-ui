@@ -43,6 +43,7 @@ export default class StaffPayment extends Vue {
   }
 
   @Watch('staffPaymentFormValid')
+  @Watch('validate')
   onStaffPaymentFormValidChange (newValue: boolean): void {
     if (this.validate) {
       this.emitStaffPaymentFormValid(newValue) // Emit the updated validity state
