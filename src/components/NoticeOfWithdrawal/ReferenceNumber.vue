@@ -88,14 +88,13 @@ export default class ReferenceNumber extends Vue {
 
     /** Emit reference number. */
     @Watch('referenceNumber')
-    @Emit('emitReferenceNumber')
-    private emitReferenceNumber (): string { return this.referenceNumber }
+    @Emit('referenceNumber')
+    emitReferenceNumber (): void {}
 
+    /** Emit valid. */
     @Watch('valid')
-    @Emit('emitValid')
-    private emitValid (): boolean {
-      return this.valid
-    }
+    @Emit('valid')
+    emitValid (): void {}
 }
 </script>
 

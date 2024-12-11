@@ -176,8 +176,8 @@
                   <ReferenceNumber
                     :autoValidation="true"
                     :draftReferenceNumber="referenceNumber"
-                    @emitReferenceNumber="referenceNumber=$event"
-                    @emitValid="referenceNumberValid=$event"
+                    @referenceNumber="referenceNumber=$event"
+                    @valid="referenceNumberValid=$event"
                   />
                 </v-card>
               </div>

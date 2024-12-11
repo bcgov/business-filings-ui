@@ -32,11 +32,6 @@ export default class StaffPayment extends Vue {
   private validate = false
   private staffPaymentFormValid = false
 
-  @Emit('update:staffPaymentData')
-  emitStaffPaymentData (staffPaymentData: StaffPaymentIF): StaffPaymentIF {
-    return staffPaymentData
-  }
-
   @Watch('staffPaymentData', { deep: true })
   onStaffPaymentDataChanged (): void {
     this.validate = true
@@ -49,6 +44,10 @@ export default class StaffPayment extends Vue {
       this.emitStaffPaymentFormValid(newValue) // Emit the updated validity state
     }
   }
+
+  /** Emit payment data to the parent */
+  @Emit('update:staffPaymentData')
+  emitStaffPaymentData (): void {}
 
   /** Emit form validity state to the parent */
   @Emit('staffPaymentFormValid')
