@@ -20,11 +20,6 @@ export const BusinessConfigGp = {
       feeCode: null,
       displayName: 'Change Of Directors',
       certifyText: ''
-    },
-    {
-      feeCode: null,
-      displayName: 'Notice of Withdrawal',
-      certifyText: ''
     }
   ],
   obligations: {
