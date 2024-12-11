@@ -422,6 +422,12 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
     /** Called when component is created. */
     created (): void {
+      // do not proceed if user is not staff
+      if (!this.isRoleStaff) {
+        this.resumeErrorDialog = true
+        throw new Error('This is a Staff only Filing.')
+      }
+
       // init
       this.setFilingData([])
 
