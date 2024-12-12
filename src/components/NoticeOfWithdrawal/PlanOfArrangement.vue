@@ -6,12 +6,50 @@
         sm="3"
         class="pr-4"
       >
+        <label
+          id="court-order-label"
+          :class="{'error-text': invalidSection}"
+        >Court Order Number</label>
+      </v-col>
+      <v-col
+        cols="12"
+        :sm="9"
+      >
+        <p class="grey-text">
+          Provide a court order number if this record is part of a court order or a plan of arrangement.
+        </p>
+        <v-form
+          id="court-num-form"
+          ref="courtNumRef"
+          v-model="valid"
+        >
+          <v-text-field
+            id="court-order-number-input"
+            v-model="courtOrderNumber"
+            label="Court Order Number"
+            :rules="courtOrderNumRules"
+            filled
+          />
+        </v-form>
+      </v-col>
+    </v-row>
+    <v-row no-gutters>
+      <v-col
+        cols="12"
+        sm="3"
+        class="pr-4"
+      >
         <label id="poa-label">Plan of Arrangement</label>
       </v-col>
       <v-col
         cols="12"
         :sm="9"
       >
+        <p class="grey-text">
+          If you want to withdraw a record that is part of a plan of arrangement,
+          you must withdraw all records related to the arrangement.
+          This must be done before any of the terms of the arrangement take effect.
+        </p>
         <v-checkbox
           id="plan-of-arrangement-checkbox"
           v-model="planOfArrangement"
@@ -50,24 +88,65 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { FormIF } from '@bcrs-shared-components/interfaces'
 
 @Component({})
 export default class PlanOfArrangement extends Vue {
+  // Refs
+  $refs!: Vue['$refs'] & {
+    courtNumRef: FormIF
+  }
+
+  /** Draft court order number. */
+  @Prop({ default: '' }) readonly draftCourtOrderNumber!: string
+
   /** Draft plan of arrangement. */
   @Prop({ default: false }) readonly hasDraftPlanOfArrangement!: boolean
 
   /** Draft come into effect. */
   @Prop({ default: false }) readonly hasDraftComeIntoEffect!: boolean
 
+  /** Prompt Error. */
+  @Prop({ default: false }) readonly invalidSection!: boolean
+
   // Local properties
+  private courtOrderNumber = ''
+  private courtOrderNumRules = []
   private planOfArrangement = false
   private comeIntoEffect = false
+  private valid = false
 
   /** Called when component is mounted. */
   mounted (): void {
     // Set default draft values if they exist
+    if (this.draftCourtOrderNumber) this.courtOrderNumber = this.draftCourtOrderNumber
     if (this.hasDraftPlanOfArrangement) this.planOfArrangement = this.hasDraftPlanOfArrangement
     if (this.hasDraftComeIntoEffect) this.comeIntoEffect = this.hasDraftComeIntoEffect
+  }
+
+  /** Clear rules and reset validations. */
+  private clearValidations (): void {
+    this.courtOrderNumRules = []
+    this.$refs.courtNumRef.resetValidation()
+  }
+
+  /** Triggers the form validation. */
+  public validate (): boolean {
+    return this.$refs.courtNumRef.validate()
+  }
+
+  @Watch('planOfArrangement')
+  @Watch('courtOrderNumber')
+  @Watch('courtOrderNumberRequired')
+  validateCourtNum (): void {
+    // Apply TextField rules
+    this.courtOrderNumRules = [
+      (v: string) => (!v || !/^\s/g.test(v)) || 'Invalid spaces', // leading spaces
+      (v: string) => (!v || !/\s$/g.test(v)) || 'Invalid spaces', // trailing spaces
+      (v: string) => (!v || !(v.length < 5)) || 'Court order number is invalid', // too short
+      (v: string) => (!v || !(v.length > 20)) || 'Court order number is invalid' // too long
+    ]
+    this.$refs.courtNumRef.validate()
   }
 
   @Watch('planOfArrangement')
@@ -78,6 +157,11 @@ export default class PlanOfArrangement extends Vue {
     }
   }
 
+  /** Emit court order number. */
+  @Watch('courtOrderNumber')
+  @Emit('courtNumber')
+  emitCourtNumber (): void {}
+
   /** Emit plan of arrangement. */
   @Watch('planOfArrangement')
   @Emit('planOfArrangement')
@@ -87,14 +171,18 @@ export default class PlanOfArrangement extends Vue {
   @Watch('comeIntoEffect')
   @Emit('comeIntoEffect')
   emitEffect (): void {}
+
+  /** Emit valid. */
+  @Watch('valid')
+  @Emit('valid')
+  private emitValid (): void {}
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-#poa-label {
-  font-size: $px-16;
+#poa-label, #court-order-label {
   font-weight: bold;
   color: $gray9;
 }

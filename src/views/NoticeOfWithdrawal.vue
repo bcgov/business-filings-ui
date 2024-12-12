@@ -143,6 +143,7 @@
               </header>
               <div
                 id="poa-section"
+                :class="{ 'invalid-section': !poaValid && showErrors }"
                 class="pt-3"
               >
                 <v-card
@@ -150,10 +151,14 @@
                   class="py-8 px-5"
                 >
                   <PlanOfArrangement
+                    :autoValidation="showErrors"
+                    :draftCourtOrderNumber="courOrderNumber"
                     :hasDraftPlanOfArrangement="hasPlanOfArrangement"
                     :hasDraftComeIntoEffect="hasComeIntoEffect"
+                    @courtNumber="courOrderNumber=$event"
                     @planOfArrangement="hasPlanOfArrangement=$event"
                     @comeIntoEffect="hasComeIntoEffect=$event"
+                    @valid="poaValid=$event"
                   />
                 </v-card>
               </div>
@@ -361,7 +366,9 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     isCertified = false
     certifyFormValid = false
 
-    // variables for POA component
+    // variables for Court Order and POA component
+    poaValid = true
+    courOrderNumber = ''
     hasPlanOfArrangement = false
     hasComeIntoEffect = false
 
@@ -416,6 +423,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         this.certifyFormValid &&
         this.documentDeliveryValid &&
         this.referenceNumberValid &&
+        this.poaValid &&
         this.staffPaymentValid
       )
     }
@@ -535,7 +543,8 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
           } as StaffPaymentIF
         }
 
-        // load POA and arrangement properties
+        // load Court Order, POA and arrangement properties
+        const courtOrderNumber = filing.noticeOfWithdrawal.courtOrderNumber
         const hasPlanOfArrangement = filing.noticeOfWithdraw.hasPlanOfArrangement
         const hasComeIntoEffect = filing.noticeOfWithdraw.hasComeIntoEffect
         if (hasPlanOfArrangement) {
@@ -543,6 +552,9 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
           if (hasComeIntoEffect) {
             this.hasComeIntoEffect = true
           }
+        }
+        if (courtOrderNumber) {
+          this.courOrderNumber = courtOrderNumber
         }
 
         // load Folio/Reference Number properties
@@ -796,6 +808,10 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         data.noticeOfWithdrawal.referenceNumber = this.referenceNumber
       }
 
+      if (this.courOrderNumber !== '') {
+        data.noticeOfWithdrawal.courtOrderNumber = this.courOrderNumber
+      }
+
       if (this.hasPlanOfArrangement) {
         data.noticeOfWithdrawal.hasPlanOfArrangement = true
         if (this.hasComeIntoEffect) {
@@ -920,6 +936,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     readonly validComponents = [
       'document-delivery-section',
       'certify-form-section',
+      'poa-section',
       'reference-number-section',
       'staff-payment-section'
     ]
@@ -929,12 +946,14 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       return {
         documentDelivery: this.documentDeliveryValid,
         certifyForm: this.certifyFormValid,
+        planOfArrangement: this.poaValid,
         referenceNumber: this.referenceNumberValid,
         staffPayment: this.staffPaymentValid
       }
     }
 
     @Watch('certifyFormValid')
+    @Watch('poaValid')
     @Watch('referenceNumberValid')
     @Watch('documentDeliveryValid')
     @Watch('staffPaymentValid')
