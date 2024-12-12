@@ -139,14 +139,12 @@
               </header>
               <div
                 id="court-order-section"
-                :class="{ 'invalid-section': showErrors }"
               >
                 <v-card
                   flat
                   class="py-8 px-5"
                 >
                   <PlanOfArrangement
-                    :autoValidation="showErrors"
                     :hasDraftPlanOfArrangement="hasPlanOfArrangement"
                     :hasDraftComeIntoEffect="hasComeIntoEffect"
                     @emitPoa="hasPlanOfArrangement=$event"
@@ -529,6 +527,16 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
           } as StaffPaymentIF
         }
 
+        // load POA and arrangement properties
+        const hasPlanOfArrangement = filing.noticeOfWithdraw.hasPlanOfArrangement
+        const hasComeIntoEffect = filing.noticeOfWithdraw.hasComeIntoEffect
+        if (hasPlanOfArrangement) {
+          this.hasPlanOfArrangement = true
+          if (hasComeIntoEffect) {
+            this.hasComeIntoEffect = true
+          }
+        }
+
         // load Folio/Reference Number properties
         const referenceNumber = filing.noticeOfWithdraw.referenceNumber
         if (referenceNumber) {
@@ -778,6 +786,13 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       if (this.referenceNumber !== '') {
         data.noticeOfWithdrawal.referenceNumber = this.referenceNumber
+      }
+
+      if (this.hasPlanOfArrangement) {
+        data.noticeOfWithdrawal.hasPlanOfArrangement = true
+        if (this.hasComeIntoEffect) {
+          data.noticeOfWithdrawal.hasComeIntoEffect = true
+        }
       }
 
       // build filing

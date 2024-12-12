@@ -18,12 +18,12 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
 import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment'
 import { StaffPaymentIF } from '@/interfaces'
 
-  /** This is a shim between the view and the atomic component. */
-  @Component({
-    components: {
-      StaffPaymentShared
-    }
-  })
+/** This is a shim between the view and the atomic component. */
+@Component({
+  components: {
+    StaffPaymentShared
+  }
+})
 export default class StaffPayment extends Vue {
   // Prop to provide staff payment data.
   @Prop({ required: true }) readonly staffPaymentData!: StaffPaymentIF

@@ -77,11 +77,11 @@ import { VcardTemplate } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
 import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
 
-  @Component({
-    components: {
-      VcardTemplate
-    }
-  })
+@Component({
+  components: {
+    VcardTemplate
+  }
+})
 export default class RecordToBeWithdrawn extends Vue {
     @Prop({ required: true }) readonly filingToBeWithdrawn!: string
 

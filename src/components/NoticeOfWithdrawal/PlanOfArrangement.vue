@@ -51,59 +51,46 @@
 import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 
-  @Component({})
+@Component({})
 export default class PlanOfArrangement extends Vue {
-    /** Prompt the validations. Used for global validations. */
-    @Prop({ default: false }) readonly autoValidation!: boolean
+  /** Draft plan of arrangement. */
+  @Prop({ default: false }) readonly hasDraftPlanOfArrangement!: boolean
 
-    /** Draft plan of arrangement. */
-    @Prop({ default: false }) readonly hasDraftPlanOfArrangement!: boolean
+  /** Draft come into effect. */
+  @Prop({ default: false }) readonly hasDraftComeIntoEffect!: boolean
 
-    /** Draft come into effect. */
-    @Prop({ default: false }) readonly hasDraftComeIntoEffect!: boolean
+  // Local properties
+  private planOfArrangement = false
+  private comeIntoEffect = false
 
-    /** Prompt Error. */
-    @Prop({ default: false }) readonly invalidSection!: boolean
+  /** Called when component is mounted. */
+  mounted (): void {
+    // Set default draft values if they exist
+    if (this.hasDraftPlanOfArrangement) this.planOfArrangement = this.hasDraftPlanOfArrangement
+    if (this.hasDraftComeIntoEffect) this.comeIntoEffect = this.hasDraftComeIntoEffect
+  }
 
-    // Local properties
-    private planOfArrangement = false
-    private comeIntoEffect = false
-    private valid = false
-
-    /** Called when component is mounted. */
-    mounted (): void {
-      // Set default draft values if they exist
-      if (this.hasDraftPlanOfArrangement) this.planOfArrangement = this.hasDraftPlanOfArrangement
-      if (this.hasDraftComeIntoEffect) this.comeIntoEffect = this.hasDraftComeIntoEffect
+  @Watch('planOfArrangement')
+  private onPlanOfArrangementChange (newVal: boolean): void {
+    // If planOfArrangement is false, reset comeIntoEffect to false
+    if (!newVal) {
+      this.comeIntoEffect = false
     }
+  }
 
-    @Watch('planOfArrangement')
-    private onPlanOfArrangementChange (newVal: boolean): void {
-      // If planOfArrangement is false, reset comeIntoEffect to false
-      if (!newVal) {
-        this.comeIntoEffect = false
-      }
-    }
+  /** Emit plan of arrangement. */
+  @Watch('planOfArrangement')
+  @Emit('emitPoa')
+  private emitPoa (): boolean {
+    return this.planOfArrangement
+  }
 
-    /** Emit plan of arrangement. */
-    @Watch('planOfArrangement')
-    @Emit('emitPoa')
-    private emitPoa (): boolean {
-      return this.planOfArrangement
-    }
-
-    /** Emit come into effect. */
-    @Watch('comeIntoEffect')
-    @Emit('emitEffect')
-    private emitEffect (): boolean {
-      return this.comeIntoEffect
-    }
-
-    @Watch('valid')
-    @Emit('emitValid')
-    private emitValid (): boolean {
-      return this.valid
-    }
+  /** Emit come into effect. */
+  @Watch('comeIntoEffect')
+  @Emit('emitEffect')
+  private emitEffect (): boolean {
+    return this.comeIntoEffect
+  }
 }
 </script>
 

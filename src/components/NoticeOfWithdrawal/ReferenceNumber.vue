@@ -37,7 +37,7 @@ import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { FormIF } from '@bcrs-shared-components/interfaces'
 
-  @Component({})
+@Component({})
 export default class ReferenceNumber extends Vue {
     // Refs
     $refs!: Vue['$refs'] & {
