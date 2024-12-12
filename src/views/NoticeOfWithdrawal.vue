@@ -5,6 +5,14 @@
       attach="#notice-of-withdrawal"
     />
 
+    <StaffRoleErrorDialog
+      attach="#notice-of-withdrawal"
+      :dialog="staffRoleErrorDialog"
+      :title="'Access Restricted'"
+      :text="`Only BC Registries staff can access this information.`"
+      @exit="goToDashboard(true)"
+    />
+
     <PaymentErrorDialog
       attach="#notice-of-withdrawal"
       filingName="Notice of Withdrawal"
@@ -308,6 +316,7 @@ import PlanOfArrangement from '@/components/NoticeOfWithdrawal/PlanOfArrangement
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
 import ReferenceNumber from '@/components/NoticeOfWithdrawal/ReferenceNumber.vue'
 import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
+import StaffRoleErrorDialog from '@/components/NoticeOfWithdrawal/StaffRoleErrorDialog.vue'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -324,6 +333,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
       ConfirmDialog,
       PlanOfArrangement,
       DocumentDelivery,
+      StaffRoleErrorDialog,
       PaymentErrorDialog,
       ResumeErrorDialog,
       RecordToBeWithdrawn,
@@ -372,6 +382,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
 
     // variables for displaying dialogs
+    staffRoleErrorDialog = false
     resumeErrorDialog = false
     saveErrorReason = null as SaveErrorReasons
     paymentErrorDialog = false
@@ -422,7 +433,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     created (): void {
       // do not proceed if user is not staff
       if (!this.isRoleStaff) {
-        this.resumeErrorDialog = true
+        this.staffRoleErrorDialog = true
         throw new Error('This is a Staff only Filing.')
       }
 
