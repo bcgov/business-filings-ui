@@ -89,7 +89,8 @@ export default class ReferenceNumber extends Vue {
   /** Emit reference number. */
   @Watch('referenceNumber')
   @Emit('referenceNumber')
-  emitReferenceNumber (): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  emitReferenceNumber (referenceNumber: string): void {}
 
   /** Emit valid. */
   @Watch('valid')
