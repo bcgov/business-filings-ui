@@ -38,7 +38,7 @@ describe('Notice of Withdrawal view', () => {
   })
 
   it('mounts the sub-components properly', async () => {
-    const $route = { query: { filingId: '0' }, params: { filingToBeWithdrawn: '12345' } }
+    const $route = { query: { filingId: '0', filingToBeWithdrawn: '12345' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -61,14 +61,14 @@ describe('Notice of Withdrawal view', () => {
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
 
     // Verify $route params and query
-    //expect(wrapper.vm.filingToBeWithdrawn).toBe('12345')
+    expect(wrapper.vm.filingToBeWithdrawn).toBe('12345')
     expect(wrapper.vm.filingId).toBe(0)
 
     wrapper.destroy()
   })
 
   it('sets filing data properly', async () => {
-    const $route = { query: { filingId: '0' } }
+    const $route = { query: { filingId: '0', filingToBeWithdrawn: '12345' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -97,7 +97,7 @@ describe('Notice of Withdrawal view', () => {
 
   it('sets computed states properly', () => {
     // mock $route
-    const $route = { query: { filingId: '0' } }
+    const $route = { query: { filingId: '0', filingToBeWithdrawn: '12345' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()

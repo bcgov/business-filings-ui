@@ -89,7 +89,7 @@ export default [
     }
   },
   {
-    path: '/notice-of-withdrawal/:filingToBeWithdrawn',
+    path: '/notice-of-withdrawal',
     name: Routes.NOTICE_OF_WITHDRAWAL,
     component: NoticeOfWithdrawal,
     meta: {
