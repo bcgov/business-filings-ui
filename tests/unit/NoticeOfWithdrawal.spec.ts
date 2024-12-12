@@ -98,6 +98,7 @@ describe('Notice of Withdrawal view', () => {
     vm.documentDeliveryValid = true
     vm.referenceNumberValid = true
     vm.staffPaymentValid = true
+    vm.poaValid = true
     expect(vm.isPageValid).toBe(true)
 
     // verify "validated" - invalid Certify form
@@ -105,6 +106,7 @@ describe('Notice of Withdrawal view', () => {
     vm.documentDeliveryValid = true
     vm.referenceNumberValid = true
     vm.staffPaymentValid = true
+    vm.poaValid = true
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Document Delivery form
@@ -112,6 +114,7 @@ describe('Notice of Withdrawal view', () => {
     vm.documentDeliveryValid = false
     vm.referenceNumberValid = true
     vm.staffPaymentValid = true
+    vm.poaValid = true
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Reference Number form
@@ -119,6 +122,7 @@ describe('Notice of Withdrawal view', () => {
     vm.documentDeliveryValid = true
     vm.referenceNumberValid = false
     vm.staffPaymentValid = true
+    vm.poaValid = true
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Staff Payment form
@@ -126,6 +130,15 @@ describe('Notice of Withdrawal view', () => {
     vm.documentDeliveryValid = true
     vm.referenceNumberValid = true
     vm.staffPaymentValid = false
+    vm.poaValid = true
+    expect(vm.isPageValid).toBe(false)
+
+    // verify "validated" - invalid POA section
+    vm.certifyFormValid = true
+    vm.documentDeliveryValid = true
+    vm.referenceNumberValid = true
+    vm.staffPaymentValid = true
+    vm.poaValid = false
     expect(vm.isPageValid).toBe(false)
 
     wrapper.destroy()
