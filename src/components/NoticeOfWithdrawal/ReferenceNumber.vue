@@ -95,7 +95,8 @@ export default class ReferenceNumber extends Vue {
   /** Emit valid. */
   @Watch('valid')
   @Emit('valid')
-  emitValid (): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  emitValid (valid: boolean): void {}
 }
 </script>
 

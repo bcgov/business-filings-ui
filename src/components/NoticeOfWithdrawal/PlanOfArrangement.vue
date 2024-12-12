@@ -160,22 +160,26 @@ export default class PlanOfArrangement extends Vue {
   /** Emit court order number. */
   @Watch('courtOrderNumber')
   @Emit('courtNumber')
-  emitCourtNumber (): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  emitCourtNumber (courtNumber: string): void {}
 
   /** Emit plan of arrangement. */
   @Watch('planOfArrangement')
   @Emit('planOfArrangement')
-  emitPoa (): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  emitPoa (planOfArrangement: boolean): void {}
 
   /** Emit come into effect. */
   @Watch('comeIntoEffect')
   @Emit('comeIntoEffect')
-  emitEffect (): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  emitEffect (planOfArrangement: boolean): void {}
 
   /** Emit valid. */
   @Watch('valid')
   @Emit('valid')
-  private emitValid (): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitValid (valid: boolean): void {}
 }
 </script>
 
