@@ -147,8 +147,8 @@
                   <PlanOfArrangement
                     :hasDraftPlanOfArrangement="hasPlanOfArrangement"
                     :hasDraftComeIntoEffect="hasComeIntoEffect"
-                    @emitPoa="hasPlanOfArrangement=$event"
-                    @emitEffect="hasComeIntoEffect=$event"
+                    @planOfArrangement="hasPlanOfArrangement=$event"
+                    @comeIntoEffect="hasComeIntoEffect=$event"
                   />
                 </v-card>
               </div>

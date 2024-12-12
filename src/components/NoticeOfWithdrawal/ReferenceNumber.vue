@@ -39,87 +39,87 @@ import { FormIF } from '@bcrs-shared-components/interfaces'
 
 @Component({})
 export default class ReferenceNumber extends Vue {
-    // Refs
-    $refs!: Vue['$refs'] & {
-        refNumRef: FormIF
-    }
+  // Refs
+  $refs!: Vue['$refs'] & {
+      refNumRef: FormIF
+  }
 
-    /** Prompt the validations. Used for global validations. */
-    @Prop({ default: false }) readonly autoValidation!: boolean
+  /** Prompt the validations. Used for global validations. */
+  @Prop({ default: false }) readonly autoValidation!: boolean
 
-    /** Draft court order number. */
-    @Prop({ default: '' }) readonly draftReferenceNumber!: string
+  /** Draft court order number. */
+  @Prop({ default: '' }) readonly draftReferenceNumber!: string
 
-    // Local properties
-    private referenceNumber = ''
-    private referenceNumRules = []
-    private valid = false
+  // Local properties
+  private referenceNumber = ''
+  private referenceNumRules = []
+  private valid = false
 
-    /** Called when component is mounted. */
-    mounted (): void {
-      // Set default draft values if they exist
-      if (this.draftReferenceNumber) this.referenceNumber = this.draftReferenceNumber
-    }
+  /** Called when component is mounted. */
+  mounted (): void {
+    // Set default draft values if they exist
+    if (this.draftReferenceNumber) this.referenceNumber = this.draftReferenceNumber
+  }
 
-    /** Clear rules and reset validations. */
-    private clearValidations (): void {
-      this.referenceNumRules = []
-      this.$refs.refNumRef.resetValidation()
-    }
+  /** Clear rules and reset validations. */
+  private clearValidations (): void {
+    this.referenceNumRules = []
+    this.$refs.refNumRef.resetValidation()
+  }
 
-    /** Triggers the form validation. */
-    public validate (): boolean {
-      return this.$refs.refNumRef.validate()
-    }
+  /** Triggers the form validation. */
+  public validate (): boolean {
+    return this.$refs.refNumRef.validate()
+  }
 
-    @Watch('autoValidation')
-    @Watch('referenceNumber')
-    validateReferenceNum (): void {
-      if (this.autoValidation) {
-        // Apply TextField rules
-        this.referenceNumRules = [
-          (v: string) => (!v || !/^\s/g.test(v)) || 'Invalid spaces', // leading spaces
-          (v: string) => (!v || !/\s$/g.test(v)) || 'Invalid spaces', // trailing spaces
-          (v: string) => (!v || !(v.length > 20)) || 'Folio or Reference number is invalid' // too long
-        ]
-        this.$refs.refNumRef.validate()
-      } else this.clearValidations()
-    }
+  @Watch('autoValidation')
+  @Watch('referenceNumber')
+  validateReferenceNum (): void {
+    if (this.autoValidation) {
+      // Apply TextField rules
+      this.referenceNumRules = [
+        (v: string) => (!v || !/^\s/g.test(v)) || 'Invalid spaces', // leading spaces
+        (v: string) => (!v || !/\s$/g.test(v)) || 'Invalid spaces', // trailing spaces
+        (v: string) => (!v || !(v.length > 20)) || 'Folio or Reference number is invalid' // too long
+      ]
+      this.$refs.refNumRef.validate()
+    } else this.clearValidations()
+  }
 
-    /** Emit reference number. */
-    @Watch('referenceNumber')
-    @Emit('referenceNumber')
-    emitReferenceNumber (): void {}
+  /** Emit reference number. */
+  @Watch('referenceNumber')
+  @Emit('referenceNumber')
+  emitReferenceNumber (): void {}
 
-    /** Emit valid. */
-    @Watch('valid')
-    @Emit('valid')
-    emitValid (): void {}
+  /** Emit valid. */
+  @Watch('valid')
+  @Emit('valid')
+  emitValid (): void {}
 }
 </script>
 
-  <style lang="scss" scoped>
-  @import '@/assets/styles/theme.scss';
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
 
-  #reference-number-label {
-    font-size: $px-16;
-    font-weight: bold;
-    color: $gray9;
-  }
+#reference-number-label {
+font-size: $px-16;
+font-weight: bold;
+color: $gray9;
+}
 
-  :deep() {
-    .v-card__actions {
-      justify-content: flex-end;
-    }
+:deep() {
+.v-card__actions {
+  justify-content: flex-end;
+}
 
-    .v-input .v-label {
-      font-weight: normal;
-      color: $gray7;
-    }
+.v-input .v-label {
+  font-weight: normal;
+  color: $gray7;
+}
 
-    .theme--light.v-input input {
-      font-weight: normal;
-      color: $gray7;
-    }
-  }
-  </style>
+.theme--light.v-input input {
+  font-weight: normal;
+  color: $gray7;
+}
+}
+</style>

@@ -83,40 +83,40 @@ import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
   }
 })
 export default class RecordToBeWithdrawn extends Vue {
-    @Prop({ required: true }) readonly filingToBeWithdrawn!: string
+  @Prop({ required: true }) readonly filingToBeWithdrawn!: string
 
-    @Getter(useFilingHistoryListStore) getFilings!: Array<ApiFilingIF>
+  @Getter(useFilingHistoryListStore) getFilings!: Array<ApiFilingIF>
 
-    getFilingToBeWithdrawn (): ApiFilingIF| undefined {
-      const filingId = Number(this.filingToBeWithdrawn)
-      const filings = this.getFilings as ApiFilingIF[]
-      return filings.find(filing => filing.filingId === filingId)
+  getFilingToBeWithdrawn (): ApiFilingIF| undefined {
+    const filingId = Number(this.filingToBeWithdrawn)
+    const filings = this.getFilings as ApiFilingIF[]
+    return filings.find(filing => filing.filingId === filingId)
+  }
+
+  getFormattedFilingDate (): string {
+    const filing = this.getFilingToBeWithdrawn()
+    if (filing && filing.effectiveDate) {
+      const date = new Date(filing.effectiveDate)
+      const formattedDate = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles', // Pacific Time
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+      }).format(date)
+      return `${formattedDate} Pacific Time`
     }
-
-    getFormattedFilingDate (): string {
-      const filing = this.getFilingToBeWithdrawn()
-      if (filing && filing.effectiveDate) {
-        const date = new Date(filing.effectiveDate)
-        const formattedDate = new Intl.DateTimeFormat('en-US', {
-          timeZone: 'America/Los_Angeles', // Pacific Time
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          hour12: true
-        }).format(date)
-        return `${formattedDate} Pacific Time`
-      }
-      return 'Invalid date'
-    }
+    return 'Invalid date'
+  }
 }
 </script>
 
-  <style lang="scss" scoped>
-  @import '@/assets/styles/theme.scss';
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
 
-  .col-12 {
-    font-size: $px-16;
-  }
-  </style>
+.col-12 {
+  font-size: $px-16;
+}
+</style>

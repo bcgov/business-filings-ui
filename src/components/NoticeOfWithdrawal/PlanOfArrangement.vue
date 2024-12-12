@@ -80,42 +80,38 @@ export default class PlanOfArrangement extends Vue {
 
   /** Emit plan of arrangement. */
   @Watch('planOfArrangement')
-  @Emit('emitPoa')
-  private emitPoa (): boolean {
-    return this.planOfArrangement
-  }
+  @Emit('planOfArrangement')
+  emitPoa (): void {}
 
   /** Emit come into effect. */
   @Watch('comeIntoEffect')
-  @Emit('emitEffect')
-  private emitEffect (): boolean {
-    return this.comeIntoEffect
-  }
+  @Emit('comeIntoEffect')
+  emitEffect (): void {}
 }
 </script>
 
-  <style lang="scss" scoped>
-  @import '@/assets/styles/theme.scss';
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
 
-  #poa-label {
-    font-size: $px-16;
-    font-weight: bold;
-    color: $gray9;
+#poa-label {
+  font-size: $px-16;
+  font-weight: bold;
+  color: $gray9;
+}
+
+:deep() {
+  .v-card__actions {
+    justify-content: flex-end;
   }
 
-  :deep() {
-    .v-card__actions {
-      justify-content: flex-end;
-    }
-
-    .v-input .v-label {
-      font-weight: normal;
-      color: $gray7;
-    }
-
-    .theme--light.v-input input {
-      font-weight: normal;
-      color: $gray7;
-    }
+  .v-input .v-label {
+    font-weight: normal;
+    color: $gray7;
   }
-  </style>
+
+  .theme--light.v-input input {
+    font-weight: normal;
+    color: $gray7;
+  }
+}
+</style>
