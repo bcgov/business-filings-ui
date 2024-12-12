@@ -821,7 +821,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       // build filing
       const filing = Object.assign({}, header, business, data)
-      console.log(filing)
       try {
         let ret
         if (this.filingId > 0) {
