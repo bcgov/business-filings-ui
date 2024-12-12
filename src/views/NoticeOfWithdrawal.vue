@@ -139,14 +139,11 @@
             <!-- Withdrawal of Arrangement Records -->
             <section>
               <header>
-                <h2>Withdrawal of Arrangement Records</h2>
-                <p class="grey-text">
-                  Indicate if the record to be withdrawn is pursuant to a plan of arrangement and
-                  if one or more of the provisions of the arrangement have come into effect.
-                </p>
+                <h2>Court Order and Plan of Arrangement</h2>
               </header>
               <div
                 id="poa-section"
+                class="pt-3"
               >
                 <v-card
                   flat
@@ -391,6 +388,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     dataLoaded = false
     loadingMessage = ''
     filingId = 0 // id of this Notice if Withdrawal filing
+    filingToBeWithdrawn: any // id of filing to be withdrawn
     savedFiling: any = null // filing during save
     saving = false // true only when saving
     savingResuming = false // true only when saving and resuming
@@ -399,7 +397,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     haveChanges = false
     saveErrors = []
     saveWarnings = []
-    filingToBeWithdrawn = ''
 
     /** True if loading container should be shown, else False. */
     get showLoadingContainer (): boolean {
@@ -438,7 +435,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       // init
       this.setFilingData([])
-      this.filingToBeWithdrawn = this.$route.query.filingToBeWithdrawn as string || ''
 
       // before unloading this page, if there are changes then prompt user
       window.onbeforeunload = (event) => {
@@ -449,9 +445,10 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         }
       }
 
-      // this is the id of THIS filing
-      // if 0, this is a new filing
+      // this is the id of filing being withdrawn, and of THIS filing
+      // if filingID is 0, this is a new filing
       // otherwise it's a draft filing
+      this.filingToBeWithdrawn = this.$route.query.filingToBeWithdrawn // should be a string
       this.filingId = +this.$route.query.filingId // number or NaN
 
       // if required data isn't set, go back to dashboard
