@@ -316,8 +316,7 @@ import PlanOfArrangement from '@/components/NoticeOfWithdrawal/PlanOfArrangement
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
 import ReferenceNumber from '@/components/NoticeOfWithdrawal/ReferenceNumber.vue'
 import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
-import StaffRoleErrorDialog from '@/components/NoticeOfWithdrawal/StaffRoleErrorDialog.vue'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
+import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'

@@ -4,7 +4,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useRootStore } from '@/stores'
 import NoticeOfWithdrawal from '@/views/NoticeOfWithdrawal.vue'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
+import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { Certify } from '@/components/common'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
@@ -14,7 +14,6 @@ import PlanOfArrangement from '@/components/NoticeOfWithdrawal/PlanOfArrangement
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
 import ReferenceNumber from '@/components/NoticeOfWithdrawal/ReferenceNumber.vue'
 import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
-import StaffRoleErrorDialog from '@/components/NoticeOfWithdrawal/StaffRoleErrorDialog.vue'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
