@@ -6,9 +6,9 @@
         sm="3"
         class="pr-4"
       >
-        <label
-          id="reference-number-label"
-        >Folio or Reference Number</label>
+        <label id="reference-number-label">
+          <strong>Folio or Reference Number</strong>
+        </label>
       </v-col>
       <v-col
         cols="12"
@@ -100,12 +100,6 @@ export default class ReferenceNumber extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-#reference-number-label {
-font-size: $px-16;
-font-weight: bold;
-color: $gray9;
-}
 
 :deep() {
 .v-card__actions {

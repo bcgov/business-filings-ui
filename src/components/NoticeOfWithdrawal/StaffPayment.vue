@@ -57,3 +57,11 @@ export default class StaffPayment extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+:deep() {
+  #staff-payment-container .title-label {
+      font-size: $px-14;
+    }}
+</style>

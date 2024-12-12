@@ -11,7 +11,7 @@
     <template #content>
       <v-row
         no-gutters
-        class="px-6 py-7"
+        class="px-6 py-7 font-16"
       >
         <v-col
           cols="12"
@@ -31,7 +31,7 @@
 
       <v-row
         no-gutters
-        class="px-6 py-7"
+        class="px-6 py-7 font-16"
       >
         <v-col
           cols="12"
@@ -50,7 +50,7 @@
 
       <v-row
         no-gutters
-        class="px-6 py-7"
+        class="px-6 py-7 font-16"
       >
         <v-col
           cols="12"
@@ -104,11 +104,3 @@ export default class RecordToBeWithdrawn extends Mixins(DateMixin) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
-
-.col-12 {
-  font-size: $px-16;
-}
-</style>

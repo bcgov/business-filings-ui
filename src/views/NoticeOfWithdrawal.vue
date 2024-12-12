@@ -138,7 +138,7 @@
                 </p>
               </header>
               <div
-                id="court-order-section"
+                id="poa-section"
               >
                 <v-card
                   flat
@@ -1012,7 +1012,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
   // Fix font size and color to stay consistent.
   :deep() {
-    #document-delivery, #court-order-label, #poa-label {
+    #document-delivery, #poa-label, #reference-number-label {
       font-size: $px-14;
     }
 
