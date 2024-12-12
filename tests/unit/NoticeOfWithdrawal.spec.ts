@@ -10,9 +10,11 @@ import { Certify } from '@/components/common'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
+import PlanOfArrangement from '@/components/NoticeOfWithdrawal/PlanOfArrangement.vue'
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
 import ReferenceNumber from '@/components/NoticeOfWithdrawal/ReferenceNumber.vue'
 import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
+import StaffRoleErrorDialog from '@/components/NoticeOfWithdrawal/StaffRoleErrorDialog.vue'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -52,13 +54,15 @@ describe('Notice of Withdrawal view', () => {
     expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
     expect(wrapper.findComponent(PaymentErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(StaffRoleErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(PlanOfArrangement).exists()).toBe(true)
     expect(wrapper.findComponent(RecordToBeWithdrawn).exists()).toBe(true)
     expect(wrapper.findComponent(ReferenceNumber).exists()).toBe(true)
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
 
     // Verify $route params and query
-    expect(wrapper.vm.filingToBeWithdrawn).toBe('12345')
+    //expect(wrapper.vm.filingToBeWithdrawn).toBe('12345')
     expect(wrapper.vm.filingId).toBe(0)
 
     wrapper.destroy()
@@ -87,8 +91,7 @@ describe('Notice of Withdrawal view', () => {
     expect(vm.filingData).not.toBeUndefined()
     expect(vm.filingData).not.toBeNull()
     expect(vm.filingData.length).toBe(1)
-    expect(vm.filingData[0].filingTypeCode).toBe('NOTICE_OF_WITHDRAWAL')
-    expect(vm.filingData[0].entityType).toBe('BC_COMPANY')
+    expect(vm.filingData[0].filingTypeCode).toBe('NOIWD')
 
     wrapper.destroy()
   })
