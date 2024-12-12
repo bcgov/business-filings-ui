@@ -40,10 +40,6 @@ describe('Notice of Withdrawal view', () => {
   it('mounts the sub-components properly', async () => {
     const $route = { query: { filingId: '0', filingToBeWithdrawn: '12345' } }
 
-    // create local Vue and mock router
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-
     const wrapper = shallowMount(NoticeOfWithdrawal, { mocks: { $route } })
     wrapper.vm.$data.dataLoaded = true
     await Vue.nextTick()
@@ -70,12 +66,7 @@ describe('Notice of Withdrawal view', () => {
   it('sets filing data properly', async () => {
     const $route = { query: { filingId: '0', filingToBeWithdrawn: '12345' } }
 
-    // create local Vue and mock router
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const $router = mockRouter.mock()
-
-    const wrapper = shallowMount(NoticeOfWithdrawal, { mocks: { $route, $router } })
+    const wrapper = shallowMount(NoticeOfWithdrawal, { mocks: { $route } })
     wrapper.vm.$data.dataLoaded = true
     await Vue.nextTick()
 
@@ -99,12 +90,7 @@ describe('Notice of Withdrawal view', () => {
     // mock $route
     const $route = { query: { filingId: '0', filingToBeWithdrawn: '12345' } }
 
-    // create local Vue and mock router
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const $router = mockRouter.mock()
-
-    const wrapper = shallowMount(NoticeOfWithdrawal, { mocks: { $route, $router } })
+    const wrapper = shallowMount(NoticeOfWithdrawal, { mocks: { $route } })
     const vm: any = wrapper.vm
 
     // verify "validated" - all true
