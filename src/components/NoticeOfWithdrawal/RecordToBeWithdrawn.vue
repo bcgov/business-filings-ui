@@ -11,7 +11,7 @@
     <template #content>
       <v-row
         no-gutters
-        class="px-6 py-7 font-16"
+        class="px-6 py-7"
       >
         <v-col
           cols="12"
@@ -31,7 +31,7 @@
 
       <v-row
         no-gutters
-        class="px-6 py-7 font-16"
+        class="px-6 py-7"
       >
         <v-col
           cols="12"
@@ -50,7 +50,7 @@
 
       <v-row
         no-gutters
-        class="px-6 py-7 font-16"
+        class="px-6 py-7"
       >
         <v-col
           cols="12"
