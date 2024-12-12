@@ -71,7 +71,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
+import { DateMixin } from '@/mixins'
 import { Getter } from 'pinia-class'
 import { VcardTemplate } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
@@ -82,31 +83,22 @@ import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
     VcardTemplate
   }
 })
-export default class RecordToBeWithdrawn extends Vue {
+export default class RecordToBeWithdrawn extends Mixins(DateMixin) {
   @Prop({ required: true }) readonly filingToBeWithdrawn!: string
 
   @Getter(useFilingHistoryListStore) getFilings!: Array<ApiFilingIF>
 
-  getFilingToBeWithdrawn (): ApiFilingIF| undefined {
+  getFilingToBeWithdrawn (): ApiFilingIF | null {
     const filingId = Number(this.filingToBeWithdrawn)
     const filings = this.getFilings as ApiFilingIF[]
-    return filings.find(filing => filing.filingId === filingId)
+    return filings.find(filing => filing.filingId === filingId) || null
   }
 
   getFormattedFilingDate (): string {
-    const filing = this.getFilingToBeWithdrawn()
-    if (filing && filing.effectiveDate) {
-      const date = new Date(filing.effectiveDate)
-      const formattedDate = new Intl.DateTimeFormat('en-US', {
-        timeZone: 'America/Los_Angeles', // Pacific Time
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
-      }).format(date)
-      return `${formattedDate} Pacific Time`
+    const effectiveDate = this.getFilingToBeWithdrawn()?.effectiveDate
+    if (effectiveDate) {
+      const date = new Date(effectiveDate)
+      return `${this.dateToPacificDateTime(date)}`
     }
     return 'Invalid date'
   }
