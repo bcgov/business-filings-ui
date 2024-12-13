@@ -544,7 +544,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         }
 
         // load Court Order, POA and arrangement properties
-        const courtOrder = filing.consentContinuationOut.courtOrder
+        const courtOrder = filing.noticeOfWithdraw.courtOrder
         if (courtOrder) {
           this.courtOrderNumber = courtOrder.fileNumber
           this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
@@ -694,7 +694,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         // save filing ID for possible future updates
         this.filingId = filingId
       }
-
       // if there were no errors, finish file-pay process now
       // otherwise, dialogs may finish this later
       if (!this.paymentErrorDialog && !this.saveErrorReason) this.onClickFilePayFinish()
@@ -803,7 +802,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       }
 
       if (this.courtOrderNumber !== '') {
-        data.consentContinuationOut.courtOrder = {
+        data.noticeOfWithdrawal.courtOrder = {
           fileNumber: this.courtOrderNumber,
           effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string,
           effectOfArrangement: (this.hasComeIntoEffect ? EffectOfOrderTypes.ARRANGEMENT_EFFECT : '') as string
