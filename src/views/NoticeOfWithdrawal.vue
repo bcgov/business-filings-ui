@@ -152,10 +152,10 @@
                 >
                   <PlanOfArrangement
                     :autoValidation="showErrors"
-                    :draftCourtOrderNumber="courOrderNumber"
+                    :draftCourtOrderNumber="courtOrderNumber"
                     :hasDraftPlanOfArrangement="hasPlanOfArrangement"
                     :hasDraftComeIntoEffect="hasComeIntoEffect"
-                    @courtNumber="courOrderNumber=$event"
+                    @courtNumber="courtOrderNumber=$event"
                     @planOfArrangement="hasPlanOfArrangement=$event"
                     @comeIntoEffect="hasComeIntoEffect=$event"
                     @valid="poaValid=$event"
@@ -321,8 +321,8 @@ import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
 import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { LegalServices } from '@/services/'
-import { FilingStatus, SaveErrorReasons } from '@/enums'
+import { EnumUtilities, LegalServices } from '@/services/'
+import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
@@ -368,7 +368,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
     // variables for Court Order and POA component
     poaValid = true
-    courOrderNumber = ''
+    courtOrderNumber = ''
     hasPlanOfArrangement = false
     hasComeIntoEffect = false
 
@@ -544,17 +544,11 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         }
 
         // load Court Order, POA and arrangement properties
-        const courtOrderNumber = filing.noticeOfWithdrawal.courtOrderNumber
-        const hasPlanOfArrangement = filing.noticeOfWithdraw.hasPlanOfArrangement
-        const hasComeIntoEffect = filing.noticeOfWithdraw.hasComeIntoEffect
-        if (hasPlanOfArrangement) {
-          this.hasPlanOfArrangement = true
-          if (hasComeIntoEffect) {
-            this.hasComeIntoEffect = true
-          }
-        }
-        if (courtOrderNumber) {
-          this.courOrderNumber = courtOrderNumber
+        const courtOrder = filing.consentContinuationOut.courtOrder
+        if (courtOrder) {
+          this.courtOrderNumber = courtOrder.fileNumber
+          this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
+          this.hasComeIntoEffect = EnumUtilities.isArrangementComeIntoEffect(courtOrder.effectOfArrangement)
         }
 
         // load Folio/Reference Number properties
@@ -800,7 +794,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       const data: any = {
         noticeOfWithdrawal: {
-          filingToBeWithdrawn: this.filingToBeWithdrawn
+          filingId: this.filingToBeWithdrawn
         }
       }
 
@@ -808,14 +802,11 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         data.noticeOfWithdrawal.referenceNumber = this.referenceNumber
       }
 
-      if (this.courOrderNumber !== '') {
-        data.noticeOfWithdrawal.courtOrderNumber = this.courOrderNumber
-      }
-
-      if (this.hasPlanOfArrangement) {
-        data.noticeOfWithdrawal.hasPlanOfArrangement = true
-        if (this.hasComeIntoEffect) {
-          data.noticeOfWithdrawal.hasComeIntoEffect = true
+      if (this.courtOrderNumber !== '') {
+        data.consentContinuationOut.courtOrder = {
+          fileNumber: this.courtOrderNumber,
+          effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string,
+          effectOfArrangement: (this.hasComeIntoEffect ? EffectOfOrderTypes.ARRANGEMENT_EFFECT : '') as string
         }
       }
 

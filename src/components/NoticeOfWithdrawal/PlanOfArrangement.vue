@@ -146,6 +146,9 @@ export default class PlanOfArrangement extends Vue {
       (v: string) => (!v || !(v.length < 5)) || 'Court order number is invalid', // too short
       (v: string) => (!v || !(v.length > 20)) || 'Court order number is invalid' // too long
     ]
+    if (this.planOfArrangement) {
+      this.courtOrderNumRules.push((v: string) => !!v || 'A Court Order number is required')
+    }
     this.$refs.courtNumRef.validate()
   }
 
