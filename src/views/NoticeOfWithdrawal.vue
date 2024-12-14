@@ -164,33 +164,6 @@
               </div>
             </section>
 
-            <!-- Folio or Reference Number -->
-            <section>
-              <header>
-                <h2>Folio or Reference Number</h2>
-                <p class="grey-text">
-                  You can add a folio or reference number for your own tracking purposes.
-                  The number will appear on your withdrawal documents and receipt.
-                </p>
-              </header>
-              <div
-                id="reference-number-section"
-                :class="{ 'invalid-section': !referenceNumberValid && showErrors }"
-              >
-                <v-card
-                  flat
-                  class="py-8 px-5"
-                >
-                  <ReferenceNumber
-                    :autoValidation="true"
-                    :draftReferenceNumber="referenceNumber"
-                    @referenceNumber="referenceNumber=$event"
-                    @valid="referenceNumberValid=$event"
-                  />
-                </v-card>
-              </div>
-            </section>
-
             <!-- Staff Payment -->
             <section v-if="isRoleStaff">
               <header>
@@ -199,6 +172,7 @@
               <div
                 id="staff-payment-section"
                 :class="{ 'invalid-section': !staffPaymentValid && showErrors }"
+                class="pt-3"
               >
                 <v-card
                   flat
@@ -316,7 +290,6 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { Certify } from '@/components/common'
 import PlanOfArrangement from '@/components/NoticeOfWithdrawal/PlanOfArrangement.vue'
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
-import ReferenceNumber from '@/components/NoticeOfWithdrawal/ReferenceNumber.vue'
 import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
 import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
@@ -338,7 +311,6 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
       PaymentErrorDialog,
       ResumeErrorDialog,
       RecordToBeWithdrawn,
-      ReferenceNumber,
       StaffPayment,
       SaveErrorDialog,
       SbcFeeSummary
@@ -371,10 +343,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     courtOrderNumber = ''
     hasPlanOfArrangement = false
     hasComeIntoEffect = false
-
-    // variable for Reference Number component
-    referenceNumberValid = true
-    referenceNumber = ''
 
     // variables for Document Delivery component
     documentDeliveryValid = true
@@ -422,7 +390,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       return (
         this.certifyFormValid &&
         this.documentDeliveryValid &&
-        this.referenceNumberValid &&
         this.poaValid &&
         this.staffPaymentValid
       )
@@ -549,12 +516,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
           this.courtOrderNumber = courtOrder.fileNumber
           this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
           this.hasComeIntoEffect = EnumUtilities.isArrangementComeIntoEffect(courtOrder.effectOfArrangement)
-        }
-
-        // load Folio/Reference Number properties
-        const referenceNumber = filing.noticeOfWithdraw.referenceNumber
-        if (referenceNumber) {
-          this.referenceNumber = referenceNumber
         }
 
         // load Documents Delivery
@@ -797,10 +758,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         }
       }
 
-      if (this.referenceNumber !== '') {
-        data.noticeOfWithdrawal.referenceNumber = this.referenceNumber
-      }
-
       if (this.courtOrderNumber !== '') {
         data.noticeOfWithdrawal.courtOrder = {
           fileNumber: this.courtOrderNumber,
@@ -926,7 +883,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       'document-delivery-section',
       'certify-form-section',
       'poa-section',
-      'reference-number-section',
       'staff-payment-section'
     ]
 
@@ -936,14 +892,12 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         documentDelivery: this.documentDeliveryValid,
         certifyForm: this.certifyFormValid,
         planOfArrangement: this.poaValid,
-        referenceNumber: this.referenceNumberValid,
         staffPayment: this.staffPaymentValid
       }
     }
 
     @Watch('certifyFormValid')
     @Watch('poaValid')
-    @Watch('referenceNumberValid')
     @Watch('documentDeliveryValid')
     @Watch('staffPaymentValid')
     onHaveChanges (): void {
@@ -1028,7 +982,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
   // Fix font size and color to stay consistent.
   :deep() {
-    #document-delivery, #poa-label, #reference-number-label {
+    #document-delivery, #poa-label {
       font-size: $px-14;
     }
 

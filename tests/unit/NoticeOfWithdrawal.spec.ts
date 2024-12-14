@@ -8,11 +8,9 @@ import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDia
   from '@/components/dialogs'
 import { Certify } from '@/components/common'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
-import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
 import PlanOfArrangement from '@/components/NoticeOfWithdrawal/PlanOfArrangement.vue'
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
-import ReferenceNumber from '@/components/NoticeOfWithdrawal/ReferenceNumber.vue'
 import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
 
 // suppress various warnings:
@@ -53,7 +51,6 @@ describe('Notice of Withdrawal view', () => {
     expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(PlanOfArrangement).exists()).toBe(true)
     expect(wrapper.findComponent(RecordToBeWithdrawn).exists()).toBe(true)
-    expect(wrapper.findComponent(ReferenceNumber).exists()).toBe(true)
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
 
     // Verify $route params and query
@@ -75,7 +72,6 @@ describe('Notice of Withdrawal view', () => {
     // verify initial Filing Data
     vm.certifyFormValid = true
     vm.documentDeliveryValid = true
-    vm.referenceNumberValid = true
     vm.staffPaymentValid = true
 
     expect(vm.filingData).not.toBeUndefined()
@@ -96,7 +92,6 @@ describe('Notice of Withdrawal view', () => {
     // verify "validated" - all true
     vm.certifyFormValid = true
     vm.documentDeliveryValid = true
-    vm.referenceNumberValid = true
     vm.staffPaymentValid = true
     vm.poaValid = true
     expect(vm.isPageValid).toBe(true)
@@ -104,7 +99,6 @@ describe('Notice of Withdrawal view', () => {
     // verify "validated" - invalid Certify form
     vm.certifyFormValid = false
     vm.documentDeliveryValid = true
-    vm.referenceNumberValid = true
     vm.staffPaymentValid = true
     vm.poaValid = true
     expect(vm.isPageValid).toBe(false)
@@ -112,15 +106,6 @@ describe('Notice of Withdrawal view', () => {
     // verify "validated" - invalid Document Delivery form
     vm.certifyFormValid = true
     vm.documentDeliveryValid = false
-    vm.referenceNumberValid = true
-    vm.staffPaymentValid = true
-    vm.poaValid = true
-    expect(vm.isPageValid).toBe(false)
-
-    // verify "validated" - invalid Reference Number form
-    vm.certifyFormValid = true
-    vm.documentDeliveryValid = true
-    vm.referenceNumberValid = false
     vm.staffPaymentValid = true
     vm.poaValid = true
     expect(vm.isPageValid).toBe(false)
@@ -128,7 +113,6 @@ describe('Notice of Withdrawal view', () => {
     // verify "validated" - invalid Staff Payment form
     vm.certifyFormValid = true
     vm.documentDeliveryValid = true
-    vm.referenceNumberValid = true
     vm.staffPaymentValid = false
     vm.poaValid = true
     expect(vm.isPageValid).toBe(false)
@@ -136,7 +120,6 @@ describe('Notice of Withdrawal view', () => {
     // verify "validated" - invalid POA section
     vm.certifyFormValid = true
     vm.documentDeliveryValid = true
-    vm.referenceNumberValid = true
     vm.staffPaymentValid = true
     vm.poaValid = false
     expect(vm.isPageValid).toBe(false)
