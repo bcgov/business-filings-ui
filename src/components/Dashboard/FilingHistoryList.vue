@@ -151,6 +151,7 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
       case EnumUtilities.isTypeRestorationLimited(filing): return 'limited-restoration'
       case EnumUtilities.isTypeRestorationLimitedExtension(filing): return 'limited-restoration-extension'
       case EnumUtilities.isTypeRestorationLimitedToFull(filing): return 'limited-restoration-conversion'
+      case EnumUtilities.isTypeNoticeOfWithdrawal(filing): return 'notice-of-withdrawal'
       case EnumUtilities.isTypeRegistration(filing): return 'registration-filing'
       case EnumUtilities.isTypeStaff(filing): return 'staff-filing' // includes several filing types
       default: return 'default-filing'

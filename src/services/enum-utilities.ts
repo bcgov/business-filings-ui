@@ -220,6 +220,11 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.INCORPORATION_APPLICATION)
   }
 
+  /** Returns True if filing is a Notice of Withdrawal. */
+  static isTypeNoticeOfWithdrawal (item: any): boolean {
+    return (item.name === FilingTypes.NOTICE_OF_WITHDRAWAL)
+  }
+
   /** Returns True if filing is a Registration. */
   static isTypeRegistration (item: any): boolean {
     return (item.name === FilingTypes.REGISTRATION)
@@ -378,6 +383,11 @@ export default class EnumUtilities {
   /** Returns True if effect of order is Plan of Arrangement. */
   static isEffectOfOrderPlanOfArrangement (effectOfOrder: EffectOfOrderTypes): boolean {
     return (effectOfOrder === EffectOfOrderTypes.PLAN_OF_ARRANGEMENT)
+  }
+
+  /** Returns True if one or more of the POA have come into effect. */
+  static isArrangementComeIntoEffect (effectOfOrder: EffectOfOrderTypes): boolean {
+    return (effectOfOrder === EffectOfOrderTypes.ARRANGEMENT_EFFECT)
   }
 
   //

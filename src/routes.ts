@@ -8,6 +8,7 @@ import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling
 import ConsentAmalgamationOut from '@/views/ConsentAmalgamationOut.vue'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
 import ContinuationOut from '@/views/ContinuationOut.vue'
+import NoticeOfWithdrawal from '@/views/NoticeOfWithdrawal.vue'
 import Signin from '@/views/auth/Signin.vue'
 import Signout from '@/views/auth/Signout.vue'
 import { DigitalCredentialRoutes } from '@/resources/DigitalCredentialRoutes'
@@ -83,6 +84,22 @@ export default [
           disabled: false,
           exact: true,
           to: { name: Routes.ANNUAL_REPORT }
+        }
+      ]
+    }
+  },
+  {
+    path: '/notice-of-withdrawal',
+    name: Routes.NOTICE_OF_WITHDRAWAL,
+    component: NoticeOfWithdrawal,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: `File ${FilingNames.NOTICE_OF_WITHDRAWAL}`,
+          disabled: false,
+          exact: true,
+          to: { name: Routes.NOTICE_OF_WITHDRAWAL }
         }
       ]
     }
