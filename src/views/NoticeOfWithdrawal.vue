@@ -363,7 +363,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     dataLoaded = false
     loadingMessage = ''
     filingId = 0 // id of this Notice if Withdrawal filing
-    filingToBeWithdrawn = '' // id of filing to be withdrawn
+    filingToBeWithdrawn: number = null // id of filing to be withdrawn
     savedFiling: any = null // filing during save
     saving = false // true only when saving
     savingResuming = false // true only when saving and resuming
@@ -423,7 +423,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       // this is the id of filing being withdrawn, and of THIS filing
       // if filingID is 0, this is a new filing
       // otherwise it's a draft filing
-      this.filingToBeWithdrawn = this.$route.query.filingToBeWithdrawn as string || ''
+      this.filingToBeWithdrawn = Number(this.$route.query.filingToBeWithdrawn) || null
       this.filingId = +this.$route.query.filingId // number or NaN
 
       // if required data isn't set, go back to dashboard
