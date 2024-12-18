@@ -271,7 +271,7 @@
                 id="withdrawal-file-pay-btn"
                 color="primary"
                 large
-                :disabled="busySaving"
+                :disabled="busySaving || hasTakenEffect"
                 :loading="filingPaying"
                 @click="onClickSubmit()"
               >
@@ -519,6 +519,14 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
           } as StaffPaymentIF
         }
 
+        // load POA Effect properties
+        if (filing.noticeOfWithdraw.partOfPoa) {
+          this.partOfPoa = true
+          if (filing.noticeOfWithdraw.hasTakenEffect) {
+            this.hasTakenEffect = true
+          }
+        }
+
         // load Court Order and POA properties
         const courtOrder = filing.noticeOfWithdraw.courtOrder
         if (courtOrder) {
@@ -639,6 +647,9 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       // prevent double saving
       if (this.busySaving) return
+
+      // prevent submit when POA is part of the filing and has taken effect
+      if (this.hasTakenEffect) return
 
       this.filingPaying = true
 
@@ -762,7 +773,9 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       const data: any = {
         noticeOfWithdrawal: {
-          filingId: this.filingToBeWithdrawn
+          filingId: this.filingToBeWithdrawn,
+          partOfPoa: this.partOfPoa,
+          hasTakenEffect: this.hasTakenEffect
         }
       }
 
@@ -772,7 +785,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
           effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string
         }
       }
-
       // build filing
       const filing = Object.assign({}, header, business, data)
       try {

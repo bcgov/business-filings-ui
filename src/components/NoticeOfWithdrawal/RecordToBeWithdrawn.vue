@@ -127,6 +127,27 @@
               </span>
             </template>
           </v-checkbox>
+          <MessageBox
+            v-if="hasTakenEffect"
+            id="poa-error"
+            class="mt-6"
+            color="red"
+          >
+            <header>
+              <v-icon
+                color="red"
+                class="error-icon"
+              >
+                mdi-alert
+              </v-icon>
+              <strong class="pl-2 gray9--text text-small-text">Warning</strong>
+            </header>
+            <article class="pl-8 pt-1 small-text">
+              If you want to withdraw a record that is part of a Plan of Arrangement,
+              you must withdraw all records related to the arrangement.
+              This must be done before any of the provisions of the arrangement take effect.
+            </article>
+          </MessageBox>
         </v-col>
       </v-row>
     </template>
@@ -137,12 +158,13 @@
 import { Component, Prop, Mixins, Emit, Watch } from 'vue-property-decorator'
 import { DateMixin } from '@/mixins'
 import { Getter } from 'pinia-class'
-import { VcardTemplate } from '@/components/common'
+import { MessageBox, VcardTemplate } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
 import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
 
 @Component({
   components: {
+    MessageBox,
     VcardTemplate
   }
 })
