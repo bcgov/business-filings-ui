@@ -91,10 +91,9 @@
           </p>
           <v-checkbox
             id="plan-of-arrangement-checkbox"
-            v-model="planOfArrangement"
+            v-model="partOfPoa"
             class="mt-0 pt-0"
             hide-details
-            label="The record to be withdrawn is part of a Plan of Arrangement."
           >
             <template #label>
               <span class="checkbox-label grey-text">The record to be withdrawn is part of a Plan of Arrangement.</span>
@@ -116,11 +115,11 @@
           class="pt-0"
         >
           <v-checkbox
-            id="come-into-effect-checkbox"
-            v-model="comeIntoEffect"
+            id="has-taken-effect-checkbox"
+            v-model="hasTakenEffect"
             class="mt-0 pt-0"
             hide-details
-            :disabled="!planOfArrangement"
+            :disabled="!partOfPoa"
           >
             <template #label>
               <span class="checkbox-label grey-text">
@@ -150,17 +149,24 @@ import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
 export default class RecordToBeWithdrawn extends Mixins(DateMixin) {
   @Prop({ required: true }) readonly filingToBeWithdrawn!: string
 
-  /** Draft plan of arrangement. */
-  @Prop({ default: false }) readonly hasDraftPlanOfArrangement!: boolean
+  /** Draft part of a POA (plan of arrangement). */
+  @Prop({ default: false }) readonly hasDraftPartOfPoa!: boolean
 
-  /** Draft come into effect. */
-  @Prop({ default: false }) readonly hasDraftComeIntoEffect!: boolean
+  /** Draft has taken effect. */
+  @Prop({ default: false }) readonly hasDraftTakenEffect!: boolean
 
   @Getter(useFilingHistoryListStore) getFilings!: Array<ApiFilingIF>
 
   // Local properties
-  private planOfArrangement = false
-  private comeIntoEffect = false
+  private partOfPoa = false
+  private hasTakenEffect = false
+
+  /** Called when component is mounted. */
+  mounted (): void {
+    // Set default draft values if they exist
+    if (this.hasDraftPartOfPoa) this.partOfPoa = this.hasDraftPartOfPoa
+    if (this.hasDraftTakenEffect) this.hasTakenEffect = this.hasDraftTakenEffect
+  }
 
   getFilingToBeWithdrawn (): ApiFilingIF | null {
     const filingId = Number(this.filingToBeWithdrawn)
@@ -177,25 +183,25 @@ export default class RecordToBeWithdrawn extends Mixins(DateMixin) {
     return 'Invalid date'
   }
 
-  @Watch('planOfArrangement')
-  private onPlanOfArrangementChange (newVal: boolean): void {
-    // If planOfArrangement is false, reset comeIntoEffect to false
+  @Watch('partOfPoa')
+  private onpartOfPoaChange (newVal: boolean): void {
+    // If partOfPoa is false, reset hasTakenEffect to false
     if (!newVal) {
-      this.comeIntoEffect = false
+      this.hasTakenEffect = false
     }
   }
 
   /** Emit plan of arrangement. */
-  @Watch('planOfArrangement')
-  @Emit('planOfArrangement')
+  @Watch('partOfPoa')
+  @Emit('partOfPoa')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitPoa (planOfArrangement: boolean): void {}
+  emitPoa (partOfPoa: boolean): void {}
 
   /** Emit come into effect. */
-  @Watch('comeIntoEffect')
-  @Emit('comeIntoEffect')
+  @Watch('hasTakenEffect')
+  @Emit('hasTakenEffect')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitEffect (planOfArrangement: boolean): void {}
+  emitEffect (hasTakenEffect: boolean): void {}
 }
 </script>
 

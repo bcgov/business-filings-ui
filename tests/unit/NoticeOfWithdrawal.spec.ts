@@ -7,9 +7,9 @@ import NoticeOfWithdrawal from '@/views/NoticeOfWithdrawal.vue'
 import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { Certify } from '@/components/common'
+import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import VueRouter from 'vue-router'
-import PlanOfArrangement from '@/components/NoticeOfWithdrawal/PlanOfArrangement.vue'
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
 import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
 
@@ -49,12 +49,12 @@ describe('Notice of Withdrawal view', () => {
     expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(StaffRoleErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
-    expect(wrapper.findComponent(PlanOfArrangement).exists()).toBe(true)
+    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
     expect(wrapper.findComponent(RecordToBeWithdrawn).exists()).toBe(true)
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
 
     // Verify $route params and query
-    expect(wrapper.vm.filingToBeWithdrawn).toBe('12345')
+    expect(wrapper.vm.filingToBeWithdrawn).toBe(12345)
     expect(wrapper.vm.filingId).toBe(0)
 
     wrapper.destroy()
@@ -77,7 +77,7 @@ describe('Notice of Withdrawal view', () => {
     expect(vm.filingData).not.toBeUndefined()
     expect(vm.filingData).not.toBeNull()
     expect(vm.filingData.length).toBe(1)
-    expect(vm.filingData[0].filingTypeCode).toBe('NOIWD')
+    expect(vm.filingData[0].filingTypeCode).toBe('NWITH')
 
     wrapper.destroy()
   })
@@ -93,35 +93,35 @@ describe('Notice of Withdrawal view', () => {
     vm.certifyFormValid = true
     vm.documentDeliveryValid = true
     vm.staffPaymentValid = true
-    vm.poaValid = true
+    vm.courtOrderValid = true
     expect(vm.isPageValid).toBe(true)
 
     // verify "validated" - invalid Certify form
     vm.certifyFormValid = false
     vm.documentDeliveryValid = true
     vm.staffPaymentValid = true
-    vm.poaValid = true
+    vm.courtOrderValid = true
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Document Delivery form
     vm.certifyFormValid = true
     vm.documentDeliveryValid = false
     vm.staffPaymentValid = true
-    vm.poaValid = true
+    vm.courtOrderValid = true
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Staff Payment form
     vm.certifyFormValid = true
     vm.documentDeliveryValid = true
     vm.staffPaymentValid = false
-    vm.poaValid = true
+    vm.courtOrderValid = true
     expect(vm.isPageValid).toBe(false)
 
-    // verify "validated" - invalid POA section
+    // verify "validated" - invalid Court Order section
     vm.certifyFormValid = true
     vm.documentDeliveryValid = true
     vm.staffPaymentValid = true
-    vm.poaValid = false
+    vm.courtOrderValid = false
     expect(vm.isPageValid).toBe(false)
 
     wrapper.destroy()

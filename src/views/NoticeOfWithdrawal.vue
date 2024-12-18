@@ -81,10 +81,10 @@
             <RecordToBeWithdrawn
               class="mt-6"
               :filingToBeWithdrawn="filingToBeWithdrawn"
-              :hasDraftPlanOfArrangement="hasPlanOfArrangement"
-              :hasDraftComeIntoEffect="hasComeIntoEffect"
-              @planOfArrangement="hasPlanOfArrangement=$event"
-              @comeIntoEffect="hasComeIntoEffect=$event"
+              :hasDraftPartOfPoa="partOfPoa"
+              :hasDraftTakenEffect="hasTakenEffect"
+              @partOfPoa="partOfPoa=$event"
+              @hasTakenEffect="hasTakenEffect=$event"
             />
 
             <!-- Documents Delivery -->
@@ -140,29 +140,31 @@
               </div>
             </section>
 
-            <!-- Withdrawal of Arrangement Records -->
+            <!-- Court Order and Plan of Arrangement -->
             <section>
               <header>
                 <h2>Court Order and Plan of Arrangement</h2>
+                <p class="grey-text">
+                  If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
+                  to a plan of arrangement, enter the court order number and select Plan of Arrangement.
+                </p>
               </header>
               <div
-                id="poa-section"
-                :class="{ 'invalid-section': !poaValid && showErrors }"
-                class="pt-3"
+                id="court-order-section"
+                :class="{ 'invalid-section': !courtOrderValid && showErrors }"
               >
                 <v-card
                   flat
                   class="py-8 px-5"
                 >
-                  <PlanOfArrangement
+                  <CourtOrderPoa
                     :autoValidation="showErrors"
-                    :draftCourtOrderNumber="courtOrderNumber"
+                    :courtOrderNumberRequired="false"
+                    :draftCourtOrderNumber="fileNumber"
                     :hasDraftPlanOfArrangement="hasPlanOfArrangement"
-                    :hasDraftComeIntoEffect="hasComeIntoEffect"
-                    @courtNumber="courtOrderNumber=$event"
-                    @planOfArrangement="hasPlanOfArrangement=$event"
-                    @comeIntoEffect="hasComeIntoEffect=$event"
-                    @valid="poaValid=$event"
+                    @emitCourtNumber="fileNumber=$event"
+                    @emitPoa="hasPlanOfArrangement=$event"
+                    @emitValid="courtOrderValid=$event"
                   />
                 </v-card>
               </div>
@@ -292,7 +294,6 @@ import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify } from '@/components/common'
-import PlanOfArrangement from '@/components/NoticeOfWithdrawal/PlanOfArrangement.vue'
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
 import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
 import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
@@ -302,6 +303,7 @@ import { EnumUtilities, LegalServices } from '@/services/'
 import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
@@ -309,7 +311,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     components: {
       Certify,
       ConfirmDialog,
-      PlanOfArrangement,
+      CourtOrderPoa,
       DocumentDelivery,
       StaffRoleErrorDialog,
       PaymentErrorDialog,
@@ -337,16 +339,19 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     // enum for template
     readonly FilingCodes = FilingCodes
 
+    // variables for POA arrangement checkboxes
+    partOfPoa = false
+    hasTakenEffect = false
+
     // variables for Certify component
     certifiedBy = ''
     isCertified = false
     certifyFormValid = false
 
-    // variables for Court Order and POA component
-    poaValid = true
-    courtOrderNumber = ''
+    // variables for Court Order component
+    courtOrderValid = true
+    fileNumber = ''
     hasPlanOfArrangement = false
-    hasComeIntoEffect = false
 
     // variables for Document Delivery component
     documentDeliveryValid = true
@@ -394,7 +399,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       return (
         this.certifyFormValid &&
         this.documentDeliveryValid &&
-        this.poaValid &&
+        this.courtOrderValid &&
         this.staffPaymentValid
       )
     }
@@ -514,12 +519,11 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
           } as StaffPaymentIF
         }
 
-        // load Court Order, POA and arrangement properties
+        // load Court Order and POA properties
         const courtOrder = filing.noticeOfWithdraw.courtOrder
         if (courtOrder) {
-          this.courtOrderNumber = courtOrder.fileNumber
+          this.fileNumber = courtOrder.fileNumber
           this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
-          this.hasComeIntoEffect = EnumUtilities.isArrangementComeIntoEffect(courtOrder.effectOfArrangement)
         }
 
         // load Documents Delivery
@@ -762,11 +766,10 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         }
       }
 
-      if (this.courtOrderNumber !== '') {
+      if (this.fileNumber !== '') {
         data.noticeOfWithdrawal.courtOrder = {
-          fileNumber: this.courtOrderNumber,
-          effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string,
-          effectOfArrangement: (this.hasComeIntoEffect ? EffectOfOrderTypes.ARRANGEMENT_EFFECT : '') as string
+          fileNumber: this.fileNumber,
+          effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string
         }
       }
 
@@ -886,7 +889,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     readonly validComponents = [
       'document-delivery-section',
       'certify-form-section',
-      'poa-section',
+      'court-order-section',
       'staff-payment-section'
     ]
 
@@ -895,13 +898,13 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       return {
         documentDelivery: this.documentDeliveryValid,
         certifyForm: this.certifyFormValid,
-        planOfArrangement: this.poaValid,
+        courtOrder: this.courtOrderValid,
         staffPayment: this.staffPaymentValid
       }
     }
 
     @Watch('certifyFormValid')
-    @Watch('poaValid')
+    @Watch('courtOrderValid')
     @Watch('documentDeliveryValid')
     @Watch('staffPaymentValid')
     onHaveChanges (): void {
@@ -986,7 +989,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
   // Fix font size and color to stay consistent.
   :deep() {
-    #document-delivery, #poa-label {
+    #document-delivery, #court-order-label, #poa-label {
       font-size: $px-14;
     }
 
