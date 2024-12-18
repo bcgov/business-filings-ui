@@ -81,6 +81,10 @@
             <RecordToBeWithdrawn
               class="mt-6"
               :filingToBeWithdrawn="filingToBeWithdrawn"
+              :hasDraftPlanOfArrangement="hasPlanOfArrangement"
+              :hasDraftComeIntoEffect="hasComeIntoEffect"
+              @planOfArrangement="hasPlanOfArrangement=$event"
+              @comeIntoEffect="hasComeIntoEffect=$event"
             />
 
             <!-- Documents Delivery -->
