@@ -11,7 +11,7 @@
     <template #content>
       <v-row
         no-gutters
-        class="px-6 py-4"
+        class="px-5 py-4"
       >
         <v-col
           cols="12"
@@ -32,7 +32,7 @@
 
       <v-row
         no-gutters
-        class="px-6 py-4"
+        class="px-5 py-4"
       >
         <v-col
           cols="12"
@@ -52,7 +52,7 @@
 
       <v-row
         no-gutters
-        class="px-6 py-4"
+        class="px-5 py-4"
       >
         <v-col
           cols="12"
@@ -69,10 +69,12 @@
           {{ getFormattedFilingDate() }}
         </v-col>
       </v-row>
+
       <v-divider class="mt-2 mx-4" />
+
       <v-row
         no-gutters
-        class="px-6 pt-6"
+        class="px-5 pt-6"
       >
         <v-col
           cols="12"
@@ -96,14 +98,14 @@
             hide-details
           >
             <template #label>
-              <span class="checkbox-label grey-text">The record to be withdrawn is part of a Plan of Arrangement.</span>
+              <span class="font-14 grey-text">The record to be withdrawn is part of a Plan of Arrangement.</span>
             </template>
           </v-checkbox>
         </v-col>
       </v-row>
       <v-row
         no-gutters
-        class="px-6 py-4"
+        class="px-5 pt-4 pb-8"
       >
         <v-col
           cols="12"
@@ -122,7 +124,7 @@
             :disabled="!partOfPoa"
           >
             <template #label>
-              <span class="checkbox-label grey-text">
+              <span class="font-14 grey-text">
                 At least one of the terms of the arrangement have taken effect.
               </span>
             </template>
@@ -226,9 +228,3 @@ export default class RecordToBeWithdrawn extends Mixins(DateMixin) {
   emitEffect (hasTakenEffect: boolean): void {}
 }
 </script>
-
-<style scoped>
-.checkbox-label {
-  font-size: 14px;
-}
-</style>

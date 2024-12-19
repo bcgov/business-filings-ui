@@ -185,7 +185,6 @@
                   class="py-8 px-5"
                 >
                   <StaffPayment
-                    class="py-8 px-6"
                     :staffPaymentData.sync="staffPaymentData"
                     @staffPaymentFormValid="staffPaymentValid=$event"
                   />
@@ -432,7 +431,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       // this is the id of filing being withdrawn, and of THIS filing
       // if filingID is 0, this is a new filing
       // otherwise it's a draft filing
-      this.filingToBeWithdrawn = Number(this.$route.query.filingToBeWithdrawn) || null
+      this.filingToBeWithdrawn = +this.$route.query.filingToBeWithdrawn
       this.filingId = +this.$route.query.filingId // number or NaN
 
       // if required data isn't set, go back to dashboard

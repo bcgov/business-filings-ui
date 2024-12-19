@@ -9,6 +9,7 @@ import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDia
 import { Certify } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
+import { FilingCodes } from '@bcrs-shared-components/enums'
 import VueRouter from 'vue-router'
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
 import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
@@ -77,7 +78,7 @@ describe('Notice of Withdrawal view', () => {
     expect(vm.filingData).not.toBeUndefined()
     expect(vm.filingData).not.toBeNull()
     expect(vm.filingData.length).toBe(1)
-    expect(vm.filingData[0].filingTypeCode).toBe('NWITH')
+    expect(vm.filingData[0].filingTypeCode).toBe(FilingCodes.NOTICE_OF_WITHDRAWAL)
 
     wrapper.destroy()
   })
