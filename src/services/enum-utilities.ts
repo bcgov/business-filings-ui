@@ -385,11 +385,6 @@ export default class EnumUtilities {
     return (effectOfOrder === EffectOfOrderTypes.PLAN_OF_ARRANGEMENT)
   }
 
-  /** Returns True if one or more of the POA have come into effect. */
-  static isArrangementComeIntoEffect (effectOfOrder: EffectOfOrderTypes): boolean {
-    return (effectOfOrder === EffectOfOrderTypes.ARRANGEMENT_EFFECT)
-  }
-
   //
   // Conversion helpers
   //
