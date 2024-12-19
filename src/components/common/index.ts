@@ -8,6 +8,7 @@ import EffectiveDate from './EffectiveDate.vue'
 import FileUploadPdf from './FileUploadPdf.vue'
 import ForeignJurisdiction from './ForeignJurisdiction.vue'
 import ImportantMessage from './ImportantMessage.vue'
+import MessageBox from './MessageBox.vue'
 import NameRequestInfo from './NameRequestInfo.vue'
 import OfficeAddresses from './OfficeAddresses.vue'
 import Stepper from '@/components/common/Stepper.vue'
@@ -30,6 +31,7 @@ export {
   FileUploadPdf,
   ForeignJurisdiction,
   ImportantMessage,
+  MessageBox,
   NameRequestInfo,
   OfficeAddresses,
   Stepper,
