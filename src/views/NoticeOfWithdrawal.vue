@@ -435,7 +435,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       this.filingId = +this.$route.query.filingId // number or NaN
 
       // if required data isn't set, go back to dashboard
-      if (isNaN(this.filingId)) {
+      if (isNaN(this.filingId) || isNaN(this.filingToBeWithdrawn)) {
         this.navigateToBusinessDashboard(this.getIdentifier)
       }
     }
@@ -484,7 +484,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         if (!filing) throw new Error('Missing filing')
         if (!filing.header) throw new Error('Missing header')
         if (!filing.business) throw new Error('Missing business')
-        if (!filing.noticeOfWithdraw) throw new Error('Missing notice of withdraw object')
+        if (!filing.noticeOfWithdrawal) throw new Error('Missing notice of withdraw object')
         if (filing.header.name !== FilingTypes.NOTICE_OF_WITHDRAWAL) throw new Error('Invalid filing type')
         if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
         if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
@@ -492,7 +492,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
         // load Certified By (but not Date)
         this.certifiedBy = filing.header.certifiedBy
-
         // load Staff Payment properties
         if (filing.header.routingSlipNumber) {
           this.staffPaymentData = {
@@ -519,15 +518,15 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         }
 
         // load POA Effect properties
-        if (filing.noticeOfWithdraw.partOfPoa) {
+        if (filing.noticeOfWithdrawal.partOfPoa) {
           this.partOfPoa = true
-          if (filing.noticeOfWithdraw.hasTakenEffect) {
+          if (filing.noticeOfWithdrawal.hasTakenEffect) {
             this.hasTakenEffect = true
           }
         }
 
         // load Court Order and POA properties
-        const courtOrder = filing.noticeOfWithdraw.courtOrder
+        const courtOrder = filing.noticeOfWithdrawal.courtOrder
         if (courtOrder) {
           this.fileNumber = courtOrder.fileNumber
           this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
