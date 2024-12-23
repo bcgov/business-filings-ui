@@ -86,11 +86,6 @@
           cols="12"
           sm="9"
         >
-          <p class="grey-text">
-            If you want to withdraw a record that is part of a plan of arrangement,
-            you must withdraw all records related to the arrangement.
-            This must be done before any of the terms of the arrangement take effect.
-          </p>
           <v-checkbox
             id="plan-of-arrangement-checkbox"
             v-model="partOfPoa"

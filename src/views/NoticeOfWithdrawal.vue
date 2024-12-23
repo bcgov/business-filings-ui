@@ -106,7 +106,7 @@
                   <DocumentDelivery
                     editableCompletingParty="true"
                     :contactValue="getBusinessEmail"
-                    contactLabel="Business Office"
+                    contactLabel="Registered Office"
                     :documentOptionalEmail="documentOptionalEmail"
                     @update:optionalEmail="documentOptionalEmail=$event"
                     @valid="documentDeliveryValid=$event"
@@ -274,7 +274,7 @@
                 :loading="filingPaying"
                 @click="onClickSubmit()"
               >
-                <span>Submit</span>
+                <span>Submit <v-icon right>mdi-chevron-right</v-icon> </span>
               </v-btn>
             </div>
           </template>
