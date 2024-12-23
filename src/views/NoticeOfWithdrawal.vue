@@ -172,13 +172,12 @@
 
             <!-- Staff Payment -->
             <section v-if="isRoleStaff">
-              <header>
+              <header class="pb-3">
                 <h2>Staff Payment</h2>
               </header>
               <div
                 id="staff-payment-section"
                 :class="{ 'invalid-section': !staffPaymentValid && showErrors }"
-                class="pt-3"
               >
                 <v-card
                   flat
