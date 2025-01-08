@@ -90,7 +90,7 @@
             <!-- Documents Delivery -->
             <section>
               <header>
-                <h2>Documents Delivery</h2>
+                <h2>Document Delivery</h2>
                 <p class="grey-text">
                   Copies of the withdrawal documents will be sent to the email addresses listed below.
                 </p>
@@ -949,7 +949,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
   article {
     .v-card {
       line-height: 1.2rem;
-      font-size: $px-14;
+      font-size: $px-16;
     }
   }
 
@@ -977,7 +977,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
   // Save & Filing Buttons
   #withdrawal-buttons-container {
     padding-top: 2rem;
-    border-top: 1px solid $gray5;
 
     .buttons-left {
       width: 50%;
@@ -998,10 +997,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
   // Fix font size and color to stay consistent.
   :deep() {
-    #document-delivery, #court-order-label, #poa-label {
-      font-size: $px-14;
-    }
-
     .certify-clause, .certify-stmt, .grey-text {
       color: $gray7;
     }
