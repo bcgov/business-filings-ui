@@ -977,6 +977,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
   // Save & Filing Buttons
   #withdrawal-buttons-container {
     padding-top: 2rem;
+    border-top: 1px solid $gray5;
 
     .buttons-left {
       width: 50%;
