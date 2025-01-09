@@ -96,7 +96,7 @@ export default [
       requiresAuth: true,
       breadcrumb: [
         {
-          text: `File ${FilingNames.NOTICE_OF_WITHDRAWAL}`,
+          text: FilingNames.NOTICE_OF_WITHDRAWAL,
           disabled: false,
           exact: true,
           to: { name: Routes.NOTICE_OF_WITHDRAWAL }
