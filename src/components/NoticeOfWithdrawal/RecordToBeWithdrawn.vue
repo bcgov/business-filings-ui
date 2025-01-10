@@ -93,7 +93,7 @@
             hide-details
           >
             <template #label>
-              <span class="font-14 grey-text">The record to be withdrawn is part of a Plan of Arrangement.</span>
+              <span class="font-16 grey-text">The record to be withdrawn is part of a Plan of Arrangement.</span>
             </template>
           </v-checkbox>
         </v-col>
@@ -119,7 +119,7 @@
             :disabled="!partOfPoa"
           >
             <template #label>
-              <span class="font-14 grey-text">
+              <span class="font-16 grey-text">
                 At least one of the terms of the arrangement have taken effect.
               </span>
             </template>
