@@ -171,6 +171,7 @@ import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from './stores'
+import { createConsoleLogger } from 'launchdarkly-js-client-sdk'
 
 @Component({
   components: {
@@ -371,6 +372,7 @@ export default class App extends Mixins(
   @Action(useBusinessStore) setLegalName!: (x: string) => Promise<void>
   @Action(useBusinessStore) setLegalType!: (x: CorpTypeCd) => Promise<void>
   @Action(useBusinessStore) setIdentifier!: (x: string) => Promise<void>
+  @Action(useBusinessStore) setFoundingDate!: (x: string) => Promise<void>
 
   @Action(useFilingHistoryListStore) loadFilings!: (x: string) => Promise<void>
   @Action(useFilingHistoryListStore) setFilings!: (x: ApiFilingIF[]) => void
@@ -624,6 +626,12 @@ export default class App extends Mixins(
     const filing = response?.filing
     const filingName = filing.header?.name as FilingTypes
     const status = filing.header.status as FilingStatus
+    const foundingDate = filing.header?.effectiveDate // use the FE date as the founding date
+    const email =
+        filing?.incorporationApplication?.contactPoint?.email ||
+        filing?.amalgamationApplication?.contactPoint?.email ||
+        filing?.continuationIn?.contactPoint?.email ||
+        filing?.registration?.contactPoint?.email
 
     if (!filing || !filing.business || !filing.header || !filingName || !status) {
       throw new Error(`Invalid boostrap filing - missing required property = ${filing}`)
@@ -656,12 +664,14 @@ export default class App extends Mixins(
     this.setIdentifier(this.tempRegNumber)
     this.setLegalType(legalType)
     this.setGoodStanding(true) // draft apps are always in good standing
+    this.setFoundingDate(foundingDate)
+    this.setBusinessEmail(email)
 
     // save local NR Number if present
     if (nameRequest.nrNumber) this.localNrNumber = nameRequest.nrNumber
 
     // store Legal Name if present
-    if (nameRequest.legalName) this.setLegalName(nameRequest.legalName)
+    this.setLegalName(nameRequest.legalName || 'Unknown Name')
 
     // store the bootstrap item in the right list
     if (this.isBootstrapTodo) this.storeBootstrapTodo(response)
