@@ -171,7 +171,6 @@ import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from './stores'
-import { createConsoleLogger } from 'launchdarkly-js-client-sdk'
 
 @Component({
   components: {
