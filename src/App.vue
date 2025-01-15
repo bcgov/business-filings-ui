@@ -168,7 +168,8 @@ import {
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
 import { FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd, GetCorpFullDescription, GetCorpNumberedDescription }
+  from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from './stores'
 
@@ -670,7 +671,10 @@ export default class App extends Mixins(
     if (nameRequest.nrNumber) this.localNrNumber = nameRequest.nrNumber
 
     // store Legal Name if present
-    this.setLegalName(nameRequest.legalName || 'Unknown Name')
+    // special case to identify numbered amalgamations
+    if (filingName === FilingTypes.AMALGAMATION_APPLICATION) {
+      this.setLegalName(nameRequest.legalName || 'Numbered Amalgamated Company')
+    } else { this.setLegalName(nameRequest.legalName || GetCorpNumberedDescription(this.getLegalType)) }
 
     // store the bootstrap item in the right list
     if (this.isBootstrapTodo) this.storeBootstrapTodo(response)

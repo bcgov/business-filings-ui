@@ -2319,7 +2319,7 @@ describe('App as a draft numbered regular amalgamation application', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
-    expect(businessStore.getLegalName).toBe('Unknown Name')
+    expect(businessStore.getLegalName).toBe('Numbered Amalgamated Company')
     expect(rootStore.isAmalgamationTodo).toBe(true)
     expect(rootStore.isBootstrapTodo).toBe(true)
 
@@ -2533,7 +2533,7 @@ describe('App as a completed regular amalgamation application', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
-    expect(businessStore.getLegalName).toBe('Unknown Name')
+    expect(businessStore.getLegalName).toBe('Numbered Amalgamated Company')
     expect(rootStore.isAmalgamationFiling).toBe(true)
     expect(rootStore.isBootstrapFiling).toBe(true)
 
@@ -2632,7 +2632,7 @@ describe('App as a draft horizontal amalgamation application', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
-    expect(businessStore.getLegalName).toBe('Unknown Name')
+    expect(businessStore.getLegalName).toBe('Numbered Amalgamated Company')
     expect(rootStore.isAmalgamationTodo).toBe(true)
     expect(rootStore.isBootstrapTodo).toBe(true)
 
@@ -2736,7 +2736,7 @@ describe('App as a completed horizontal amalgamation application', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
-    expect(businessStore.getLegalName).toBe('Unknown Name')
+    expect(businessStore.getLegalName).toBe('Numbered Amalgamated Company')
     expect(rootStore.isAmalgamationFiling).toBe(true)
     expect(rootStore.isBootstrapFiling).toBe(true)
 
@@ -2835,7 +2835,7 @@ describe('App as a draft vertical amalgamation application', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
-    expect(businessStore.getLegalName).toBe('Unknown Name')
+    expect(businessStore.getLegalName).toBe('Numbered Amalgamated Company')
     expect(rootStore.isAmalgamationTodo).toBe(true)
     expect(rootStore.isBootstrapTodo).toBe(true)
 
@@ -2939,7 +2939,7 @@ describe('App as a completed vertical amalgamation application', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityBcCompany).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
-    expect(businessStore.getLegalName).toBe('Unknown Name')
+    expect(businessStore.getLegalName).toBe('Numbered Amalgamated Company')
     expect(rootStore.isAmalgamationFiling).toBe(true)
     expect(rootStore.isBootstrapFiling).toBe(true)
 
@@ -3033,7 +3033,7 @@ describe('App as a draft numbered continuation in', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityContinueIn).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
-    expect(businessStore.getLegalName).toBe('Unknown Name')
+    expect(businessStore.getLegalName).toBe('Numbered Limited Company')
     expect(rootStore.isContinuationInTodo).toBe(true)
     expect(rootStore.isBootstrapTodo).toBe(true)
 
@@ -3130,13 +3130,13 @@ describe('App as a completed continuation in', () => {
     wrapper.destroy()
   })
 
-  it('fetches continuation in  filing properly', () => {
+  it('fetches continuation in filing properly', () => {
     expect(rootStore.getNameRequest).toBeNull()
     expect(rootStore.isContinuationInFiling).toBe(true)
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.isEntityContinueIn).toBe(true)
     expect(businessStore.isGoodStanding).toBe(true)
-    expect(businessStore.getLegalName).toBe('Unknown Name')
+    expect(businessStore.getLegalName).toBe('Numbered Limited Company')
     expect(rootStore.isContinuationInFiling).toBe(true)
     expect(rootStore.isBootstrapFiling).toBe(true)
 
