@@ -626,12 +626,12 @@ export default class App extends Mixins(
     const filing = response?.filing
     const filingName = filing.header?.name as FilingTypes
     const status = filing.header.status as FilingStatus
-    const foundingDate = filing.header?.effectiveDate // use the FE date as the founding date
+    const foundingDate = filing.header?.effectiveDate || null// use the FE date as the founding date
     const email =
-        filing?.incorporationApplication?.contactPoint?.email ||
-        filing?.amalgamationApplication?.contactPoint?.email ||
-        filing?.continuationIn?.contactPoint?.email ||
-        filing?.registration?.contactPoint?.email
+        filing.incorporationApplication?.contactPoint?.email ||
+        filing.amalgamationApplication?.contactPoint?.email ||
+        filing.continuationIn?.contactPoint?.email ||
+        filing.registration?.contactPoint?.email || null
 
     if (!filing || !filing.business || !filing.header || !filingName || !status) {
       throw new Error(`Invalid boostrap filing - missing required property = ${filing}`)
