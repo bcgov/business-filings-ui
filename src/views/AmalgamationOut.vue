@@ -795,7 +795,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
       header: {
         name: FilingTypes.AMALGAMATION_OUT,
         certifiedBy: this.certifiedBy || '',
-        email: this.getBusinessEmail || '',
+        email: this.getBusinessEmail || undefined,
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
       }
     }
