@@ -729,7 +729,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         header: {
           name: FilingTypes.NOTICE_OF_WITHDRAWAL,
           certifiedBy: this.certifiedBy || '',
-          email: this.getBusinessEmail || '',
+          email: this.getBusinessEmail || undefined,
           date: this.getCurrentDate // NB: API will reassign this date according to its clock
         }
       }
@@ -761,7 +761,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       const business: any = {
         business: {
-          foundingDate: this.dateToApi(this.getFoundingDate),
+          foundingDate: this.dateToApi(this.getFoundingDate) || undefined,
           identifier: this.getIdentifier,
           legalName: this.getLegalName,
           legalType: this.getLegalType

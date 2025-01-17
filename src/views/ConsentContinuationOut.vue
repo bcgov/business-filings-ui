@@ -721,7 +721,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       header: {
         name: FilingTypes.CONSENT_CONTINUATION_OUT,
         certifiedBy: this.certifiedBy || '',
-        email: this.getBusinessEmail || '',
+        email: this.getBusinessEmail || undefined,
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
       }
     }

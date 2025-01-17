@@ -168,7 +168,8 @@ import {
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
 import { FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd, GetCorpFullDescription, GetCorpNumberedDescription }
+  from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from './stores'
 
@@ -371,6 +372,7 @@ export default class App extends Mixins(
   @Action(useBusinessStore) setLegalName!: (x: string) => Promise<void>
   @Action(useBusinessStore) setLegalType!: (x: CorpTypeCd) => Promise<void>
   @Action(useBusinessStore) setIdentifier!: (x: string) => Promise<void>
+  @Action(useBusinessStore) setFoundingDate!: (x: string) => Promise<void>
 
   @Action(useFilingHistoryListStore) loadFilings!: (x: string) => Promise<void>
   @Action(useFilingHistoryListStore) setFilings!: (x: ApiFilingIF[]) => void
@@ -624,6 +626,12 @@ export default class App extends Mixins(
     const filing = response?.filing
     const filingName = filing.header?.name as FilingTypes
     const status = filing.header.status as FilingStatus
+    const foundingDate = filing.header?.effectiveDate || null // use the FE date as the founding date
+    const email =
+        filing.incorporationApplication?.contactPoint?.email ||
+        filing.amalgamationApplication?.contactPoint?.email ||
+        filing.continuationIn?.contactPoint?.email ||
+        filing.registration?.contactPoint?.email || null
 
     if (!filing || !filing.business || !filing.header || !filingName || !status) {
       throw new Error(`Invalid boostrap filing - missing required property = ${filing}`)
@@ -656,12 +664,17 @@ export default class App extends Mixins(
     this.setIdentifier(this.tempRegNumber)
     this.setLegalType(legalType)
     this.setGoodStanding(true) // draft apps are always in good standing
+    this.setFoundingDate(foundingDate)
+    this.setBusinessEmail(email)
 
     // save local NR Number if present
     if (nameRequest.nrNumber) this.localNrNumber = nameRequest.nrNumber
 
     // store Legal Name if present
-    if (nameRequest.legalName) this.setLegalName(nameRequest.legalName)
+    // special case to identify numbered amalgamations
+    if (filingName === FilingTypes.AMALGAMATION_APPLICATION) {
+      this.setLegalName(nameRequest.legalName || 'Numbered Amalgamated Company')
+    } else { this.setLegalName(nameRequest.legalName || GetCorpNumberedDescription(this.getLegalType)) }
 
     // store the bootstrap item in the right list
     if (this.isBootstrapTodo) this.storeBootstrapTodo(response)
