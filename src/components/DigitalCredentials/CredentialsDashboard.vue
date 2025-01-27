@@ -119,7 +119,7 @@ export default class CredentialsDashboard extends Vue {
   issuedCredentials: Array<DigitalCredentialIF> = []
 
   async mounted (): Promise<void> {
-    await this.getCredentials()
+    await this.getCredentials().catch(() => {}) // ignore errors
     this.showLoadingContainer = false
   }
 
@@ -160,7 +160,7 @@ export default class CredentialsDashboard extends Vue {
       this.revokeCredentialErrorDialog = true
     } else {
       this.credentialRevokedDialog = true
-      await this.getCredentials()
+      await this.getCredentials().catch(() => {}) // ignore errors
     }
     this.showLoadingContainer = false
   }

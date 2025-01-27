@@ -74,8 +74,6 @@ describe('AGM Extension view', () => {
   })
 
   afterEach(() => {
-    // restore feature flag
-    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
@@ -197,6 +195,11 @@ describe('AGM Extension view', () => {
     // simulate valid certify data and component
     wrapper.setData({ certifiedBy: 'Full Name', isCertified: true, certifyFormValid: true })
 
+    // mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+
     // click the file-pay button
     await wrapper.find('#file-pay-btn').trigger('click')
 
@@ -241,8 +244,11 @@ describe('AGM Extension view', () => {
     }
     expect(LegalServices.createFiling).toHaveBeenCalledWith('BC1234567', data, false)
 
-    // verify redirection to dashboard
-    expect(wrapper.vm.$route.name).toBe('dashboard')
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/BC1234567?filing_id=123'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
+
+    vi.restoreAllMocks()
   })
 
   it('navigates to new business dashboard when feature flag is true', async () => {
@@ -268,11 +274,7 @@ describe('AGM Extension view', () => {
     // simulate valid certify data and component
     wrapper.setData({ certifiedBy: 'Full Name', isCertified: true, certifyFormValid: true })
 
-    // verify navigate to the new business dashboard when FF is true
-    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-      if (flag === 'use-business-dashboard') return true
-    })
-    // Mock the navigate function
+    // mock the navigate function
     const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
       return true
     })
@@ -284,5 +286,7 @@ describe('AGM Extension view', () => {
 
     const expectedUrl = '/BC1234567?filing_id=1123'
     expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
+
+    vi.restoreAllMocks()
   })
 })

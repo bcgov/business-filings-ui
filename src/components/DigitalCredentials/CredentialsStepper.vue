@@ -48,7 +48,7 @@
           <CredentialsSimpleSteps
             v-else
             @onShowDetailSteps="showDetailSteps = true"
-            @onGoToCredentialsDashboard="goToCredentialsDashboard()"
+            @onGoToCompanyDashboard="goToCompanyDashboard()"
           />
         </v-col>
         <v-col
@@ -146,9 +146,8 @@
 <script lang="ts">
 import { DigitalCredentialTypes, Routes } from '@/enums'
 import { LegalServices } from '@/services'
-import { useBusinessStore } from '@/stores'
-import { Getter } from 'pinia-class'
-import { Component, Vue } from 'vue-property-decorator'
+import { CommonMixin } from '@/mixins'
+import { Component, Mixins } from 'vue-property-decorator'
 import QrcodeVue from 'qrcode.vue'
 import { DigitalCredentialIF, WalletConnectionIF } from '@/interfaces'
 import CredentialsWebSocket from '@/components/DigitalCredentials/CredentialsWebSocket.vue'
@@ -171,8 +170,8 @@ Component.registerHooks(['beforeRouteEnter'])
     CredentialsDetailSteps
   }
 })
-export default class CredentialsStepper extends Vue {
-  @Getter(useBusinessStore) getIdentifier!: string
+export default class CredentialsStepper extends Mixins(CommonMixin) {
+  // @Getter(useBusinessStore) getIdentifier!: string
 
   loadingMessage = 'Loading'
   showLoadingContainer = true
@@ -280,6 +279,10 @@ export default class CredentialsStepper extends Vue {
 
   goToCredentialsDashboard (): void {
     this.$router.push({ name: Routes.DIGITAL_CREDENTIALS })
+  }
+
+  goToCompanyDashboard (): void {
+    this.navigateToBusinessDashboard()
   }
 }
 </script>

@@ -1,8 +1,9 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { isEqual, omit } from 'lodash'
 import { Getter } from 'pinia-class'
-import { useConfigurationStore } from '@/stores'
-import { GetFeatureFlag, navigate } from '@/utils'
+import { RawLocation } from 'vue-router'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { navigate } from '@/utils'
 import { Routes } from '@/enums'
 
 /**
@@ -11,6 +12,8 @@ import { Routes } from '@/enums'
 @Component({})
 export default class CommonMixin extends Vue {
   @Getter(useConfigurationStore) getBusinessDashUrl!: string
+  @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useRootStore) isNoRedirect!: boolean
 
   /** True if Vitest is running the code. */
   get isVitestRunning (): boolean {
@@ -76,22 +79,24 @@ export default class CommonMixin extends Vue {
 
   /**
    * Navigates to the dashboard page, optionally with a filing ID.
-   * @param identifier The identifier to include in the dashboard URL
-   * @param filingId The filing ID to include in the dashboard URL (optional, defaults to null)
+   * @param identifier the identifier to include in the dashboard URL (optional)
+   * @param filingId the filing ID to include in the dashboard URL (optional)
    */
-  protected navigateToBusinessDashboard (identifier: string, filingId: number = null): void {
-    if (GetFeatureFlag('use-business-dashboard')) {
+  protected navigateToBusinessDashboard (identifier = this.getIdentifier, filingId = NaN): void {
+    if (!this.isNoRedirect) {
+      // redirect to the new Business Dashboard
       let dashboardUrl = `${this.getBusinessDashUrl}/${identifier}`
-      if (filingId !== null) {
+      if (!isNaN(filingId)) {
         dashboardUrl += `?filing_id=${filingId.toString()}`
       }
       navigate(dashboardUrl)
     } else {
-      const route: any = { name: Routes.DASHBOARD }
-      if (filingId !== null) {
+      // stay in this UI
+      const route: RawLocation = { name: Routes.DASHBOARD }
+      if (!isNaN(filingId)) {
         route.query = { filing_id: filingId.toString() }
       }
-      this.$router.push(route).catch(() => {}) // Ignore potential navigation abort errors
+      this.$router.push(route).catch(() => {}) // ignore potential navigation abort errors
     }
   }
 }

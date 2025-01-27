@@ -1,4 +1,5 @@
 import AllowableActionsMixin from './allowable-actions-mixin'
+import BreadcrumbMixin from './breadcrumb-mixin'
 import CommonMixin from './common-mixin'
 import DirectorMixin from './director-mixin'
 import FilingMixin from './filing-mixin'
@@ -7,6 +8,7 @@ import ResourceLookupMixin from './resource-lookup-mixin'
 
 export {
   AllowableActionsMixin,
+  BreadcrumbMixin,
   CommonMixin,
   DirectorMixin,
   FilingMixin,

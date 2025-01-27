@@ -36,6 +36,8 @@ const businessStore = useBusinessStore()
 const filingHistoryListStore = useFilingHistoryListStore()
 const rootStore = useRootStore()
 
+rootStore.noRedirect = true
+
 const BCOMP_ADDRESSES = {
   registeredOffice: {
     mailingAddress: {

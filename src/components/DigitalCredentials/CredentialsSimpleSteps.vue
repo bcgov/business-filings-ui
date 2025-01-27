@@ -66,7 +66,7 @@
       id="return-to-company-dashboard-button"
       color="primary"
       class="mt-6"
-      @click="handleGoToCredentialsDashboard()"
+      @click="handleGoToCompanyDashboard()"
     >
       Return to Company Dashboard
       <v-icon>mdi-chevron-right</v-icon>
@@ -79,8 +79,8 @@ import { Component, Emit, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class CredentialSimpleSteps extends Vue {
-  @Emit('onGoToCredentialsDashboard')
-  handleGoToCredentialsDashboard (): void {
+  @Emit('onGoToCompanyDashboard')
+  handleGoToCompanyDashboard (): void {
     return undefined
   }
 

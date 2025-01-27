@@ -357,8 +357,12 @@ export default class LegalServices {
     const url = `businesses/${businessId}/digitalCredentials`
     return axios.get(url)
       .catch(error => {
-        // eslint-disable-next-line no-console
-        console.log(error.message)
+        // display error in console if not HTTP 401
+        if (error?.response?.status !== StatusCodes.UNAUTHORIZED) {
+          // eslint-disable-next-line no-console
+          console.log(error.message)
+        }
+
         return null
       })
   }
