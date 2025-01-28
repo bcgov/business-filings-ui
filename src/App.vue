@@ -147,14 +147,9 @@ import {
   NameRequestInvalidDialog,
   NotInGoodStandingDialog
 } from '@/components/dialogs'
-import {
-  ConfigJson,
-  getDashboardBreadcrumb,
-  getMyBusinessRegistryBreadcrumb,
-  getRegistryDashboardBreadcrumb,
-  getStaffDashboardBreadcrumb
-} from '@/resources'
-import { CommonMixin, DateMixin, DirectorMixin, FilingMixin, NameRequestMixin } from '@/mixins'
+import { ConfigJson } from '@/resources'
+import { BreadcrumbMixin, CommonMixin, DateMixin, DirectorMixin, FilingMixin, NameRequestMixin }
+  from '@/mixins'
 import { AuthServices, EnumUtilities, LegalServices } from '@/services/'
 import {
   ApiFilingIF,
@@ -189,6 +184,7 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
   }
 })
 export default class App extends Mixins(
+  BreadcrumbMixin,
   CommonMixin,
   DateMixin,
   DirectorMixin,
@@ -223,22 +219,22 @@ export default class App extends Mixins(
     CorpTypeCd.ULC_CONTINUE_IN
   ]
   // business store references
-  @Getter(useBusinessStore) getEntityName!: string
   // @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   // @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isEntitySoleProp!: boolean
 
   // configuration store references
   @Getter(useConfigurationStore) getAuthApiUrl!: string
-  @Getter(useConfigurationStore) getBusinessesUrl!: string
+  // @Getter(useConfigurationStore) getBusinessDashUrl!: string
+  // @Getter(useConfigurationStore) getBusinessesUrl!: string
   @Getter(useConfigurationStore) getCreateUrl!: string
-  @Getter(useConfigurationStore) getRegHomeUrl!: string
 
   // root store references
   @Getter(useRootStore) getKeycloakRoles!: Array<string>
   @Getter(useRootStore) isBootstrapFiling!: boolean
   @Getter(useRootStore) isBootstrapPending!: boolean
   @Getter(useRootStore) isBootstrapTodo!: boolean
+  // @Getter(useRootStore) isNoRedirect!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useRootStore) showFetchingDataSpinner!: boolean
   @Getter(useRootStore) showStartingAmalgamationSpinner!: boolean
@@ -312,7 +308,7 @@ export default class App extends Mixins(
   get breadcrumbs (): Array<BreadcrumbIF> {
     const breadcrumbs = this.$route?.meta?.breadcrumb
     const crumbs: Array<BreadcrumbIF> = [
-      getDashboardBreadcrumb(this.getEntityName, this.getBusinessDashUrl, this.getIdentifier),
+      this.getDashboardBreadcrumb(),
       ...(breadcrumbs || [])
     ]
 
@@ -320,12 +316,12 @@ export default class App extends Mixins(
     // Staff don't want the home landing page and they can't access the Manage Business Dashboard
     if (this.isRoleStaff) {
       // If staff, set StaffDashboard as home crumb
-      crumbs.unshift(getStaffDashboardBreadcrumb(this.getBusinessesUrl))
+      crumbs.unshift(this.getStaffDashboardBreadcrumb())
     } else {
       // For non-staff, set Home and Dashboard crumbs
       crumbs.unshift(
-        getRegistryDashboardBreadcrumb(this.getRegHomeUrl),
-        getMyBusinessRegistryBreadcrumb(this.getBusinessesUrl))
+        this.getBcRegistriesDashboardBreadcrumb(),
+        this.getMyBusinessRegistryBreadcrumb())
     }
     return crumbs
   }
@@ -392,6 +388,7 @@ export default class App extends Mixins(
   @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
   @Action(useRootStore) setKeycloakRoles!: (x: Array<string>) => void
   @Action(useRootStore) setNameRequest!: (x: any) => void
+  @Action(useRootStore) setNoRedirect!: (x: boolean) => void
   @Action(useRootStore) setParties!: (x: Array<PartyIF>) => void
   @Action(useRootStore) setPendingsList!: (x: Array<any>) => void
   @Action(useRootStore) setRecordsAddress!: (x: OfficeAddressIF) => void
@@ -450,9 +447,9 @@ export default class App extends Mixins(
       console.log('Error fetching user info or updating Launch Darkly =', error)
     }
 
-    // now that LaunchDarkly has been updated (ie, in case of user targeting),
-    // check whether to use this Entity Dashboard or the new Business Dashboard
-    if (GetFeatureFlag('use-business-dashboard') && (this.$route.name === Routes.DASHBOARD)) {
+    // check whether to redirect to the new Business Dashboard
+    if (this.$route.query.noRedirect !== undefined) this.setNoRedirect(true)
+    if (!this.isNoRedirect && (this.$route.name === Routes.DASHBOARD)) {
       const identifier = (this.businessId || this.tempRegNumber)
       const dashboardUrl = `${this.getBusinessDashUrl}${identifier}${this.$route.fullPath}`
       navigate(dashboardUrl)
