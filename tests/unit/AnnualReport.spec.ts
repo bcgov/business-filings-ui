@@ -1002,15 +1002,22 @@ describe('Annual Report - Part 3 - Submitting', () => {
     const button = wrapper.find('#ar-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
 
+    // mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+
     // click the File & Pay button
     await wrapper.find('#ar-file-pay-btn').trigger('click')
 
     // wait for save to complete and everything to update
     await flushPromises()
 
-    // verify routing back to Dashboard URL
-    expect(vm.$route.name).toBe('dashboard')
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/CP0001191?filing_id=123'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 })
@@ -1211,8 +1218,6 @@ describe('Annual Report - Part 4 - Saving', () => {
   })
 
   afterEach(() => {
-    // restore feature flag
-    vi.restoreAllMocks()
     sinon.restore()
     wrapper.destroy()
   })
@@ -1273,13 +1278,21 @@ describe('Annual Report - Part 4 - Saving', () => {
       }
     })
 
+    // mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+
     // click the Save & Resume Later button
     // await wrapper.find('#ar-save-resume-btn').trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickSaveResume()
 
-    // verify routing back to Dashboard URL
-    expect(vm.$route.name).toBe('dashboard')
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/CP0001191'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
+
+    vi.restoreAllMocks()
   })
 
   it('saves a filing and navigates to new business Dashboard when the FF is true', async () => {
@@ -1304,17 +1317,20 @@ describe('Annual Report - Part 4 - Saving', () => {
         }
       }
     })
-    // verify navigate to the new business dashboard when FF is true
-    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-      if (flag === 'use-business-dashboard') return true
-    })
-    // Mock the navigate function
+
+    // mock the navigate function
     const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
       return true
     })
+
+    // click the Save and Resume Later button
     await vm.onClickSaveResume()
+
+    // verify navigate to the new Dashboard URL
     const expectedUrl = '/CP0001191'
     expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
+
+    vi.restoreAllMocks()
   })
 
   it('navigates to new business Dashboard with FF being true when the Cancel button is clicked', async () => {
@@ -1325,14 +1341,12 @@ describe('Annual Report - Part 4 - Saving', () => {
       directorFormValid: true,
       certifyFormValid: true
     })
-    // verify navigate to the new business dashboard when FF is true
-    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-      if (flag === 'use-business-dashboard') return true
-    })
-    // Mock the navigate function
+
+    // mock the navigate function
     const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
       return true
     })
+
     // click the Cancel button
     // await wrapper.find('#ar-cancel-btn').trigger('click')
     // work-around because click trigger isn't working
@@ -1341,6 +1355,8 @@ describe('Annual Report - Part 4 - Saving', () => {
     // verify navigate to the new Dashboard URL
     const expectedUrl = '/CP0001191'
     expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
+
+    vi.restoreAllMocks()
   })
 
   it('routes to Dashboard URL when the Cancel button is clicked', async () => {

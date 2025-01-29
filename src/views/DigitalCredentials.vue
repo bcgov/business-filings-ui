@@ -12,6 +12,7 @@ import { AllowableActionsMixin } from '@/mixins'
 @Component
 export default class DigitalCredentials extends Mixins(AllowableActionsMixin) {
   mounted (): void {
+    // if not allowed, go back to dashboard
     if (!this.isAllowed(AllowableActions.DIGITAL_CREDENTIALS)) {
       this.$router.push({ name: Routes.DASHBOARD })
     }

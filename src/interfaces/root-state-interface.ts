@@ -19,6 +19,7 @@ export interface RootStateIF {
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
   currentJsDate: Date // 'now' as of dashboard loading in UTC
   keycloakRoles: Array<string>
+  noRedirect: boolean
   stateFiling: StateFilingIF
   userKeycloakGuid: string
 

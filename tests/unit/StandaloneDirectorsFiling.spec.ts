@@ -876,6 +876,11 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     const button = wrapper.find('#cod-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
 
+    // mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+
     // click the File & Pay button and wait for async methods to finish
     await button.trigger('click')
     await flushPromises() // wait for save to complete and everything to update
@@ -885,9 +890,11 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // expect(tooltipText).toContain('Ensure all of your information is entered correctly before you File & Pay.')
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
-    // verify routing back to Dashboard URL
-    expect(vm.$route.name).toBe('dashboard')
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/CP0001191?filing_id=123'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 })
@@ -952,8 +959,6 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
   })
 
   afterEach(() => {
-    // restore feature flag
-    vi.restoreAllMocks()
     sinon.restore()
   })
 
@@ -976,18 +981,22 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
+    // mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+
     // NB: can't find button because Vuetify hasn't rendered it
     // const button = wrapper.find('#cod-file-pay-btn')
 
     // work-around in lieu of clicking Pay & File button
     await vm.onClickFilePay()
 
-    // verify routing back to Dashboard URL
-    expect(vm.$route.name).toBe('dashboard')
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/CP0001191?filing_id=123'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
-    // verify route param
-    expect(vm.$route.query).toEqual({ filing_id: '123' })
-
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
@@ -1008,11 +1017,8 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
       directorFormValid: true,
       certifyFormValid: true
     })
-    // verify navigate to the new business dashboard when FF is true
-    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-      if (flag === 'use-business-dashboard') return true
-    })
-    // Mock the navigate function
+
+    // mock the navigate function
     const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
       return true
     })
@@ -1022,6 +1028,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     const expectedUrl = '/CP0001191?filing_id=123'
     expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 })
@@ -1167,17 +1174,21 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     const button = wrapper.find('#cod-save-resume-btn')
     expect(button.attributes('disabled')).toBeUndefined()
 
+    // mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+
     // click the Save & Resume Later button and wait for async methods to finish
     // await button.trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickSaveResume()
 
-    // verify no redirection
-    expect(window.location.assign).not.toHaveBeenCalled()
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/CP0001191'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
-    // verify routing back to Dashboard URL
-    expect(vm.$route.name).toBe('dashboard')
-
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 })

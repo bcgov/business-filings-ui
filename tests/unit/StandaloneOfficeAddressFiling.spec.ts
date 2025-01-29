@@ -677,8 +677,6 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
   })
 
   afterEach(() => {
-    // restore feature flag
-    vi.restoreAllMocks()
     sinon.restore()
   })
 
@@ -798,6 +796,11 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     await Vue.nextTick()
     expect(button.attributes('disabled')).toBeUndefined()
 
+    // mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+
     // click the File & Pay button
     await button.trigger('click')
     await flushPromises() // wait for save to complete and everything to update
@@ -808,9 +811,11 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // expect(tooltipText).toContain('Ensure all of your information is entered correctly before you File & Pay.')
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
-    // verify routing back to Dashboard URL
-    expect(vm.$route.name).toBe('dashboard')
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/CP0001191?filing_id=123'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
@@ -858,14 +863,11 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     await Vue.nextTick()
     expect(button.attributes('disabled')).toBeUndefined()
 
-    // verify navigate to the new business dashboard when FF is true
-    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-      if (flag === 'use-business-dashboard') return true
-    })
-    // Mock the navigate function
+    // mock the navigate function
     const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
       return true
     })
+
     // click the File & Pay button
     await button.trigger('click')
     await flushPromises() // wait for save to complete and everything to update
@@ -874,6 +876,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     const expectedUrl = '/CP0001191?filing_id=123'
     expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 })
@@ -1154,6 +1157,11 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     await Vue.nextTick()
     expect(button.attributes('disabled')).toBeUndefined()
 
+    // mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+
     // click the File & Pay button
     await button.trigger('click')
     await flushPromises() // wait for save to complete and everything to update
@@ -1164,9 +1172,11 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     // expect(tooltipText).toContain('Ensure all of your information is entered correctly before you File & Pay.')
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
-    // verify routing back to Dashboard URL
-    expect(vm.$route.name).toBe('dashboard')
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/BC0007291?filing_id=123'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 })
@@ -1289,14 +1299,21 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
       addressesFormValid: true
     })
 
+    // mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+
     // click the Save & Resume Later button
     // await wrapper.find('#coa-save-resume-btn').trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickSaveResume()
 
-    // verify routing back to Dashboard URL
-    expect(vm.$route.name).toBe('dashboard')
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/CP0001191'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 })
@@ -1427,14 +1444,21 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
       addressesFormValid: true
     })
 
+    // mock the navigate function
+    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+      return true
+    })
+
     // click the Save & Resume Later button
     // await wrapper.find('#coa-save-resume-btn').trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickSaveResume()
 
-    // verify routing back to Dashboard URL
-    expect(vm.$route.name).toBe('dashboard')
+    // verify navigate to the new Dashboard URL
+    const expectedUrl = '/BC0007291'
+    expect(mockNavigate).toHaveBeenCalledWith(expectedUrl)
 
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 })

@@ -9,7 +9,7 @@ export const useConfigurationStore = defineStore('configuration', {
 
   getters: {
     getAuthWebUrl (state: ConfigurationStateIF): string {
-      return state.configuration.VUE_APP_AUTH_WEB_URL
+      return state.configuration?.VUE_APP_AUTH_WEB_URL
     },
 
     getMyBusinessRegistryUrl (): string {
@@ -41,15 +41,15 @@ export const useConfigurationStore = defineStore('configuration', {
     },
 
     getCreateUrl (state: ConfigurationStateIF): string {
-      return state.configuration.VUE_APP_BUSINESS_CREATE_URL
+      return state.configuration?.VUE_APP_BUSINESS_CREATE_URL
     },
 
     getDashboardUrl (state: ConfigurationStateIF): string {
-      return state.configuration.VUE_APP_DASHBOARD_URL
+      return state.configuration?.VUE_APP_DASHBOARD_URL
     },
 
     getEditUrl (state: ConfigurationStateIF): string {
-      return state.configuration.VUE_APP_BUSINESS_EDIT_URL
+      return state.configuration?.VUE_APP_BUSINESS_EDIT_URL
     },
 
     getLegalApiUrl (state: ConfigurationStateIF): string {
@@ -76,24 +76,24 @@ export const useConfigurationStore = defineStore('configuration', {
     },
 
     getSiteminderLogoutUrl (state: ConfigurationStateIF): string {
-      return state.configuration.VUE_APP_SITEMINDER_LOGOUT_URL
+      return state.configuration?.VUE_APP_SITEMINDER_LOGOUT_URL
     },
 
     getHotJarId (state: ConfigurationStateIF): string {
-      return state.configuration.VUE_APP_HOTJAR_ID
+      return state.configuration?.VUE_APP_HOTJAR_ID
     },
 
     getAddressCompleteKey (state: ConfigurationStateIF): string {
-      return state.configuration.VUE_APP_ADDRESS_COMPLETE_KEY
+      return state.configuration?.VUE_APP_ADDRESS_COMPLETE_KEY
     },
 
     /** Get Launch Darkly Client ID */
     getBusinessFilingLdClientId (state: ConfigurationStateIF): string {
-      return state.configuration.VUE_APP_BUSINESS_FILING_LD_CLIENT_ID
+      return state.configuration?.VUE_APP_BUSINESS_FILING_LD_CLIENT_ID
     },
 
     getSentryDsn (state: ConfigurationStateIF): string {
-      return state.configuration.VUE_APP_SENTRY_DSN
+      return state.configuration?.VUE_APP_SENTRY_DSN
     }
   },
 

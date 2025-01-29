@@ -146,26 +146,26 @@
 <script lang="ts">
 import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import { Action, Getter } from 'pinia-class'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { AmalgamationTypes, CorrectNameOptions, FilingTypes } from '@bcrs-shared-components/enums'
-import { AmlRoles, AmlTypes, Routes } from '@/enums'
+import { AmlRoles, AmlTypes } from '@/enums'
 import { LegalServices } from '@/services'
-import { GetFeatureFlag, navigate } from '@/utils'
+import { navigate } from '@/utils'
 import { TechnicalErrorDialog } from '@/components/dialogs'
+import { CommonMixin } from '@/mixins'
 
 @Component({
   components: {
     TechnicalErrorDialog
   }
 })
-export default class AmalgamationSelection extends Vue {
+export default class AmalgamationSelection extends Mixins(CommonMixin) {
   @Getter(useAuthenticationStore) getAccountId!: string
   @Getter(useConfigurationStore) getCreateUrl!: string
-  @Getter(useConfigurationStore) getBusinessDashUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useRootStore) getFullPhoneNumber!: string
-  @Getter(useBusinessStore) getIdentifier!: string
+  // @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useBusinessStore) isEntityBcCcc!: boolean
@@ -187,14 +187,9 @@ export default class AmalgamationSelection extends Vue {
 
   /** Called when component is created. */
   created (): void {
-    // if required data isn't set, go back to dashboard
+    // if required data isn't set, go to dashboard
     if (!this.getIdentifier) {
-      if (GetFeatureFlag('use-business-dashboard')) {
-        const dashboardUIUrl = `${this.getBusinessDashUrl}/${this.getIdentifier}`
-        navigate(dashboardUIUrl)
-        return
-      }
-      this.$router.push({ name: Routes.DASHBOARD })
+      this.navigateToBusinessDashboard(this.getIdentifier)
     }
   }
 

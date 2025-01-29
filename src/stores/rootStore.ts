@@ -15,6 +15,7 @@ export const useRootStore = defineStore('root', {
     bootstrapFilingStatus: null,
     bootstrapFilingType: null,
     keycloakRoles: [],
+    noRedirect: false,
     stateFiling: null,
     userKeycloakGuid: null,
     businessEmail: null,
@@ -90,6 +91,11 @@ export const useRootStore = defineStore('root', {
      */
     getKeycloakRoles (state: RootStateIF): Array<string> {
       return state.keycloakRoles
+    },
+
+    /** Whether initial route specified "noRedirect" URL parameter. */
+    isNoRedirect (state: RootStateIF): boolean {
+      return state.noRedirect
     },
 
     /**
@@ -432,6 +438,10 @@ export const useRootStore = defineStore('root', {
     /** Set the roles from the Keycloak token (JWT). */
     setKeycloakRoles (keycloakRoles: Array<string>) {
       this.keycloakRoles = keycloakRoles
+    },
+
+    setNoRedirect (val: boolean) {
+      this.noRedirect = val
     },
 
     setUserKeycloakGuid (userKeycloakGuid: string) {

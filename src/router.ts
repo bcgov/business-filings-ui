@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import VueRouter, { Route } from 'vue-router'
 import routes from '@/routes'
-import { Routes, DCRoutes } from '@/enums'
+import { Routes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { GetFeatureFlag } from '@/utils'
 
 /**
  * Configures and returns Vue Router.
@@ -29,8 +28,6 @@ export function getVueRouter () {
     // check if we need to authenticate
     if (requiresAuth(to) && !isAuthenticated()) {
       next({ name: Routes.SIGNIN })
-    } else if (isRedirectDigitalCredentialRoute(to)) {
-      next({ name: Routes.DASHBOARD })
     } else {
       next()
     }
@@ -46,19 +43,6 @@ export function getVueRouter () {
   function isAuthenticated (): boolean {
     // FUTURE: also check that token isn't expired!
     return !!sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
-  }
-
-  /**
-   * Returns True when this is a digital credential route and the credentials
-   * feature flag is OFF (for the current user).
-   */
-  function isRedirectDigitalCredentialRoute (route: Route): boolean {
-    // Initially this is True for all but a few select users.
-    // See DIGITAL_CREDENTIALS in Allowable Actions Mixin.
-    return (
-      !GetFeatureFlag('enable-digital-credentials') &&
-      [Routes.DIGITAL_CREDENTIALS].includes(route.name as DCRoutes)
-    )
   }
 
   return router

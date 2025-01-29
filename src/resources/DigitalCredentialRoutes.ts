@@ -1,14 +1,12 @@
 import { Routes } from '@/enums'
 import DigitalCredentials from '@/views/DigitalCredentials.vue'
-import { getDigitalCredentialBreadcrumb } from '@/resources/BreadcrumbResources'
 import { CredentialsDashboard, CredentialsStepper } from '@/components/DigitalCredentials'
 
 export const DigitalCredentialRoutes = {
   path: `/${Routes.DIGITAL_CREDENTIALS}`,
   component: DigitalCredentials,
   meta: {
-    requiresAuth: true,
-    breadcrumb: [getDigitalCredentialBreadcrumb()]
+    requiresAuth: true
   },
   children: [
     {
@@ -17,7 +15,10 @@ export const DigitalCredentialRoutes = {
       component: CredentialsDashboard,
       meta: {
         breadcrumb: [
-          getDigitalCredentialBreadcrumb()
+          {
+            text: 'Business Digital Credentials',
+            to: { name: Routes.DIGITAL_CREDENTIALS }
+          }
         ]
       }
     },
@@ -27,7 +28,10 @@ export const DigitalCredentialRoutes = {
       component: CredentialsStepper,
       meta: {
         breadcrumb: [
-          getDigitalCredentialBreadcrumb(),
+          {
+            text: 'Business Digital Credentials',
+            to: { name: Routes.DIGITAL_CREDENTIALS }
+          },
           {
             text: 'Issue Credentials',
             to: { name: Routes.ISSUE_CREDENTIAL }
