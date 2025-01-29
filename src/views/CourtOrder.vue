@@ -1,0 +1,454 @@
+<template>
+  <div id="court-order">
+    <v-container
+      id="court-order-container"
+      class="view-container"
+    >
+      <v-row no-gutters>
+        
+        <v-col
+         class="pr-4 pb-4"
+        >
+          <article id="court-order-article">
+            <!-- Page Title -->
+            <header>
+              <h1 id="court-order-header">
+                Court Order
+              </h1>
+            </header>
+
+            <section>
+              <header>
+                <h2>Court Order</h2>
+              </header>
+
+              <v-card
+                flat
+                class="pt-6 px-4"
+              >
+              <v-row class="mt-4" >
+                <v-col cols="20" md="3">
+      <label class="title-label">Court Order Number</label>
+    </v-col>
+                <CourtOrderPoa
+                  ref="courtOrderPoaRef"
+                  :key="courtOrderPoaKey"
+                  class="mt-4"
+                  :displaySideLabels="false"
+                  :autoValidation="enableValidation"
+                  :courtOrderNumberRequired="courtOrderNumberRequired"
+                  @emitCourtNumber="courtOrderNumber = $event"
+                  @emitPoa="planOfArrangement = $event"
+                />
+              </v-row>
+              <v-row class="mt-6">
+                <v-col cols="12" md="3">
+      <label class="title-label">Upload a File</label>
+    </v-col>
+        <v-col>
+                <p>
+                  AND/OR upload a PDF of the Court Order:
+                </p>
+
+                <ul class="ml-2">
+                  <li>Use a white background and a legible font with contrasting font colour</li>
+                  <li>PDF file type (maximum {{ MAX_FILE_SIZE }} MB file size)</li>
+                </ul>
+             
+                <div class="d-flex mt-4">
+                  <v-btn
+            id="add-document-button"
+            outlined
+            color="primary"
+            class="btn-outlined-primary mt-4"
+              >
+            <v-icon>mdi-plus</v-icon>
+            <span>Add a Document</span>
+          </v-btn>
+                  <FileUploadPdf
+                    ref="fileUploadRef"
+                    :file.sync="file"
+                    :fileKey.sync="fileKey"
+                    class="ml-12 flex-grow-1"
+                    :isRequired="enableValidation && isCourtOrder && !notation"
+                    :customErrorMSg="courtOrderCustomValidationMsg"
+                    :maxSize="MAX_FILE_SIZE"
+                    :pageSize="PageSizes.LETTER_PORTRAIT"
+                    :userId="getKeycloakGuid"
+                    :getPresignedUrl="LegalServices.getPresignedUrl"
+                    :uploadToUrl="LegalServices.uploadToUrl"
+                  />
+                </div>
+                </v-col>
+                </v-row>
+                <v-row class="mt-4">
+                  <v-col cols="12" md="3">
+      <label class="title-label">Court Order Text</label>
+    </v-col>
+                <v-textarea
+                  v-model="notation"
+                  class="notation-textarea xmt-4"
+                  filled
+                  :label="notationLabel"
+                  :no-resize="true"
+                  :counter="NOTATION_MAX_LENGTH"
+                />
+                </v-row>
+              </v-card>
+            </section>
+          </article>
+          <section>
+            <header>
+              <h2>Staff Payment</h2>
+            </header>
+            <v-card
+              flat
+              class="pt-6 px-4"
+            >
+              <StaffPaymentShared />
+            </v-card>
+          </section>
+        </v-col>
+        <v-col
+          cols="12"
+          lg="3"
+          style="position: relative"
+        >
+          <aside>
+            <affix
+              relative-element-selector="#court-order-article"
+              :offset="{ top: 120, bottom: 40 }"
+            >
+              <SbcFeeSummary />
+
+              <v-container
+                id="continue-out-buttons-container"
+                class="list-item"
+              >
+                <v-divider class="mx-4" />
+                <v-card-actions>
+                  <v-spacer />
+                  <div class="form__btns" >
+                    <v-col>
+                    <div class="buttons-right">
+                    <v-btn
+                      id="dialog-save-button"
+                      solid
+            color="primary"
+            class="btn-outlined-primary mt-4"
+                      :loading="saving"
+                      @click.native="onSave()"
+                    >
+                      <span>{{ 'File and Pay' }}</span>
+                    </v-btn>
+                    </div>
+                    <v-btn
+                      id="dialog-cancel-button"
+                      outlined
+            color="primary"
+            class="btn-outlined-primary mt-6"
+                      :disabled="saving"
+                      @click.native="emitClose(false)"
+                    >
+                      <span>Cancel</span>
+                    </v-btn>
+                  </v-col>
+                  </div>
+                </v-card-actions>
+              </v-container>
+            </affix>
+          </aside>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Getter } from 'pinia-class'
+import { DateMixin } from '@/mixins'
+import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
+import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
+import { FormIF } from '@/interfaces'
+import { EffectOfOrderTypes, FilingSubTypes, PageSizes } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
+import { EnumUtilities, LegalServices } from '@/services'
+import { useAuthenticationStore, useBusinessStore, useRootStore } from '@/stores'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
+import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
+import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment/'
+
+@Component({
+  components: {
+    CourtOrderPoa,
+    FileUploadPdf,
+    SbcFeeSummary,
+    StaffPaymentShared
+  }
+})
+export default class CourtOrderView extends Mixins(DateMixin) {
+  $refs!: Vue['$refs'] & {
+    courtOrderPoaRef: FormIF,
+    fileUploadRef: FormIF,
+    notationFormRef: FormIF
+  }
+
+  readonly MAX_FILE_SIZE = 30 // in MB
+  readonly NOTATION_MAX_LENGTH = 2000 // characters
+
+  // For template
+  readonly LegalServices = LegalServices
+  readonly PageSizes = PageSizes
+
+  /** Prop to display the dialog. */
+  @Prop({ required: true }) readonly dialog!: boolean
+
+  /** Prop to provide attachment selector. */
+  @Prop({ default: '' }) readonly attach!: string
+
+  /** Prop for the item's display name. */
+  @Prop({ required: true, default: 'courtOrder' }) readonly displayName!: string
+
+  /** Prop for the item's name (filing type). */
+  @Prop({ required: true, default: 'courtOrder' }) readonly name!: FilingTypes
+
+  /** Prop to require court order number regardless the plan of arrangement. */
+  @Prop({ default: false }) readonly courtOrderNumberRequired!: boolean
+
+  // Global getters
+  @Getter(useRootStore) getCurrentDate!: string
+  @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useBusinessStore) getLegalType!: CorpTypeCd
+  @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useAuthenticationStore) getKeycloakGuid!: string
+  @Getter(useBusinessStore) isAdminFrozen!: boolean
+
+  // Properties
+  customErrorMsg = ''
+  notation = '' // notation text
+  courtOrderNumber = '' // court order number
+  planOfArrangement = false // whether filing has plan of arrangement
+  saving = false // whether this component is currently saving
+  courtOrderPoaKey = 0 // court order component key, to force re-render
+  enableValidation = false // flag to enable validation
+  file: File = null // court order file object
+  fileKey: string = null // court order file key
+
+  /** Whether this filing is a Court Order. */
+  get isCourtOrder (): boolean {
+    console.log(this.name)
+    return EnumUtilities.isTypeCourtOrder({ name: this.name })
+  }
+
+  get courtOrderCustomValidationMsg (): string {
+    if (this.isCourtOrder && !this.notation) {
+      return `Enter a ${this.displayName} and/or upload file`
+    }
+    return ''
+  }
+
+  get notationLabel (): string {
+    return this.isCourtOrder ? `${this.displayName} Text` : 'courtOrder'
+  }
+
+  /** The notation textarea validation rules. */
+  get notationRules (): Array<(v) => boolean | string> {
+    return [
+      // Court Order requires a file or a comment
+      (v: string) => (
+        !!v ||
+        !this.isCourtOrder ||
+        (!!this.file && !!this.fileKey) ||
+        `Enter a ${this.displayName} and/or upload file`
+      )
+    ]
+  }
+
+  @Watch('notation')
+  async onNotationChanged (): Promise<void> {
+    // if this is a court order and notation has changed, re-validate file upload component
+    if (this.isCourtOrder && this.enableValidation) {
+      await this.$nextTick() // wait for variables to update
+      this.$refs.fileUploadRef?.validate()
+    }
+  }
+
+  // NB: watch "fileKey" because it changes according to file validity (while "file" might not)
+  @Watch('fileKey')
+  async onFileKeyChanged (): Promise<void> {
+    // if this is a court order and file has changed, re-validate notation form
+    if (this.isCourtOrder && this.enableValidation) {
+      await this.$nextTick() // wait for variables to update
+      this.$refs.notationFormRef?.validate()
+    }
+  }
+
+  @Watch('dialog')
+  onDialogChanged (val: boolean): void {
+    // when dialog is hidden, reset everything
+    if (!val) {
+      // disable validation
+      this.enableValidation = false
+
+      // reset notation form
+      this.$refs.notationFormRef?.reset()
+
+      // reset file upload component
+      this.$refs.fileUploadRef?.reset()
+
+      // reset court order component and variables
+      this.courtOrderPoaKey++ // force re-render
+      this.courtOrderNumber = ''
+      this.planOfArrangement = false
+    }
+  }
+
+  /** Called when user clicks button to file/save the current filing. */
+  async onSave (): Promise<void> {
+    // base filing
+    const filing: any = {
+      header: {
+        name: this.name,
+        date: this.getCurrentDate, // NB: API will reassign this date according to its clock
+        certifiedBy: ''
+      },
+      business: {
+        identifier: this.getIdentifier,
+        legalType: this.getLegalType,
+        legalName: this.getLegalName,
+        foundingDate: this.getFoundingDate
+      }
+    }
+
+    const effectOfOrder = (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string
+    const fileNumber = (this.courtOrderNumber || '')
+
+    if (this.file) {
+      filing[FilingTypes.COURT_ORDER] = {
+        effectOfOrder,
+        fileNumber,
+        orderDetails: this.notation,
+        fileKey: this.fileKey,
+        fileName: this.file.name,
+        fileLastModified: this.file.lastModified,
+        fileSize: this.file.size
+      }
+    } else {
+      filing[FilingTypes.COURT_ORDER] = {
+        effectOfOrder,
+        fileNumber,
+        orderDetails: this.notation
+      }
+    }
+
+    let success = false
+    await LegalServices.createFiling(this.getIdentifier, filing, false)
+      .then(() => {
+        success = true
+      })
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log('save() error =', error.log)
+        alert(`Could not save your court order. Please try again or cancel.`)
+      })
+
+    this.saving = false
+    if (success) this.emitClose(true)
+  }
+
+  /**
+   * Emits event to close this dialog.
+   * @param needReload Whether the dashboard needs to be reloaded.
+   */
+   @Emit('close')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  emitClose (needReload: boolean): void {}
+}
+</script>
+
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
+#court-order {
+  /* Set "header-counter" to 0 */
+  counter-reset: header-counter;
+}
+
+h2::before {
+  /* Increment "header-counter" by 1 */
+  counter-increment: header-counter;
+  content: counter(header-counter) '. ';
+}
+
+article {
+  .v-card {
+    line-height: 1.2rem;
+    font-size: $px-14;
+  }
+}
+
+header p,
+section p {
+  color: $gray7;
+}
+
+section + section {
+  margin-top: 3rem;
+}
+
+h1 {
+  margin-bottom: 1.25rem;
+  line-height: 2rem;
+  letter-spacing: -0.01rem;
+}
+
+h2 {
+  margin-bottom: 0.25rem;
+  margin-top: 3rem;
+  font-size: 1.125rem;
+}
+
+// Save & Filing Buttons
+#continue-out-buttons-container {
+  padding-top: 2rem;
+  border-top: 1px solid $gray5;
+
+  .buttons-left {
+    width: 50%;
+  }
+
+  .buttons-right {
+    margin-left: auto;
+  }
+
+  .v-btn + .v-btn {
+    margin-left: 0.5rem;
+  }
+}
+
+
+// Fix font size and color to stay consistent.
+:deep() {
+  #document-delivery, #court-order-label, #poa-label {
+    font-size: $px-14;
+  }
+
+  .certify-clause, .certify-stmt, .grey-text {
+    color: $gray7;
+  }
+
+  .invalid-component {
+    .certify-stmt, .title-label {
+      color: $app-red;
+    }
+  }
+
+  .title-label {
+  font-weight: bold;
+  color: $gray9;
+}
+}
+</style>
