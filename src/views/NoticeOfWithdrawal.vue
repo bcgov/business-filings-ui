@@ -912,10 +912,13 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       }
     }
 
-    @Watch('certifyFormValid')
-    @Watch('courtOrderValid')
-    @Watch('documentDeliveryValid')
-    @Watch('staffPaymentValid')
+    @Watch('partOfPoa')
+    @Watch('hasTakenEffect')
+    @Watch('documentOptionalEmail')
+    @Watch('certifiedBy')
+    @Watch('isCertified')
+    @Watch('fileNumber')
+    @Watch('hasPlanOfArrangement')
     onHaveChanges (): void {
       this.haveChanges = true
     }
