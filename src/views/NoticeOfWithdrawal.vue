@@ -480,6 +480,11 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         }
       })
 
+      const filingId = +this.savedFiling?.header?.filingId || 0
+      if (filingId > 0) {
+        // save filing ID for possible future updates
+        this.filingId = filingId
+      }
       // if there were no errors, finish file-pay process now
       // otherwise, dialogs may finish this later
       if (!this.paymentErrorDialog && !this.saveErrorReason) this.onClickFilePayFinish()
