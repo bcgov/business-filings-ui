@@ -94,6 +94,15 @@ export const useConfigurationStore = defineStore('configuration', {
 
     getSentryDsn (state: ConfigurationStateIF): string {
       return state.configuration?.VUE_APP_SENTRY_DSN
+    },
+
+    /** Document Record Service Api Getters */
+    getDrsApiUrl (state: ConfigurationStateIF): string {
+      return state.configuration?.VUE_APP_DOC_API_URL + state.configuration?.VUE_APP_DOC_API_VERSION
+    },
+
+    getDrsApiKey (state: ConfigurationStateIF): string {
+      return state.configuration?.VUE_APP_DOC_API_KEY
     }
   },
 

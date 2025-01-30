@@ -129,6 +129,16 @@
               />
             </section>
 
+            <section>
+              <DocumentId
+                :docApiUrl="getDrsApiUrl"
+                :docApiKey="getDrsApiKey"
+                :validate="false"
+                @updateDocId="docId=$event"
+                @isValid="docIdValid=$event"
+              />
+            </section>
+
             <!-- Certify -->
             <section>
               <header>
@@ -254,9 +264,11 @@ import { SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import DocumentId from '@/views/DocumentId.vue'
 
 @Component({
   components: {
+    DocumentId,
     OfficeAddresses,
     SbcFeeSummary,
     Certify,
@@ -283,6 +295,9 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
+  @Getter(useConfigurationStore) getDrsApiUrl!: string
+  @Getter(useConfigurationStore) getDrsApiKey!: string
+
   // local variables
   updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
   filingId = NaN
@@ -300,6 +315,8 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   certifiedBy = ''
   certifyFormValid = false
   addressesFormValid: boolean = null
+  docId = ''
+  docIdValid = false
   saving = false // true only when saving
   savingResuming = false // true only when saving and resuming
   filingPaying = false // true only when filing and paying

@@ -21,6 +21,9 @@ export interface ConfigurationStateIF {
     VUE_APP_SENTRY_DSN: string,
     VUE_APP_SITEMINDER_LOGOUT_URL: string,
     VUE_APP_STATUS_API_URL: string,
-    VUE_APP_STATUS_API_VERSION: string
+    VUE_APP_STATUS_API_VERSION: string,
+    VUE_APP_DOC_API_URL: string,
+    VUE_APP_DOC_API_VERSION: string,
+    VUE_APP_DOC_API_KEY: string,
   }
 }
