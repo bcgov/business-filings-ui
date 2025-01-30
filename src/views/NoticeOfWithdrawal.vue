@@ -227,6 +227,17 @@
               v-on="on"
             >
               <v-btn
+                id="withdrawal-file-pay-btn"
+                color="primary"
+                large
+                class="mr-2"
+                :disabled="busySaving || hasTakenEffect"
+                :loading="filingPaying"
+                @click="onClickSubmit()"
+              >
+                <span>Submit <v-icon right>mdi-chevron-right</v-icon> </span>
+              </v-btn>
+              <v-btn
                 id="withdrawal-cancel-btn"
                 large
                 outlined
@@ -235,16 +246,6 @@
                 @click="goToDashboard()"
               >
                 <span>Cancel</span>
-              </v-btn>
-              <v-btn
-                id="withdrawal-file-pay-btn"
-                color="primary"
-                large
-                :disabled="busySaving || hasTakenEffect"
-                :loading="filingPaying"
-                @click="onClickSubmit()"
-              >
-                <span>Submit <v-icon right>mdi-chevron-right</v-icon> </span>
               </v-btn>
             </div>
           </template>
@@ -268,8 +269,8 @@ import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
 import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { EnumUtilities, LegalServices } from '@/services/'
-import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
+import { LegalServices } from '@/services/'
+import { EffectOfOrderTypes, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
