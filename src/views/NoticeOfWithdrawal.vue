@@ -81,8 +81,6 @@
             <RecordToBeWithdrawn
               class="mt-6"
               :filingToBeWithdrawn="filingToBeWithdrawn"
-              :hasDraftPartOfPoa="partOfPoa"
-              :hasDraftTakenEffect="hasTakenEffect"
               @partOfPoa="partOfPoa=$event"
               @hasTakenEffect="hasTakenEffect=$event"
             />
@@ -160,8 +158,6 @@
                   <CourtOrderPoa
                     :autoValidation="showErrors"
                     :courtOrderNumberRequired="false"
-                    :draftCourtOrderNumber="fileNumber"
-                    :hasDraftPlanOfArrangement="hasPlanOfArrangement"
                     @emitCourtNumber="fileNumber=$event"
                     @emitPoa="hasPlanOfArrangement=$event"
                     @emitValid="courtOrderValid=$event"
@@ -219,31 +215,6 @@
       id="withdrawal-buttons-container"
       class="list-item"
     >
-      <div class="buttons-left">
-        <v-btn
-          id="withdrawal-save-btn"
-          large
-          outlined
-          color="primary"
-          :disabled="busySaving"
-          :loading="saving"
-          @click="onClickSave()"
-        >
-          <span>Save</span>
-        </v-btn>
-        <v-btn
-          id="withdrawal-save-resume-btn"
-          large
-          outlined
-          color="primary"
-          :disabled="busySaving"
-          :loading="savingResuming"
-          @click="onClickSaveResume()"
-        >
-          <span>Save and Resume Later</span>
-        </v-btn>
-      </div>
-
       <div class="buttons-right">
         <v-tooltip
           top
@@ -256,6 +227,17 @@
               v-on="on"
             >
               <v-btn
+                id="withdrawal-file-pay-btn"
+                color="primary"
+                large
+                class="mr-2"
+                :disabled="busySaving || hasTakenEffect"
+                :loading="filingPaying"
+                @click="onClickSubmit()"
+              >
+                <span>Submit <v-icon right>mdi-chevron-right</v-icon> </span>
+              </v-btn>
+              <v-btn
                 id="withdrawal-cancel-btn"
                 large
                 outlined
@@ -264,16 +246,6 @@
                 @click="goToDashboard()"
               >
                 <span>Cancel</span>
-              </v-btn>
-              <v-btn
-                id="withdrawal-file-pay-btn"
-                color="primary"
-                large
-                :disabled="busySaving || hasTakenEffect"
-                :loading="filingPaying"
-                @click="onClickSubmit()"
-              >
-                <span>Submit <v-icon right>mdi-chevron-right</v-icon> </span>
               </v-btn>
             </div>
           </template>
@@ -297,8 +269,8 @@ import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
 import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { EnumUtilities, LegalServices } from '@/services/'
-import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
+import { LegalServices } from '@/services/'
+import { EffectOfOrderTypes, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -427,9 +399,8 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
         }
       }
 
-      // this is the id of filing being withdrawn, and of THIS filing
-      // if filingID is 0, this is a new filing
-      // otherwise it's a draft filing
+      // this is the id of filing being withdrawn, it should always be a new filing
+      // the filingID is 0
       this.filingToBeWithdrawn = +this.$route.query.filingToBeWithdrawn
       this.filingId = +this.$route.query.filingId // number or NaN
 
@@ -445,15 +416,9 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
       await this.$nextTick()
 
+      // safety check, should never happen as NoW doesn't have draft filing
       if (this.filingId > 0) {
-        this.loadingMessage = 'Resuming Your Notice of Withdrawal'
-      } else {
-        this.loadingMessage = 'Preparing Your Notice of Withdrawal'
-      }
-
-      // fetch draft (which may overwrite some properties)
-      if (this.filingId > 0) {
-        await this.fetchDraftFiling()
+        this.navigateToBusinessDashboard(this.getIdentifier)
       }
 
       this.dataLoaded = true
@@ -473,157 +438,6 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     beforeDestroy (): void {
       // remove event handler
       window.onbeforeunload = null
-    }
-
-    /** Fetches the draft NOW filing. */
-    async fetchDraftFiling (): Promise<void> {
-      const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
-      await LegalServices.fetchFiling(url).then(filing => {
-        // verify data
-        if (!filing) throw new Error('Missing filing')
-        if (!filing.header) throw new Error('Missing header')
-        if (!filing.business) throw new Error('Missing business')
-        if (!filing.noticeOfWithdrawal) throw new Error('Missing notice of withdraw object')
-        if (filing.header.name !== FilingTypes.NOTICE_OF_WITHDRAWAL) throw new Error('Invalid filing type')
-        if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-        if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-        if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
-
-        // load Certified By (but not Date)
-        this.certifiedBy = filing.header.certifiedBy
-        // load Staff Payment properties
-        if (filing.header.routingSlipNumber) {
-          this.staffPaymentData = {
-            option: StaffPaymentOptions.FAS,
-            routingSlipNumber: filing.header.routingSlipNumber,
-            isPriority: filing.header.priority
-          } as StaffPaymentIF
-        } else if (filing.header.bcolAccountNumber) {
-          this.staffPaymentData = {
-            option: StaffPaymentOptions.BCOL,
-            bcolAccountNumber: filing.header.bcolAccountNumber,
-            datNumber: filing.header.datNumber,
-            folioNumber: filing.header.folioNumber,
-            isPriority: filing.header.priority
-          } as StaffPaymentIF
-        } else if (filing.header.waiveFees) {
-          this.staffPaymentData = {
-            option: StaffPaymentOptions.NO_FEE
-          } as StaffPaymentIF
-        } else {
-          this.staffPaymentData = {
-            option: StaffPaymentOptions.NONE
-          } as StaffPaymentIF
-        }
-
-        // load POA Effect properties
-        if (filing.noticeOfWithdrawal.partOfPoa) {
-          this.partOfPoa = true
-          if (filing.noticeOfWithdrawal.hasTakenEffect) {
-            this.hasTakenEffect = true
-          }
-        }
-
-        // load Court Order and POA properties
-        const courtOrder = filing.noticeOfWithdrawal.courtOrder
-        if (courtOrder) {
-          this.fileNumber = courtOrder.fileNumber
-          this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
-        }
-
-        // load Documents Delivery
-        if (filing.header.documentOptionalEmail) {
-          this.documentOptionalEmail = filing.header.documentOptionalEmail
-        }
-      }).catch(error => {
-        // eslint-disable-next-line no-console
-        console.log('fetchDraftFiling() error =', error)
-        this.resumeErrorDialog = true
-      })
-    }
-
-    /**
-     * Called when user clicks Save button
-     * or when user retries from Save Error dialog.
-     */
-    async onClickSave (): Promise<void> {
-      // prevent double saving
-      if (this.busySaving) return
-
-      this.saving = true
-
-      // save draft filing
-      this.savedFiling = await this.saveFiling(true).catch(error => {
-        this.saveErrorReason = SaveErrorReasons.SAVE
-        // try to return filing (which may exist depending on save error)
-        return error?.response?.data?.filing || null
-      })
-
-      const filingId = +this.savedFiling?.header?.filingId || 0
-      if (filingId > 0) {
-        // save filing ID for possible future updates
-        this.filingId = filingId
-      }
-
-      // if there was no error, finish save process now
-      // otherwise, dialog may finish this later
-      if (!this.saveErrorReason) this.onClickSaveFinish()
-
-      this.saving = false
-    }
-
-    onClickSaveFinish (): void {
-      // safety check
-      if (this.filingId > 0) {
-        // changes were saved, so clear flag
-        this.haveChanges = false
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('onClickSaveFinish(): invalid filing ID, filing =', null)
-      }
-    }
-
-    /**
-     * Called when user clicks Save and Resume later button
-     * or when user retries from Save Error dialog.
-     */
-    async onClickSaveResume (): Promise<void> {
-      // prevent double saving
-      if (this.busySaving) return
-
-      this.savingResuming = true
-
-      // save draft filing
-      this.savedFiling = await this.saveFiling(true).catch(error => {
-        this.saveErrorReason = SaveErrorReasons.SAVE_RESUME
-        // try to return filing (which may exist depending on save error)
-        return error?.response?.data?.filing || null
-      })
-
-      const filingId = +this.savedFiling?.header?.filingId || 0
-      if (filingId > 0) {
-        // save filing ID for possible future updates
-        this.filingId = filingId
-      }
-
-      // if there was no error, finish save-resume process now
-      // otherwise, dialog may finish this later
-      if (!this.saveErrorReason) this.onClickSaveResumeFinish()
-
-      this.savingResuming = false
-    }
-
-    onClickSaveResumeFinish (): void {
-      // safety check
-      if (this.filingId > 0) {
-        // changes were saved, so clear flag
-        this.haveChanges = false
-        // changes were saved, so go to dashboard
-        this.goToDashboard(true)
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('onClickSaveResumeFinish(): invalid filing ID, filing =', null)
-      }
     }
 
     /**
@@ -786,13 +600,8 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       const filing = Object.assign({}, header, business, data)
       try {
         let ret
-        if (this.filingId > 0) {
-          // we have a filing id, so update an existing filing
-          ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
-        } else {
-          // filing id is 0, so create a new filing
-          ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
-        }
+        // filing id is 0, so create a new filing
+        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
         return ret
       } catch (error: any) {
         // save errors or warnings, if any
@@ -853,44 +662,19 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
     /** Handles Retry events from Save Error dialog. */
     async onSaveErrorDialogRetry (): Promise<void> {
-      switch (this.saveErrorReason) {
-        case SaveErrorReasons.SAVE:
-          // close the dialog and retry save
-          this.saveErrorReason = null
-          await this.onClickSave()
-          break
-        case SaveErrorReasons.SAVE_RESUME:
-          // close the dialog and retry save-resume
-          this.saveErrorReason = null
-          await this.onClickSaveResume()
-          break
-        case SaveErrorReasons.FILE_PAY:
-          // close the dialog and retry file-pay
-          this.saveErrorReason = null
-          if (this.isRoleStaff) await this.onClickSubmit()
-          else await this.onClickSubmit()
-          break
+      if (this.saveErrorReason === SaveErrorReasons.FILE_PAY) {
+        // close the dialog and retry file-pay
+        this.saveErrorReason = null
+        await this.onClickSubmit()
       }
     }
 
     /** Handles Okay events from Save Error dialog. */
     onSaveErrorDialogOkay (): void {
-      switch (this.saveErrorReason) {
-        case SaveErrorReasons.SAVE:
-          // close the dialog and finish save process
-          this.saveErrorReason = null
-          this.onClickSaveFinish()
-          break
-        case SaveErrorReasons.SAVE_RESUME:
-          // close the dialog and finish save-resume process
-          this.saveErrorReason = null
-          this.onClickSaveResumeFinish()
-          break
-        case SaveErrorReasons.FILE_PAY:
-          // close the dialog and finish file-pay process
-          this.saveErrorReason = null
-          this.onClickFilePayFinish()
-          break
+      if (this.saveErrorReason === SaveErrorReasons.FILE_PAY) {
+        // close the dialog and finish file-pay process
+        this.saveErrorReason = null
+        this.onClickFilePayFinish()
       }
     }
 
@@ -912,10 +696,13 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       }
     }
 
-    @Watch('certifyFormValid')
-    @Watch('courtOrderValid')
-    @Watch('documentDeliveryValid')
-    @Watch('staffPaymentValid')
+    @Watch('partOfPoa')
+    @Watch('hasTakenEffect')
+    @Watch('documentOptionalEmail')
+    @Watch('certifiedBy')
+    @Watch('isCertified')
+    @Watch('fileNumber')
+    @Watch('hasPlanOfArrangement')
     onHaveChanges (): void {
       this.haveChanges = true
     }

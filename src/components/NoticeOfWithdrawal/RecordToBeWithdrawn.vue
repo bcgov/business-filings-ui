@@ -168,24 +168,11 @@ import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
 export default class RecordToBeWithdrawn extends Mixins(DateMixin) {
   @Prop({ required: true }) readonly filingToBeWithdrawn!: string
 
-  /** Draft part of a POA (plan of arrangement). */
-  @Prop({ default: false }) readonly hasDraftPartOfPoa!: boolean
-
-  /** Draft has taken effect. */
-  @Prop({ default: false }) readonly hasDraftTakenEffect!: boolean
-
   @Getter(useFilingHistoryListStore) getFilings!: Array<ApiFilingIF>
 
   // Local properties
   private partOfPoa = false
   private hasTakenEffect = false
-
-  /** Called when component is mounted. */
-  mounted (): void {
-    // Set default draft values if they exist
-    if (this.hasDraftPartOfPoa) this.partOfPoa = this.hasDraftPartOfPoa
-    if (this.hasDraftTakenEffect) this.hasTakenEffect = this.hasDraftTakenEffect
-  }
 
   getFilingToBeWithdrawn (): ApiFilingIF | null {
     const filingId = Number(this.filingToBeWithdrawn)
