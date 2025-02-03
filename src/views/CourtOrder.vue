@@ -133,7 +133,6 @@
               <StaffPaymentShared
                 :staffPaymentData.sync="staffPaymentData"
               />
-              <p>{{ staffPaymentData }}</p>
             </v-card>
             <v-card-text />
           </section>
@@ -149,6 +148,7 @@
               :offset="{ top: 120, bottom: 40 }"
             >
               <SbcFeeSummary
+              :filingData="filingData"
                 :payURL="getPayApiUrl"
                 @total-fee="totalFee=$event"
               />
@@ -171,7 +171,7 @@
                           :loading="saving"
                           @click.native="onSave()"
                         >
-                          <span>{{ 'File and Pay' }}</span>
+                         {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
                         </v-btn>
                       </div>
                       <v-btn
@@ -180,7 +180,7 @@
                         color="primary"
                         class="btn-outlined-primary mt-6"
                         :disabled="saving"
-                        @click.native="emitClose(false)"
+                        @click="goToDashboard()"
                       >
                         <span>Cancel</span>
                       </v-btn>
@@ -274,7 +274,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin) {
   fileKey: string = null // court order file key
 
   // other variables
-  totalFee = 0
+  totalFee = 20
   dataLoaded = false
   loadingMessage = ''
   filingId = 0 // id of this consent to continuation out filing
@@ -321,6 +321,41 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin) {
     ]
   }
 
+  /**
+   * Routes to dashboard if there are no outstanding changes,
+   * else prompts user before routing.
+   */
+   goToDashboard (force = false): void {
+    // check if there are no data changes
+    if (!this.haveChanges || force) {
+      // route to dashboard
+      this.navigateToBusinessDashboard(this.getIdentifier)
+      return
+    }
+
+    // open confirmation dialog and wait for response
+    this.$refs.confirm.open(
+      'Unsaved Changes',
+      'You have unsaved changes in your Continue Out. Do you want to exit your filing?',
+      {
+        width: '45rem',
+        persistent: true,
+        yes: 'Return to my filing',
+        no: null,
+        cancel: 'Exit without saving'
+      }
+    ).then(() => {
+      // if we get here, Yes was clicked
+      // nothing to do
+    }).catch(() => {
+      // if we get here, Cancel was clicked
+      // ignore changes
+      this.haveChanges = false
+      // route to dashboard
+      this.navigateToBusinessDashboard(this.getIdentifier)
+    })
+  }
+
   @Watch('notation')
   async onNotationChanged (): Promise<void> {
     console.log('Notation changed:', this.notation)
@@ -362,7 +397,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin) {
     const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
 
     // add Waive Fees flag to all filing codes
-    this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, val.isPriority, waiveFees)
+    this.updateFilingData('add', FilingCodes.COURT_ORDER, val.isPriority, waiveFees)
 
     this.haveChanges = true
   }
@@ -391,6 +426,36 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin) {
     // FUTURE: modify rule here as needed
     return (this.totalFee > 0)
   }
+  /** Called when component is created. */
+  created (): void {
+    // Safety check to make sure Staff is filing the Continuation Out.
+    if (!this.isRoleStaff) {
+      this.resumeErrorDialog = true
+      throw new Error('This is a Staff only Filing.')
+    }
+
+    // init
+    this.setFilingData([])
+
+    // before unloading this page, if there are changes then prompt user
+    window.onbeforeunload = (event) => {
+      if (this.haveChanges) {
+        event.preventDefault()
+        // NB: custom text is not supported in all browsers
+        event.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
+      }
+    }
+
+    // this is the id of THIS filing
+    // if 0, this is a new filing
+    // otherwise it's a draft filing
+    this.filingId = +this.$route.query.filingId // number or NaN
+
+    // if required data isn't set, go back to dashboard
+    if (isNaN(this.filingId)) {
+      this.navigateToBusinessDashboard(this.getIdentifier)
+    }
+  }
 
   /** Called when user clicks button to file/save the current filing. */
   async onSave (): Promise<void> {
@@ -417,7 +482,8 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin) {
       header: {
         name: this.name,
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-        certifiedBy: ''
+        certifiedBy: '',
+        waiveFees: true
       },
       business: {
         identifier: this.getIdentifier,
