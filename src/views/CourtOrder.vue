@@ -199,7 +199,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import { DateMixin } from '@/mixins'
+import { DateMixin, FilingMixin } from '@/mixins'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { FormIF, StaffPaymentIF } from '@/interfaces'
@@ -219,7 +219,7 @@ import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staf
     StaffPaymentShared
   }
 })
-export default class CourtOrderView extends Mixins(DateMixin) {
+export default class CourtOrderView extends Mixins(DateMixin, FilingMixin) {
   $refs!: Vue['$refs'] & {
     courtOrderPoaRef: FormIF,
     fileUploadRef: FormIF,
@@ -359,7 +359,10 @@ export default class CourtOrderView extends Mixins(DateMixin) {
 
     @Watch('staffPaymentData')
   onStaffPaymentDataChanged (val: StaffPaymentIF): void {
+    const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
+
     // add Waive Fees flag to all filing codes
+    this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, val.isPriority, waiveFees)
 
     this.haveChanges = true
   }
