@@ -148,7 +148,7 @@
               :offset="{ top: 120, bottom: 40 }"
             >
               <SbcFeeSummary
-              :filingData="filingData"
+                :filingData="filingData"
                 :payURL="getPayApiUrl"
                 @total-fee="totalFee=$event"
               />
@@ -171,7 +171,7 @@
                           :loading="saving"
                           @click.native="onSave()"
                         >
-                         {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
+                          {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
                         </v-btn>
                       </div>
                       <v-btn
@@ -199,7 +199,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import { DateMixin, FilingMixin } from '@/mixins'
+import { DateMixin, FilingMixin, CommonMixin } from '@/mixins'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { FormIF, StaffPaymentIF } from '@/interfaces'
@@ -219,7 +219,7 @@ import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staf
     StaffPaymentShared
   }
 })
-export default class CourtOrderView extends Mixins(DateMixin, FilingMixin) {
+export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, CommonMixin) {
   $refs!: Vue['$refs'] & {
     courtOrderPoaRef: FormIF,
     fileUploadRef: FormIF,
@@ -325,7 +325,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin) {
    * Routes to dashboard if there are no outstanding changes,
    * else prompts user before routing.
    */
-   goToDashboard (force = false): void {
+  goToDashboard (force = false): void {
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
@@ -482,8 +482,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin) {
       header: {
         name: this.name,
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-        certifiedBy: '',
-        waiveFees: true
+        certifiedBy: ''
       },
       business: {
         identifier: this.getIdentifier,
@@ -491,6 +490,27 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin) {
         legalName: this.getLegalName,
         foundingDate: this.getFoundingDate
       }
+    }
+
+    switch (this.staffPaymentData.option) {
+      case StaffPaymentOptions.FAS:
+        filing.header['routingSlipNumber'] = this.staffPaymentData.routingSlipNumber
+        filing.header['priority'] = this.staffPaymentData.isPriority
+        break
+
+      case StaffPaymentOptions.BCOL:
+        filing.header['bcolAccountNumber'] = this.staffPaymentData.bcolAccountNumber
+        filing.header['datNumber'] = this.staffPaymentData.datNumber
+        filing.header['folioNumber'] = this.staffPaymentData.folioNumber
+        filing.header['priority'] = this.staffPaymentData.isPriority
+        break
+
+      case StaffPaymentOptions.NO_FEE:
+        filing.header['waiveFees'] = true
+        break
+
+      case StaffPaymentOptions.NONE: // should never happen
+        break
     }
 
     const effectOfOrder = (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string
@@ -526,7 +546,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin) {
       })
 
     this.saving = false
-    if (success) { this.emitClose(true) }
+    if (success) { this.navigateToBusinessDashboard(this.getIdentifier) }
   }
 
   /**
