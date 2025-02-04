@@ -8,6 +8,8 @@
         <v-col
           class="pr-4 pb-4"
         >
+        <v-form
+          ref="form">
           <article id="court-order-article">
             <!-- Page Title -->
             <header>
@@ -15,12 +17,12 @@
                 Court Order
               </h1>
             </header>
-
+           
             <section>
               <header>
                 <h2>Court Order</h2>
               </header>
-
+           
               <v-card
                 flat
                 class="pt-6 px-4"
@@ -41,6 +43,7 @@
                       :courtOrderNumberRequired="true"
                       @emitCourtNumber="courtOrderNumber = $event"
                       @emitPoa="planOfArrangement = $event"
+                      @emitValid="courtOrderValid=$event"
                     />
                   </v-col>
                 </v-row>
@@ -64,11 +67,10 @@
                     <div class="d-flex mt-4">
                       <v-btn
                         id="add-document-button"
+                        ref="uploadBtn"
                         outlined
                         color="primary"
                         class="btn-outlined-primary mt-4"
-                        :isRequired="enableValidation && isCourtOrder && !notation"
-                        :title="courtOrderCustomValidationMsg"
                         @click="openFileDialog"
                       >
                         <FileUploadPdf
@@ -78,7 +80,7 @@
                           :fileKey.sync="fileKey"
                           class="ml-12 flex-grow-1"
                           :isRequired="enableValidation && isCourtOrder && !notation"
-                          :customErrorMSg.sync="courtOrderCustomValidationMsg"
+                          :customErrorMSg="courtOrderCustomValidationMsg"
                           :maxSize="MAX_FILE_SIZE"
                           :pageSize="PageSizes.LETTER_PORTRAIT"
                           :userId="getKeycloakGuid"
@@ -87,19 +89,28 @@
                           @change="onFileChange"
                         />
                         <v-icon>mdi-plus</v-icon>
-
                         <span>Add a Document</span>
                       </v-btn>
+
                       <p
                         v-if="file"
                         class="ml-3 pt-6"
                       >
                         {{ file.name }}
                       </p>
+                      <p v-else-if="isCourtOrder && !notation && enableValidation" class="ml-3 pt-6 text-red">
+  {{ courtOrderCustomValidationMsg }}
+</p>
                     </div>
                   </v-col>
                 </v-row>
+                <v-form
+          id="notation-form"
+          ref="notationFormRef"
+        >
                 <v-row class="mt-4">
+
+        
                   <v-col
                     cols="12"
                     md="3"
@@ -109,6 +120,7 @@
                   <v-col>
                     <v-textarea
                       v-model="notation"
+                      ref="notationFormRef"
                       class="notation-textarea xmt-4"
                       filled
                       :label="notationLabel"
@@ -119,9 +131,13 @@
                     />
                   </v-col>
                 </v-row>
+              </v-form>
               </v-card>
+              
             </section>
+         
           </article>
+          </v-form>
           <section>
             <header>
               <h2>Staff Payment</h2>
@@ -137,6 +153,7 @@
             <v-card-text />
           </section>
         </v-col>
+        
         <v-col
           cols="12"
           lg="3"
@@ -152,42 +169,35 @@
                 :payURL="getPayApiUrl"
                 @total-fee="totalFee=$event"
               />
+              <v-card-actions class="w-full max-w-3xl mx-auto">
+                <div class="form__btns w-full">
+                  <v-col>
+                    <v-btn
+                      id="dialog-cancel-button"
+                      outlined
+                      color="primary"
+                      class="btn-outlined-primary mt-6 text-lg px-6 py-3"
+                      :disabled="saving"
 
-              <v-container
-                id="continue-out-buttons-container"
-                class="list-item"
-              >
-                <v-divider class="mx-4" />
-                <v-card-actions>
-                  <v-spacer />
-                  <div class="form__btns">
-                    <v-col>
-                      <div class="buttons-right">
-                        <v-btn
-                          id="dialog-save-button"
-                          solid
-                          color="primary"
-                          class="btn-outlined-primary mt-4"
-                          :loading="saving"
-                          @click.native="onSave()"
-                        >
-                          {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
-                        </v-btn>
-                      </div>
+                      @click="goToDashboard()"
+                    >
+                      <span>Cancel</span>
+                    </v-btn>
+                    <div class="buttons-right">
                       <v-btn
-                        id="dialog-cancel-button"
-                        outlined
+                        id="dialog-save-button"
+                        solid
                         color="primary"
-                        class="btn-outlined-primary mt-6"
-                        :disabled="saving"
-                        @click="goToDashboard()"
+                        class="btn-outlined-primary mt-4"
+                        :loading="!isPageValid || saving"
+                        @click.native="onSave()"
                       >
-                        <span>Cancel</span>
+                        {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
                       </v-btn>
-                    </v-col>
-                  </div>
-                </v-card-actions>
-              </v-container>
+                    </div>
+                  </v-col>
+                </div>
+              </v-card-actions>
             </affix>
           </aside>
         </v-col>
@@ -272,9 +282,10 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   enableValidation = false // flag to enable validation
   file: File = null // court order file object
   fileKey: string = null // court order file key
-
+  courtOrderValid = false
+  
   // other variables
-  totalFee = 20
+  totalFee = 0
   dataLoaded = false
   loadingMessage = ''
   filingId = 0 // id of this consent to continuation out filing
@@ -286,7 +297,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   saveWarnings = []
 
   // variables for staff payment
-  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
+  staffPaymentData = { option: StaffPaymentOptions.FAS } as StaffPaymentIF
 
   paymentErrorDialog = false
 
@@ -298,7 +309,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
   get courtOrderCustomValidationMsg (): string {
     if (this.isCourtOrder && !this.notation) {
-      console.log('Court Order Validation', this.isCourtOrder, 'notation', this.notation)
       return `Enter a ${this.displayName} and/or upload file`
     }
     return ''
@@ -311,14 +321,32 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   /** The notation textarea validation rules. */
   get notationRules (): Array<(v) => boolean | string> {
     return [
+      // Administrative Dissolution, Put Back On, Freeze/Unfreeze Business require a detailed comment
+     
       // Court Order requires a file or a comment
       (v: string) => (
         !!v ||
         !this.isCourtOrder ||
         (!!this.file && !!this.fileKey) ||
         `Enter a ${this.displayName} and/or upload file`
+      ),
+      // others require a comment
+      (v: string) => (
+        !!v ||
+        (this.isCourtOrder) ||
+        `Enter a ${this.displayName}`
+      ),
+      (v: string) => (
+        !v ||
+        (v.length <= this.NOTATION_MAX_LENGTH) ||
+        'Maximum characters exceeded.'
       )
     ]
+  }
+
+  get isPageValid (): boolean {
+    const filingDataValid = (this.filingData.length > 0)
+    return (filingDataValid && this.courtOrderValid)
   }
 
   /**
@@ -387,7 +415,19 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   onFileChange (file) {
     this.file = file // Update the file data in the parent component
   }
+
+  readonly validComponents = [
+    'court-order-section'
+  ]
+
+  get validFlags (): object {
+    return {
+      courtOrder: this.courtOrderValid
+    }
+  }
+
   @Watch('staffPaymentValid')
+  @Watch('courtOrderValid')
   onHaveChanges (): void {
     this.haveChanges = true
   }
@@ -472,6 +512,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     const isFileComponentValid = (!this.$refs.fileUploadRef || this.$refs.fileUploadRef.validate())
     const isCourtOrderPoaValid = (!this.$refs.courtOrderPoaRef || this.$refs.courtOrderPoaRef.validate())
 
+    console.log(isNotationFormValid)
     if (!isNotationFormValid || !isFileComponentValid || !isCourtOrderPoaValid) {
       this.saving = false
       return
@@ -632,6 +673,7 @@ h2 {
   .invalid-component {
     .certify-stmt, .title-label {
       color: $app-red;
+      border-left: 3px solid $app-red;
     }
   }
 
