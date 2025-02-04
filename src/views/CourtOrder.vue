@@ -8,8 +8,6 @@
         <v-col
           class="pr-4 pb-4"
         >
-        <v-form
-          ref="form">
           <article id="court-order-article">
             <!-- Page Title -->
             <header>
@@ -17,143 +15,152 @@
                 Court Order
               </h1>
             </header>
-           
+
             <section>
               <header>
                 <h2>Court Order</h2>
               </header>
-           
-              <v-card
-                flat
-                class="pt-6 px-4"
+              <div
+                id="court-order-section"
+                :class="{ 'invalid-section': !courtOrderValid && showErrors }"
               >
-                <v-row class="mt-4">
-                  <v-col
-                    cols="20"
-                    md="3"
+                <v-card
+                  flat
+                  class="pt-6 px-4"
+                >
+                  <v-form
+                    id="notation-form"
+                    ref="notationFormRef"
                   >
-                    <label class="title-label">Court Order Number</label>
-                  </v-col>
-                  <v-col>
-                    <CourtOrderPoa
-                      ref="courtOrderPoaRef"
-                      :key="courtOrderPoaKey"
-                      :displaySideLabels="false"
-                      :autoValidation="enableValidation"
-                      :courtOrderNumberRequired="true"
-                      @emitCourtNumber="courtOrderNumber = $event"
-                      @emitPoa="planOfArrangement = $event"
-                      @emitValid="courtOrderValid=$event"
-                    />
-                  </v-col>
-                </v-row>
-                <v-row class="mt-6">
-                  <v-col
-                    cols="12"
-                    md="3"
-                  >
-                    <label class="title-label">Upload a File</label>
-                  </v-col>
-                  <v-col>
-                    <p>
-                      AND/OR upload a PDF of the Court Order:
-                    </p>
-
-                    <ul class="ml-2">
-                      <li>Use a white background and a legible font with contrasting font colour</li>
-                      <li>PDF file type (maximum {{ MAX_FILE_SIZE }} MB file size)</li>
-                    </ul>
-
-                    <div class="d-flex mt-4">
-                      <v-btn
-                        id="add-document-button"
-                        ref="uploadBtn"
-                        outlined
-                        color="primary"
-                        class="btn-outlined-primary mt-4"
-                        @click="openFileDialog"
+                    <v-row class="mt-4">
+                      <v-col
+                        cols="20"
+                        md="3"
                       >
-                        <FileUploadPdf
-                          v-show="false"
-                          ref="fileUploadRef"
-                          :file.sync="file"
-                          :fileKey.sync="fileKey"
-                          class="ml-12 flex-grow-1"
-                          :isRequired="enableValidation && isCourtOrder && !notation"
-                          :customErrorMSg="courtOrderCustomValidationMsg"
-                          :maxSize="MAX_FILE_SIZE"
-                          :pageSize="PageSizes.LETTER_PORTRAIT"
-                          :userId="getKeycloakGuid"
-                          :getPresignedUrl="LegalServices.getPresignedUrl"
-                          :uploadToUrl="LegalServices.uploadToUrl"
-                          @change="onFileChange"
+                        <label class="title-label">Court Order Number</label>
+                      </v-col>
+                      <v-col>
+                        <CourtOrderPoa
+                          ref="courtOrderPoaRef"
+                          :key="courtOrderPoaKey"
+                          :displaySideLabels="false"
+                          :autoValidation="enableValidation"
+                          :courtOrderNumberRequired="true"
+                          @emitCourtNumber="courtOrderNumber = $event"
+                          @emitPoa="planOfArrangement = $event"
+                          @emitValid="courtOrderValid=$event"
                         />
-                        <v-icon>mdi-plus</v-icon>
-                        <span>Add a Document</span>
-                      </v-btn>
-
-                      <p
-                        v-if="file"
-                        class="ml-3 pt-6"
+                      </v-col>
+                    </v-row>
+                    <v-row class="mt-6">
+                      <v-col
+                        cols="12"
+                        md="3"
                       >
-                        {{ file.name }}
-                      </p>
-                      <p v-else-if="isCourtOrder && !notation && enableValidation" class="ml-3 pt-6 text-red">
-  {{ courtOrderCustomValidationMsg }}
-</p>
-                    </div>
-                  </v-col>
-                </v-row>
-                <v-form
-          id="notation-form"
-          ref="notationFormRef"
-        >
-                <v-row class="mt-4">
+                        <label class="title-label">Upload a File</label>
+                      </v-col>
+                      <v-col>
+                        <p>
+                          AND/OR upload a PDF of the Court Order:
+                        </p>
 
-        
-                  <v-col
-                    cols="12"
-                    md="3"
-                  >
-                    <label class="title-label">Court Order Text</label>
-                  </v-col>
-                  <v-col>
-                    <v-textarea
-                      v-model="notation"
-                      ref="notationFormRef"
-                      class="notation-textarea xmt-4"
-                      filled
-                      :label="notationLabel"
-                      :rows="isCourtOrder ? 2: 5"
-                      :no-resize="true"
-                      :rules="enableValidation ? notationRules : []"
-                      :counter="NOTATION_MAX_LENGTH"
-                    />
-                  </v-col>
-                </v-row>
-              </v-form>
-              </v-card>
-              
+                        <ul class="ml-2">
+                          <li>Use a white background and a legible font with contrasting font colour</li>
+                          <li>PDF file type (maximum {{ MAX_FILE_SIZE }} MB file size)</li>
+                        </ul>
+
+                        <div class="d-flex mt-4">
+                          <v-btn
+                            id="add-document-button"
+                            ref="uploadBtn"
+                            outlined
+                            color="primary"
+                            class="btn-outlined-primary mt-4"
+                            @click="openFileDialog"
+                          >
+                            <FileUploadPdf
+                              v-show="false"
+                              ref="fileUploadRef"
+                              :file.sync="file"
+                              :fileKey.sync="fileKey"
+                              class="ml-12 flex-grow-1"
+                              :isRequired="enableValidation && isCourtOrder && !notation"
+                              :customErrorMSg="courtOrderCustomValidationMsg"
+                              :maxSize="MAX_FILE_SIZE"
+                              :pageSize="PageSizes.LETTER_PORTRAIT"
+                              :userId="getKeycloakGuid"
+                              :getPresignedUrl="LegalServices.getPresignedUrl"
+                              :uploadToUrl="LegalServices.uploadToUrl"
+                              @change="onFileChange"
+                            />
+                            <v-icon>mdi-plus</v-icon>
+                            <span>Add a Document</span>
+                          </v-btn>
+
+                          <p
+                            v-if="file"
+                            class="ml-3 pt-6"
+                          >
+                            {{ file.name }}
+                          </p>
+                          <p
+                            v-else-if="isCourtOrder && !notation && enableValidation"
+                            class="ml-3 pt-6"
+                          >
+                            {{ courtOrderCustomValidationMsg }}
+                          </p>
+                        </div>
+                      </v-col>
+                    </v-row>
+
+                    <v-row class="mt-4">
+                      <v-col
+                        cols="12"
+                        md="3"
+                      >
+                        <label class="title-label">Court Order Text</label>
+                      </v-col>
+                      <v-col>
+                        <v-textarea
+                          ref="notationFormRef"
+                          v-model="notation"
+                          class="notation-textarea xmt-4"
+                          filled
+                          :label="notationLabel"
+                          :rows="isCourtOrder ? 2: 5"
+                          :no-resize="true"
+                          :rules="enableValidation ? notationRules : []"
+                          :counter="NOTATION_MAX_LENGTH"
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-form>
+                </v-card>
+              </div>
             </section>
-         
           </article>
-          </v-form>
           <section>
             <header>
               <h2>Staff Payment</h2>
             </header>
-            <v-card
-              flat
-              class="pt-6 px-4"
+            <div
+              id="staff-payment-section"
+              :class="{ 'invalid-section': !staffPaymentValid && showErrors }"
             >
-              <StaffPaymentShared
-                :staffPaymentData.sync="staffPaymentData"
-              />
-            </v-card>
+              <v-card
+                flat
+                class="pt-6 px-4"
+              >
+                <StaffPaymentShared
+                  :staffPaymentData.sync="staffPaymentData"
+                  @staffPaymentFormValid="staffPaymentValid=$event"
+                />
+              </v-card>
+            </div>
             <v-card-text />
           </section>
         </v-col>
-        
+
         <v-col
           cols="12"
           lg="3"
@@ -282,8 +289,9 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   enableValidation = false // flag to enable validation
   file: File = null // court order file object
   fileKey: string = null // court order file key
-  courtOrderValid = false
-  
+  courtOrderValid = true
+  staffPaymentValid = false
+
   // other variables
   totalFee = 0
   dataLoaded = false
@@ -322,7 +330,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   get notationRules (): Array<(v) => boolean | string> {
     return [
       // Administrative Dissolution, Put Back On, Freeze/Unfreeze Business require a detailed comment
-     
+
       // Court Order requires a file or a comment
       (v: string) => (
         !!v ||
@@ -506,6 +514,12 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     // enable validation
     this.enableValidation = true
     await this.$nextTick() // wait for form to update
+
+    if (!this.isPageValid) {
+      this.showErrors = true
+      await this.validateAndScroll(this.validFlags, this.validComponents)
+      return
+    }
 
     // if any component is invalid, don't save
     const isNotationFormValid = (!this.$refs.notationFormRef || this.$refs.notationFormRef.validate())
