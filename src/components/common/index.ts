@@ -4,6 +4,7 @@ import Certify from './Certify.vue'
 import ContactInfo from './ContactInfo.vue'
 import DateTooltip from './DateTooltip.vue'
 import DetailComment from './DetailComment.vue'
+import DocumentId from '@bcrs-shared-components/document-id/DocumentId.vue'
 import EffectiveDate from './EffectiveDate.vue'
 import FileUploadPdf from './FileUploadPdf.vue'
 import ForeignJurisdiction from './ForeignJurisdiction.vue'
@@ -27,6 +28,7 @@ export {
   ContactInfo,
   DateTooltip,
   DetailComment,
+  DocumentId,
   EffectiveDate,
   FileUploadPdf,
   ForeignJurisdiction,

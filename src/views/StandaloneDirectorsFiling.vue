@@ -253,6 +253,24 @@
                   />
                 </section>
 
+                <section v-if="isRoleStaff">
+                  <header>
+                    <h2 id="document-id-header">
+                      Document ID
+                    </h2>
+                    <p>
+                      Enter or select your document ID preference. Upon registration, a document record will be created
+                      based on the chosen document ID.
+                    </p>
+                  </header>
+                  <DocumentId
+                    :docApiUrl="getDrsApiUrl"
+                    :docApiKey="getDrsApiKey"
+                    @updateDocId="docId=$event"
+                    @isValid="docIdValid=$event"
+                  />
+                </section>
+
                 <!-- Certify -->
                 <section>
                   <header>
@@ -371,7 +389,7 @@ import { navigate } from '@/utils'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, SummaryDirectors } from '@/components/common'
+import { Certify, DocumentId, SummaryDirectors } from '@/components/common'
 import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -385,6 +403,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
   components: {
     CodDate,
     Directors,
+    DocumentId,
     SummaryDirectors,
     SbcFeeSummary,
     Certify,
@@ -409,6 +428,8 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   @Getter(useConfigurationStore) getPayApiUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useConfigurationStore) getDrsApiUrl!: string
+  @Getter(useConfigurationStore) getDrsApiKey!: string
 
   // variables
   updatedDirectors = []
@@ -427,6 +448,8 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   filingId = NaN
   savedFiling: any = null // filing during save
   loadingMessage = ''
+  docId = ''
+  docIdValid = false
   dataLoaded = false
   isFetching = false
   saving = false // true only when saving
@@ -461,7 +484,9 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   /** True if review page is valid. */
   get isReviewPageValid (): boolean {
     const filingDataValid = (this.filingData.length > 0)
-    return (this.certifyFormValid && filingDataValid)
+    return (this.certifyFormValid && filingDataValid &&
+      (this.isRoleStaff ? this.docIdValid : true) // Validate Document Id if staff user
+    )
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -880,10 +905,10 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
       let ret
       if (this.filingId > 0) {
         // we have a filing id, so update an existing filing
-        ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
+        ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft, this.docId)
       } else {
         // filing id is 0, so create a new filing
-        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
+        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft, this.docId)
       }
       return ret
     } catch (error: any) {

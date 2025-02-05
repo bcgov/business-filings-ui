@@ -148,12 +148,16 @@ export default class LegalServices {
    * @param businessId the business identifier (aka entity inc no)
    * @param filing the object body of the request
    * @param isDraft whether this is a draft or whether to also file this filing
+   * @param docId the document identifier - also known as a paper document barcode number (optional)
    * @returns the filing object
    */
-  static async createFiling (businessId: string, filing: any, isDraft: boolean): Promise<any> {
+  static async createFiling (businessId: string, filing: any, isDraft: boolean, docId = ''): Promise<any> {
     let url = `businesses/${businessId}/filings`
     if (isDraft) {
       url += '?draft=true'
+    }
+    if (docId) {
+      url += `?docId=${docId}`
     }
 
     return axios.post(url, { filing })
@@ -194,12 +198,22 @@ export default class LegalServices {
    * @param filing the object body of the request
    * @param filingId the filing identifier
    * @param isDraft whether this is a draft or whether to also file this filing
+   * @param docId the document identifier - also known as a paper document barcode number (optional)
    * @returns the filing object
    */
-  static async updateFiling (businessId: string, filing: any, filingId: number, isDraft: boolean): Promise<any> {
+  static async updateFiling (
+    businessId: string,
+    filing: any,
+    filingId: number,
+    isDraft: boolean,
+    docId = ''
+  ): Promise<any> {
     let url = `businesses/${businessId}/filings/${filingId}`
     if (isDraft) {
       url += '?draft=true'
+    }
+    if (docId) {
+      url += `?docId=${docId}`
     }
 
     return axios.put(url, { filing })

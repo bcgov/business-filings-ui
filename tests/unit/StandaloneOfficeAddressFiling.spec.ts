@@ -214,6 +214,34 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
+  it('renders Document ID component when staff', async () => {
+    const $route = { query: { filingId: 0 } } // new filing id
+    const wrapper = mount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
+
+    // set staff role
+    rootStore.keycloakRoles = ['staff']
+    await Vue.nextTick()
+
+    // check if Document ID is rendered
+    expect(wrapper.find('#document-id-card').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('does not render Document ID component when not staff', async () => {
+    const $route = { query: { filingId: 0 } } // new filing id
+    const wrapper = mount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
+
+    // clear staff role
+    rootStore.keycloakRoles = []
+    await Vue.nextTick()
+
+    // check if Document ID is not rendered
+    expect(wrapper.find('#document-id-card').exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
   it('Verify COA Certify contains correct section codes', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)

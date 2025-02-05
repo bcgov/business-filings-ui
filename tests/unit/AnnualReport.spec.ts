@@ -19,6 +19,7 @@ import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } fr
 import { BusinessConfigCp } from '@/resources/CP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import * as utils from '@/utils'
+import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -65,6 +66,34 @@ describe('Annual Report - Part 1 - UI', () => {
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
     expect(wrapper.findComponent(Directors).exists()).toBe(true)
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('renders Document ID component when staff', async () => {
+    const $route = { query: { filingId: 0 } } // new filing id
+    const wrapper = mount(AnnualReport, { mocks: { $route }, vuetify })
+
+    // set staff role
+    rootStore.keycloakRoles = ['staff']
+    await Vue.nextTick()
+
+    // check if Document ID is rendered
+    expect(wrapper.find('#document-id-card').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('does not render Document ID component when not staff', async () => {
+    const $route = { query: { filingId: 0 } } // new filing id
+    const wrapper = mount(AnnualReport, { mocks: { $route }, vuetify })
+
+    // clear staff role
+    rootStore.keycloakRoles = []
+    await Vue.nextTick()
+
+    // check if Document ID is not rendered
+    expect(wrapper.find('#document-id-card').exists()).toBe(false)
 
     wrapper.destroy()
   })

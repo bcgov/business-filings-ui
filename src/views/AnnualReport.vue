@@ -88,7 +88,7 @@
     <!-- Main Body -->
     <v-container
       id="annual-report-container"
-      class="view-container"
+      class="view-container increment-sections"
     >
       <v-row>
         <v-col
@@ -120,7 +120,7 @@
               <section>
                 <header>
                   <h2 id="agm-date-header">
-                    1. Annual General Meeting Date
+                    Annual General Meeting Date
                   </h2>
                   <p>Select your Annual General Meeting (AGM) date</p>
                 </header>
@@ -142,7 +142,7 @@
               <section v-show="agmDateValid">
                 <header>
                   <h2 id="addresses-header">
-                    2. Registered Office Addresses
+                    Registered Office Addresses
                     <span
                       v-if="agmDate"
                       class="as-of-date"
@@ -226,7 +226,7 @@
               <section>
                 <header>
                   <h2 id="business-details-header">
-                    1. Business Details
+                    Business Details
                   </h2>
                 </header>
                 <ArDate />
@@ -241,7 +241,7 @@
               <section>
                 <header>
                   <h2 id="directors-header-BC">
-                    2. Directors
+                    Directors
                   </h2>
                 </header>
                 <SummaryDirectors
@@ -250,20 +250,31 @@
               </section>
             </article>
 
+            <section v-if="isRoleStaff">
+              <header>
+                <h2 id="document-id-header">
+                  Document ID
+                </h2>
+                <p>
+                  Enter or select your document ID preference. Upon registration, a document record will be created
+                  based on the chosen document ID.
+                </p>
+              </header>
+              <DocumentId
+                :docApiUrl="getDrsApiUrl"
+                :docApiKey="getDrsApiKey"
+                @updateDocId="docId=$event"
+                @isValid="docIdValid=$event"
+              />
+            </section>
+
             <!-- Certify -->
             <section v-show="isBaseCompany || agmDateValid">
               <header>
                 <h2
-                  v-if="isEntityCoop"
                   id="certify-header"
                 >
-                  4. Certify
-                </h2>
-                <h2
-                  v-else-if="isBaseCompany"
-                  id="certify-header"
-                >
-                  3. Certify
+                  Certify
                 </h2>
                 <p>Enter the legal name of the person authorized to complete and submit this Annual Report</p>
               </header>
@@ -422,7 +433,7 @@ import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
+import { Certify, DocumentId, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
 import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -439,6 +450,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     Certify,
     ConfirmDialog,
     Directors,
+    DocumentId,
     FetchErrorDialog,
     OfficeAddresses,
     PaymentErrorDialog,
@@ -471,6 +483,8 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useBusinessStore) nextARDate!: string
+  @Getter(useConfigurationStore) getDrsApiUrl!: string
+  @Getter(useConfigurationStore) getDrsApiKey!: string
 
   // variables for AgmDate component
   newAgmDate = null // for resuming draft
@@ -521,6 +535,8 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   haveChanges = false
   saveErrors = []
   saveWarnings = []
+  docId = ''
+  docIdValid = false
 
   /** True if loading container should be shown, else False. */
   get showLoadingContainer (): boolean {
@@ -567,7 +583,8 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       return (this.agmDateValid && this.addressesFormValid && this.directorFormValid &&
         this.certifyFormValid && !this.directorEditInProgress)
     }
-    return this.certifyFormValid
+    return this.certifyFormValid &&
+      (this.isRoleStaff ? this.docIdValid : true) // Validate Document Id if staff user
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -611,20 +628,20 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     if (!this.getIdentifier || isNaN(this.ARFilingYear) || isNaN(this.filingId)) {
       // eslint-disable-next-line no-console
       console.log('Annual Report error - missing Identifier, AR Filing Year or Filing ID!')
-      this.goToDashboard(true)
-      return // don't continue
+      // this.goToDashboard(true)
+      // return // don't continue
     }
     if (this.isEntityCoop && (!this.arMinDate || !this.arMaxDate)) {
       // eslint-disable-next-line no-console
       console.log('Annual Report error - missing AR Min Date or AR Max Date!')
-      this.goToDashboard(true)
-      return // don't continue
+      // this.goToDashboard(true)
+      // return // don't continue
     }
     if (this.isBaseCompany && !this.nextARDate) {
       // eslint-disable-next-line no-console
       console.log('Annual Report error - missing Next AR Date!')
-      this.goToDashboard(true)
-      return // don't continue
+      // this.goToDashboard(true)
+     //  return // don't continue
     }
 
     // wait until entire view is rendered (including all child components)
@@ -1135,10 +1152,10 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       let ret
       if (this.filingId > 0) {
         // we have a filing id, so update an existing filing
-        ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
+        ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft, this.docId)
       } else {
         // filing id is 0, so create a new filing
-        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
+        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft, this.docId)
       }
       return ret
     } catch (error: any) {

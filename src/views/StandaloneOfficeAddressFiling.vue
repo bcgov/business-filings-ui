@@ -129,11 +129,19 @@
               />
             </section>
 
-            <section>
+            <section v-if="isRoleStaff">
+              <header>
+                <h2 id="document-id-header">
+                  Document ID
+                </h2>
+                <p>
+                  Enter or select your document ID preference. Upon registration, a document record will be created
+                  based on the chosen document ID.
+                </p>
+              </header>
               <DocumentId
                 :docApiUrl="getDrsApiUrl"
                 :docApiKey="getDrsApiKey"
-                :validate="false"
                 @updateDocId="docId=$event"
                 @isValid="docIdValid=$event"
               />
@@ -255,7 +263,7 @@ import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, OfficeAddresses } from '@/components/common'
+import { Certify, DocumentId, OfficeAddresses } from '@/components/common'
 import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -264,7 +272,6 @@ import { SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
-import DocumentId from '@/views/DocumentId.vue'
 
 @Component({
   components: {
@@ -337,7 +344,9 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   /** True if page is valid. */
   get isPageValid (): boolean {
     const filingDataValid = (this.filingData.length > 0)
-    return (this.certifyFormValid && this.addressesFormValid && filingDataValid)
+    return (this.certifyFormValid && this.addressesFormValid && filingDataValid &&
+      (this.isRoleStaff ? this.docIdValid : true) // Validate Document Id if staff user
+    )
   }
 
   /** True if saving a draft is allowed. */
@@ -773,10 +782,10 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
       let ret
       if (this.filingId > 0) {
         // we have a filing id, so update an existing filing
-        ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
+        ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft, this.docId)
       } else {
         // filing id is 0, so create a new filing
-        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
+        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft, this.docId)
       }
       return ret
     } catch (error: any) {
