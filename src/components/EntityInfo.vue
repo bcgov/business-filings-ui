@@ -76,11 +76,11 @@ export default class EntityInfo extends Vue {
       this.$route?.name === Routes.AGM_LOCATION_CHANGE ||
       this.$route?.name === Routes.ANNUAL_REPORT ||
       this.$route?.name === Routes.CONSENT_CONTINUATION_OUT ||
+      this.$route?.name === Routes.COURT_ORDER ||
       this.$route?.name === Routes.CONTINUATION_OUT ||
       this.$route?.name === Routes.NOTICE_OF_WITHDRAWAL ||
       this.$route?.name === Routes.STANDALONE_ADDRESSES ||
-      this.$route?.name === Routes.STANDALONE_DIRECTORS ||
-      this.$route?.name === Routes.COURT_ORDER
+      this.$route?.name === Routes.STANDALONE_DIRECTORS 
     )
   }
 

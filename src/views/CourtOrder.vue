@@ -311,7 +311,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
   /** Whether this filing is a Court Order. */
   get isCourtOrder (): boolean {
-    console.log(this.name, EnumUtilities.isTypeCourtOrder({ name: this.name }), 'getter court')
     return EnumUtilities.isTypeCourtOrder({ name: this.name })
   }
 
@@ -394,7 +393,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
   @Watch('notation')
   async onNotationChanged (): Promise<void> {
-    console.log('Notation changed:', this.notation)
     // if this is a court order and notation has changed, re-validate file upload component
     if (this.isCourtOrder && this.enableValidation) {
       await this.$nextTick() // wait for variables to update
@@ -526,7 +524,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     const isFileComponentValid = (!this.$refs.fileUploadRef || this.$refs.fileUploadRef.validate())
     const isCourtOrderPoaValid = (!this.$refs.courtOrderPoaRef || this.$refs.courtOrderPoaRef.validate())
 
-    console.log(isNotationFormValid)
     if (!isNotationFormValid || !isFileComponentValid || !isCourtOrderPoaValid) {
       this.saving = false
       return
@@ -656,23 +653,23 @@ h2 {
   font-size: 1.125rem;
 }
 
-// Save & Filing Buttons
-#continue-out-buttons-container {
-  padding-top: 2rem;
-  border-top: 1px solid $gray5;
+// // Save & Filing Buttons
+// #continue-out-buttons-container {
+//   padding-top: 2rem;
+//   border-top: 1px solid $gray5;
 
-  .buttons-left {
-    width: 50%;
-  }
+//   .buttons-left {
+//     width: 50%;
+//   }
 
-  .buttons-right {
-    margin-left: auto;
-  }
+//   .buttons-right {
+//     margin-left: auto;
+//   }
 
-  .v-btn + .v-btn {
-    margin-left: 0.5rem;
-  }
-}
+//   .v-btn + .v-btn {
+//     margin-left: 0.5rem;
+//   }
+// }
 
 // Fix font size and color to stay consistent.
 :deep() {
