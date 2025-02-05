@@ -80,7 +80,7 @@ export default class EntityInfo extends Vue {
       this.$route?.name === Routes.CONTINUATION_OUT ||
       this.$route?.name === Routes.NOTICE_OF_WITHDRAWAL ||
       this.$route?.name === Routes.STANDALONE_ADDRESSES ||
-      this.$route?.name === Routes.STANDALONE_DIRECTORS 
+      this.$route?.name === Routes.STANDALONE_DIRECTORS
     )
   }
 
