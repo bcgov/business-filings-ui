@@ -18,7 +18,9 @@
 
             <section>
               <header>
-                <h2>Court Order</h2>
+                <h2 id="court-order-headings">
+                  Court Order
+                </h2>
               </header>
               <div
                 id="court-order-section"
@@ -91,7 +93,6 @@
                               :userId="getKeycloakGuid"
                               :getPresignedUrl="LegalServices.getPresignedUrl"
                               :uploadToUrl="LegalServices.uploadToUrl"
-                              @change="onFileChange"
                             />
                             <v-icon>mdi-plus</v-icon>
                             <span>Add a Document</span>
@@ -141,7 +142,9 @@
           </article>
           <section>
             <header>
-              <h2>Staff Payment</h2>
+              <h2 id="court-order-headings">
+                Staff Payment
+              </h2>
             </header>
             <div
               id="staff-payment-section"
@@ -176,33 +179,33 @@
                 :payURL="getPayApiUrl"
                 @total-fee="totalFee=$event"
               />
-              <v-card-actions class="w-full max-w-3xl mx-auto">
+              <v-card-actions>
                 <div class="form__btns w-full">
-                  <v-col>
-                    <v-btn
-                      id="dialog-cancel-button"
-                      outlined
-                      color="primary"
-                      class="btn-outlined-primary mt-6 text-lg px-6 py-3"
-                      :disabled="saving"
+                  <v-btn
+                    id="dialog-cancel-button"
+                    outlined
+                    color="primary"
+                    class="btn-outlined-primary mt-6 text-lg px-6 py-3"
+                    :disabled="saving"
 
-                      @click="goToDashboard()"
-                    >
-                      <span>Cancel</span>
-                    </v-btn>
-                    <div class="buttons-right">
-                      <v-btn
-                        id="dialog-save-button"
-                        solid
-                        color="primary"
-                        class="btn-outlined-primary mt-4"
-                        :loading="!isPageValid || saving"
-                        @click.native="onSave()"
-                      >
-                        {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
-                      </v-btn>
-                    </div>
-                  </v-col>
+                    @click="goToDashboard()"
+                  >
+                    <span>Cancel</span>
+                  </v-btn>
+
+                  <v-btn
+                    id="dialog-save-button"
+                    solid
+                    color="primary"
+                    class="btn-outlined-primary mt-4"
+                    :loading="!isPageValid || saving"
+                    @click.native="onSave()"
+                  >
+                    {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
+                    <v-icon class="btn-icon">
+                      mdi-chevron-right
+                    </v-icon>
+                  </v-btn>
                 </div>
               </v-card-actions>
             </affix>
@@ -297,12 +300,8 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   dataLoaded = false
   loadingMessage = ''
   filingId = 0 // id of this consent to continuation out filing
-  savedFiling: any = null // filing during save
   showErrors = false // true when we press on File and Pay (trigger validation)
-  filingPaying = false // true only when filing and paying
   haveChanges = false
-  saveErrors = []
-  saveWarnings = []
 
   // variables for staff payment
   staffPaymentData = { option: StaffPaymentOptions.FAS } as StaffPaymentIF
@@ -418,17 +417,15 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     }
   }
 
-  onFileChange (file) {
-    this.file = file // Update the file data in the parent component
-  }
-
   readonly validComponents = [
-    'court-order-section'
+    'court-order-section',
+    'staff-payment-section'
   ]
 
   get validFlags (): object {
     return {
-      courtOrder: this.courtOrderValid
+      courtOrder: this.courtOrderValid,
+      staffPayment: this.staffPaymentValid
     }
   }
 
@@ -438,7 +435,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     this.haveChanges = true
   }
 
-    @Watch('staffPaymentData')
+  @Watch('staffPaymentData')
   onStaffPaymentDataChanged (val: StaffPaymentIF): void {
     const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
 
@@ -448,24 +445,24 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     this.haveChanges = true
   }
   @Watch('dialog')
-    onDialogChanged (val: boolean): void {
+  onDialogChanged (val: boolean): void {
     // when dialog is hidden, reset everything
-      if (!val) {
+    if (!val) {
       // disable validation
-        this.enableValidation = false
+      this.enableValidation = false
 
-        // reset notation form
-        this.$refs.notationFormRef?.reset()
+      // reset notation form
+      this.$refs.notationFormRef?.reset()
 
-        // reset file upload component
-        this.$refs.fileUploadRef?.reset()
+      // reset file upload component
+      this.$refs.fileUploadRef?.reset()
 
-        // reset court order component and variables
-        this.courtOrderPoaKey++ // force re-render
-        this.courtOrderNumber = ''
-        this.planOfArrangement = false
-      }
+      // reset court order component and variables
+      this.courtOrderPoaKey++ // force re-render
+      this.courtOrderNumber = ''
+      this.planOfArrangement = false
     }
+  }
 
   /** True if payment is required, else False. */
   get isPayRequired (): boolean {
@@ -625,12 +622,12 @@ h2::before {
   content: counter(header-counter) '. ';
 }
 
-article {
+  section{
   .v-card {
     line-height: 1.2rem;
     font-size: $px-14;
-  }
-}
+    padding: 3rem;
+  }}
 
 header p,
 section p {
@@ -653,44 +650,36 @@ h2 {
   font-size: 1.125rem;
 }
 
-// // Save & Filing Buttons
-// #continue-out-buttons-container {
-//   padding-top: 2rem;
-//   border-top: 1px solid $gray5;
+.form__btns {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
 
-//   .buttons-left {
-//     width: 50%;
-//   }
+#dialog-cancel-button {
+  width: 100%;
+}
 
-//   .buttons-right {
-//     margin-left: auto;
-//   }
+#dialog-save-button {
+  width: 100%;
+}
+#court-order-headings{
+  margin-bottom: 2rem;
+}
 
-//   .v-btn + .v-btn {
-//     margin-left: 0.5rem;
-//   }
-// }
-
-// Fix font size and color to stay consistent.
 :deep() {
-  #document-delivery, #court-order-label, #poa-label {
-    font-size: $px-14;
-  }
-
-  .certify-clause, .certify-stmt, .grey-text {
-    color: $gray7;
-  }
-
   .invalid-component {
-    .certify-stmt, .title-label {
-      color: $app-red;
-      border-left: 3px solid $app-red;
+      .certify-stmt, .title-label {
+        color: $app-red;
+        border-left: 3px solid $app-red;
+      }
     }
-  }
 
   .title-label {
-  font-weight: bold;
-  color: $gray9;
-}
+    font-weight: bold;
+    color: $gray9;
+  }
 }
 </style>
