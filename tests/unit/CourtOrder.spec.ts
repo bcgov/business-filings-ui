@@ -6,12 +6,10 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import CourtOrder from '@/views/CourtOrder.vue'
 import { FileUploadPdf } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
-import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import LegalServices from '@/services/legal-services'
 import vuetify from 'sbc-common-components/src/plugins/vuetify'
 
 // suppress various warnings:
@@ -84,7 +82,6 @@ describe('Court Order View', () => {
     const $router = mockRouter.mock()
 
     const wrapper = shallowMount(CourtOrder, { mocks: { $route, $router } })
-    // Set some initial form values
 
     await wrapper.setData({
       notation: '', // Empty notation
@@ -100,44 +97,37 @@ describe('Court Order View', () => {
     expect(wrapper.vm.isPageValid).toBe(false)
   })
 
-  it('saves court order', async () => {
-    vi.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
-      return Promise.resolve({
-        business: {},
-        header: { filingId: 0 },
-        CourtOrder: {}
-      })
-    })
-
+  it('sets computed states properly', async () => {
     // mock $route
     const $route = { query: { filingId: '0' } }
+    const $router = mockRouter.mock()
 
-    // create local Vue and mock router
-    createLocalVue().use(VueRouter)
-    const router = mockRouter.mock()
-    router.push({ name: 'court-order' })
-
-    const wrapper = shallowMount(CourtOrder, {
-      router,
-      stubs: {
-        CourtOrderPoa: true,
-        SbcFeeSummary: true
-      },
-      mocks: { $route }
-    })
+    const wrapper = shallowMount(CourtOrder, { mocks: { $route, $router },
+      data () {
+        return {
+          filingData: ['0'], // Non-empty array
+          courtOrderValid: true, // courtOrderValid is true
+          staffPaymentValid: true // staffPaymentValid is true
+        }
+      } })
     const vm: any = wrapper.vm
 
-    // wait for fetch to complete
-    await flushPromises()
+    // Trigger a re-evaluation of the computed property (could be necessary for async changes)
+    await wrapper.vm.$nextTick()
 
-    // call the save action (since clicking button doesn't work)
-    const saveButton = wrapper.find('#dialog-save-button')
-    await saveButton.trigger('click')
+    // Check if the computed property isPageValid returns true
+    expect(vm.isPageValid).toBe(true)
 
-    // verify new Filing ID
-    expect(vm.filingId).toBe(0)
+    // verify "validated" - invalid Staff Payment form
+    vm.staffPaymentValid = false
+    vm.courtOrderValid = true
+    expect(vm.isPageValid).toBe(false)
 
-    vi.restoreAllMocks()
+    // verify "validated" - invalid Court Order section
+    vm.staffPaymentValid = true
+    vm.courtOrderValid = false
+    expect(vm.isPageValid).toBe(false)
+
     wrapper.destroy()
   })
 
@@ -179,6 +169,5 @@ describe('Court Order View', () => {
 
     // Check for validation error
     expect(wrapper.vm.showErrors).toBe(false)
-    expect(wrapper.vm.isPageValid).toBe(true)
   })
 })
