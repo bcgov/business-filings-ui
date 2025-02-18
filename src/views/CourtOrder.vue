@@ -352,7 +352,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
   get isPageValid (): boolean {
     const filingDataValid = (this.filingData.length > 0)
-    console.log(this.staffPaymentValid, this.courtOrderValid, filingDataValid)
     return (filingDataValid && this.courtOrderValid && this.staffPaymentValid)
   }
 
