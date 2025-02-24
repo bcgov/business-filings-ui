@@ -171,3 +171,56 @@ describe('Court Order View', () => {
     expect(wrapper.vm.showErrors).toBe(false)
   })
 })
+
+describe('Court Order View User', () => {
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: vi.fn() } as any
+
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+    }
+    configurationStore.setConfiguration(configuration)
+
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+  })
+
+  beforeEach(() => {
+    // init store
+    rootStore.currentDate = '2020-03-04'
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    businessStore.setLegalName('My Test Entity')
+    businessStore.setIdentifier('CP1234567')
+    businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
+    rootStore.filingData = []
+    rootStore.keycloakRoles = ['user']
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+  })
+
+  it('throws an error when user is not staff', async () => {
+    const $route = { query: { filingId: '0' } }
+
+    // create local Vue and mock router
+    const $router = mockRouter.mock()
+
+    let errorThrown = false
+
+    try {
+      // Mocking the condition where the user is not staff
+      shallowMount(CourtOrder, {
+        mocks: { $route, $router }
+      })
+    } catch (error) {
+      errorThrown = true
+      expect(error.message).toBe('This is a Staff only Filing.')
+    }
+
+    // Assert that the error was thrown
+    expect(errorThrown).toBe(true)
+  })
+})
