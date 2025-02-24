@@ -444,9 +444,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     this.haveChanges = true
   }
 
-  onStaffPaymentFormValid (isValid: boolean) {
-    this.staffPaymentValid = isValid
-  }
   @Watch('dialog')
   onDialogChanged (val: boolean): void {
     // when dialog is hidden, reset everything
