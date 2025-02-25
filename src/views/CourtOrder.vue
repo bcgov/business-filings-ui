@@ -293,7 +293,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   file: File = null // court order file object
   fileKey: string = null // court order file key
   courtOrderValid = true
-  staffPaymentValid = false
 
   // other variables
   totalFee = 0
@@ -304,7 +303,8 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   haveChanges = false
 
   // variables for staff payment
-  staffPaymentData = { option: StaffPaymentOptions.FAS } as StaffPaymentIF
+  staffPaymentValid = true
+  staffPaymentData = { option: StaffPaymentOptions.NO_FEE } as StaffPaymentIF
 
   paymentErrorDialog = false
 
@@ -352,7 +352,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
   get isPageValid (): boolean {
     const filingDataValid = (this.filingData.length > 0)
-    return (filingDataValid && this.courtOrderValid)
+    return (filingDataValid && this.courtOrderValid && this.staffPaymentValid)
   }
 
   /**
@@ -441,9 +441,9 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
     // add Waive Fees flag to all filing codes
     this.updateFilingData('add', FilingCodes.COURT_ORDER, val.isPriority, waiveFees)
-
     this.haveChanges = true
   }
+
   @Watch('dialog')
   onDialogChanged (val: boolean): void {
     // when dialog is hidden, reset everything
