@@ -191,15 +191,8 @@ describe('Court Order View User', () => {
 
   beforeEach(() => {
     // init store
-    rootStore.currentDate = '2020-03-04'
-    businessStore.setLegalType(CorpTypeCd.COOP)
-    businessStore.setLegalName('My Test Entity')
-    businessStore.setIdentifier('CP1234567')
-    businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
-    rootStore.filingData = []
+
     rootStore.keycloakRoles = ['user']
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
   })
 
   it('throws an error when user is not staff', async () => {
