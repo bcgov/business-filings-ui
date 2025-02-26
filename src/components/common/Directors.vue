@@ -1115,7 +1115,6 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
       this.addAction(director, Actions.CEASED)
     }
     this.allDirectors.unshift(director)
-    this.cancelNewDirector()
   }
 
   /**
@@ -1154,7 +1153,6 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.directorEditInProgress = true
     this.activeIndex = index
     this.messageIndex = index
-    this.cancelNewDirector()
   }
 
   /**
@@ -1211,29 +1209,37 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     const director = this.allDirectors[index]
 
     let mainFormIsValid = this.$refs.editDirectorForm[0].validate()
-    let addressFormIsValid = this.$refs.baseAddressEdit[0].$refs.addressForm.validate() as boolean
+    let addressFormIsValid = true // Default to true
 
-    if (this.$refs.mailAddressEdit && this.$refs.mailAddressEdit[0]) {
-      let mailAddressFormIsValid = this.$refs.mailAddressEdit[0].$refs.addressForm.validate() as boolean
-      if (!mailAddressFormIsValid) {
-        addressFormIsValid = mailAddressFormIsValid
+    // Only validate address forms if we're actually editing addresses
+    if (this.editFormShowHide.showAddress) {
+      addressFormIsValid = this.$refs.baseAddressEdit[0].$refs.addressForm.validate() as boolean
+
+      if (this.$refs.mailAddressEdit && this.$refs.mailAddressEdit[0]) {
+        const mailAddressFormIsValid = this.$refs.mailAddressEdit[0].$refs.addressForm.validate() as boolean
+        if (!mailAddressFormIsValid) {
+          addressFormIsValid = mailAddressFormIsValid
+        }
       }
     }
 
     if (mainFormIsValid && addressFormIsValid) {
-      // save data from BaseAddress component
-      // - only save address if a change was made, ie there is an in-progress address from the component
-      if (!Object.values(this.inProgressDelivAddress).every(el => el === undefined)) {
-        director.deliveryAddress = this.inProgressDelivAddress
-      }
-
-      if (this.isBaseCompany) {
-        if (!Object.values(this.inProgressMailAddress).every(el => el === undefined)) {
-          director.mailingAddress = this.inProgressMailAddress
+      // Only update addresses if we're actually editing addresses
+      if (this.editFormShowHide.showAddress) {
+        // save data from BaseAddress component
+        // only save address if a change was made (there is an in-progress address from the component)
+        if (this.inProgressDelivAddress && !Object.values(this.inProgressDelivAddress).every(el => el === undefined)) {
+          director.deliveryAddress = this.inProgressDelivAddress
         }
 
-        if (this.inheritDeliveryAddress) {
-          director.mailingAddress = director.deliveryAddress
+        if (this.isBaseCompany) {
+          if (this.inProgressMailAddress && !Object.values(this.inProgressMailAddress).every(el => el === undefined)) {
+            director.mailingAddress = this.inProgressMailAddress
+          }
+
+          if (this.inheritDeliveryAddress) {
+            director.mailingAddress = director.deliveryAddress
+          }
         }
       }
 
@@ -1246,19 +1252,25 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
           // eslint-disable-next-line no-console
           console.log('saveEditDirector() could not find original director with id =', id)
         } else {
-          // check whether either address has changed
-          if (!isEqual(origDirector.deliveryAddress, director.deliveryAddress) ||
-            !isEqual(origDirector.mailingAddress, director.mailingAddress)) {
-            this.addAction(director, Actions.ADDRESSCHANGED)
-          } else {
-            this.removeAction(director, Actions.ADDRESSCHANGED)
+          // Only check for address changes if we're editing addresses
+          if (this.editFormShowHide.showAddress) {
+            // check whether either address has changed
+            if (!isEqual(origDirector.deliveryAddress, director.deliveryAddress) ||
+              !isEqual(origDirector.mailingAddress, director.mailingAddress)) {
+              this.addAction(director, Actions.ADDRESSCHANGED)
+            } else {
+              this.removeAction(director, Actions.ADDRESSCHANGED)
+            }
           }
 
-          // check whether name has changed
-          if (!isEqual(origDirector.officer, director.officer)) {
-            this.addAction(director, Actions.NAMECHANGED)
-          } else {
-            this.removeAction(director, Actions.NAMECHANGED)
+          // Only check for name changes if we're editing names
+          if (this.editFormShowHide.showName) {
+            // check whether name has changed
+            if (!isEqual(origDirector.officer, director.officer)) {
+              this.addAction(director, Actions.NAMECHANGED)
+            } else {
+              this.removeAction(director, Actions.NAMECHANGED)
+            }
           }
         }
       }
