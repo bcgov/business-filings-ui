@@ -16,4 +16,6 @@ export interface WalletConnectionIF {
   invitationUrl: string
   isActive: boolean
   connectionState: string
+  isAttested: boolean | null
+  lastAttested: Date | null
 }
