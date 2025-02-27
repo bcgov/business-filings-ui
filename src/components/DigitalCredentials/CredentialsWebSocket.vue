@@ -19,14 +19,15 @@ export default class CredentialsWebSocket extends Vue {
   @Prop({ default: null }) readonly connection!: WalletConnectionIF
   @Prop({ default: null }) readonly issuedCredential!: DigitalCredentialIF
 
-  connectionsSubscription: Subscription
-  issueCredentialV20Subscription: Subscription
+  connectionSubscription: Subscription
+  attestationSubscription: Subscription
+  issuedCredentialSubscription: Subscription
 
-  connections$: Observable<WalletConnectionIF | null>
-  issueCredentialV20$: Observable<DigitalCredentialIF | null>
+  connection$: Observable<WalletConnectionIF | null>
+  issuedCredential$: Observable<DigitalCredentialIF | null>
 
   mounted (): void {
-    this.connections$ =
+    this.connection$ =
       interval(1000)
         .pipe(
           switchMap(() => LegalServices.fetchCredentialConnections(this.getIdentifier)),
@@ -34,7 +35,7 @@ export default class CredentialsWebSocket extends Vue {
           catchError(() => of(null))
         )
 
-    this.issueCredentialV20$ =
+    this.issuedCredential$ =
       interval(1000)
         .pipe(
           switchMap(() => LegalServices.fetchCredentials(this.getIdentifier)),
@@ -44,21 +45,31 @@ export default class CredentialsWebSocket extends Vue {
   }
 
   destroyed (): void {
-    this.unsubscribeConnections()
-    this.unsubscribeIssueCredentialV20()
+    this.unsubscribeConnection()
+    this.unsubscribeAttestation()
+    this.unsubscribeIssuedCredential()
   }
 
-  subscribeConnections (): void {
-    this.connectionsSubscription = this.connections$
+  subscribeConnection (): void {
+    this.connectionSubscription = this.connection$
       .subscribe((connection) => {
         if (connection) {
-          this.handleConnectionsMessage(connection)
+          this.handleConnectionMessage(connection)
         }
       })
   }
 
-  subscribeIssueCredentialV20 (): void {
-    this.issueCredentialV20Subscription = this.issueCredentialV20$
+  subscribeAttestation (): void {
+    this.attestationSubscription = this.connection$
+      .subscribe((connection) => {
+        if (connection?.lastAttested && connection?.lastAttested !== null) {
+          this.handleConnectionMessage(connection)
+        }
+      })
+  }
+
+  subscribeIssuedCredential (): void {
+    this.issuedCredentialSubscription = this.issuedCredential$
       .subscribe((issuedCredential) => {
         if (issuedCredential) {
           this.handleIssuedCredentialMessage(issuedCredential)
@@ -66,36 +77,48 @@ export default class CredentialsWebSocket extends Vue {
       })
   }
 
-  unsubscribeConnections (): void {
-    if (this.connectionsSubscription && !this.connectionsSubscription.closed) {
-      this.connectionsSubscription.unsubscribe()
+  unsubscribeConnection (): void {
+    if (this.connectionSubscription && !this.connectionSubscription.closed) {
+      this.connectionSubscription.unsubscribe()
     }
   }
 
-  unsubscribeIssueCredentialV20 (): void {
-    if (this.issueCredentialV20Subscription && !this.issueCredentialV20Subscription.closed) {
-      this.issueCredentialV20Subscription.unsubscribe()
+  unsubscribeAttestation (): void {
+    if (this.attestationSubscription && !this.attestationSubscription.closed) {
+      this.attestationSubscription.unsubscribe()
+    }
+  }
+
+  unsubscribeIssuedCredential (): void {
+    if (this.issuedCredentialSubscription && !this.issuedCredentialSubscription.closed) {
+      this.issuedCredentialSubscription.unsubscribe()
     }
   }
 
   @Watch('connection', { immediate: true })
   onConnectionChanged (connection: WalletConnectionIF): void {
-    this.unsubscribeConnections()
-    if (connection && !connection.isActive) {
-      this.subscribeConnections()
+    this.unsubscribeConnection()
+    this.unsubscribeAttestation()
+    if (connection) {
+      if (!connection?.isActive) {
+        this.subscribeConnection()
+      } else if (!connection?.isAttested && !connection?.lastAttested) {
+        this.subscribeAttestation()
+      }
     }
   }
 
   @Watch('issuedCredential', { immediate: true })
   onIssuedCredentialChanged (issuedCredential: DigitalCredentialIF): void {
-    this.unsubscribeIssueCredentialV20()
+    this.unsubscribeIssuedCredential()
     if (issuedCredential && !issuedCredential.isIssued) {
-      this.subscribeIssueCredentialV20()
+      this.subscribeIssuedCredential()
     }
   }
 
   @Emit('onConnection')
-  handleConnectionsMessage (connection: WalletConnectionIF): WalletConnectionIF {
+  @Emit('onAttestation')
+  handleConnectionMessage (connection: WalletConnectionIF): WalletConnectionIF {
     return connection
   }
 

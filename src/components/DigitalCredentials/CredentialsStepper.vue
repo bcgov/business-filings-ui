@@ -56,7 +56,7 @@
           md="4"
         >
           <v-card
-            v-if="!credentialConnection?.isActive"
+            v-if="!connection?.isActive"
             class="pt-3 px-3"
           >
             <v-card-text class="d-flex flex-column">
@@ -67,7 +67,7 @@
                 class="d-flex justify-center mt-4"
                 render-as="svg"
                 size="200"
-                :value="credentialConnection?.invitationUrl"
+                :value="connection?.invitationUrl"
               />
               <p class="mt-8 justify-center text-center word-break-normal">
                 QR code isn't scanning?
@@ -135,9 +135,10 @@
       </v-row>
     </v-container>
     <CredentialsWebSocket
-      :connection="credentialConnection"
+      :connection="connection"
       :issuedCredential="issuedCredential"
       @onConnection="handleConnection($event)"
+      @onAttestation="handleAttestation($event)"
       @onIssuedCredential="handleIssuedCredential($event)"
     />
   </div>
@@ -179,7 +180,7 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
   confirmCredentialsTermsOfUseDialog = false
   credentialNotReceivedDialog = false
   credentialTypes = DigitalCredentialTypes
-  credentialConnection: WalletConnectionIF = null
+  connection: WalletConnectionIF = null
   issuedCredential: DigitalCredentialIF = null
 
   async beforeRouteEnter (to, from, next): Promise<void> {
@@ -197,9 +198,9 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
   }
 
   async setupConnection (): Promise<void> {
-    await this.getCredentialsConnection()
-    if (!this.credentialConnection) {
-      await this.addCredentialInvitation()
+    await this.getConnection()
+    if (!this.connection) {
+      await this.addOutOfBandInvitation()
     }
     this.showLoadingContainer = false
   }
@@ -211,7 +212,7 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
 
   async handleGenegerateNewQRCode (): Promise<void> {
     this.showLoadingContainer = true
-    await LegalServices.removeCredentialConnection(this.getIdentifier, this.credentialConnection.connectionId)
+    await LegalServices.removeCredentialConnection(this.getIdentifier, this.connection.connectionId)
     await this.setupConnection()
   }
 
@@ -219,14 +220,18 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
     this.credentialNotReceivedDialog = true
   }
 
-  async addCredentialInvitation (): Promise<void> {
-    const { data: connection } = await LegalServices.createCredentialInvitation(this.getIdentifier)
-    this.credentialConnection = connection || null
+  async addOutOfBandInvitation (): Promise<void> {
+    const { data: connection } = await LegalServices.createCredentialOutOfBandInvitation(this.getIdentifier)
+    this.connection = connection || null
   }
 
-  async getCredentialsConnection (): Promise<void> {
+  async getConnection (): Promise<void> {
     const { data } = await LegalServices.fetchCredentialConnections(this.getIdentifier)
-    this.credentialConnection = data?.connections?.[0] || null
+    this.connection = data?.connections?.[0] || null
+  }
+
+  async attestConnection (): Promise<void> {
+    await LegalServices.attestCredentialConnection(this.getIdentifier, this.connection.connectionId)
   }
 
   async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
@@ -235,13 +240,20 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
   }
 
   async handleConnection (connection: WalletConnectionIF) {
-    this.credentialConnection = connection
-    if (this.credentialConnection?.isActive) {
+    this.connection = connection
+    if (this.connection?.isActive && !this.connection?.lastAttested && !this.connection?.isAttested) {
+      await this.attestConnection()
+    }
+  }
+
+  async handleAttestation (connection: WalletConnectionIF): Promise<void> {
+    this.connection = connection
+    if (this.connection?.isActive && this.connection?.lastAttested && this.connection?.isAttested) {
       await this.issueCredential(this.credentialTypes.BUSINESS)
     }
   }
 
-  async handleIssuedCredential (issuedCredential: DigitalCredentialIF) {
+  async handleIssuedCredential (issuedCredential: DigitalCredentialIF): Promise<void> {
     this.issuedCredential = issuedCredential
   }
 
@@ -261,8 +273,8 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
     if (this.issuedCredential) {
       await this.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
     }
-    if (this.credentialConnection) {
-      await this.removeConnection(this.getIdentifier, this.credentialConnection.connectionId)
+    if (this.connection) {
+      await this.removeConnection(this.getIdentifier, this.connection.connectionId)
     }
     await this.setupConnection()
   }
@@ -274,7 +286,7 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
 
   async removeConnection (identifier: string, connectionId: string): Promise<void> {
     await LegalServices.removeCredentialConnection(identifier, connectionId)
-    this.credentialConnection = null
+    this.connection = null
   }
 
   goToCredentialsDashboard (): void {
