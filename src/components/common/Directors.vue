@@ -1115,6 +1115,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
       this.addAction(director, Actions.CEASED)
     }
     this.allDirectors.unshift(director)
+    this.cancelNewDirector()
   }
 
   /**
