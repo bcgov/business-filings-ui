@@ -7,6 +7,7 @@ import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
 import ConsentAmalgamationOut from '@/views/ConsentAmalgamationOut.vue'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
+import CourtOrder from '@/views/CourtOrder.vue'
 import ContinuationOut from '@/views/ContinuationOut.vue'
 import NoticeOfWithdrawal from '@/views/NoticeOfWithdrawal.vue'
 import Signin from '@/views/auth/Signin.vue'
@@ -164,6 +165,22 @@ export default [
           disabled: false,
           exact: true,
           to: { name: Routes.CONSENT_CONTINUATION_OUT }
+        }
+      ]
+    }
+  },
+  {
+    path: '/court-order',
+    name: Routes.COURT_ORDER,
+    component: CourtOrder,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: FilingNames.COURT_ORDER,
+          disabled: false,
+          exact: true,
+          to: { name: Routes.COURT_ORDER }
         }
       ]
     }
