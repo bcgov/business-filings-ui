@@ -172,8 +172,6 @@ Component.registerHooks(['beforeRouteEnter'])
   }
 })
 export default class CredentialsStepper extends Mixins(CommonMixin) {
-  // @Getter(useBusinessStore) getIdentifier!: string
-
   loadingMessage = 'Loading'
   showLoadingContainer = true
   showDetailSteps = false
@@ -230,26 +228,37 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
     this.connection = data?.connections?.[0] || null
   }
 
+  private needsAttestation (): boolean {
+    const { isActive, lastAttested, isAttested } = this.connection
+    return isActive && !lastAttested && !isAttested
+  }
+
+  private hasAttestation (): boolean {
+    const { isActive, lastAttested, isAttested } = this.connection
+    return isActive && lastAttested && isAttested
+  }
+
   async attestConnection (): Promise<void> {
     await LegalServices.attestCredentialConnection(this.getIdentifier, this.connection.connectionId)
   }
 
-  async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
-    const { data: issuedCredential } = await LegalServices.sendCredentialOffer(this.getIdentifier, credentialType)
+  async issueCredential (): Promise<void> {
+    const { data: issuedCredential } = await LegalServices.sendCredentialOffer(
+      this.getIdentifier, this.credentialTypes.BUSINESS)
     this.issuedCredential = issuedCredential || null
   }
 
   async handleConnection (connection: WalletConnectionIF) {
     this.connection = connection
-    if (this.connection?.isActive && !this.connection?.lastAttested && !this.connection?.isAttested) {
+    if (this.needsAttestation()) {
       await this.attestConnection()
     }
   }
 
   async handleAttestation (connection: WalletConnectionIF): Promise<void> {
     this.connection = connection
-    if (this.connection?.isActive && this.connection?.lastAttested && this.connection?.isAttested) {
-      await this.issueCredential(this.credentialTypes.BUSINESS)
+    if (this.hasAttestation()) {
+      await this.issueCredential()
     }
   }
 
@@ -263,7 +272,11 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
     if (this.issuedCredential) {
       await this.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
     }
-    await this.issueCredential(this.credentialTypes.BUSINESS)
+    if (this.needsAttestation()) {
+      await this.attestConnection()
+    } else if (this.hasAttestation()) {
+      await this.issueCredential()
+    }
     this.showLoadingContainer = false
   }
 
