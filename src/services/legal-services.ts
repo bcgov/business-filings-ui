@@ -455,10 +455,11 @@ export default class LegalServices {
    */
   static async sendCredentialOffer (
     businessId: string,
-    credentialType: DigitalCredentialTypes)
+    credentialType: DigitalCredentialTypes,
+    preconditionsResolved?: { selfAttestedRoles: string[] })
     : Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/${credentialType}`
-    return axios.post(url)
+    return axios.post(url, { preconditionsResolved })
       .catch(error => {
         // eslint-disable-next-line no-console
         console.log(error.message)
