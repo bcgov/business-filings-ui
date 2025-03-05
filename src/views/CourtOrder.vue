@@ -595,6 +595,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
       })
 
     this.saving = false
+    this.haveChanges = false
     if (success) { this.navigateToBusinessDashboard(this.getIdentifier) }
   }
 
