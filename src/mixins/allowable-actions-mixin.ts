@@ -101,10 +101,6 @@ export default class AllowableActionsMixin extends Vue {
         return (isBusiness && this.isRoleStaff)
       }
 
-      /**
-       * DBC feature is only available to self-registered owners of an SP
-       * who are logged in via BCSC.
-       */
       case AllowableActions.DIGITAL_CREDENTIALS: {
         // NB: this feature is targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('enable-digital-credentials')

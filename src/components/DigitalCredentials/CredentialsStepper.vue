@@ -8,6 +8,16 @@
       @proceed="hideConfirmCredentialsTermsOfUseDialog()"
     />
 
+    <ConfirmPreconditionDialog
+      v-for="(precondition, index) in preconditions"
+      :key="index"
+      :dialog="pendingPreconditions[precondition]?.presented"
+      :precondition="precondition"
+      attach="#app"
+      @close="hideConfirmPreconditionDialog(precondition, false)"
+      @proceed="hideConfirmPreconditionDialog(precondition, true)"
+    />
+
     <CredentialNotReceivedDialog
       :dialog="credentialNotReceivedDialog"
       attach="#app"
@@ -76,14 +86,8 @@
               </p>
             </v-card-text>
           </v-card>
-          <v-card
-            v-else
-            class="pt-3 px-3"
-          >
-            <v-card-text
-              v-if="!issuedCredential?.isIssued"
-              class="d-flex flex-column"
-            >
+          <v-card v-else class="pt-3 px-3">
+            <v-card-text v-if="!issuedCredential?.isIssued" class="d-flex flex-column">
               <p class="justify-center text-center font-weight-bold word-break-normal">
                 Accept the request in your wallet
               </p>
@@ -91,24 +95,13 @@
                 class="d-flex justify-self-center align-self-center justify-center align-center pt-4"
                 style="width: 200px; height: 200px"
               >
-                <v-progress-circular
-                  color="primary"
-                  indeterminate
-                />
+                <v-progress-circular color="primary" indeterminate />
               </div>
               <p class="justify-center text-center word-break-normal pt-8">
-                <a
-                  href="#"
-                  @click.prevent="handleNoCredentialOfferReceived()"
-                >
-                  I didn't receive anything
-                </a>
+                <a href="#" @click.prevent="handleNoCredentialOfferReceived()"> I didn't receive anything </a>
               </p>
             </v-card-text>
-            <v-card-text
-              v-else
-              class="d-flex flex-column"
-            >
+            <v-card-text v-else class="d-flex flex-column">
               <p class="justify-center text-center font-weight-bold word-break-normal">
                 Your Business Card is now ready to use
               </p>
@@ -116,10 +109,7 @@
                 class="d-flex justify-self-center align-self-center justify-center align-center"
                 style="width: 200px; height: 200px"
               >
-                <v-icon
-                  color="black"
-                  size="xxx-large"
-                >
+                <v-icon color="black" size="xxx-large">
                   mdi-check-circle-outline
                 </v-icon>
               </div>
@@ -145,20 +135,25 @@
 </template>
 
 <script lang="ts">
-import { DigitalCredentialTypes, Routes } from '@/enums'
-import { LegalServices } from '@/services'
-import { CommonMixin } from '@/mixins'
 import { Component, Mixins } from 'vue-property-decorator'
+import { Getter } from 'pinia-class'
 import QrcodeVue from 'qrcode.vue'
-import { DigitalCredentialIF, WalletConnectionIF } from '@/interfaces'
+import { DigitalCredentialTypes, Routes } from '@/enums'
+import { AllowedActionsIF, DigitalCredentialIF, WalletConnectionIF } from '@/interfaces'
+import { CommonMixin } from '@/mixins'
+import { LegalServices } from '@/services'
+import { useBusinessStore } from '@/stores'
 import CredentialsWebSocket from '@/components/DigitalCredentials/CredentialsWebSocket.vue'
 import ConfirmCredentialsTermsOfUseDialog
   from '@/components/DigitalCredentials/dialogs/ConfirmCredentialsTermsofUseDialog.vue'
-import CredentialNotReceivedDialog from './dialogs/CredentialNotReceivedDialog.vue'
+import ConfirmPreconditionDialog from '@/components/DigitalCredentials/dialogs/ConfirmPreconditionDialog.vue'
+import CredentialNotReceivedDialog from '@/components/DigitalCredentials/dialogs/CredentialNotReceivedDialog.vue'
 import CredentialsSimpleSteps from '@/components/DigitalCredentials/CredentialsSimpleSteps.vue'
 import CredentialsDetailSteps from '@/components/DigitalCredentials/CredentialsDetailSteps.vue'
 
 Component.registerHooks(['beforeRouteEnter'])
+
+type PendingPreconditions = Record<string, { presented: boolean; confirmed: boolean | null }>;
 
 // Create a component that extends the Vue class called CredentialsStepper
 @Component({
@@ -166,20 +161,28 @@ Component.registerHooks(['beforeRouteEnter'])
     QrcodeVue,
     CredentialsWebSocket,
     ConfirmCredentialsTermsOfUseDialog,
+    ConfirmPreconditionDialog,
     CredentialNotReceivedDialog,
     CredentialsSimpleSteps,
     CredentialsDetailSteps
   }
 })
 export default class CredentialsStepper extends Mixins(CommonMixin) {
-  loadingMessage = 'Loading'
-  showLoadingContainer = true
-  showDetailSteps = false
-  confirmCredentialsTermsOfUseDialog = false
-  credentialNotReceivedDialog = false
-  credentialTypes = DigitalCredentialTypes
-  connection: WalletConnectionIF = null
-  issuedCredential: DigitalCredentialIF = null
+  @Getter(useBusinessStore) getAllowedActions!: AllowedActionsIF;
+
+  loadingMessage = 'Loading';
+  showLoadingContainer = true;
+  showDetailSteps = false;
+  confirmCredentialsTermsOfUseDialog = false;
+  credentialNotReceivedDialog = false;
+  credentialTypes = DigitalCredentialTypes;
+  connection: WalletConnectionIF = null;
+  issuedCredential: DigitalCredentialIF = null;
+  pendingPreconditions: PendingPreconditions = {};
+
+  get preconditions (): string[] {
+    return this.getAllowedActions?.digitalBusinessCardPreconditions?.attestRoles || []
+  }
 
   async beforeRouteEnter (to, from, next): Promise<void> {
     next(async (_this) => {
@@ -206,6 +209,10 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
   async hideConfirmCredentialsTermsOfUseDialog (): Promise<void> {
     this.confirmCredentialsTermsOfUseDialog = false
     await this.setupConnection()
+  }
+
+  async hideConfirmPreconditionDialog (precondition: string, preconditionsConfirmed: boolean): Promise<void> {
+    this.pendingPreconditions[precondition].confirmed = preconditionsConfirmed
   }
 
   async handleGenegerateNewQRCode (): Promise<void> {
@@ -242,9 +249,61 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
     await LegalServices.attestCredentialConnection(this.getIdentifier, this.connection.connectionId)
   }
 
-  async issueCredential (): Promise<void> {
+  async conditionalIssueCredential (): Promise<void> {
+    if (this.preconditions.length) {
+      await this.handlePreconditions()
+      await this.issueCredential({
+        selfAttestedRoles: this.preconditions.filter(
+          (precondition) => this.pendingPreconditions[precondition].confirmed
+        )
+      })
+    } else {
+      await this.issueCredential()
+    }
+  }
+
+  async handlePreconditions (): Promise<void> {
+    this.pendingPreconditions = this.processPreconditions()
+    for (const precondition in this.pendingPreconditions) {
+      await this.showPreconditionDialog(precondition)
+    }
+  }
+
+  private processPreconditions (): PendingPreconditions {
+    return this.preconditions.reduce(
+      (acc, precondition) => ({
+        ...acc,
+        [precondition]: {
+          presented: false,
+          confirmed: null
+        }
+      }),
+      {} as PendingPreconditions
+    )
+  }
+
+  async showPreconditionDialog (precondition: string): Promise<void> {
+    await new Promise((resolve) => {
+      const pendingPrecondition = this.pendingPreconditions[precondition]
+      pendingPrecondition.presented = true
+      const unwatch = this.$watch(
+        () => pendingPrecondition.confirmed,
+        (confirmed) => {
+          if (confirmed !== null) {
+            unwatch()
+            resolve(pendingPrecondition.presented = false)
+          }
+        }
+      )
+    })
+  }
+
+  async issueCredential (preconditionsResolved?: { selfAttestedRoles: string[] }): Promise<void> {
     const { data: issuedCredential } = await LegalServices.sendCredentialOffer(
-      this.getIdentifier, this.credentialTypes.BUSINESS)
+      this.getIdentifier,
+      this.credentialTypes.BUSINESS,
+      preconditionsResolved
+    )
     this.issuedCredential = issuedCredential || null
   }
 
@@ -258,7 +317,7 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
   async handleAttestation (connection: WalletConnectionIF): Promise<void> {
     this.connection = connection
     if (this.hasAttestation()) {
-      await this.issueCredential()
+      await this.conditionalIssueCredential()
     }
   }
 
@@ -275,7 +334,7 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
     if (this.needsAttestation()) {
       await this.attestConnection()
     } else if (this.hasAttestation()) {
-      await this.issueCredential()
+      await this.conditionalIssueCredential()
     }
     this.showLoadingContainer = false
   }
