@@ -512,6 +512,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
     if (!this.isPageValid) {
       this.showErrors = true
+      this.saving=false
       await this.validateAndScroll(this.validFlags, this.validComponents)
       return
     }
