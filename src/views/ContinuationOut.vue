@@ -272,6 +272,7 @@
                 id="continue-out-file-pay-btn"
                 color="primary"
                 large
+                class="mr-2"
                 :disabled="busySaving"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
