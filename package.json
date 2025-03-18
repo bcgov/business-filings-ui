@@ -1,8 +1,8 @@
 {
   "name": "business-filings-ui",
-  "version": "7.4.26",
+  "version": "7.4.27",
   "private": true,
-  "appName": "Filings UI",
+  "appName": "Business Filings UI",
   "sbcName": "SBC Common Components",
   "scripts": {
     "dev": "vite",
