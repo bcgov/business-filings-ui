@@ -18,7 +18,7 @@
           id="country-selector"
           ref="countrySelectRef"
           v-model="selectedCountryName"
-          :items="getCountries()"
+          :items="getCountriesList()"
           item-text="name"
           filled
           placeholder="Jurisdiction Country"
@@ -96,6 +96,26 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   get countryRules (): Array<(val) => boolean | string> {
     return [
       val => !!(val) || 'Jurisdiction Country is required.'
+    ]
+  }
+
+  /** Prioritize Canada and US in the Countries List. */
+  getCountriesList (): Array<object> {
+    const countries = this.getCountries()
+    // List of priority countries
+    const priorityCountries = ['Canada', 'United States of America']
+
+    const prioritizedCountries = countries.filter((country: any) =>
+      priorityCountries.includes(country.name)
+    )
+    const countriesList = countries.filter((country: any) =>
+      !priorityCountries.includes(country.name)
+    )
+
+    return [
+      ...prioritizedCountries,
+      { divider: true },
+      ...countriesList
     ]
   }
 
