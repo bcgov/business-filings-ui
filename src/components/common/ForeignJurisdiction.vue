@@ -14,7 +14,7 @@
         cols="12"
         sm="9"
       >
-        <v-select
+        <v-autocomplete
           id="country-selector"
           ref="countrySelectRef"
           v-model="selectedCountryName"
@@ -23,10 +23,20 @@
           filled
           placeholder="Jurisdiction Country"
           :rules="countryRules"
-          menu-props="auto"
+          hide-no-data
+          :filter="customFilter"
+          :menu-props="{
+            auto: false,
+            bottom: true
+          }"
           @input="emitChangedCountry()"
-        />
-        <v-select
+        >
+          <template #item="{ item }">
+            {{ item.name }}
+          </template>
+        </v-autocomplete>
+
+        <v-autocomplete
           v-if="canadaUsaRegions.length > 0"
           id="region-selector"
           ref="regionSelectRef"
@@ -36,8 +46,18 @@
           filled
           placeholder="Jurisdiction Region"
           :rules="regionRules"
+          hide-no-data
+          :filter="customFilter"
+          :menu-props="{
+            auto: false,
+            bottom: true
+          }"
           @input="emitChangedRegion()"
-        />
+        >
+          <template #item="{ item }">
+            {{ item.name }}
+          </template>
+        </v-autocomplete>
       </v-col>
     </v-row>
   </v-card>
@@ -77,6 +97,14 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
       this.selectedRegionName = this.getRegionNameFromCode(this.draftRegion)
       this.emitChangedRegion()
     }
+  }
+
+  /** Get the matching results from the country/region seach lists. */
+  customFilter (item, query, itemText) {
+    if (!query) return true
+    const text = itemText.toString().toLowerCase()
+    const search = query.toLowerCase()
+    return text.indexOf(search) !== -1
   }
 
   /** Get the respective regions of the country selected as an array of objects. */
