@@ -11,6 +11,7 @@ instance.interceptors.request.use(
 
     const kcToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
     request.headers.common['Authorization'] = `Bearer ${kcToken}`
+    request.headers.common['App-Name'] = import.meta.env.APP_NAME
     return request
   },
   error => Promise.reject(error)
