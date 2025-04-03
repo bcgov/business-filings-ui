@@ -8,6 +8,7 @@ import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling
 import ConsentAmalgamationOut from '@/views/ConsentAmalgamationOut.vue'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
 import CourtOrder from '@/views/CourtOrder.vue'
+import AmalgamationOut from '@/views/AmalgamationOut.vue'
 import ContinuationOut from '@/views/ContinuationOut.vue'
 import NoticeOfWithdrawal from '@/views/NoticeOfWithdrawal.vue'
 import Signin from '@/views/auth/Signin.vue'
@@ -181,6 +182,22 @@ export default [
           disabled: false,
           exact: true,
           to: { name: Routes.COURT_ORDER }
+        }
+      ]
+    }
+  },
+  {
+    path: '/amalgamation-out',
+    name: Routes.AMALGAMATION_OUT,
+    component: AmalgamationOut,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: FilingNames.AMALGAMATION_OUT,
+          disabled: false,
+          exact: true,
+          to: { name: Routes.AMALGAMATION_OUT }
         }
       ]
     }

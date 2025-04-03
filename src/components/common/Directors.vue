@@ -116,6 +116,7 @@
                   <div class="address-wrapper">
                     <BaseAddress
                       ref="baseAddressNew"
+                      :key="baseAddressKey"
                       :editing="true"
                       :schema="addressSchema"
                       @update:address="updateDeliveryAddress"
@@ -136,6 +137,7 @@
                       <div class="address-wrapper">
                         <BaseAddress
                           ref="mailAddressNew"
+                          :key="mailAddressKey"
                           :editing="true"
                           :schema="addressSchema"
                           @update:address="updateMailingAddress"
@@ -755,6 +757,10 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   isEditingDirector = false
   messageIndex = -1
 
+  // This will hold a dynamic key for re-rendering the BaseAddress component
+  baseAddressKey = 0
+  mailAddressKey = 0
+
   /** V-model for new director form. */
   newDirector = cloneDeep(EmptyDirector)
 
@@ -1023,6 +1029,11 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.directorEditInProgress = true
   }
 
+  resetBaseAddressKey (): void {
+    this.baseAddressKey++
+    this.mailAddressKey++
+  }
+
   /** Local helper to cancel adding a new director. */
   cancelNewDirector (): void {
     this.showNewDirectorForm = false
@@ -1036,6 +1047,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.newDirector = cloneDeep(EmptyDirector)
     this.newDirector.appointmentDate = this.asOfDate
     this.directorEditInProgress = false
+    this.resetBaseAddressKey()
   }
 
   // REMOVED UNTIL FUTURE RELEASE

@@ -45,7 +45,7 @@
     <!-- Main Body -->
     <v-container
       v-if="dataLoaded"
-      id="continue-out-container"
+      id="amalgamate-out-container"
       class="view-container"
     >
       <v-row>
@@ -53,10 +53,10 @@
           cols="12"
           lg="9"
         >
-          <article id="continue-out-article">
+          <article id="amalgamate-out-article">
             <!-- Page Title -->
             <header>
-              <h1 id="continue-out-header">
+              <h1 id="amalgamate-out-header">
                 Amalgamation Out
               </h1>
             </header>
@@ -118,6 +118,9 @@
                   ref="effectiveDateRef"
                   :class="{ 'invalid-component': !effectiveDateValid && showErrors }"
                   class="pt-6 px-4"
+                  effectiveDateLabel="Effective Date of Amalgamation Out"
+                  dateLabel="Date of Amalgamation Out"
+                  dateRequiredMsg="A Date of Amalgamation Out is required"
                   :initialEffectiveDate="initialEffectiveDate"
                   :validateForm="showErrors"
                   @update:effectiveDate="effectiveDate=$event"
@@ -175,7 +178,7 @@
               <header>
                 <h2>Documents Delivery</h2>
                 <p class="grey-text">
-                  Copies of the continue out documents will be sent to the email addresses listed below.
+                  Copies of the amalgamate out documents will be sent to the email addresses listed below.
                 </p>
               </header>
               <div
@@ -261,7 +264,7 @@
         >
           <aside>
             <affix
-              relative-element-selector="#continue-out-article"
+              relative-element-selector="#amalgamate-out-article"
               :offset="{ top: 120, bottom: 40 }"
             >
               <SbcFeeSummary
@@ -277,12 +280,12 @@
 
     <!-- Buttons -->
     <v-container
-      id="continue-out-buttons-container"
+      id="amalgamate-out-buttons-container"
       class="list-item"
     >
       <div class="buttons-left">
         <v-btn
-          id="continue-out-save-btn"
+          id="amalgamate-out-save-btn"
           large
           :disabled="busySaving"
           :loading="saving"
@@ -291,7 +294,7 @@
           <span>Save</span>
         </v-btn>
         <v-btn
-          id="continue-out-save-resume-btn"
+          id="amalgamate-out-save-resume-btn"
           large
           :disabled="busySaving"
           :loading="savingResuming"
@@ -313,9 +316,10 @@
               v-on="on"
             >
               <v-btn
-                id="continue-out-file-pay-btn"
+                id="amalgamate-out-file-pay-btn"
                 color="primary"
                 large
+                class="mr-2"
                 :disabled="busySaving"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
@@ -329,7 +333,7 @@
         </v-tooltip>
 
         <v-btn
-          id="continue-out-cancel-btn"
+          id="amalgamate-out-cancel-btn"
           large
           :disabled="busySaving"
           @click="goToDashboard()"
@@ -540,7 +544,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
 
     this.dataLoaded = true
 
-    // always include continue out code
+    // always include amalgamate out code
     // clear Priority flag and set the Waive Fees flag to true
     this.updateFilingData('add', FilingCodes.AMALGAMATION_OUT, undefined, true)
   }
@@ -569,7 +573,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
       this.certifiedBy = filing.header.certifiedBy
 
       // load Detail Comment, removing the first line (default comment)
-      const comment: string = filing.amalgamationOutOut.details || ''
+      const comment: string = filing.amalgamationOut.details || ''
       this.detailComment = comment.split('\n').slice(1).join('\n')
 
       const courtOrder = filing.amalgamationOut.courtOrder
@@ -869,7 +873,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Unsaved Changes',
-      'You have unsaved changes in your Continue Out. Do you want to exit your filing?',
+      'You have unsaved changes in your Amalgamate Out. Do you want to exit your filing?',
       {
         width: '45rem',
         persistent: true,
@@ -1009,7 +1013,7 @@ h2 {
 }
 
 // Save & Filing Buttons
-#continue-out-buttons-container {
+#amalgamate-out-buttons-container {
   padding-top: 2rem;
   border-top: 1px solid $gray5;
 

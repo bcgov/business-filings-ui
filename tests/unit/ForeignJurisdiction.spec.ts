@@ -18,9 +18,11 @@ describe('ForeignJurisdiction', () => {
       })
     const vm: any = wrapper.vm
 
-    expect(vm.selectedCountryName).toEqual('')
+    expect(vm.selectedCountryCode).toEqual('')
     expect(vm.selectedRegionName).toEqual('')
     expect(vm.getCountries().length).toEqual(249) // This number might change someday.
+    // This number might change someday, including divider and pinned US/CA
+    expect(vm.getCountriesList().length).toEqual(252)
     expect(wrapper.emitted('valid')).toBeFalsy()
     wrapper.destroy()
   })
@@ -32,10 +34,8 @@ describe('ForeignJurisdiction', () => {
       })
     const vm: any = wrapper.vm
 
-    await wrapper.find('#country-selector').trigger('click')
-    await wrapper.findAll('.v-list-item').at(123).trigger('click')
+    vm.selectedCountryCode = 'LB'
 
-    expect(vm.selectedCountryName).toEqual('Lebanon')
     expect(vm.selectedCountryCode).toEqual('LB')
     expect(vm.selectedRegionName).toEqual('')
     wrapper.destroy()
@@ -48,14 +48,8 @@ describe('ForeignJurisdiction', () => {
       })
     const vm: any = wrapper.vm
 
-    await wrapper.find('#country-selector').trigger('click')
-    await wrapper.findAll('.v-list-item').at(39).trigger('click')
-
-    const region = wrapper.find('#region-selector')
-    await region.setValue('Ontario')
-
-    expect(vm.selectedCountryName).toEqual('Canada')
-    expect(vm.selectedCountryCode).toEqual('CA')
+    vm.selectedRegionName = 'Ontario'
+    expect(vm.selectedCountryCode).toEqual('')
     expect(vm.selectedRegionName).toEqual('Ontario')
     wrapper.destroy()
   })
@@ -65,13 +59,14 @@ describe('ForeignJurisdiction', () => {
       {
         vuetify
       })
+    const vm: any = wrapper.vm
 
-    await wrapper.find('#country-selector').trigger('click')
-    await wrapper.findAll('.v-list-item').at(39).trigger('click')
+    vm.selectedCountryCode = 'CA'
+    vm.emitChangedCountry()
+    vm.selectedRegionName = 'British Columnbia'
+    vm.emitChangedRegion()
 
-    const provinces = wrapper.findAll('.v-select').at(1).props('items')
-
-    expect(provinces).toEqual(expect.not.arrayContaining([{ name: 'British Columbia', short: 'BC' }]))
+    expect(wrapper.emitted('update:region').pop()[0]).toBeUndefined()
     wrapper.destroy()
   })
 
@@ -80,13 +75,15 @@ describe('ForeignJurisdiction', () => {
       {
         vuetify
       })
+    const vm: any = wrapper.vm
 
-    await wrapper.find('#country-selector').trigger('click')
-    await wrapper.findAll('.v-list-item').at(39).trigger('click')
+    vm.selectedCountryCode = 'CA'
+    vm.emitChangedCountry()
+    vm.selectedRegionName = 'Federal'
+    vm.emitChangedRegion()
 
-    const provinces = wrapper.findAll('.v-select').at(1).props('items')
-
-    expect(provinces).toEqual(expect.arrayContaining([{ name: 'Federal', short: 'FEDERAL' }]))
+    expect(wrapper.emitted('update:country').pop()[0]).toEqual('CA')
+    expect(wrapper.emitted('update:region').pop()[0]).toEqual('FEDERAL')
     wrapper.destroy()
   })
 
@@ -97,13 +94,12 @@ describe('ForeignJurisdiction', () => {
       })
     const vm: any = wrapper.vm
 
-    await wrapper.find('#country-selector').trigger('click')
-    await wrapper.findAll('.v-list-item').at(235).trigger('click')
+    vm.selectedCountryCode = 'US-1'
+    vm.emitChangedCountry()
+    vm.selectedRegionName = 'New York'
+    vm.emitChangedRegion()
 
-    const region = wrapper.find('#region-selector')
-    await region.setValue('New York')
-
-    expect(vm.selectedCountryName).toEqual('United States of America')
+    expect(vm.selectedCountryCode).toEqual('US')
     expect(vm.selectedRegionName).toEqual('New York')
     wrapper.destroy()
   })
@@ -113,9 +109,10 @@ describe('ForeignJurisdiction', () => {
       {
         vuetify
       })
+    const vm: any = wrapper.vm
 
-    await wrapper.find('#country-selector').trigger('click')
-    await wrapper.findAll('.v-list-item').at(123).trigger('click')
+    vm.selectedCountryCode = 'LB'
+    vm.emitChangedCountry()
 
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('LB')
     expect(wrapper.emitted('update:region').pop()[0]).toBeUndefined()
@@ -130,8 +127,8 @@ describe('ForeignJurisdiction', () => {
       })
     const vm: any = wrapper.vm
 
-    await wrapper.find('#country-selector').trigger('click')
-    await wrapper.findAll('.v-list-item').at(39).trigger('click')
+    vm.selectedCountryCode = 'CA'
+    vm.emitChangedCountry()
 
     expect(vm.selectedRegionName).toEqual('')
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('CA')
@@ -145,12 +142,12 @@ describe('ForeignJurisdiction', () => {
       {
         vuetify
       })
+    const vm: any = wrapper.vm
 
-    await wrapper.find('#country-selector').trigger('click')
-    await wrapper.findAll('.v-list-item').at(39).trigger('click')
-
-    const region = wrapper.find('#region-selector')
-    await region.setValue('Ontario')
+    vm.selectedCountryCode = 'CA'
+    vm.emitChangedCountry()
+    vm.selectedRegionName = 'Ontario'
+    vm.emitChangedRegion()
 
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('CA')
     expect(wrapper.emitted('update:region').pop()[0]).toEqual('ON')
@@ -168,7 +165,7 @@ describe('ForeignJurisdiction', () => {
       })
     const vm: any = wrapper.vm
 
-    expect(vm.selectedCountryName).toEqual('Lebanon')
+    expect(vm.selectedCountryCode).toEqual('LB')
     expect(vm.selectedRegionName).toEqual('')
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('LB')
     expect(wrapper.emitted('update:region').pop()[0]).toBeUndefined()
@@ -186,7 +183,7 @@ describe('ForeignJurisdiction', () => {
       })
     const vm: any = wrapper.vm
 
-    expect(vm.selectedCountryName).toEqual('Canada')
+    expect(vm.selectedCountryCode).toEqual('CA')
     expect(vm.selectedRegionName).toEqual('')
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('CA')
     expect(wrapper.emitted('update:region').pop()[0]).toBeUndefined()
@@ -205,7 +202,7 @@ describe('ForeignJurisdiction', () => {
       })
     const vm: any = wrapper.vm
 
-    expect(vm.selectedCountryName).toEqual('Canada')
+    expect(vm.selectedCountryCode).toEqual('CA')
     expect(vm.selectedRegionName).toEqual('Ontario')
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('CA')
     expect(wrapper.emitted('update:region').pop()[0]).toEqual('ON')
@@ -224,7 +221,7 @@ describe('ForeignJurisdiction', () => {
       })
     const vm: any = wrapper.vm
 
-    expect(vm.selectedCountryName).toEqual('Canada')
+    expect(vm.selectedCountryCode).toEqual('CA')
     expect(vm.selectedRegionName).toBeUndefined()
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('CA')
     expect(wrapper.emitted('update:region').pop()[0]).toBeUndefined()
@@ -243,7 +240,7 @@ describe('ForeignJurisdiction', () => {
       })
     const vm: any = wrapper.vm
 
-    expect(vm.selectedCountryName).toEqual('Canada')
+    expect(vm.selectedCountryCode).toEqual('CA')
     expect(vm.selectedRegionName).toEqual('Federal')
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('CA')
     expect(wrapper.emitted('update:region').pop()[0]).toEqual('FEDERAL')

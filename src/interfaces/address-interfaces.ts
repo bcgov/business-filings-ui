@@ -30,6 +30,6 @@ export const EmptyAddress: AddressIF = {
   addressCity: '',
   addressRegion: '',
   postalCode: '',
-  addressCountry: '',
+  addressCountry: 'CA',
   deliveryInstructions: ''
 }

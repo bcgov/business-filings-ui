@@ -8,7 +8,7 @@
         cols="12"
         sm="3"
       >
-        <label class="title-label">Effective Date of Continuation Out</label>
+        <label class="title-label">{{ effectiveDateLabel }}</label>
       </v-col>
       <v-col
         cols="12"
@@ -28,7 +28,7 @@
               ref="textarea"
               v-model="dateFormatted"
               :rules="effectiveDateRules"
-              label="Date of Continuation Out"
+              :label="dateLabel"
               hint="YYYY/MM/DD"
               append-icon="mdi-calendar"
               filled
@@ -79,7 +79,9 @@ export default class EffectiveDate extends Mixins(DateMixin) {
 
   // Prop passed into this component.
   @Prop({ default: '' }) readonly initialEffectiveDate!: string
-
+  @Prop({ default: 'Effective Date of Continuation Out' }) readonly effectiveDateLabel!: string
+  @Prop({ default: 'Date of Continuation Out' }) readonly dateLabel!: string
+  @Prop({ default: 'A Date of Continuation Out is required.' }) readonly dateRequiredMsg!: string
   /** Prompt the validations. Used for global validations. */
   @Prop({ default: false }) readonly validateForm!: boolean
 
@@ -93,7 +95,7 @@ export default class EffectiveDate extends Mixins(DateMixin) {
   /** The array of validations rules for the Effective Date text field. */
   get effectiveDateRules (): Array<(v) => boolean | string> {
     return [
-      v => isNotNull(v) || 'A Date of Continuation Out is required.'
+      v => isNotNull(v) || this.dateRequiredMsg
     ]
   }
 

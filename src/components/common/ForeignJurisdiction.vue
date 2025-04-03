@@ -14,19 +14,30 @@
         cols="12"
         sm="9"
       >
-        <v-select
+        <v-autocomplete
           id="country-selector"
           ref="countrySelectRef"
-          v-model="selectedCountryName"
-          :items="getCountries()"
+          v-model="selectedCountryCode"
+          :items="getCountriesList()"
           item-text="name"
+          item-value="code"
           filled
           placeholder="Jurisdiction Country"
           :rules="countryRules"
-          menu-props="auto"
+          hide-no-data
+          :filter="customFilter"
+          :menu-props="{
+            auto: false,
+            bottom: true
+          }"
           @input="emitChangedCountry()"
-        />
-        <v-select
+        >
+          <template #item="{ item }">
+            {{ item.name }}
+          </template>
+        </v-autocomplete>
+
+        <v-autocomplete
           v-if="canadaUsaRegions.length > 0"
           id="region-selector"
           ref="regionSelectRef"
@@ -36,8 +47,18 @@
           filled
           placeholder="Jurisdiction Region"
           :rules="regionRules"
+          hide-no-data
+          :filter="customFilter"
+          :menu-props="{
+            auto: false,
+            bottom: true
+          }"
           @input="emitChangedRegion()"
-        />
+        >
+          <template #item="{ item }">
+            {{ item.name }}
+          </template>
+        </v-autocomplete>
       </v-col>
     </v-row>
   </v-card>
@@ -64,13 +85,13 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   /** Prompt the validations. Used for global validations. */
   @Prop({ default: false }) readonly validateForm!: boolean
 
-  selectedCountryName = ''
+  selectedCountryCode = ''
   selectedRegionName = ''
 
   /** Restore the selected country and region from draft filing if applicable. */
   mounted (): void {
     if (this.draftCountry) {
-      this.selectedCountryName = this.getCountryNameFromCode(this.draftCountry)
+      this.selectedCountryCode = this.draftCountry
       this.emitChangedCountry()
     }
     if (this.draftRegion) {
@@ -79,14 +100,24 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
     }
   }
 
+  /** Get the matching results from the country/region seach lists. */
+  customFilter (item, query, itemText) {
+    if (!query) return true
+    /** Only show Canada and US once in the search results. */
+    if (item.code === 'CA-1' || item.code === 'US-1') return false
+    const text = itemText.toString().toLowerCase()
+    const search = query.toLowerCase()
+    return text.indexOf(search) !== -1
+  }
+
   /** Get the respective regions of the country selected as an array of objects. */
   get canadaUsaRegions (): Array<any> {
-    if (this.selectedCountryName === 'Canada') {
+    if (this.selectedCountryCode === 'CA') {
       let regions = this.getCountryRegions('CA') as any[]
       regions = regions.filter(province => province.short !== 'BC')
       regions.push({ name: 'Federal', short: 'FEDERAL' })
       return regions
-    } else if (this.selectedCountryName === 'United States of America') {
+    } else if (this.selectedCountryCode === 'US') {
       return this.getCountryRegions('US')
     }
     return []
@@ -99,27 +130,27 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
     ]
   }
 
+  /** Prioritize Canada and US in the Countries List. */
+  getCountriesList (): Array<object> {
+    const countries = this.getCountries()
+    // List of priority countries
+    const priorityCountries = [
+      { name: 'Canada', code: 'CA-1' },
+      { name: 'United States of America', code: 'US-1' },
+      { divider: true }
+    ]
+
+    return [
+      ...priorityCountries,
+      ...countries
+    ]
+  }
+
   /** Validation rules for the Jurisdiction Region dropdown. */
   get regionRules (): Array<(val) => boolean | string> {
     return [
       val => !!(val) || 'Jurisdiction Region is required.'
     ]
-  }
-
-  /** Get the selected country's code. */
-  get selectedCountryCode (): string {
-    const countries = this.getCountries() as any[]
-    const countryCode = countries.find(country => country.name === this.selectedCountryName)
-    return countryCode?.code
-  }
-
-  /** Helper function to get a country's name when given the code.
-   * @example ('CA') -> 'Canada'
-   */
-  private getCountryNameFromCode (code: string): string {
-    const countries = this.getCountries() as any[]
-    const country = countries.find(country => country.code === code)
-    return country?.name
   }
 
   /** Helper function to get a region's name when given the short.
@@ -133,7 +164,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
 
   @Watch('draftCountry')
   onDraftCountryChanged (val: string): void {
-    this.selectedCountryName = val
+    this.selectedCountryCode = val
   }
 
   @Watch('draftRegion')
@@ -144,19 +175,19 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   /** Validate country field */
   @Watch('validateForm')
   validateForeignJurisdiction (): void {
-    if (this.validateForm && !this.selectedCountryName) {
+    if (this.validateForm && !this.selectedCountryCode) {
       this.$refs.countrySelectRef.validate()
       this.$refs.countrySelectRef.error = true
     }
   }
 
   /** Validate region field */
-  @Watch('selectedCountryName')
+  @Watch('selectedCountryCode')
   @Watch('validateForm')
   async onCountrychanged (): Promise<void> {
     if (this.validateForm) {
       await this.$nextTick()
-      if (this.selectedCountryName === 'Canada' || this.selectedCountryName === 'United States of America') {
+      if (this.selectedCountryCode === 'CA' || this.selectedCountryCode === 'US') {
         this.$refs.regionSelectRef.validate()
         this.$refs.regionSelectRef.error = true
       }
@@ -166,9 +197,14 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   /** Emit the selected country's code whenever a new country is selected. */
   @Emit('update:country')
   emitChangedCountry (): string {
+    if (['CA', 'CA-1'].includes(this.selectedCountryCode)) {
+      this.selectedCountryCode = 'CA'
+    } else if (['US', 'US-1'].includes(this.selectedCountryCode)) {
+      this.selectedCountryCode = 'US'
+    }
     this.selectedRegionName = ''
     this.emitChangedRegion()
-    if (this.selectedCountryName === 'Canada' || this.selectedCountryName === 'United States of America') {
+    if (this.selectedCountryCode === 'CA' || this.selectedCountryCode === 'US') {
       this.emitValid(false)
     } else {
       this.emitValid(true)

@@ -512,6 +512,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
     if (!this.isPageValid) {
       this.showErrors = true
+      this.saving = false
       await this.validateAndScroll(this.validFlags, this.validComponents)
       return
     }
@@ -595,7 +596,10 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
       })
 
     this.saving = false
-    if (success) { this.navigateToBusinessDashboard(this.getIdentifier) }
+    if (success) {
+      this.haveChanges = false
+      this.navigateToBusinessDashboard(this.getIdentifier)
+    }
   }
 
   /**
