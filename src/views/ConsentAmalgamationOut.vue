@@ -109,7 +109,7 @@
               <header>
                 <h2>Documents Delivery</h2>
                 <p class="grey-text">
-                  Copies of the consent to continue out documents will be sent to the email addresses listed below.
+                  Copies of the consent to amalgamate out documents will be sent to the email addresses listed below.
                 </p>
               </header>
               <div
@@ -452,7 +452,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
-    // always include consent continue out code
+    // always include consent amalgamate out code
     // use existing Priority and Waive Fees flags
     this.updateFilingData('add', FilingCodes.CONSENT_AMALGAMATION_OUT, this.staffPaymentData.isPriority,
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
@@ -811,7 +811,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Unsaved Changes',
-      'You have unsaved changes in your Consent to Continue Out. Do you want to exit your filing?',
+      'You have unsaved changes in your Consent to Amalgamate Out. Do you want to exit your filing?',
       {
         width: '45rem',
         persistent: true,
