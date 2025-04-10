@@ -158,6 +158,7 @@
                 class="pt-6 px-4"
               >
                 <StaffPaymentShared
+                  :validate="staffPaymentValid"
                   :staffPaymentData.sync="staffPaymentData"
                   @staffPaymentFormValid="staffPaymentValid=$event"
                 />
@@ -201,7 +202,7 @@
                     solid
                     color="primary"
                     class="btn-outlined-primary mt-4"
-                    :loading="!isPageValid || saving"
+                    :disabled="!isPageValid || saving"
                     @click.native="onSave()"
                   >
                     {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
@@ -309,7 +310,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   haveChanges = false
 
   // variables for staff payment
-  staffPaymentValid = true
+  staffPaymentValid = false
   staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
 
   paymentErrorDialog = false
@@ -453,6 +454,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     // add Waive Fees flag to all filing codes
     this.updateFilingData('add', FilingCodes.COURT_ORDER, val.isPriority, waiveFees)
     this.haveChanges = true
+    this.staffPaymentValid = true
   }
 
   @Watch('dialog')
