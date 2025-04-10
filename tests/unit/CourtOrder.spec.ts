@@ -5,6 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import CourtOrder from '@/views/CourtOrder.vue'
 import { FileUploadPdf } from '@/components/common'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
@@ -150,16 +151,15 @@ describe('Court Order View', () => {
 
     // make sure form is validated
     await wrapper.setData({
-      courtOrderValid: true
+      courtOrderValid: true,
+      staffPaymentValid: true,
+      staffPaymentData: { option: StaffPaymentOptions.NO_FEE }
     })
 
     wrapper.vm.$data.dataLoaded = true
     await Vue.nextTick()
 
     expect(vm.isPageValid).toEqual(true)
-
-    // make sure a fee is required
-    vm.totalFee = 20
 
     const saveButton = wrapper.find('#dialog-save-button')
     expect(saveButton.attributes('disabled')).toBeUndefined()
