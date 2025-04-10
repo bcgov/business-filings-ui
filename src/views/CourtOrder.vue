@@ -1,5 +1,8 @@
 <template>
   <div id="court-order">
+    <ConfirmDialog
+      ref="confirm"
+    />
     <v-container
       id="court-order-container"
       class="view-container"
@@ -198,7 +201,7 @@
                     solid
                     color="primary"
                     class="btn-outlined-primary mt-4"
-                    :loading="!isPageValid || saving"
+                    :disabled="!isPageValid || saving"
                     @click.native="onSave()"
                   >
                     {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
@@ -220,9 +223,10 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DateMixin, FilingMixin, CommonMixin } from '@/mixins'
+import { ConfirmDialog } from '@/components/dialogs'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
-import { FormIF, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, FormIF, StaffPaymentIF } from '@/interfaces'
 import { EffectOfOrderTypes, PageSizes } from '@/enums'
 import { FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { EnumUtilities, LegalServices } from '@/services'
@@ -233,6 +237,7 @@ import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staf
 
 @Component({
   components: {
+    ConfirmDialog,
     CourtOrderPoa,
     FileUploadPdf,
     SbcFeeSummary,
@@ -241,6 +246,7 @@ import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staf
 })
 export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, CommonMixin) {
   $refs!: Vue['$refs'] & {
+    confirm: ConfirmDialogType,
     courtOrderPoaRef: FormIF,
     fileUploadRef: FormIF,
     notationFormRef: FormIF
@@ -304,7 +310,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
   // variables for staff payment
   staffPaymentValid = true
-  staffPaymentData = { option: StaffPaymentOptions.NO_FEE } as StaffPaymentIF
+  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
 
   paymentErrorDialog = false
 
@@ -370,7 +376,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Unsaved Changes',
-      'You have unsaved changes in your Continue Out. Do you want to exit your filing?',
+      'You have unsaved changes in your Court Order. Do you want to exit your filing?',
       {
         width: '45rem',
         persistent: true,
