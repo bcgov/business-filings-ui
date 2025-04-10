@@ -158,9 +158,9 @@
                 class="pt-6 px-4"
               >
                 <StaffPaymentShared
-                  :validate="staffPaymentValid"
+                  :validate="true"
                   :staffPaymentData.sync="staffPaymentData"
-                  @staffPaymentFormValid="staffPaymentValid=$event"
+                  @valid="staffPaymentValid=$event"
                 />
               </v-card>
             </div>
@@ -454,7 +454,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     // add Waive Fees flag to all filing codes
     this.updateFilingData('add', FilingCodes.COURT_ORDER, val.isPriority, waiveFees)
     this.haveChanges = true
-    this.staffPaymentValid = true
   }
 
   @Watch('dialog')
