@@ -201,7 +201,7 @@
                     solid
                     color="primary"
                     class="btn-outlined-primary mt-4"
-                    :disabled="!isPageValid || saving"
+                    :loading="!isPageValid || saving"
                     @click.native="onSave()"
                   >
                     {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
@@ -313,6 +313,11 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
 
   paymentErrorDialog = false
+
+  /** Called when component is mounted. */
+  async mounted (): Promise<void> {
+    this.updateFilingData('add', FilingCodes.COURT_ORDER, undefined, false)
+  }
 
   /** Whether this filing is a Court Order. */
   get isCourtOrder (): boolean {
