@@ -158,7 +158,7 @@
                 class="pt-6 px-4"
               >
                 <StaffPaymentShared
-                  validate="true"
+                  :validate="true"
                   :staffPaymentData.sync="staffPaymentData"
                   @valid="staffPaymentValid=$event"
                 />
