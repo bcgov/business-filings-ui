@@ -158,7 +158,7 @@
                 class="pt-6 px-4"
               >
                 <StaffPaymentShared
-                  :validate="true"
+                  validate="true"
                   :staffPaymentData.sync="staffPaymentData"
                   @valid="staffPaymentValid=$event"
                 />
@@ -202,7 +202,7 @@
                     solid
                     color="primary"
                     class="btn-outlined-primary mt-4"
-                    :disabled="!isPageValid || saving"
+                    :loading="saving"
                     @click.native="onSave()"
                   >
                     {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
