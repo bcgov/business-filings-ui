@@ -405,6 +405,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     })
   }
 
+  @Watch('courtOrderValid')
   updateCourtOrderSectionValid (): void {
     this.courtOrderSectionValid = this.courtOrderValid && this.isNotationFormValid && this.isFileComponentValid
   }
