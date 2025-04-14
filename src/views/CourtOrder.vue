@@ -27,7 +27,7 @@
               </header>
               <div
                 id="court-order-section"
-                :class="{ 'invalid-section': !courtOrderValid && showErrors }"
+                :class="{ 'invalid-section': !courtOrderSectionValid && showErrors }"
               >
                 <v-card
                   flat
@@ -300,6 +300,9 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   file: File = null // court order file object
   fileKey: string = null // court order file key
   courtOrderValid = true
+  courtOrderSectionValid = false
+  isNotationFormValid = false
+  isFileComponentValid = false
 
   // other variables
   totalFee = 0
@@ -364,7 +367,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
   get isPageValid (): boolean {
     const filingDataValid = (this.filingData.length > 0)
-    return (filingDataValid && this.courtOrderValid && this.staffPaymentValid)
+    return (filingDataValid && this.courtOrderSectionValid && this.staffPaymentValid)
   }
 
   /**
@@ -402,22 +405,19 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     })
   }
 
-  @Watch('notation')
-  async onNotationChanged (): Promise<void> {
-    // if this is a court order and notation has changed, re-validate file upload component
-    if (this.isCourtOrder && this.enableValidation) {
-      await this.$nextTick() // wait for variables to update
-      this.$refs.fileUploadRef?.validate()
-    }
+  updateCourtOrderSectionValid (): void {
+    this.courtOrderSectionValid = this.courtOrderValid && this.isNotationFormValid && this.isFileComponentValid
   }
 
-  // NB: watch "fileKey" because it changes according to file validity (while "file" might not)
+  @Watch('notation')
   @Watch('fileKey')
-  async onFileKeyChanged (): Promise<void> {
-    // if this is a court order and file has changed, re-validate notation form
+  async onNotationFileChanged (): Promise<void> {
+    // if this is a court order and notation/file has changed, re-validate both notation and file upload component
     if (this.isCourtOrder && this.enableValidation) {
       await this.$nextTick() // wait for variables to update
-      this.$refs.notationFormRef?.validate()
+      this.isFileComponentValid = this.$refs.fileUploadRef?.validate()
+      this.isNotationFormValid = this.$refs.notationFormRef.validate()
+      this.updateCourtOrderSectionValid()
     }
   }
 
@@ -436,13 +436,13 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
   get validFlags (): object {
     return {
-      courtOrder: this.courtOrderValid,
+      courtOrder: this.courtOrderSectionValid,
       staffPayment: this.staffPaymentValid
     }
   }
 
   @Watch('staffPaymentValid')
-  @Watch('courtOrderValid')
+  @Watch('courtOrderSectionValid')
   onHaveChanges (): void {
     this.haveChanges = true
   }
@@ -522,21 +522,10 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     this.enableValidation = true
     await this.$nextTick() // wait for form to update
 
-    const isNotationFormValid = (!this.$refs.notationFormRef || this.$refs.notationFormRef.validate())
-    const isFileComponentValid = (!this.$refs.fileUploadRef || this.$refs.fileUploadRef.validate())
-    const isCourtOrderPoaValid = (!this.$refs.courtOrderPoaRef || this.$refs.courtOrderPoaRef.validate())
-
     if (!this.isPageValid) {
       this.showErrors = true
       this.saving = false
       await this.validateAndScroll(this.validFlags, this.validComponents)
-      return
-    }
-
-    // if any component is invalid, don't save
-    if (!isNotationFormValid || !isFileComponentValid || !isCourtOrderPoaValid) {
-      this.saving = false
-      this.showErrors = true
       return
     }
 
