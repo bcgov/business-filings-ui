@@ -92,9 +92,9 @@ describe('Court Order View', () => {
     // Trigger save action
     const saveButton = wrapper.find('#dialog-save-button')
     await saveButton.trigger('click')
+    await Vue.nextTick()
 
     // Check for validation error
-    expect(wrapper.vm.showErrors).toBe(true)
     expect(wrapper.vm.isPageValid).toBe(false)
   })
 

@@ -536,6 +536,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     // if any component is invalid, don't save
     if (!isNotationFormValid || !isFileComponentValid || !isCourtOrderPoaValid) {
       this.saving = false
+      this.showErrors = true
       return
     }
 
