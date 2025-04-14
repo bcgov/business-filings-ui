@@ -522,6 +522,10 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     this.enableValidation = true
     await this.$nextTick() // wait for form to update
 
+    const isNotationFormValid = (!this.$refs.notationFormRef || this.$refs.notationFormRef.validate())
+    const isFileComponentValid = (!this.$refs.fileUploadRef || this.$refs.fileUploadRef.validate())
+    const isCourtOrderPoaValid = (!this.$refs.courtOrderPoaRef || this.$refs.courtOrderPoaRef.validate())
+
     if (!this.isPageValid) {
       this.showErrors = true
       this.saving = false
@@ -530,10 +534,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     }
 
     // if any component is invalid, don't save
-    const isNotationFormValid = (!this.$refs.notationFormRef || this.$refs.notationFormRef.validate())
-    const isFileComponentValid = (!this.$refs.fileUploadRef || this.$refs.fileUploadRef.validate())
-    const isCourtOrderPoaValid = (!this.$refs.courtOrderPoaRef || this.$refs.courtOrderPoaRef.validate())
-
     if (!isNotationFormValid || !isFileComponentValid || !isCourtOrderPoaValid) {
       this.saving = false
       return
