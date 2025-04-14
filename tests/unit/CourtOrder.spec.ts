@@ -95,6 +95,7 @@ describe('Court Order View', () => {
     await Vue.nextTick()
 
     // Check for validation error
+    expect(wrapper.vm.showErrors).toBe(true)
     expect(wrapper.vm.isPageValid).toBe(false)
   })
 
@@ -107,7 +108,7 @@ describe('Court Order View', () => {
       data () {
         return {
           filingData: ['0'], // Non-empty array
-          courtOrderValid: true, // courtOrderValid is true
+          courtOrderSectionValid: true, // courtOrderSectionValid is true
           staffPaymentValid: true // staffPaymentValid is true
         }
       } })
@@ -121,12 +122,12 @@ describe('Court Order View', () => {
 
     // verify "validated" - invalid Staff Payment form
     vm.staffPaymentValid = false
-    vm.courtOrderValid = true
+    vm.courtOrderSectionValid = true
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Court Order section
     vm.staffPaymentValid = true
-    vm.courtOrderValid = false
+    vm.courtOrderSectionValid = false
     expect(vm.isPageValid).toBe(false)
 
     wrapper.destroy()
@@ -151,7 +152,7 @@ describe('Court Order View', () => {
 
     // make sure form is validated
     await wrapper.setData({
-      courtOrderValid: true,
+      courtOrderSectionValid: true,
       staffPaymentValid: true,
       staffPaymentData: { option: StaffPaymentOptions.NO_FEE }
     })
