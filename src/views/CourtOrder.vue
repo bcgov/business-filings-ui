@@ -1,5 +1,8 @@
 <template>
   <div id="court-order">
+    <ConfirmDialog
+      ref="confirm"
+    />
     <v-container
       id="court-order-container"
       class="view-container"
@@ -24,7 +27,7 @@
               </header>
               <div
                 id="court-order-section"
-                :class="{ 'invalid-section': !courtOrderValid && showErrors }"
+                :class="{ 'invalid-section': !courtOrderSectionValid && showErrors }"
               >
                 <v-card
                   flat
@@ -155,8 +158,9 @@
                 class="pt-6 px-4"
               >
                 <StaffPaymentShared
+                  :validate="true"
                   :staffPaymentData.sync="staffPaymentData"
-                  @staffPaymentFormValid="staffPaymentValid=$event"
+                  @valid="staffPaymentValid=$event"
                 />
               </v-card>
             </div>
@@ -198,7 +202,7 @@
                     solid
                     color="primary"
                     class="btn-outlined-primary mt-4"
-                    :loading="!isPageValid || saving"
+                    :loading="saving"
                     @click.native="onSave()"
                   >
                     {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
@@ -220,9 +224,10 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DateMixin, FilingMixin, CommonMixin } from '@/mixins'
+import { ConfirmDialog } from '@/components/dialogs'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
-import { FormIF, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, FormIF, StaffPaymentIF } from '@/interfaces'
 import { EffectOfOrderTypes, PageSizes } from '@/enums'
 import { FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { EnumUtilities, LegalServices } from '@/services'
@@ -233,6 +238,7 @@ import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staf
 
 @Component({
   components: {
+    ConfirmDialog,
     CourtOrderPoa,
     FileUploadPdf,
     SbcFeeSummary,
@@ -241,6 +247,7 @@ import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staf
 })
 export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, CommonMixin) {
   $refs!: Vue['$refs'] & {
+    confirm: ConfirmDialogType,
     courtOrderPoaRef: FormIF,
     fileUploadRef: FormIF,
     notationFormRef: FormIF
@@ -293,6 +300,9 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   file: File = null // court order file object
   fileKey: string = null // court order file key
   courtOrderValid = true
+  courtOrderSectionValid = false
+  isNotationFormValid = false
+  isFileComponentValid = false
 
   // other variables
   totalFee = 0
@@ -303,10 +313,15 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   haveChanges = false
 
   // variables for staff payment
-  staffPaymentValid = true
-  staffPaymentData = { option: StaffPaymentOptions.NO_FEE } as StaffPaymentIF
+  staffPaymentValid = false
+  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
 
   paymentErrorDialog = false
+
+  /** Called when component is mounted. */
+  async mounted (): Promise<void> {
+    this.updateFilingData('add', FilingCodes.COURT_ORDER, undefined, false)
+  }
 
   /** Whether this filing is a Court Order. */
   get isCourtOrder (): boolean {
@@ -352,7 +367,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
   get isPageValid (): boolean {
     const filingDataValid = (this.filingData.length > 0)
-    return (filingDataValid && this.courtOrderValid && this.staffPaymentValid)
+    return (filingDataValid && this.courtOrderSectionValid && this.staffPaymentValid)
   }
 
   /**
@@ -370,7 +385,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Unsaved Changes',
-      'You have unsaved changes in your Continue Out. Do you want to exit your filing?',
+      'You have unsaved changes in your Court Order. Do you want to exit your filing?',
       {
         width: '45rem',
         persistent: true,
@@ -390,22 +405,20 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     })
   }
 
-  @Watch('notation')
-  async onNotationChanged (): Promise<void> {
-    // if this is a court order and notation has changed, re-validate file upload component
-    if (this.isCourtOrder && this.enableValidation) {
-      await this.$nextTick() // wait for variables to update
-      this.$refs.fileUploadRef?.validate()
-    }
+  @Watch('courtOrderValid')
+  updateCourtOrderSectionValid (): void {
+    this.courtOrderSectionValid = this.courtOrderValid && this.isNotationFormValid && this.isFileComponentValid
   }
 
-  // NB: watch "fileKey" because it changes according to file validity (while "file" might not)
+  @Watch('notation')
   @Watch('fileKey')
-  async onFileKeyChanged (): Promise<void> {
-    // if this is a court order and file has changed, re-validate notation form
+  async onNotationFileChanged (): Promise<void> {
+    // if this is a court order and notation/file has changed, re-validate both notation and file upload component
     if (this.isCourtOrder && this.enableValidation) {
       await this.$nextTick() // wait for variables to update
-      this.$refs.notationFormRef?.validate()
+      this.isFileComponentValid = this.$refs.fileUploadRef?.validate()
+      this.isNotationFormValid = this.$refs.notationFormRef.validate()
+      this.updateCourtOrderSectionValid()
     }
   }
 
@@ -424,13 +437,13 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
   get validFlags (): object {
     return {
-      courtOrder: this.courtOrderValid,
+      courtOrder: this.courtOrderSectionValid,
       staffPayment: this.staffPaymentValid
     }
   }
 
   @Watch('staffPaymentValid')
-  @Watch('courtOrderValid')
+  @Watch('courtOrderSectionValid')
   onHaveChanges (): void {
     this.haveChanges = true
   }
@@ -514,16 +527,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
       this.showErrors = true
       this.saving = false
       await this.validateAndScroll(this.validFlags, this.validComponents)
-      return
-    }
-
-    // if any component is invalid, don't save
-    const isNotationFormValid = (!this.$refs.notationFormRef || this.$refs.notationFormRef.validate())
-    const isFileComponentValid = (!this.$refs.fileUploadRef || this.$refs.fileUploadRef.validate())
-    const isCourtOrderPoaValid = (!this.$refs.courtOrderPoaRef || this.$refs.courtOrderPoaRef.validate())
-
-    if (!isNotationFormValid || !isFileComponentValid || !isCourtOrderPoaValid) {
-      this.saving = false
       return
     }
 
