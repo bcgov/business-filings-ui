@@ -1674,7 +1674,7 @@ ul {
   font-weight: 700;
 }
 
-.remove, .remove .director-info ::v-deep(*) {
+.remove, .remove .director-info ::v-deep(*:not(.actions *)) {
   color: $gray5 !important;
 }
 
