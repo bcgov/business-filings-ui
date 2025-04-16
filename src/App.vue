@@ -134,6 +134,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import * as Sentry from '@sentry/browser'
 import { GetFeatureFlag, navigate, UpdateLdUser } from '@/utils'
+import { StatusCodes } from 'http-status-codes'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
@@ -526,7 +527,7 @@ export default class App extends Mixins(
     const data = await Promise.resolve(
       LegalServices.fetchAddresses(this.businessId)
     ).catch(error => {
-      if (error.response.status === 404 &&
+      if (error.response.status === StatusCodes.NOT_FOUND &&
         error.response.config.url.includes('addresses') &&
         error.response.data.message.includes('address not found')) hasBAError = true
     })
