@@ -23,7 +23,9 @@
               <label v-if="!showAddressForm"><strong>Delivery Address</strong></label>
 
               <div class="address-wrapper">
+                <span v-if="!original.registeredOffice && !showAddressForm">(Not entered)</span>
                 <delivery-address
+                  v-else
                   :address="deliveryAddress"
                   :editing="showAddressForm"
                   :schema="officeAddressSchema"
@@ -72,8 +74,7 @@
             <label>{{ showAddressForm ? "Mailing Address" : "" }}</label>
             <div class="meta-container__inner">
               <label
-                v-if="!showAddressForm
-                  && !isSame(deliveryAddress, mailingAddress, ['actions','addressType'])"
+                v-if="!showAddressForm"
               >
                 <strong>Mailing Address</strong>
               </label>
@@ -85,8 +86,9 @@
                   label="Same as Delivery Address"
                 />
               </div>
+              <span v-if="!original.registeredOffice && !showAddressForm">(Not entered)</span>
               <div
-                v-if="showAddressForm ||
+                v-else-if="showAddressForm ||
                   !isSame(deliveryAddress, mailingAddress, ['actions','addressType'])"
                 class="address-wrapper"
               >
@@ -121,7 +123,7 @@
             />
           </div>
 
-          <div v-if="!inheritRegisteredAddress">
+          <div v-if="!inheritRegisteredAddress || !original.recordsOffice">
             <!-- Records Delivery Address -->
             <li class="address-list-container records-delivery-address">
               <div class="meta-container">
@@ -131,6 +133,7 @@
                 <div class="meta-container__inner">
                   <label v-if="!showAddressForm"><strong>Delivery Address</strong></label>
                   <div class="address-wrapper">
+                    <span v-if="!original.recordsOffice && !showAddressForm">(Not entered)</span>
                     <delivery-address
                       :address="recDeliveryAddress"
                       :editing="showAddressForm"
@@ -149,8 +152,9 @@
                 <label>{{ showAddressForm ? "Mailing Address" : "" }}</label>
                 <div class="meta-container__inner">
                   <label
-                    v-if="!showAddressForm &&
-                      !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])"
+                    v-if="(!showAddressForm &&
+                      !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])) ||
+                      !original.registeredOffice"
                   >
                     <strong>Mailing Address</strong>
                   </label>
@@ -162,8 +166,9 @@
                       label="Same as Delivery Address"
                     />
                   </div>
+                  <span v-if="!original.registeredOffice && !showAddressForm">(Not entered)</span>
                   <div
-                    v-if="showAddressForm ||
+                    v-else-if="showAddressForm ||
                       !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])"
                     class="address-wrapper"
                   >
@@ -233,6 +238,7 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { isEmpty } from 'lodash'
 import { Getter } from 'pinia-class'
+import { StatusCodes } from 'http-status-codes'
 import { officeAddressSchema } from '@/schemas'
 import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { CommonMixin } from '@/mixins'
@@ -256,7 +262,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    */
   @Prop({ default: () => {} }) readonly addresses!: RegRecAddressesIF
 
-  @Getter(useBusinessStore) getIdentifier!: string
+  // @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isBaseCompany!: boolean
 
   /** Effective date for fetching office addresses. */
@@ -314,7 +320,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     if (this.getIdentifier && this.asOfDate) {
       const url = `businesses/${this.getIdentifier}/addresses?date=${this.asOfDate}`
       await axios.get(url).then(response => {
-        // registered office is required
+        // registered office is required for all companies
         const registeredOffice = response?.data?.registeredOffice
         if (registeredOffice) {
           this.original.registeredOffice = {
@@ -336,6 +342,17 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
           throw new Error('Missing records office address')
         }
       }).catch(error => {
+        if (error.response.status === StatusCodes.NOT_FOUND &&
+          error.response.config.url.includes('addresses') &&
+          error.response.data.message.includes('address not found')
+        ) {
+          this.original.registeredOffice = null
+          if (this.isBaseCompany) {
+            this.original.recordsOffice = null
+          }
+          return
+        }
+
         // eslint-disable-next-line no-console
         console.log('fetchAddresses() error =', error)
         // re-throw error
