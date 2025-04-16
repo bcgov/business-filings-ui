@@ -84,7 +84,10 @@
               <v-expand-transition>
                 <div class="director-info">
                   <div class="address">
-                    <BaseAddress :address="director.deliveryAddress" />
+                    <BaseAddress
+                      :address="director.deliveryAddress"
+                      :isInactive="!isActionable(director)"
+                    />
                   </div>
 
                   <div
@@ -97,6 +100,7 @@
                     <BaseAddress
                       v-else
                       :address="director.mailingAddress"
+                      :isInactive="!isActionable(director)"
                     />
                   </div>
 
@@ -212,7 +216,10 @@
                 <v-expand-transition>
                   <div class="director-info">
                     <div class="address">
-                      <BaseAddress :address="director.deliveryAddress" />
+                      <BaseAddress
+                        :address="director.deliveryAddress"
+                        :isInactive="!isActive(director) || !isActionable(director)"
+                      />
                     </div>
                     <div
                       v-if="isBaseCompany"
@@ -224,6 +231,7 @@
                       <BaseAddress
                         v-else
                         :address="director.mailingAddress"
+                        :isInactive="!isActive(director) || !isActionable(director)"
                       />
                     </div>
                     <div class="director_dates">

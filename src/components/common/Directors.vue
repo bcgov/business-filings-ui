@@ -324,7 +324,10 @@
                   class="director-info"
                 >
                   <div class="address">
-                    <BaseAddress :address="dir.deliveryAddress" />
+                    <BaseAddress
+                      :address="dir.deliveryAddress"
+                      :isInactive="!isActive(dir) || !isActionable(dir)"
+                    />
                   </div>
 
                   <div
@@ -337,6 +340,7 @@
                     <BaseAddress
                       v-else
                       :address="dir.mailingAddress"
+                      :isInactive="!isActive(dir) || !isActionable(dir)"
                     />
                   </div>
 
