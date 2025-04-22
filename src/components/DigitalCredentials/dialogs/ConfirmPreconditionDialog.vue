@@ -34,7 +34,7 @@
           id="dialog-title"
           class="warning-title"
         >
-          Plese confirm your role
+          Please confirm your role
         </p>
         <p>{{ precondition }}</p>
       </v-card-text>

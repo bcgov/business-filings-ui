@@ -82,7 +82,7 @@
               <p class="mt-8 justify-center text-center word-break-normal">
                 QR code isn't scanning?
                 <!-- eslint-disable vue/max-attributes-per-line -->
-                <a href="#" @click.prevent="handleGenegerateNewQRCode()">Generate a new QR code</a>.
+                <a href="#" @click.prevent="handleGenerateNewQRCode()">Generate a new QR code</a>.
               </p>
             </v-card-text>
           </v-card>
@@ -215,7 +215,7 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
     this.pendingPreconditions[precondition].confirmed = preconditionsConfirmed
   }
 
-  async handleGenegerateNewQRCode (): Promise<void> {
+  async handleGenerateNewQRCode (): Promise<void> {
     this.showLoadingContainer = true
     await LegalServices.removeCredentialConnection(this.getIdentifier, this.connection.connectionId)
     await this.setupConnection()
