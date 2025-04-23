@@ -414,7 +414,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   @Watch('fileKey')
   async onNotationFileChanged (): Promise<void> {
     // if this is a court order and notation/file has changed, re-validate both notation and file upload component
-    if (this.isCourtOrder && this.enableValidation) {
+    if (this.isCourtOrder) {
       await this.$nextTick() // wait for variables to update
       this.isFileComponentValid = this.$refs.fileUploadRef?.validate()
       this.isNotationFormValid = this.$refs.notationFormRef.validate()
