@@ -109,7 +109,7 @@
                           </p>
                           <p
                             v-else-if="isCourtOrder && !notation && enableValidation"
-                            class="ml-3 pt-6"
+                            class="ml-3 pt-6 app-red"
                           >
                             {{ courtOrderCustomValidationMsg }}
                           </p>
@@ -133,7 +133,7 @@
                           :label="notationLabel"
                           :rows="isCourtOrder ? 2: 5"
                           :no-resize="true"
-                          :rules="enableValidation ? notationRules : []"
+                          :rules="notationRules"
                           :counter="NOTATION_MAX_LENGTH"
                         />
                       </v-col>
@@ -414,7 +414,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   @Watch('fileKey')
   async onNotationFileChanged (): Promise<void> {
     // if this is a court order and notation/file has changed, re-validate both notation and file upload component
-    if (this.isCourtOrder && this.enableValidation) {
+    if (this.isCourtOrder) {
       await this.$nextTick() // wait for variables to update
       this.isFileComponentValid = this.$refs.fileUploadRef?.validate()
       this.isNotationFormValid = this.$refs.notationFormRef.validate()
