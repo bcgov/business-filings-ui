@@ -109,7 +109,7 @@
                           </p>
                           <p
                             v-else-if="isCourtOrder && !notation && enableValidation"
-                            class="ml-3 pt-6"
+                            class="ml-3 pt-6 app-red"
                           >
                             {{ courtOrderCustomValidationMsg }}
                           </p>
@@ -133,7 +133,7 @@
                           :label="notationLabel"
                           :rows="isCourtOrder ? 2: 5"
                           :no-resize="true"
-                          :rules="enableValidation ? notationRules : []"
+                          :rules="notationRules"
                           :counter="NOTATION_MAX_LENGTH"
                         />
                       </v-col>
