@@ -355,6 +355,12 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     // init
     this.setFilingData([])
 
+    // listen for fetch error events
+    this.$root.$on('fetch-error-event', (error) => {
+      console.log(error)
+      this.fetchErrorDialog = true
+    })
+
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
@@ -411,6 +417,9 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
 
   /** Called just before this component is destroyed. */
   beforeDestroy (): void {
+    // stop listening for custom events
+    this.$root.$off('fetch-error-event')
+
     // remove event handler
     window.onbeforeunload = null
   }
