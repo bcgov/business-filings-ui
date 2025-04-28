@@ -327,9 +327,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         recordsOffice: {
           deliveryAddress: { actions: [] } as AddressIF,
           mailingAddress: { actions: [] } as AddressIF
-        },
+        }
       } as RegRecAddressesIF
-  
+
       const url = `businesses/${this.getIdentifier}/addresses?date=${this.asOfDate}`
       await axios.get(url).then(response => {
         // registered office is required for all companies
