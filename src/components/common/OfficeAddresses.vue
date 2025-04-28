@@ -318,6 +318,18 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   // FUTURE: this API call should be in the parent component or some mixin/service
   async fetchAddresses (): Promise<void> {
     if (this.getIdentifier && this.asOfDate) {
+      // initialize the original address
+      this.original = {
+        registeredOffice: {
+          deliveryAddress: { actions: [] } as AddressIF,
+          mailingAddress: { actions: [] } as AddressIF
+        },
+        recordsOffice: {
+          deliveryAddress: { actions: [] } as AddressIF,
+          mailingAddress: { actions: [] } as AddressIF
+        },
+      } as RegRecAddressesIF
+  
       const url = `businesses/${this.getIdentifier}/addresses?date=${this.asOfDate}`
       await axios.get(url).then(response => {
         // registered office is required for all companies
@@ -327,8 +339,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
             deliveryAddress: { ...registeredOffice.deliveryAddress, actions: [] },
             mailingAddress: { ...registeredOffice.mailingAddress, actions: [] }
           }
-        } else {
-          this.original.registeredOffice = null
         }
 
         // records office is required for base companies
@@ -338,18 +348,11 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
             deliveryAddress: { ...recordsOffice.deliveryAddress, actions: [] },
             mailingAddress: { ...recordsOffice.mailingAddress, actions: [] }
           }
-        } else if (this.isBaseCompany) {
+        } else if (!this.isBaseCompany) {
           this.original.recordsOffice = null
         }
       }).catch(error => {
-        if (error.response.status === StatusCodes.NOT_FOUND) {
-          this.original.registeredOffice = null
-          if (this.isBaseCompany) {
-            this.original.recordsOffice = null
-          }
-          return
-        }
-
+        if (error.response.status === StatusCodes.NOT_FOUND) return
         // eslint-disable-next-line no-console
         console.log('fetchAddresses() error =', error)
         // re-throw error
