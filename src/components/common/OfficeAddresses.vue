@@ -23,7 +23,7 @@
               <label v-if="!showAddressForm"><strong>Delivery Address</strong></label>
 
               <div class="address-wrapper">
-                <span v-if="!original.registeredOffice && !showAddressForm">(Not entered)</span>
+                <span v-if="isEmptyObject(deliveryAddress) && !showAddressForm">(Not entered)</span>
                 <delivery-address
                   v-else
                   :address="deliveryAddress"
@@ -86,7 +86,7 @@
                   label="Same as Delivery Address"
                 />
               </div>
-              <span v-if="!original.registeredOffice && !showAddressForm">(Not entered)</span>
+              <span v-if="isEmptyObject(mailingAddress) && !showAddressForm">(Not entered)</span>
               <div
                 v-else-if="showAddressForm ||
                   !isSame(deliveryAddress, mailingAddress, ['actions','addressType'])"
@@ -123,7 +123,7 @@
             />
           </div>
 
-          <div v-if="!inheritRegisteredAddress || !original.recordsOffice">
+          <div v-if="!inheritRegisteredAddress">
             <!-- Records Delivery Address -->
             <li class="address-list-container records-delivery-address">
               <div class="meta-container">
@@ -133,7 +133,7 @@
                 <div class="meta-container__inner">
                   <label v-if="!showAddressForm"><strong>Delivery Address</strong></label>
                   <div class="address-wrapper">
-                    <span v-if="!original.recordsOffice && !showAddressForm">(Not entered)</span>
+                    <span v-if="isEmptyObject(recDeliveryAddress) && !showAddressForm">(Not entered)</span>
                     <delivery-address
                       :address="recDeliveryAddress"
                       :editing="showAddressForm"
@@ -154,7 +154,7 @@
                   <label
                     v-if="(!showAddressForm &&
                       !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])) ||
-                      !original.registeredOffice"
+                      isEmptyObject(recMailingAddress)"
                   >
                     <strong>Mailing Address</strong>
                   </label>
@@ -166,7 +166,7 @@
                       label="Same as Delivery Address"
                     />
                   </div>
-                  <span v-if="!original.registeredOffice && !showAddressForm">(Not entered)</span>
+                  <span v-if="isEmptyObject(recMailingAddress) && !showAddressForm">(Not entered)</span>
                   <div
                     v-else-if="showAddressForm ||
                       !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])"
@@ -301,7 +301,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Whether the address form is valid. */
   get formValid (): boolean {
     return ((this.deliveryAddressValid && (this.inheritDeliveryAddress || this.mailingAddressValid)) &&
-      (this.recDeliveryAddressValid && (this.inheritRecDeliveryAddress || this.recMailingAddressValid)))
+      (this.inheritRegisteredAddress || (this.recDeliveryAddressValid && (this.inheritRecDeliveryAddress || this.recMailingAddressValid))))
   }
 
   /** Whether any address has been modified from the original. */
@@ -407,8 +407,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         this.isSame(this.recDeliveryAddress, this.recMailingAddress, ['addressType'])
 
       this.inheritRegisteredAddress = (
-        this.isSame(this.deliveryAddress, this.recDeliveryAddress) &&
-        this.isSame(this.mailingAddress, this.recMailingAddress)
+        !this.isEmptyObject(this.deliveryAddress) && this.isSame(this.deliveryAddress, this.recDeliveryAddress) &&
+        !this.isEmptyObject(this.mailingAddress) && this.isSame(this.mailingAddress, this.recMailingAddress)
       )
     }
   }

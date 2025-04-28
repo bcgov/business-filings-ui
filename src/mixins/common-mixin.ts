@@ -99,4 +99,20 @@ export default class CommonMixin extends Vue {
       this.$router.push(route).catch(() => {}) // ignore potential navigation abort errors
     }
   }
+
+  /**
+   * Check if an obj is empty.
+   * @param obj the obj to check
+   * @returns a boolean if the obj is empty
+   */
+  isEmptyObject (obj): boolean {
+    return Object.values(obj).every((v) => {
+      return (
+        v === null ||
+        v === undefined ||
+        (typeof v === 'string' && v.trim() === '') ||
+        (Array.isArray(v) && v.length === 0)
+      )
+    })
+  }
 }
