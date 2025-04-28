@@ -328,7 +328,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
             mailingAddress: { ...registeredOffice.mailingAddress, actions: [] }
           }
         } else {
-          throw new Error('Missing registered office address')
+          this.original.registeredOffice = null
         }
 
         // records office is required for base companies
@@ -339,7 +339,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
             mailingAddress: { ...recordsOffice.mailingAddress, actions: [] }
           }
         } else if (this.isBaseCompany) {
-          throw new Error('Missing records office address')
+          this.original.recordsOffice = null
         }
       }).catch(error => {
         if (error.response.status === StatusCodes.NOT_FOUND) {

@@ -106,6 +106,7 @@ export default class CommonMixin extends Vue {
    * @returns a boolean if the obj is empty
    */
   isEmptyObject (obj): boolean {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return true
     return Object.values(obj).every((v) => {
       return (
         v === null ||
