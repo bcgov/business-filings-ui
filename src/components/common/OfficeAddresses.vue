@@ -23,7 +23,9 @@
               <label v-if="!showAddressForm"><strong>Delivery Address</strong></label>
 
               <div class="address-wrapper">
+                <span v-if="isEmptyObject(deliveryAddress) && !showAddressForm">(Not entered)</span>
                 <delivery-address
+                  v-else
                   :address="deliveryAddress"
                   :editing="showAddressForm"
                   :schema="officeAddressSchema"
@@ -72,8 +74,7 @@
             <label>{{ showAddressForm ? "Mailing Address" : "" }}</label>
             <div class="meta-container__inner">
               <label
-                v-if="!showAddressForm
-                  && !isSame(deliveryAddress, mailingAddress, ['actions','addressType'])"
+                v-if="!showAddressForm"
               >
                 <strong>Mailing Address</strong>
               </label>
@@ -85,8 +86,9 @@
                   label="Same as Delivery Address"
                 />
               </div>
+              <span v-if="isEmptyObject(mailingAddress) && !showAddressForm">(Not entered)</span>
               <div
-                v-if="showAddressForm ||
+                v-else-if="showAddressForm ||
                   !isSame(deliveryAddress, mailingAddress, ['actions','addressType'])"
                 class="address-wrapper"
               >
@@ -131,6 +133,7 @@
                 <div class="meta-container__inner">
                   <label v-if="!showAddressForm"><strong>Delivery Address</strong></label>
                   <div class="address-wrapper">
+                    <span v-if="isEmptyObject(recDeliveryAddress) && !showAddressForm">(Not entered)</span>
                     <delivery-address
                       :address="recDeliveryAddress"
                       :editing="showAddressForm"
@@ -149,8 +152,9 @@
                 <label>{{ showAddressForm ? "Mailing Address" : "" }}</label>
                 <div class="meta-container__inner">
                   <label
-                    v-if="!showAddressForm &&
-                      !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])"
+                    v-if="(!showAddressForm &&
+                      !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])) ||
+                      isEmptyObject(recMailingAddress)"
                   >
                     <strong>Mailing Address</strong>
                   </label>
@@ -162,8 +166,9 @@
                       label="Same as Delivery Address"
                     />
                   </div>
+                  <span v-if="isEmptyObject(recMailingAddress) && !showAddressForm">(Not entered)</span>
                   <div
-                    v-if="showAddressForm ||
+                    v-else-if="showAddressForm ||
                       !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])"
                     class="address-wrapper"
                   >
@@ -233,6 +238,7 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { isEmpty } from 'lodash'
 import { Getter } from 'pinia-class'
+import { StatusCodes } from 'http-status-codes'
 import { officeAddressSchema } from '@/schemas'
 import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { CommonMixin } from '@/mixins'
@@ -256,7 +262,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    */
   @Prop({ default: () => {} }) readonly addresses!: RegRecAddressesIF
 
-  @Getter(useBusinessStore) getIdentifier!: string
+  // @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isBaseCompany!: boolean
 
   /** Effective date for fetching office addresses. */
@@ -295,7 +301,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Whether the address form is valid. */
   get formValid (): boolean {
     return ((this.deliveryAddressValid && (this.inheritDeliveryAddress || this.mailingAddressValid)) &&
-      (this.recDeliveryAddressValid && (this.inheritRecDeliveryAddress || this.recMailingAddressValid)))
+      (this.inheritRegisteredAddress || (this.recDeliveryAddressValid && (this.inheritRecDeliveryAddress || this.recMailingAddressValid))))
   }
 
   /** Whether any address has been modified from the original. */
@@ -312,17 +318,27 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   // FUTURE: this API call should be in the parent component or some mixin/service
   async fetchAddresses (): Promise<void> {
     if (this.getIdentifier && this.asOfDate) {
+      // initialize the original address
+      this.original = {
+        registeredOffice: {
+          deliveryAddress: { actions: [] } as AddressIF,
+          mailingAddress: { actions: [] } as AddressIF
+        },
+        recordsOffice: {
+          deliveryAddress: { actions: [] } as AddressIF,
+          mailingAddress: { actions: [] } as AddressIF
+        }
+      } as RegRecAddressesIF
+
       const url = `businesses/${this.getIdentifier}/addresses?date=${this.asOfDate}`
       await axios.get(url).then(response => {
-        // registered office is required
+        // registered office is required for all companies
         const registeredOffice = response?.data?.registeredOffice
         if (registeredOffice) {
           this.original.registeredOffice = {
             deliveryAddress: { ...registeredOffice.deliveryAddress, actions: [] },
             mailingAddress: { ...registeredOffice.mailingAddress, actions: [] }
           }
-        } else {
-          throw new Error('Missing registered office address')
         }
 
         // records office is required for base companies
@@ -332,10 +348,11 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
             deliveryAddress: { ...recordsOffice.deliveryAddress, actions: [] },
             mailingAddress: { ...recordsOffice.mailingAddress, actions: [] }
           }
-        } else if (this.isBaseCompany) {
-          throw new Error('Missing records office address')
+        } else if (!this.isBaseCompany) {
+          this.original.recordsOffice = null
         }
       }).catch(error => {
+        if (error.response.status === StatusCodes.NOT_FOUND) return
         // eslint-disable-next-line no-console
         console.log('fetchAddresses() error =', error)
         // re-throw error
@@ -393,8 +410,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         this.isSame(this.recDeliveryAddress, this.recMailingAddress, ['addressType'])
 
       this.inheritRegisteredAddress = (
-        this.isSame(this.deliveryAddress, this.recDeliveryAddress) &&
-        this.isSame(this.mailingAddress, this.recMailingAddress)
+        !this.isEmptyObject(this.deliveryAddress) && this.isSame(this.deliveryAddress, this.recDeliveryAddress) &&
+        !this.isEmptyObject(this.mailingAddress) && this.isSame(this.mailingAddress, this.recMailingAddress)
       )
     }
   }
