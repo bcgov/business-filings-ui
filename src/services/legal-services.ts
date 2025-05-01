@@ -368,11 +368,11 @@ export default class LegalServices {
   }
 
   /**
-   * Creates a wallet connection invitation.
+   * Creates a wallet connection out-of-band invitation.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
-  static async createCredentialInvitation (businessId: string): Promise<AxiosResponse> {
+  static async createCredentialOutOfBandInvitation (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/invitation`
     return axios.post(url)
       .catch(error => {
@@ -429,6 +429,25 @@ export default class LegalServices {
   }
 
   /**
+   * Attests a credential wallet connection.
+   * @param businessId the business identifier (aka entity inc no)
+   * @param connectionId the connection identifier
+   * @returns the axios response
+   */
+  static async attestCredentialConnection (
+    businessId: string,
+    connectionId: string)
+    : Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/connections/${connectionId}/attest`
+    return axios.post(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
+  }
+
+  /**
    * Sends a digital credential offer.
    * @param businessId The business identifier (aka entity inc no)
    * @param credentialType The credential offer type
@@ -436,10 +455,11 @@ export default class LegalServices {
    */
   static async sendCredentialOffer (
     businessId: string,
-    credentialType: DigitalCredentialTypes)
+    credentialType: DigitalCredentialTypes,
+    preconditionsResolved?: { selfAttestedRoles: string[] })
     : Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/${credentialType}`
-    return axios.post(url)
+    return axios.post(url, { preconditionsResolved })
       .catch(error => {
         // eslint-disable-next-line no-console
         console.log(error.message)
