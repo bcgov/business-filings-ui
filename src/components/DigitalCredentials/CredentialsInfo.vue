@@ -6,9 +6,16 @@
       </v-card-title>
       <v-card-text>
         <p>
-          At present there are no places to use your Digital Business Card. In the near future you will be able to use
-          your business card credential to obtain a business licence, a business bank account, business permits,
-          and access services.
+          Use your DBC to
+          <a
+            href="https://vancouver.ca/doing-business/get-a-business-licence.aspx"
+            target="_blank"
+          >register<v-icon
+            color="primary"
+            small
+          >mdi-open-in-new</v-icon></a>
+          with the City of Vancouver to get your business license.
+          This will reduce the amount of time it takes to verify you.
         </p>
       </v-card-text>
     </v-card>
