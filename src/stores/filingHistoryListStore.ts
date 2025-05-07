@@ -156,8 +156,8 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       })
       if (caoFiling) {
         const exp = caoFiling.data?.consentAmalgamationOut?.expiry
-        const csoExpiryDate = DateUtilities.apiToDate(exp)
-        return csoExpiryDate >= new Date()
+        const caoExpiryDate = DateUtilities.apiToDate(exp)
+        return caoExpiryDate >= new Date()
       }
       return false
     }
