@@ -73,7 +73,7 @@
         >
           <v-chip
             class="primary mt-n1 pointer-events-none"
-            :class="{ 'ml-3': isInLimitedRestoration }"
+            :class="{ 'ml-3': isAuthorizedToContinueOut }"
             small
             label
             text-color="white"
