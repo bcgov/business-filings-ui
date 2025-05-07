@@ -142,6 +142,24 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
         return ccoExpiryDate >= new Date()
       }
       return false
+    },
+
+    /** Whether the business is authorized to amalgamate out,
+     * i.e. true if cao expiry date is present or in the future. */
+    isAuthorizedToAmalgamateOut (state: FilingHistoryListStateIF): boolean {
+      const caoFiling = state.filings.find(val => {
+        const exp = val.data?.consentAmalgamationOut?.expiry
+        if (exp) {
+          return true
+        }
+        return false
+      })
+      if (caoFiling) {
+        const exp = caoFiling.data?.consentAmalgamationOut?.expiry
+        const caoExpiryDate = DateUtilities.apiToDate(exp)
+        return caoExpiryDate >= new Date()
+      }
+      return false
     }
   },
 

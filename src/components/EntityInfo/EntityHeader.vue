@@ -66,6 +66,19 @@
             text-color="white"
           >AUTHORIZED TO CONTINUE OUT</v-chip>
         </span>
+
+        <span
+          v-if="isAuthorizedToAmalgamateOut"
+          id="authorized-to-amalgamate-out"
+        >
+          <v-chip
+            class="primary mt-n1 pointer-events-none"
+            :class="{ 'ml-3': isAuthorizedToContinueOut }"
+            small
+            label
+            text-color="white"
+          >AUTHORIZED TO AMALGAMATE OUT</v-chip>
+        </span>
       </div>
     </template>
 
@@ -108,6 +121,7 @@ export default class EntityHeader extends Vue {
   @Getter(useBusinessStore) isHistorical!: boolean
 
   @Getter(useFilingHistoryListStore) getFilings!: Array<ApiFilingIF>
+  @Getter(useFilingHistoryListStore) isAuthorizedToAmalgamateOut!: boolean
   @Getter(useFilingHistoryListStore) isAuthorizedToContinueOut!: boolean
 
   @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
