@@ -87,6 +87,13 @@ export interface ApiFilingIF {
     // COD filings only
     changeOfDirectors?: any // some object
 
+    // consent to amalgamation out filings only
+    consentAmalgamationOut?: {
+      country: string
+      expiry: IsoDatePacific
+      region: string // may be null
+    }
+
     // consent to continuation out filings only
     consentContinuationOut?: {
       country: string

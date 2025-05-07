@@ -144,7 +144,8 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       return false
     },
 
-    /** Whether the business is authorized to amalgamate out, i.e. true if cao expiry date is present or in the future. */
+    /** Whether the business is authorized to amalgamate out,
+     * i.e. true if cao expiry date is present or in the future. */
     isAuthorizedToAmalgamateOut (state: FilingHistoryListStateIF): boolean {
       const caoFiling = state.filings.find(val => {
         const exp = val.data?.consentAmalgamationOut?.expiry
