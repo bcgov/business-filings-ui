@@ -4,7 +4,7 @@ import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { AllowedActionsIF } from '@/interfaces'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useBusinessStore } from '@/stores'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {
@@ -14,7 +14,6 @@ export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) isEntityFirm!: boolean
   @Getter(useBusinessStore) isEntitySoleProp!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -97,10 +96,6 @@ export default class AllowableActionsMixin extends Vue {
         return this.isAllowedFiling(FilingTypes.COURT_ORDER)
       }
 
-      case AllowableActions.DETAIL_COMMENT: {
-        return (isBusiness && this.isRoleStaff)
-      }
-
       case AllowableActions.DIGITAL_CREDENTIALS: {
         // NB: this feature is targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('enable-digital-credentials')
@@ -162,10 +157,6 @@ export default class AllowableActionsMixin extends Vue {
             this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION)
           )
         )
-      }
-
-      case AllowableActions.STAFF_COMMENT: {
-        return (isBusiness && this.isRoleStaff)
       }
 
       case AllowableActions.TRANSITION: {

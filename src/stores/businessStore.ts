@@ -134,14 +134,7 @@ export const useBusinessStore = defineStore('business', {
 
     /** The entity name, or numbered description, or empty string. */
     getEntityName (): string {
-      const rootStore = useRootStore()
-
-      // special case to identify numbered amalgamations
-      if (rootStore.isAmalgamationTodo || rootStore.isAmalgamationFiling) {
-        return this.getLegalName || 'Numbered Amalgamated Company'
-      } else {
-        return (this.getLegalName || GetCorpNumberedDescription(this.getLegalType))
-      }
+      return (this.getLegalName || GetCorpNumberedDescription(this.getLegalType))
     },
 
     /** The state filing URL (may be null). */

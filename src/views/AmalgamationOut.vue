@@ -190,7 +190,7 @@
                   class="py-8 px-5"
                 >
                   <DocumentDelivery
-                    :editableCompletingParty="isRoleStaff"
+                    :editableCompletingParty="IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY)"
                     :contactValue="getBusinessEmail"
                     contactLabel="Business Office"
                     :documentOptionalEmail="documentOptionalEmail"
@@ -226,7 +226,7 @@
             </section>
 
             <!-- Court Order and Plan of Arrangement -->
-            <section>
+            <section v-if="IsAuthorized(AuthorizedActions.COURT_ORDER_POA)">
               <header>
                 <h2>Court Order and Plan of Arrangement</h2>
                 <p class="grey-text">
@@ -287,7 +287,7 @@
         <v-btn
           id="amalgamate-out-save-btn"
           large
-          :disabled="busySaving"
+          :disabled="busySaving || IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="saving"
           @click="onClickSave()"
         >
@@ -296,7 +296,7 @@
         <v-btn
           id="amalgamate-out-save-resume-btn"
           large
-          :disabled="busySaving"
+          :disabled="busySaving || IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="savingResuming"
           @click="onClickSaveResume()"
         >
@@ -320,7 +320,7 @@
                 color="primary"
                 large
                 class="mr-2"
-                :disabled="busySaving"
+                :disabled="busySaving || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -349,14 +349,14 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { navigate } from '@/utils'
+import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { BusinessNameForeign, Certify, DetailComment, EffectiveDate, ForeignJurisdiction } from '@/components/common'
 import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
-import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -393,10 +393,11 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
-  @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
 
   // variables for DetailComment component
   detailComment = ''
@@ -496,7 +497,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
   /** Called when component is created. */
   created (): void {
     // Safety check to make sure Staff is filing the Amalgamation Out.
-    if (!this.isRoleStaff) {
+    if (!IsAuthorized(AuthorizedActions.STAFF_FILINGS)) {
       this.resumeErrorDialog = true
       throw new Error('This is a Staff only Filing.')
     }
@@ -909,7 +910,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
       case SaveErrorReasons.FILE_PAY:
         // close the dialog and retry file-pay
         this.saveErrorReason = null
-        if (this.isRoleStaff) await this.onClickFilePay(true)
+        if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
         else await this.onClickFilePay()
         break
     }

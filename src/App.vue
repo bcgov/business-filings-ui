@@ -4,13 +4,6 @@
     class="app-container theme--light"
   >
     <!-- Dialogs -->
-    <DashboardUnavailableDialog
-      :dialog="dashboardUnavailableDialog"
-      attach="#app"
-      @exit="onClickExit()"
-      @retry="onClickRetry()"
-    />
-
     <DownloadErrorDialog
       :dialog="downloadErrorDialog"
       attach="#app"
@@ -52,48 +45,6 @@
       attach="#app"
       @close="notInGoodStandingDialog = false"
     />
-
-    <!-- Loading Dashboard spinner -->
-    <v-fade-transition>
-      <div
-        v-show="showLoadingDashboardSpinner"
-        class="loading-container"
-      >
-        <div class="loading__content">
-          <v-progress-circular
-            color="primary"
-            size="50"
-            indeterminate
-          />
-          <div
-            v-if="!isSignoutRoute"
-            class="loading-msg"
-          >
-            Loading Dashboard
-          </div>
-        </div>
-      </div>
-    </v-fade-transition>
-
-    <!-- Fetching Data/Starting Amalgamation spinner -->
-    <v-fade-transition>
-      <div
-        v-show="spinnerText"
-        class="loading-container grayed-out"
-      >
-        <div class="loading__content">
-          <v-progress-circular
-            color="primary"
-            size="50"
-            indeterminate
-          />
-          <div class="loading-msg white--text">
-            {{ spinnerText }}
-          </div>
-        </div>
-      </div>
-    </v-fade-transition>
-
     <SbcHeader />
 
     <!-- Alert banner -->
@@ -109,7 +60,6 @@
         v-html="bannerText"
       />
     </v-alert>
-
     <div class="app-body">
       <!-- only show pages while signing in or once the data is loaded -->
       <main v-if="isSigninRoute || dataLoaded">
@@ -130,10 +80,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import * as Sentry from '@sentry/browser'
-import { GetFeatureFlag, navigate, UpdateLdUser } from '@/utils'
+import { GetFeatureFlag, IsAuthorized, GetKeycloakRoles, navigate, UpdateLdUser } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
@@ -150,25 +100,28 @@ import {
 import { ConfigJson } from '@/resources'
 import { BreadcrumbMixin, CommonMixin, DateMixin, DirectorMixin, FilingMixin, NameRequestMixin }
   from '@/mixins'
-import { AuthServices, EnumUtilities, LegalServices } from '@/services/'
+import { AuthServices, LegalServices } from '@/services/'
 import {
+  AccountInformationIF,
   ApiFilingIF,
   ApiTaskIF,
   DocumentIF,
   NameRequestIF,
   OfficeAddressIF,
-  PartyIF,
-  TaskTodoIF
+  PartyIF
 } from '@/interfaces'
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
-import { FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
-import { FilingTypes } from '@bcrs-shared-components/enums'
-import { CorpTypeCd, GetCorpFullDescription, GetCorpNumberedDescription }
+import { AuthorizationRoles, AuthorizedActions, FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
+import { CorpTypeCd }
   from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore }
-  from './stores'
-import { sleep } from './utils'
+import {
+  useAuthenticationStore,
+  useBusinessStore,
+  useConfigurationStore,
+  useFilingHistoryListStore,
+  useRootStore
+} from './stores'
 
 @Component({
   components: {
@@ -225,23 +178,16 @@ export default class App extends Mixins(
   @Getter(useAuthenticationStore) getCurrentAccountId!: number
 
   // business store references
-  // @Getter(useBusinessStore) getLegalType!: CorpTypeCd
-  // @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isEntitySoleProp!: boolean
 
   // configuration store references
   @Getter(useConfigurationStore) getAuthApiUrl!: string
-  // @Getter(useConfigurationStore) getBusinessDashUrl!: string
-  // @Getter(useConfigurationStore) getBusinessesUrl!: string
   @Getter(useConfigurationStore) getCreateUrl!: string
+  @Getter(useConfigurationStore) getBusinessRegistryDashboardUrl!: string
 
   // root store references
-  @Getter(useRootStore) getKeycloakRoles!: Array<string>
-  @Getter(useRootStore) isBootstrapFiling!: boolean
-  @Getter(useRootStore) isBootstrapPending!: boolean
-  @Getter(useRootStore) isBootstrapTodo!: boolean
-  // @Getter(useRootStore) isNoRedirect!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useRootStore) getAuthRoles!: Array<AuthorizationRoles>
+  @Getter(useRootStore) isAuthorizationStatus!: boolean
   @Getter(useRootStore) showFetchingDataSpinner!: boolean
   @Getter(useRootStore) showStartingAmalgamationSpinner!: boolean
 
@@ -253,17 +199,6 @@ export default class App extends Mixins(
   /** The Temporary Registration Number string. */
   get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
-  }
-
-  /** True if "Loading Dashboard" spinner should be shown. */
-  get showLoadingDashboardSpinner (): boolean {
-    return (
-      !this.dataLoaded &&
-      !this.dashboardUnavailableDialog &&
-      !this.businessAuthErrorDialog &&
-      !this.nameRequestAuthErrorDialog &&
-      !this.nameRequestInvalidDialog
-    )
   }
 
   /** True if route is Signin. */
@@ -303,13 +238,6 @@ export default class App extends Mixins(
     return bannerText?.trim() || null
   }
 
-  /** Spinner text. */
-  get spinnerText (): string {
-    if (this.showFetchingDataSpinner) return 'Fetching Data'
-    if (this.showStartingAmalgamationSpinner) return 'Starting Amalgamation'
-    return null
-  }
-
   /** The route breadcrumbs list. */
   get breadcrumbs (): Array<BreadcrumbIF> {
     const breadcrumbs = this.$route?.meta?.breadcrumb
@@ -320,7 +248,7 @@ export default class App extends Mixins(
 
     // Set base crumbs based on user role
     // Staff don't want the home landing page and they can't access the Manage Business Dashboard
-    if (this.isRoleStaff) {
+    if (IsAuthorized(AuthorizedActions.STAFF_BREADCRUMBS)) {
       // If staff, set StaffDashboard as home crumb
       crumbs.unshift(this.getStaffDashboardBreadcrumb())
     } else {
@@ -330,15 +258,6 @@ export default class App extends Mixins(
         this.getMyBusinessRegistryBreadcrumb())
     }
     return crumbs
-  }
-
-  @Watch('$route')
-  private async onRouteChanged (): Promise<void> {
-    // re-fetch all data when we (re)route to the dashboard
-    // (does not fire on initial dashboard load)
-    if (this.$route.name === Routes.DASHBOARD) {
-      await this.fetchData()
-    }
   }
 
   /** Called when component is created. */
@@ -389,9 +308,8 @@ export default class App extends Mixins(
   @Action(useFilingHistoryListStore) setFilings!: (x: ApiFilingIF[]) => void
 
   @Action(useRootStore) loadStateFiling!: () => Promise<void>
-  @Action(useRootStore) setAuthRoles!: (x: Array<string>) => void
-  @Action(useRootStore) setBootstrapFilingStatus!: (x: FilingStatus) => void
-  @Action(useRootStore) setBootstrapFilingType!: (x: FilingTypes) => void
+  @Action(useRootStore) setAccountInformation!: (x: AccountInformationIF) => void
+  @Action(useRootStore) setAuthRoles!: (x: Array<AuthorizationRoles>) => void
   @Action(useRootStore) setBusinessAddress!: (x: OfficeAddressIF) => void
   @Action(useRootStore) setBusinessEmail!: (x: string) => void
   @Action(useRootStore) setBusinessPhone!: (x: string) => void
@@ -401,9 +319,7 @@ export default class App extends Mixins(
   @Action(useRootStore) setCurrentDate!: (x: string) => void
   @Action(useRootStore) setCurrentJsDate!: (x: Date) => void
   @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
-  @Action(useRootStore) setKeycloakRoles!: (x: Array<string>) => void
   @Action(useRootStore) setNameRequest!: (x: any) => void
-  @Action(useRootStore) setNoRedirect!: (x: boolean) => void
   @Action(useRootStore) setParties!: (x: Array<PartyIF>) => void
   @Action(useRootStore) setPendingsList!: (x: Array<any>) => void
   @Action(useRootStore) setRecordsAddress!: (x: OfficeAddressIF) => void
@@ -425,51 +341,35 @@ export default class App extends Mixins(
     this.setCurrentJsDate(jsDate)
     this.setCurrentDate(this.dateToYyyyMmDd(jsDate))
 
-    // check authorizations
+    // ensure user is authorized to access this business
     try {
-      // get Keycloak roles
-      const jwt = this.getJWT()
-      const keycloakRoles = this.fetchKeycloakRoles(jwt)
-      this.setKeycloakRoles(keycloakRoles)
-
+      // get roles from KC token
+      const authRoles = GetKeycloakRoles()
       // safety check
-      if (!this.businessId && !this.tempRegNumber) {
-        throw new Error('Missing Business ID or Temporary Registration Number')
+      if (!Array.isArray(authRoles)) {
+        throw new Error('Invalid roles')
       }
-
-      // check if current user is authorized
-      const response = await AuthServices.fetchAuthorizations(
-        this.getAuthApiUrl, this.businessId || this.tempRegNumber
-      )
-      this.storeAuthorizations(response) // throws if no role
+      // verify that response has one of the supported roles
+      // FUTURE: when we fetch authorized actions from Legal API, we'll instead check
+      //         that the list of actions isn't empty
+      const allRoles = Object.values(AuthorizationRoles)
+      if (!allRoles.some(role => authRoles.includes(role))) {
+        throw new Error('Missing valid role')
+      }
+      this.setAuthRoles(authRoles)
     } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-      if (this.businessId) this.businessAuthErrorDialog = true
-      if (this.tempRegNumber) this.nameRequestAuthErrorDialog = true
-      return // do not execute remaining code
+      console.log('Auth error =', error) // eslint-disable-line no-console
+      this.businessAuthErrorDialog = true
+      return
+    }
+
+    // If the error dialogs have been tripped, then don't proceed
+    if (this.businessAuthErrorDialog === true || this.nameRequestAuthErrorDialog === true) {
+      return
     }
 
     // fetch user info and update Launch Darkly
-    // and save user's Keycloak GUID
-    try {
-      const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl)
-      this.setUserInfo(userInfo)
-      await this.updateLaunchDarkly(userInfo)
-      this.setUserKeycloakGuid(userInfo.keycloakGuid)
-    } catch (error) {
-      // just log the error -- no need to halt app
-      // eslint-disable-next-line no-console
-      console.log('Error fetching user info or updating Launch Darkly =', error)
-    }
-
-    // check whether to redirect to the new Business Dashboard
-    if (this.$route.query.noRedirect !== undefined) this.setNoRedirect(true)
-    if (!this.isNoRedirect && (this.$route.name === Routes.DASHBOARD)) {
-      const identifier = (this.businessId || this.tempRegNumber)
-      const dashboardUrl = `${this.getBusinessDashUrl}${identifier}${this.$route.fullPath}`
-      navigate(dashboardUrl)
-      return
-    }
+    this.setupLaunchDarkly()
 
     // is this a business entity?
     if (this.businessId) {
@@ -484,29 +384,8 @@ export default class App extends Mixins(
         // At this point the system doesn't know why it's incomplete.
         // Since this is not an expected behaviour, report this.
         Sentry.captureException(error)
-      }
-    }
-
-    // is this a bootstrap filing? (eg, incorporation/registration/amalgamation/continuation)
-    if (this.tempRegNumber) {
-      try {
-        this.nameRequestInvalidType = null // reset for new fetches
-
-        // fetch the bootstrap filing and store the bootstrap item
-        const response = await LegalServices.fetchBootstrapFiling(this.tempRegNumber)
-        this.storeBootstrapItem(response)
-
-        // if it is a todo or a pending filing, and it has a NR, load it
-        // (this is to display the NR details in the Todo List/Pending List)
-        if ((this.isBootstrapTodo || this.isBootstrapPending) && this.localNrNumber) {
-          const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
-          this.storeNrData(nr, response)
-        }
-
-        this.dataLoaded = true
-      } catch (error) {
-        console.log(error) // eslint-disable-line no-console
-        this.nameRequestInvalidDialog = true
+        // Return to BRD
+        navigate(this.getBusinessRegistryDashboardUrl)
       }
     }
   }
@@ -555,6 +434,19 @@ export default class App extends Mixins(
     }
   }
 
+  /* Gather info for LD and save user's Keycloak GUID */
+  async setupLaunchDarkly (): Promise<void> {
+    try {
+      const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl)
+      this.setUserInfo(userInfo)
+      await this.updateLaunchDarkly(userInfo)
+      this.setUserKeycloakGuid(userInfo.keycloakGuid)
+    } catch (error) {
+      // just log the error -- no need to halt app
+      // eslint-disable-next-line no-console
+      console.log('Error fetching user info or updating Launch Darkly =', error)
+    }
+  }
   /** Gets Keycloak JWT and parses it. */
   getJWT (): any {
     const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
@@ -577,25 +469,6 @@ export default class App extends Mixins(
     }
   }
 
-  /** Fetches Keycloak roles from JWT. */
-  fetchKeycloakRoles (jwt: any): Array<string> {
-    const keycloakRoles = jwt.roles
-    if (keycloakRoles && keycloakRoles.length > 0) {
-      return keycloakRoles
-    }
-    throw new Error('Error getting Keycloak roles')
-  }
-
-  storeAuthorizations (response: any): void {
-    // NB: roles array may contain 'view', 'edit' or nothing
-    const authRoles = response?.data?.roles
-    if (authRoles && authRoles.length > 0) {
-      this.setAuthRoles(authRoles)
-    } else {
-      throw new Error('Invalid auth roles')
-    }
-  }
-
   /** Updates Launch Darkly with current user info. */
   async updateLaunchDarkly (userInfo: any): Promise<void> {
     // since username is unique, use it as the user key
@@ -603,8 +476,8 @@ export default class App extends Mixins(
     const email: string = userInfo.contacts[0]?.email || userInfo.email
     const firstName: string = userInfo?.firstname
     const lastName: string = userInfo?.lastname
-    // store Keycloak roles in custom object
-    const custom = { roles: this.getKeycloakRoles } as any
+    // store auth roles in custom object
+    const custom = { roles: this.getAuthRoles } as any
 
     await UpdateLdUser(key, email, firstName, lastName, custom)
   }
@@ -628,169 +501,6 @@ export default class App extends Mixins(
     } else {
       throw new Error('Invalid entity contact info')
     }
-  }
-
-  /**
-   * Verifies and stores a bootstrap item's data to make this UI (entity dashboard)
-   * look like a business.
-   */
-  storeBootstrapItem (response: any): void {
-    const filing = response?.filing
-    const filingName = filing.header?.name as FilingTypes
-    const status = filing.header.status as FilingStatus
-    const foundingDate = filing.header?.effectiveDate || null // use the FE date as the founding date
-    const email =
-        filing.incorporationApplication?.contactPoint?.email ||
-        filing.amalgamationApplication?.contactPoint?.email ||
-        filing.continuationIn?.contactPoint?.email ||
-        filing.registration?.contactPoint?.email || null
-
-    if (!filing || !filing.business || !filing.header || !filingName || !status) {
-      throw new Error(`Invalid boostrap filing - missing required property = ${filing}`)
-    }
-
-    // special check for amalgamation application
-    if (filingName === FilingTypes.AMALGAMATION_APPLICATION && !filing.amalgamationApplication.type) {
-      throw new Error('Invalid bootstrap filing - missing amalgamation type')
-    }
-
-    // NB: different object from actual NR
-    const nameRequest = filing[filingName].nameRequest as {
-      legalName?: string
-      legalType: CorpTypeCd
-      nrNumber: string
-    }
-    if (!nameRequest) {
-      throw new Error('Invalid bootstrap filing - missing name request object')
-    }
-
-    // verify that this is a supported entity type
-    const legalType = nameRequest.legalType
-    if (!legalType || !this.supportedEntityTypes.includes(legalType)) {
-      throw new Error(`Invalid bootstrap filing - missing or unsupported legal type = ${legalType}`)
-    }
-
-    // store business info
-    this.setBootstrapFilingStatus(status)
-    this.setBootstrapFilingType(filingName)
-    this.setIdentifier(this.tempRegNumber)
-    this.setLegalType(legalType)
-    this.setGoodStanding(true) // draft apps are always in good standing
-    this.setFoundingDate(foundingDate)
-    this.setBusinessEmail(email)
-
-    // save local NR Number if present
-    if (nameRequest.nrNumber) this.localNrNumber = nameRequest.nrNumber
-
-    // store Legal Name if present
-    // special case to identify numbered amalgamations
-    if (filingName === FilingTypes.AMALGAMATION_APPLICATION) {
-      this.setLegalName(nameRequest.legalName || 'Numbered Amalgamated Company')
-    } else { this.setLegalName(nameRequest.legalName || GetCorpNumberedDescription(this.getLegalType)) }
-
-    // store the bootstrap item in the right list
-    if (this.isBootstrapTodo) this.storeBootstrapTodo(response)
-    else if (this.isBootstrapPending) this.storeBootstrapPending(response)
-    else if (this.isBootstrapFiling) this.storeBootstrapFiling(response)
-    else throw new Error(`Invalid boostrap filing - not a task or pending or filing = ${filing}`)
-  }
-
-  /** Stores bootstrap item in the Todo List. */
-  storeBootstrapTodo (response: any): void {
-    const filing = response.filing as TaskTodoIF
-    // NB: these were already validated in storeBootstrapItem()
-    const header = filing.header
-    const data = filing[header.name]
-    const status = header.status
-
-    const description = GetCorpFullDescription(data.nameRequest.legalType)
-    const dba = this.isEntitySoleProp ? ' / Doing Business As (DBA) ' : ' '
-    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type, status)
-
-    // save display name for later
-    filing.displayName = EnumUtilities.isTypeAmalgamationApplication(header)
-      ? filingName
-      : `${description}${dba}${filingName}`
-
-    // add this as a task item
-    const taskItem: ApiTaskIF = {
-      enabled: true,
-      order: 1,
-      task: { filing }
-    }
-    this.setTasks([taskItem])
-  }
-
-  /** Stores bootstrap item in the Pending List. */
-  storeBootstrapPending (response: any): void {
-    const filing = response.filing as TaskTodoIF
-    // NB: these were already validated in storeBootstrapItem()
-    const header = filing.header
-    const data = filing[header.name]
-    const status = header.status
-
-    // set addresses
-    this.storeAddresses({ data: data.offices || [] })
-
-    // set parties
-    this.storeParties({ data: { parties: data.parties || [] } })
-
-    const description = GetCorpFullDescription(data.nameRequest.legalType)
-    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type, status)
-
-    // save display name for later
-    filing.displayName = `${description} ${filingName}`
-
-    // add this as a pending item
-    this.setPendingsList([filing])
-  }
-
-  /** Stores bootstrap item in the Filing History List. */
-  storeBootstrapFiling (response: any): void {
-    const filing = response.filing as TaskTodoIF
-    // NB: these were already validated in storeBootstrapItem()
-    const header = filing.header
-    const data = filing[header.name]
-    const status = header.status
-
-    // set addresses
-    this.storeAddresses({ data: data.offices || [] })
-
-    // set parties
-    this.storeParties({ data: { parties: data.parties || [] } })
-
-    const description = GetCorpFullDescription(data.nameRequest.legalType)
-    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type, status)
-    const displayName = EnumUtilities.isTypeAmalgamationApplication(header)
-      ? filingName
-      : `${description} ${filingName}`
-
-    // add this as a filing item
-    const filingItem = {
-      availableOnPaperOnly: header.availableOnPaperOnly,
-      businessIdentifier: filing.business.identifier || this.getIdentifier,
-      commentsCount: response.commentsCount,
-      commentsLink: response.commentsLink,
-      displayLedger: response.displayLedger,
-      displayName,
-      documentsLink: response.documentsLink,
-      effectiveDate: this.apiToUtcString(header.effectiveDate),
-      filingId: header.filingId,
-      filingLink: response.filingLink,
-      filingSubType: data.type,
-      isFutureEffective: header.isFutureEffective,
-      name: header.name,
-      status: header.status,
-      submittedDate: this.apiToUtcString(header.date),
-      submitter: header.submitter,
-      data: {
-        applicationDate: this.dateToYyyyMmDd(this.apiToDate(header.date)),
-        legalFilings: [header.name],
-        order: data.courtOrder
-      },
-      latestReviewComment: header.latestReviewComment
-    } as ApiFilingIF
-    this.setFilings([filingItem])
   }
 
   storeNrData (nr: NameRequestIF, app: any): void {
@@ -904,7 +614,6 @@ export default class App extends Mixins(
       await this.fetchData()
     }
   }
-
   /** Request and Download Business Summary Document. */
   async downloadBusinessSummary (): Promise<void> {
     this.setFetchingDataSpinner(true)
@@ -913,7 +622,6 @@ export default class App extends Mixins(
       filename: `${this.businessId} Summary - ${this.getCurrentDate}.pdf`,
       link: `businesses/${this.businessId}/documents/summary`
     }
-
     await LegalServices.fetchDocument(summaryDocument).catch(error => {
       // eslint-disable-next-line no-console
       console.log('fetchDocument() error =', error)
@@ -921,7 +629,6 @@ export default class App extends Mixins(
     })
     this.setFetchingDataSpinner(false)
   }
-
   /** Direct to Digital Credentials. **/
   viewAddDigitalCredentials (): void {
     this.$router.push({ name: Routes.DIGITAL_CREDENTIALS })

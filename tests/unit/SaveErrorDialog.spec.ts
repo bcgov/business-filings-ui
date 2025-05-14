@@ -5,6 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useRootStore } from '@/stores'
 import { SaveErrorDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
+import { AuthorizationRoles } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -17,9 +18,6 @@ document.body.setAttribute('data-app', 'true')
 
 describe('Save Error Dialog', () => {
   it('displays generic message for normal users', async () => {
-    // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = shallowMount(SaveErrorDialog,
       {
         propsData: {
@@ -45,7 +43,7 @@ describe('Save Error Dialog', () => {
 
   it('displays generic message for staff', () => {
     // init store
-    rootStore.keycloakRoles = ['staff']
+    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
 
     const wrapper = shallowMount(SaveErrorDialog,
       {
@@ -68,9 +66,6 @@ describe('Save Error Dialog', () => {
   })
 
   it('displays errors', () => {
-    // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = shallowMount(SaveErrorDialog,
       {
         propsData: {
@@ -92,9 +87,6 @@ describe('Save Error Dialog', () => {
   })
 
   it('displays warnings', () => {
-    // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = shallowMount(SaveErrorDialog,
       {
         propsData: {
@@ -115,9 +107,6 @@ describe('Save Error Dialog', () => {
   })
 
   it('emits an event when Exit button is clicked', async () => {
-    // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = mount(SaveErrorDialog,
       {
         vuetify,

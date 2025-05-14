@@ -5,6 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useRootStore } from '@/stores'
 import TechnicalErrorDialog from '@/components/dialogs/TechnicalErrorDialog.vue'
 import { ContactInfo } from '@/components/common'
+import { AuthorizationRoles } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -14,9 +15,6 @@ const rootStore = useRootStore()
 
 describe('TechnicalErrorDialog', () => {
   it('displays everything for normal users', () => {
-    // init store
-    rootStore.keycloakRoles = ['']
-
     const wrapper = mount(TechnicalErrorDialog, { propsData: { dialog: true }, vuetify })
 
     expect(wrapper.find('.v-card__title').text()).toBe('Error')
@@ -32,7 +30,7 @@ describe('TechnicalErrorDialog', () => {
 
   it('does not display contact info for staff users', () => {
     // init store
-    rootStore.keycloakRoles = ['staff']
+    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
 
     const wrapper = mount(TechnicalErrorDialog, { propsData: { dialog: true }, vuetify })
 
