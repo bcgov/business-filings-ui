@@ -133,7 +133,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import * as Sentry from '@sentry/browser'
-import { GetFeatureFlag, navigate, UpdateLdUser } from '@/utils'
+import { GetFeatureFlag, IsAuthorized, navigate, UpdateLdUser } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
@@ -161,7 +161,7 @@ import {
   TaskTodoIF
 } from '@/interfaces'
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
-import { FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
+import { AuthorizationRoles, AuthorizedActions, FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd, GetCorpFullDescription, GetCorpNumberedDescription }
   from '@bcrs-shared-components/corp-type-module'
@@ -218,6 +218,10 @@ export default class App extends Mixins(
     CorpTypeCd.SOLE_PROP,
     CorpTypeCd.ULC_CONTINUE_IN
   ]
+  // Declarations
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
+
   // business store references
   // @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   // @Getter(useBusinessStore) getIdentifier!: string
@@ -235,7 +239,7 @@ export default class App extends Mixins(
   @Getter(useRootStore) isBootstrapPending!: boolean
   @Getter(useRootStore) isBootstrapTodo!: boolean
   // @Getter(useRootStore) isNoRedirect!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useRootStore) isAuthRole!: Array<AuthorizationRoles>
   @Getter(useRootStore) showFetchingDataSpinner!: boolean
   @Getter(useRootStore) showStartingAmalgamationSpinner!: boolean
 
@@ -314,7 +318,7 @@ export default class App extends Mixins(
 
     // Set base crumbs based on user role
     // Staff don't want the home landing page and they can't access the Manage Business Dashboard
-    if (this.isRoleStaff) {
+    if (IsAuthorized(AuthorizedActions.STAFF_BREADCRUMBS)) {
       // If staff, set StaffDashboard as home crumb
       crumbs.unshift(this.getStaffDashboardBreadcrumb())
     } else {
