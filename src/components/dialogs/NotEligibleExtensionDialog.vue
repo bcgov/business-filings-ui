@@ -26,7 +26,7 @@
           Based on the information provided, this business is not eligible for an AGM extension.
         </p>
 
-        <template v-if="!isRoleStaff">
+        <template v-if="!IsAuthorized(AuthorizedActions.NO_CONTACT_INFO)">
           <p>
             If you have any questions about the review, please contact us at:
           </p>
@@ -49,16 +49,17 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { AuthorizedActions } from '@/enums'
 import { ContactInfo } from '@/components/common'
-import { useRootStore } from '@/stores'
+import { IsAuthorized } from '@/utils'
 
 @Component({
   components: { ContactInfo }
 })
 export default class NotEligibleExtensionDialog extends Vue {
-  // Getter to check if logged in user is Staff.
-  @Getter(useRootStore) isRoleStaff!: boolean
+  /** For Template Contact Info message */
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog!: boolean

@@ -25,7 +25,7 @@
 
     <!-- the drop-down menu -->
     <v-menu
-      v-if="!isDisableNonBenCorps && isRoleStaff && isBusiness"
+      v-if="disableDropDown()"
       offset-y
       left
       transition="slide-y-transition"
@@ -58,7 +58,7 @@
           </v-list-item>
 
           <v-list-item
-            :disabled="!isAllowed(AllowableActions.DETAIL_COMMENT)"
+            :disabled="!IsAuthorized(AuthorizedActions.STAFF_COMMENTS)"
             @click.stop="showCommentDialog(filing)"
           >
             <v-list-item-icon>
@@ -79,27 +79,23 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { AllowableActions } from '@/enums'
+import { AuthorizedActions } from '@/enums'
 import { ApiFilingIF } from '@/interfaces'
 import { AllowableActionsMixin } from '@/mixins'
 import { EnumUtilities } from '@/services'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
-import { GetFeatureFlag } from '@/utils'
+import { GetFeatureFlag, IsAuthorized } from '@/utils'
 
 @Component({})
 export default class HeaderActions extends Mixins(AllowableActionsMixin) {
-  readonly AllowableActions = AllowableActions
-
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  // @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useRootStore) isBootstrapFiling!: boolean
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
-  // @Getter(useBusinessStore) isEntityCoop!: boolean
-  // @Getter(useBusinessStore) isEntityFirm!: boolean
-  // @Getter(useAuthenticationStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: (x: ApiFilingIF) => void
   @Action(useFilingHistoryListStore) setCurrentFiling!: (x: ApiFilingIF) => void
@@ -121,7 +117,13 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
    */
   disableCorrection (): boolean {
     // disable if not allowed
-    if (!this.isAllowed(AllowableActions.CORRECTION)) return true
+    // Currently both corrections have the same role permissions, if this changes
+    // then we will need to update this.
+    if (!IsAuthorized(AuthorizedActions.COOP_CORRECTION_FILING) ||
+     !IsAuthorized(AuthorizedActions.CORP_CORRECTION_FILING)
+    ) {
+      return true
+    }
 
     // disable if filing is paper-only
     if (this.filing.availableOnPaperOnly) return true
@@ -191,6 +193,13 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
     console.log('disableCorrection(), unhandled filing =', this.filing)
 
     return true // safe fallback
+  }
+  /* Check to see if we should show the drop-down at all. Requires either correction or comment permissions. */
+  disableDropDown () : boolean {
+    return (!this.isDisableNonBenCorps && // FF check
+        this.isBusiness && // No temps
+        (!this.disableCorrection() || IsAuthorized(AuthorizedActions.STAFF_COMMENTS))
+    )
   }
 
   /** Called by File a Correction button to correct the subject filing. */
