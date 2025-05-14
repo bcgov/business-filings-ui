@@ -8,7 +8,7 @@
         <span class="ml-1">Detail{{ filing.comments.length > 1 ? "s" : "" }} ({{ filing.comments.length }})</span>
       </h4>
       <v-btn
-        v-if="!isDisableNonBenCorps && isRoleStaff"
+        v-if="!isDisableNonBenCorps && IsAuthorized(AuthorizedActions.STAFF_COMMENTS)"
         class="add-detail-btn"
         color="primary"
         :disabled="!filing.filingId"
@@ -27,7 +27,7 @@
       >
         <v-list-item-content>
           <v-list-item-title class="body-2">
-            <strong v-if="!isRoleStaff">BC Registries Staff</strong>
+            <strong v-if="!IsAuthorized(AuthorizedActions.STAFF_COMMENTS)">BC Registries Staff</strong>
             <strong v-else>{{ comment.submitterDisplayName || 'N/A' }}</strong>
             ({{ DateUtilities.apiToPacificDateTime(comment.timestamp) }})
           </v-list-item-title>
@@ -43,16 +43,19 @@
 </template>
 
 <script lang="ts">
+import { AuthorizedActions } from '@/enums'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities } from '@/services'
+import { IsAuthorized } from '@/utils'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class DetailsList extends Vue {
   readonly DateUtilities = DateUtilities
-
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
   /** The filing containing comments. */
   @Prop({ default: () =>
     ({
@@ -63,7 +66,6 @@ export default class DetailsList extends Vue {
   readonly filing!: ApiFilingIF
 
   @Getter(useBusinessStore) isDisableNonBenCorps!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: (x: ApiFilingIF) => void
 }
