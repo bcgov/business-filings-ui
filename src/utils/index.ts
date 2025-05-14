@@ -1,3 +1,4 @@
+export * from './authorizations'
 export * from './capitalize'
 export * from './feature-flags'
 export * from './set-base-route-and-business-id'
