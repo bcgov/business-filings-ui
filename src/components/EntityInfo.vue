@@ -1,7 +1,7 @@
 <template>
   <div
     id="entity-info"
-    :class=" { 'staff': isRoleStaff, 'hover': showHoverStyle }"
+    :class=" { 'staff': accessEntityMenu, 'hover': showHoverStyle }"
   >
     <v-container class="py-0">
       <v-row
@@ -43,13 +43,12 @@
 
 <script lang="ts">
 import { Component, Emit, Vue } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
-import { NigsMessage } from '@/enums'
+import { NigsMessage, AuthorizedActions } from '@/enums'
 import EntityDefinitions from './EntityInfo/EntityDefinitions.vue'
 import EntityHeader from './EntityInfo/EntityHeader.vue'
 import EntityMenu from './EntityInfo/EntityMenu.vue'
-import { useRootStore } from '@/stores'
 import { Routes, DCRoutes } from '@/enums/routes'
+import { IsAuthorized } from '@/utils/authorizations'
 
 @Component({
   components: {
@@ -59,11 +58,13 @@ import { Routes, DCRoutes } from '@/enums/routes'
   }
 })
 export default class EntityInfo extends Vue {
-  @Getter(useRootStore) isRoleStaff!: boolean
-
+  /** For template. */
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
   /** Whether to show the hover style. */
   showHoverStyle = false
-
+  accessEntityMenu = IsAuthorized(AuthorizedActions.ADMIN_DISSOLUTION_FILING) &&
+    IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)
   /** The Business ID string (may be null). */
   get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
@@ -112,6 +113,7 @@ export default class EntityInfo extends Vue {
   @Emit('viewAddDigitalCredentials')
   emitViewAddDigitalCredentials (): void {}
 }
+
 </script>
 
 <!-- eslint-disable max-len -->

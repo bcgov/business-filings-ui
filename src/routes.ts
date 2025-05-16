@@ -21,7 +21,6 @@ export default [
   {
     path: '/',
     name: Routes.DASHBOARD,
-    component: Dashboard,
     meta: {
       requiresAuth: true
     }

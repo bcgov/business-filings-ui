@@ -82,7 +82,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
-                  :disableEdit="!isRoleStaff"
+                  :disableEdit="!IsAuthorized(AuthorizedActions.EDITABLE_CERTIFY_NAME)"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.AGM_EXTENSION)"
                   @valid="certifyFormValid=$event"
@@ -163,7 +163,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { navigate } from '@/utils'
+import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { Certify } from '@/components/common'
@@ -174,7 +174,7 @@ import AgmExtensionHelp from '@/components/AgmExtension/AgmExtensionHelp.vue'
 import ExtensionRequest from '@/components/AgmExtension/ExtensionRequest.vue'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
 import { AgmExtEvalIF, ConfirmDialogType, EmptyAgmExtEval } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
@@ -205,11 +205,12 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getUserInfo!: any
   @Getter(useBusinessStore) isGoodStanding!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useFilingHistoryListStore) getTotalAgmExtensionDuration!: (year: number) => number;
 
   // enum for template
   readonly FilingCodes = FilingCodes
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   // evaluation object
   data = { ...EmptyAgmExtEval } as AgmExtEvalIF
@@ -288,7 +289,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
     this.data.incorporationDate = this.getFoundingDate
 
     // Pre-populate the certified block with the logged in user's name (if not staff)
-    if (!this.isRoleStaff && this.getUserInfo) {
+    if (!this.IsAuthorized(AuthorizedActions.THIRD_PARTY_CERTIFY_STMT) && this.getUserInfo) {
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
@@ -504,7 +505,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (this.isRoleStaff) {
+    if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false

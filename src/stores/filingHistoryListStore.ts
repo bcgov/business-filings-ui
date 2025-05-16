@@ -4,6 +4,8 @@ import { FilingTypes } from '@bcrs-shared-components/enums'
 import { defineStore } from 'pinia'
 import { useBusinessStore } from './businessStore'
 import { useRootStore } from './rootStore'
+import { IsAuthorized } from '@/utils'
+import { AuthorizedActions } from '@/enums'
 
 export const useFilingHistoryListStore = defineStore('filingHistoryList', {
   state: (): FilingHistoryListStateIF => ({
@@ -299,7 +301,6 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
     /** Loads the documents for this history item. */
     async loadDocuments (filing: ApiFilingIF): Promise<void> {
       const businessStore = useBusinessStore()
-      const rootStore = useRootStore()
       try {
         // fetch documents object from API
         const documents = await LegalServices.fetchDocuments(filing.documentsLink)
@@ -307,7 +308,6 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
         filing.documents = []
         // Get identifier and if current user is staff then store in local variables
         const identifier = businessStore.getIdentifier
-        const isStaff = rootStore.isRoleStaff
         // iterate over documents properties
         for (const prop in documents) {
           if (prop === 'legalFilings' && Array.isArray(documents.legalFilings)) {
@@ -337,7 +337,8 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
             }
           } else if (prop === 'uploadedCourtOrder') {
             const fileNumber = filing.data?.order?.fileNumber || '[unknown]'
-            const title = isStaff ? `${filing.displayName} ${fileNumber}` : `${filing.displayName}`
+            const title = IsAuthorized(AuthorizedActions.COURT_ORDER_FILING)
+              ? `${filing.displayName} ${fileNumber}` : `${filing.displayName}`
             const filename = title
             const link = documents[prop] as string
             pushDocument(title, filename, link)

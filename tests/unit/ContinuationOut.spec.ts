@@ -14,6 +14,7 @@ import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { AuthorizationRoles } from '@/enums'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -39,7 +40,7 @@ describe('Continuation Out view', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['staff'] // continuation outs currently apply to staff only
+    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
   })
 
   it('mounts the sub-components properly', async () => {
