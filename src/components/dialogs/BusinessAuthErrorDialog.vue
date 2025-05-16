@@ -29,7 +29,7 @@
           another time.
         </p>
 
-        <template v-if="!isRoleStaff">
+        <template v-if="!IsAuthorized(AuthorizedActions.NO_CONTACT_INFO)">
           <p class="font-15">
             If this error persists, please contact us.
           </p>
@@ -63,23 +63,24 @@
 </template>
 
 <script lang="ts">
+import { AuthorizedActions } from '@/enums'
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { IsAuthorized } from '@/utils'
 import { ContactInfo } from '@/components/common'
-import { useRootStore } from '@/stores'
 
 @Component({
   components: { ContactInfo }
 })
 export default class BusinessAuthErrorDialog extends Vue {
-  // Getter to check if logged in user is Staff.
-  @Getter(useRootStore) isRoleStaff!: boolean
-
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
   @Prop({ default: '' }) readonly attach!: string
+
+  /* For Template Contact Info message */
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   // Pass click events to parent.
   @Emit() exit () {}

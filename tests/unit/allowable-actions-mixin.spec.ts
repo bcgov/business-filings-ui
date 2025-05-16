@@ -1,20 +1,22 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores'
+import { createPinia, setActivePinia, storeToRefs } from 'pinia'
+import { useBusinessStore, useRootStore } from '@/stores'
 import * as FeatureFlags from '@/utils/feature-flags'
 import MixinTester from '@/mixin-tester.vue'
-import { AllowableActions, FilingSubTypes } from '@/enums'
+import { AuthorizationRoles, AuthorizedActions, AllowableActions, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypeIF } from '@/interfaces'
+import * as Authorizations from '@/utils/authorizations'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
+const store = useRootStore()
 
 // mock the entire module
 // it's the only way to override any exported function
@@ -254,18 +256,20 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Detail Comment allowed', () => {
+    store.setAuthRoles([AuthorizationRoles.VIEW])
     // verify business but not staff
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(false)
+    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(false)
     expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(false)
 
     // verify staff but no business
-    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
+    store.setAuthRoles([AuthorizationRoles.STAFF])
+    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(true)
     sessionStorage.removeItem('BUSINESS_ID')
     expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(false)
 
     // verify both staff and business
-    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
+    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(true)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(true)
   })
@@ -384,17 +388,20 @@ describe('Allowable Actions Mixin', () => {
 
   it('identifies whether Staff Comment allowed', () => {
     // verify business but not staff
+    store.setAuthRoles([AuthorizationRoles.VIEW])
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(false)
+    vm.IsAuthorized(AuthorizedActions.STAFF_COMMENTS)
+    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(false)
     expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(false)
 
     // verify staff but no business
-    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
+    store.setAuthRoles([AuthorizationRoles.STAFF])
+    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(true)
     sessionStorage.removeItem('BUSINESS_ID')
     expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(false)
 
     // verify both staff and business
-    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
+    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(true)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(true)
   })
