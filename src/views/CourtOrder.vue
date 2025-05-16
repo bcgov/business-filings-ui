@@ -228,13 +228,14 @@ import { ConfirmDialog } from '@/components/dialogs'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { ConfirmDialogType, FormIF, StaffPaymentIF } from '@/interfaces'
-import { EffectOfOrderTypes, PageSizes } from '@/enums'
+import { AuthorizedActions, EffectOfOrderTypes, PageSizes } from '@/enums'
 import { FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { EnumUtilities, LegalServices } from '@/services'
 import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment/'
+import { IsAuthorized } from '@/utils'
 
 @Component({
   components: {
@@ -288,7 +289,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getUserInfo!: any
-  @Getter(useRootStore) isRoleStaff!: boolean
   // Properties
   customErrorMsg = ''
   notation = '' // notation text
@@ -317,6 +317,10 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
 
   paymentErrorDialog = false
+
+  // Template Enums
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
 
   /** Called when component is mounted. */
   async mounted (): Promise<void> {
@@ -485,8 +489,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   /** Called when component is created. */
   created (): void {
     // Safety check to make sure Staff is filing the Continuation Out.
-    if (!this.isRoleStaff) {
-      this.resumeErrorDialog = true
+    if (!this.IsAuthorized(AuthorizedActions.CONTINUATION_OUT_FILING)) {
       throw new Error('This is a Staff only Filing.')
     }
 

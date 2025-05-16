@@ -5,6 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useRootStore } from '@/stores'
 import { NotEligibleExtensionDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
+import { AuthorizationRoles } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -16,6 +17,7 @@ describe('NotEligibleExtensionDialog', () => {
   it('displays everything for normal users', () => {
     // init store
     rootStore.keycloakRoles = ['']
+    rootStore.setAuthRoles([AuthorizationRoles.VIEW])
 
     const wrapper = mount(NotEligibleExtensionDialog, { propsData: { dialog: true }, vuetify })
 
@@ -30,7 +32,7 @@ describe('NotEligibleExtensionDialog', () => {
 
   it('does not display contact info for staff users', () => {
     // init store
-    rootStore.keycloakRoles = ['staff']
+    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
 
     const wrapper = mount(NotEligibleExtensionDialog, { propsData: { dialog: true }, vuetify })
 

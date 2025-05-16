@@ -367,7 +367,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { navigate } from '@/utils'
+import { IsAuthorized, navigate } from '@/utils'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
@@ -376,10 +376,10 @@ import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
@@ -407,8 +407,10 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
-  // @Getter(useBusinessStore) isBaseCompany!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
+
+  // Auth Enums
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   // variables
   updatedDirectors = []
@@ -740,7 +742,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
 
     // if this is a staff user clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment) {
+    if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
       this.staffPaymentDialog = true
       return
     }
@@ -948,7 +950,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (this.isRoleStaff) {
+    if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false
@@ -976,7 +978,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
       case SaveErrorReasons.FILE_PAY:
         // close the dialog and retry file-pay
         this.saveErrorReason = null
-        if (this.isRoleStaff) await this.onClickFilePay(true)
+        if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
         else await this.onClickFilePay()
         break
     }

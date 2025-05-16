@@ -298,9 +298,9 @@ import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
-import { AllowableActions, NigsMessage, Routes } from '@/enums'
+import { AllowableActions, AuthorizedActions, NigsMessage, Routes } from '@/enums'
 import { AllowableActionsMixin } from '@/mixins'
-import { GetFeatureFlag, navigate } from '@/utils'
+import { GetFeatureFlag, IsAuthorized, navigate } from '@/utils'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
@@ -326,6 +326,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   // enums for template
   readonly axios = axios
   readonly AllowableActions = AllowableActions
+  readonly IsAuthorized = IsAuthorized
 
   /** Whether this entity is a business (and not a draft IA/Registration). */
   get isBusiness (): boolean {
@@ -397,7 +398,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   get isChangeBusinessInfoDisabled (): boolean {
     // enable if business is Not In Good Standing and user isn't staff
     // clicking button will show a dialog -- see promptChangeBusinessInfo()
-    if (!this.isGoodStanding && !this.isRoleStaff) return false
+    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) return false
 
     // otherwise, disable if not allowed
     return !this.isAllowed(AllowableActions.BUSINESS_INFORMATION)
@@ -407,7 +408,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   get isDissolveBusinessDisabled (): boolean {
     // enable if business is Not In Good Standing and user isn't staff
     // clicking button will show a dialog -- see promptDissolveBusiness()
-    if (!this.isGoodStanding && !this.isRoleStaff) return false
+    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) return false
 
     // otherwise, disable if not allowed
     return !this.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)
@@ -420,7 +421,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   promptChangeBusinessInfo (): void {
     const editUrl = `${this.getEditUrl}${this.getIdentifier}`
 
-    if (!this.isGoodStanding && !this.isRoleStaff) {
+    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else if (this.isEntityCoop) {
       navigate(`${editUrl}/special-resolution`)
@@ -436,7 +437,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
    * Otherwise, emits an event to prompt user to confirm Voluntary Dissolution.
    */
   promptDissolveBusiness (): void {
-    if (!this.isGoodStanding && !this.isRoleStaff) {
+    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) {
       this.emitNotInGoodStanding(NigsMessage.DISSOLVE)
     } else {
       this.emitConfirmDissolution()

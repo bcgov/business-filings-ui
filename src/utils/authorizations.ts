@@ -80,6 +80,7 @@ const BusinessRegistryStaffRoles = [
   AuthorizedActions.INCORPORATION_APPLICATION_FILING,
   AuthorizedActions.NO_COMPLETING_PARTY_MESSAGE_BOX,
   AuthorizedActions.NO_CONTACT_INFO,
+  AuthorizedActions.NOTICE_WITHDRAWAL_FILING,
   AuthorizedActions.OTHER_DISSOLUTION_FILING,
   AuthorizedActions.REGISTRATION_FILING,
   AuthorizedActions.RESTORATION_FILING,

@@ -3,6 +3,8 @@ import { getVuexStore, useAuthenticationStore } from '@/stores'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import { IsAuthorized } from '@/utils'
+import { AuthorizedActions } from '@/enums'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -32,7 +34,7 @@ describe('testing current account module', () => {
 
       store.commit('account/setCurrentAccount', dummyAccount('PREMIUM'), { root: true })
       expect(authenticationStore.isPremiumAccount).toBe(true)
-      expect(authenticationStore.isSbcStaff).toBe(false)
+      expect((IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS))).toBe(false)
     })
   })
 
@@ -44,7 +46,7 @@ describe('testing current account module', () => {
 
       store.commit('account/setCurrentAccount', dummyAccount('SBC_STAFF'), { root: true })
       expect(authenticationStore.isPremiumAccount).toBe(false)
-      expect(authenticationStore.isSbcStaff).toBe(true)
+      expect((IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS))).toBe(true)
     })
   })
 })

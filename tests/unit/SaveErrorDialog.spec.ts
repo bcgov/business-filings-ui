@@ -5,6 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useRootStore } from '@/stores'
 import { SaveErrorDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
+import { AuthorizationRoles } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -45,7 +46,7 @@ describe('Save Error Dialog', () => {
 
   it('displays generic message for staff', () => {
     // init store
-    rootStore.keycloakRoles = ['staff']
+    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
 
     const wrapper = shallowMount(SaveErrorDialog,
       {

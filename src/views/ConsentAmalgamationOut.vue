@@ -149,7 +149,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
-                  :disableEdit="!isRoleStaff"
+                  :disableEdit="!IsAuthorized(AuthorizedActions.EDITABLE_CERTIFY_NAME)"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                   @valid="certifyFormValid=$event"
@@ -158,7 +158,7 @@
             </section>
 
             <!-- Court Order and Plan of Arrangement -->
-            <section v-if="isRoleStaff">
+            <section v-if="IsAuthorized(AuthorizedActions.COURT_ORDER_POA)">
               <header>
                 <h2>Court Order and Plan of Arrangement</h2>
                 <p class="grey-text">
@@ -280,14 +280,14 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { navigate } from '@/utils'
+import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, ForeignJurisdiction } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
-import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -321,10 +321,11 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getUserInfo!: any
-  @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
 
   // variables for Certify component
   certifiedBy = ''
@@ -448,7 +449,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
     this.dataLoaded = true
 
     // Pre-populate the certified block with the logged in user's name (if not staff)
-    if (!this.isRoleStaff && this.getUserInfo) {
+    if (!this.IsAuthorized(AuthorizedActions.THIRD_PARTY_CERTIFY_STMT) && this.getUserInfo) {
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
@@ -634,7 +635,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
 
     // if this is a staff user clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment) {
+    if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
       this.staffPaymentDialog = true
       return
     }
@@ -833,7 +834,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (this.isRoleStaff) {
+    if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false
@@ -861,7 +862,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
       case SaveErrorReasons.FILE_PAY:
         // close the dialog and retry file-pay
         this.saveErrorReason = null
-        if (this.isRoleStaff) await this.onClickFilePay(true)
+        if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
         else await this.onClickFilePay()
         break
     }
