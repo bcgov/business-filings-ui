@@ -12,10 +12,10 @@
         outstanding balance on your BC Registries and Online Services account.
       </li>
       <li>
-        Enter <strong>"BC Registries and Online Services"</strong> as payee.
+        Enter <strong>"BC Registries"</strong> as payee.
       </li>
       <li>
-        Enter the following account number: <strong>{{ cfsAccountId }}</strong>
+        Enter this payment identifier as your account number: <strong>{{ cfsAccountId }}</strong>
       </li>
       <li>
         Once submitted through your bank, Online Banking payments can take <strong>2 to 5 days to
