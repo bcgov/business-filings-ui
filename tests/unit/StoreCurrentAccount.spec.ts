@@ -9,7 +9,6 @@ import { AuthorizedActions } from '@/enums'
 Vue.use(Vuetify)
 const localVue = createLocalVue()
 setActivePinia(createPinia())
-const authenticationStore = useAuthenticationStore()
 
 describe('testing current account module', () => {
   const dummyAccount = (accountType: string) => {
@@ -26,14 +25,13 @@ describe('testing current account module', () => {
     }
   }
 
-  it('fetches current account from session storage - PREMIUM', async () => {
+  it('fetches current account from session storage', async () => {
     vi.fn(() => async () => {
       const SbcHeader = require('sbc-common-components/src/components/SbcHeader.vue').default
       const store = await getVuexStore() as any // remove typings for unit tests
       shallowMount(SbcHeader, { store, localVue })
 
-      store.commit('account/setCurrentAccount', dummyAccount('PREMIUM'), { root: true })
-      expect(authenticationStore.isPremiumAccount).toBe(true)
+      store.commit('account/setCurrentAccount', dummyAccount(''), { root: true })
       expect((IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS))).toBe(false)
     })
   })
@@ -45,7 +43,6 @@ describe('testing current account module', () => {
       shallowMount(SbcHeader, { store, localVue })
 
       store.commit('account/setCurrentAccount', dummyAccount('SBC_STAFF'), { root: true })
-      expect(authenticationStore.isPremiumAccount).toBe(false)
       expect((IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS))).toBe(true)
     })
   })
