@@ -561,7 +561,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     return sessionStorage.getItem('BASE_URL')
   }
 
-  /** Whether the Office Adderss is Edit in Progress. */
+  /** Whether the Office Address is Edit in Progress. */
   get isOfficeAddressEditing (): boolean {
     return this.$refs.officeAddressesComponent?.showAddressForm || false
   }
