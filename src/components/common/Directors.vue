@@ -1169,7 +1169,6 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.directorEditInProgress = true
     this.activeIndex = index
     this.messageIndex = index
-    this.cancelNewDirector()
   }
 
   /**
