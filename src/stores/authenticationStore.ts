@@ -77,11 +77,7 @@ export const useAuthenticationStore = defineStore('authentication', {
     /** True if the user is (Keycloak) authenticated. */
     isAuthenticated (): boolean {
       return Vue.prototype.$store.getters['auth/isAuthenticated'] || false
-    },
-
-    /** True if the current account is a premium account. */
-    isPremiumAccount (): boolean {
-      return (this.getCurrentAccount?.accountType === AccountTypes.PREMIUM)
     }
+
   }
 })
