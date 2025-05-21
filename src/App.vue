@@ -69,7 +69,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import * as Sentry from '@sentry/browser'
-import { GetFeatureFlag, IsAuthorized, navigate, UpdateLdUser } from '@/utils'
+import { GetFeatureFlag, IsAuthorized, navigate, sleep, UpdateLdUser } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
@@ -88,6 +88,7 @@ import { BreadcrumbMixin, CommonMixin, DateMixin, DirectorMixin, FilingMixin, Na
   from '@/mixins'
 import { AuthServices, LegalServices } from '@/services/'
 import {
+  AccountInformationIF,
   ApiFilingIF,
   ApiTaskIF,
   NameRequestIF,
@@ -168,10 +169,7 @@ export default class App extends Mixins(
   // root store references
   @Getter(useRootStore) getAuthRoles!: Array<AuthorizationRoles>
   @Getter(useRootStore) getKeycloakRoles!: Array<string>
-  @Getter(useRootStore) isBootstrapFiling!: boolean
-  @Getter(useRootStore) isBootstrapPending!: boolean
-  @Getter(useRootStore) isBootstrapTodo!: boolean
-  @Getter(useRootStore) isAuthRole!: Array<AuthorizationRoles>
+  @Getter(useRootStore) isAuthorizationStatus!: boolean
   @Getter(useRootStore) showFetchingDataSpinner!: boolean
   @Getter(useRootStore) showStartingAmalgamationSpinner!: boolean
 
@@ -319,6 +317,7 @@ export default class App extends Mixins(
   @Action(useFilingHistoryListStore) setFilings!: (x: ApiFilingIF[]) => void
 
   @Action(useRootStore) loadStateFiling!: () => Promise<void>
+  @Action(useRootStore) setAccountInformation!: (x: AccountInformationIF) => void
   @Action(useRootStore) setAuthRoles!: (x: Array<AuthorizationRoles>) => void
   @Action(useRootStore) setBootstrapFilingStatus!: (x: FilingStatus) => void
   @Action(useRootStore) setBootstrapFilingType!: (x: FilingTypes) => void
@@ -357,21 +356,35 @@ export default class App extends Mixins(
 
     // check authorizations
     try {
-      // get Keycloak roles
-      const jwt = this.getJWT()
-      const keycloakRoles = this.fetchKeycloakRoles(jwt)
-      this.setKeycloakRoles(keycloakRoles)
+      // load account information
+      await this.loadAccountInformation().catch(error => {
+        console.log('Account info error = ', error) // eslint-disable-line no-console
+        throw error
+      })
 
       // safety check
       if (!this.businessId) {
         throw new Error('Missing Business ID')
       }
-
       // check if current user is authorized
       const response = await AuthServices.fetchAuthorizations(
         this.getAuthApiUrl, this.businessId
       )
       this.storeAuthorizations(response) // throws if no role
+      const authRoles: Array<AuthorizationRoles> = response.roles || []
+      if (!Array.isArray(authRoles)) {
+        throw new Error('Invalid auth roles 1')
+      }
+
+      // verify that array has "view" or "staff" roles
+      if (
+        !authRoles.includes(AuthorizationRoles.VIEW) &&
+        !authRoles.includes(AuthorizationRoles.STAFF)
+      ) {
+        throw new Error('Invalid auth roles 2')
+      }
+
+      this.setAuthRoles(authRoles)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
       if (this.businessId) this.businessAuthErrorDialog = true
@@ -471,6 +484,38 @@ export default class App extends Mixins(
     throw new Error('Error getting Keycloak token')
   }
 
+  /**
+   * Gets account info and stores it.
+   * Among other things, this is how we find out if this is a staff account.
+   */
+  private async loadAccountInformation (): Promise<any> {
+    let currentAccount = null
+    console.log('Starting to load account info')
+
+    for (let i = 0; i < 50; i++) {
+      const account = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
+      if (account) {
+        try {
+          currentAccount = JSON.parse(account)
+          break
+        } catch (e) {
+          console.error('Failed to parse account from sessionStorage', e)
+          currentAccount = null
+        }
+        await sleep(100)
+      }
+    }
+    if (currentAccount) {
+      const accountInfo: AccountInformationIF = {
+        accountType: currentAccount.accountType,
+        id: currentAccount.id,
+        label: currentAccount.label,
+        type: currentAccount.type
+      }
+      this.setAccountInformation(accountInfo)
+    }
+  }
+
   /** Decodes and parses Keycloak token. */
   parseKcToken (token: string): any {
     try {
@@ -494,8 +539,7 @@ export default class App extends Mixins(
   }
 
   storeAuthorizations (response: any): void {
-    // NB: roles array may contain 'view', 'edit' or nothing
-    const authRoles: Array<AuthorizationRoles> = response?.data?.roles || []
+    const authRoles: Array<AuthorizationRoles> = response?.roles || []
     if (authRoles && authRoles.length > 0) {
       this.setAuthRoles(authRoles)
     } else {

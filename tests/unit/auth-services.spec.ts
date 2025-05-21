@@ -1,6 +1,7 @@
 import sinon from 'sinon'
 import axios from '@/axios-auth'
 import AuthServices from '@/services/auth-services'
+import { AuthorizationRoles } from '@/enums'
 
 describe('Auth Services', () => {
   let get: any
@@ -15,7 +16,7 @@ describe('Auth Services', () => {
 
   it('fetches authorizations correctly', async () => {
     const AUTHORIZATIONS = {
-      roles: ['edit', 'view']
+      roles: [AuthorizationRoles.VIEW]
     }
 
     // mock endpoint
@@ -24,9 +25,8 @@ describe('Auth Services', () => {
 
     // call method
     const response = await AuthServices.fetchAuthorizations('', 'CP1234567')
-
     // verify data
-    expect(response).toEqual({ data: AUTHORIZATIONS })
+    expect(response).toEqual({ roles: AUTHORIZATIONS.roles })
   })
 
   it('fetches user info correctly', async () => {

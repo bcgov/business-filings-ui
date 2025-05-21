@@ -222,33 +222,6 @@ export const useRootStore = defineStore('root', {
       )
     },
 
-    /** Is True if this is a bootstrap todo item and should be displayed in the Todo List. */
-    isBootstrapTodo (): boolean {
-      return (
-        this.isAmalgamationTodo ||
-        this.isContinuationInTodo ||
-        this.isIncorporationApplicationTodo ||
-        this.isRegistrationTodo
-      )
-    },
-
-    /** Is True if this is a bootstrap pending item and should be displayed in the Pending List. */
-    isBootstrapPending (): boolean {
-      return (
-        this.isContinuationInPending
-      )
-    },
-
-    /** Is True if this is a bootstrap filing item and should be displayed in the Filing History List. */
-    isBootstrapFiling (): boolean {
-      return (
-        this.isAmalgamationFiling ||
-        this.isContinuationInFiling ||
-        this.isIncorporationApplicationFiling ||
-        this.isRegistrationFiling
-      )
-    },
-
     /** The Name Request (may be null). */
     getNameRequest (state: RootStateIF): any {
       return (state.nameRequest)
