@@ -1308,8 +1308,9 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   /**
    * Updates the appointment/cessation date for directors that were changed in this filing.
    * @param newDate The new date.
+   * @param oldDate The old date.
    */
-  updateNewDirectorDates (newDate: string, oldDate: string): void {
+  updateChangedDirectorDates (newDate: string, oldDate: string): void {
     if (oldDate === newDate) return
 
     this.allDirectors.forEach(dir => {
@@ -1499,7 +1500,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.asOfDate = newVal
 
     // update the appointment/cessation dates for applicable directors
-    this.updateNewDirectorDates(newVal, oldVal)
+    this.updateChangedDirectorDates(newVal, oldVal)
   }
 
   /** Emits an event containing the earliest director change date. */
