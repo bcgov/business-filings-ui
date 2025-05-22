@@ -9,8 +9,8 @@ import { AccountTypes, AuthorizationRoles, AuthorizedActions } from '@/enums'
 export function IsAuthorized (action: AuthorizedActions): boolean {
   switch (true) {
     case isBusinessRegistryStaff(): return BusinessRegistryStaffRoles.includes(action)
-    case isMaximusStaff(): return MaximusStaffRoles.includes(action)
-    case isContactCentreStaff(): return ContactCentreStaffRoles.includes(action)
+    case isMaximusStaff(): return MaximusStaffRoles.includes(action) // NOSONAR - need it id roles required
+    case isContactCentreStaff(): return ContactCentreStaffRoles.includes(action) // NOSONAR - need to id roles
     case isSbcFieldOfficeStaff(): return SbcFieldOfficeStaffRoles.includes(action)
     default: return DefaultRoles.includes(action)
   }
@@ -49,8 +49,9 @@ function isContactCentreStaff (): boolean {
  */
 function isSbcFieldOfficeStaff (): boolean {
   const store = useRootStore()
-  // return store.getAuthRoles.includes(AuthorizationRoles.SBC_STAFF) // *** TODO: uncomment this after #27536
-  return (store.getAccountInformation.accountType === AccountTypes.SBC_STAFF) // *** TODO: delete this after #27536
+  // NOSONAR *** return store.getAuthRoles.includes(AuthorizationRoles.SBC_STAFF) TODO: uncomment this after #27536
+  // NOSONAR *** TODO: delete next line after #27536
+  return (store.getAccountInformation.accountType === AccountTypes.SBC_STAFF)
 }
 
 /**
