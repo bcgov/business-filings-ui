@@ -490,7 +490,6 @@ export default class App extends Mixins(
    */
   private async loadAccountInformation (): Promise<any> {
     let currentAccount = null
-    console.log('Starting to load account info')
 
     for (let i = 0; i < 50; i++) {
       const account = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
@@ -500,7 +499,6 @@ export default class App extends Mixins(
           break
         } catch (e) {
           console.error('Failed to parse account from sessionStorage', e)
-          currentAccount = null
         }
         await sleep(100)
       }
