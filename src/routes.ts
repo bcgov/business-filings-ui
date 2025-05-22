@@ -1,4 +1,3 @@
-import Dashboard from '@/views/Dashboard.vue'
 import AgmExtension from '@/views/AgmExtension.vue'
 import AgmLocationChg from '@/views/AgmLocationChg.vue'
 import AmalgamationSelection from '@/views/AmalgamationSelection.vue'
@@ -21,7 +20,6 @@ export default [
   {
     path: '/',
     name: Routes.DASHBOARD,
-    component: Dashboard,
     meta: {
       requiresAuth: true
     }

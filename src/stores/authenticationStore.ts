@@ -1,7 +1,7 @@
 import Vue from 'vue'
-import { AccountTypes } from '@bcrs-shared-components/enums'
-import { CurrentAccountIF, CurrentUserIF } from '@/interfaces'
+import { AccountInformationIF, CurrentAccountIF, CurrentUserIF } from '@/interfaces'
 import { defineStore } from 'pinia'
+import { AuthorizationRoles } from '@/enums'
 
 export const useAuthenticationStore = defineStore('authentication', {
   getters: {
@@ -15,6 +15,19 @@ export const useAuthenticationStore = defineStore('authentication', {
         accountId = JSON.parse(currentAccount)?.id
       }
       return accountId
+    },
+
+    /**
+    * The Account Information object.
+    **/
+    getAccountInformation (): AccountInformationIF {
+      return Vue.prototype.$store.state.account?.accountInformation
+    },
+    /**
+    * The user's roles from the Auth API "authorizations" endpoint.
+    */
+    getAuthRoles (): Array<AuthorizationRoles> {
+      return Vue.prototype.$store.state.account?.authRoles
     },
 
     /**
@@ -51,21 +64,7 @@ export const useAuthenticationStore = defineStore('authentication', {
     /** True if the user is (Keycloak) authenticated. */
     isAuthenticated (): boolean {
       return Vue.prototype.$store.getters['auth/isAuthenticated'] || false
-    },
-
-    /** True if the current account is a premium account. */
-    isPremiumAccount (): boolean {
-      return (this.getCurrentAccount?.accountType === AccountTypes.PREMIUM)
-    },
-
-    /** True if the current account is a SBC staff account (which is not the same as Staff). */
-    isSbcStaff (): boolean {
-      return (this.getCurrentAccount?.accountType === AccountTypes.SBC_STAFF)
-    },
-
-    /** True if the current user has Staff role. */
-    isRoleStaff (): boolean {
-      return (this.getKeycloakRoles?.includes('staff') || false)
     }
+
   }
 })
