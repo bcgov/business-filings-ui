@@ -24,18 +24,11 @@
               label="Enter your Director Change Date"
               hint="YYYY/MM/DD"
               filled
+              append-icon="mdi-calendar"
               v-bind="attrs"
               v-on="on"
-            >
-              <template #append>
-                <v-icon
-                  class="calendar-icon"
-                  @click.stop="menu = true"
-                >
-                  mdi-calendar
-                </v-icon>
-              </template>
-            </v-text-field>
+              @click:append="menu = true"
+            />
           </template>
           <v-date-picker
             id="cod-datepicker"
