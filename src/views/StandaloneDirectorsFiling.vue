@@ -132,6 +132,7 @@
                   <Directors
                     ref="directorsComponent"
                     :directors.sync="updatedDirectors"
+                    :codDate="codDate"
                     @directorsPaidChange="onDirectorsPaidChange($event)"
                     @directorsFreeChange="onDirectorsFreeChange($event)"
                     @directorFormValid="directorFormValid=$event"

@@ -728,6 +728,11 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    */
   @Prop({ default: () => [] }) readonly directors!: DirectorIF[]
 
+  /**
+   * Change of Director date from parent page, used to set our 'asOfDate' when a new date is selected.
+   */
+  @Prop({ default: '' }) readonly codDate!: string
+
   @Getter(useRootStore) getCurrentDate!: string
   @Getter(useRootStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getIdentifier!: string
@@ -1301,6 +1306,23 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   }
 
   /**
+   * Updates the appointment/cessation date for directors that were changed in this filing.
+   * @param newDate The new date.
+   */
+  updateNewDirectorDates (newDate: string, oldDate: string): void {
+    if (oldDate === newDate) return
+
+    this.allDirectors.forEach(dir => {
+      if (this.isNew(dir)) {
+        dir.appointmentDate = newDate
+      }
+      if (!this.isActive(dir)) {
+        dir.cessationDate = newDate
+      }
+    })
+  }
+
+  /**
    * Restores the director's name after resetting or cancelling a name change.
    * @param id ID of the director currently being edited.
    * @param isRestore Boolean indicating a hard or soft name reset.
@@ -1469,6 +1491,15 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   onComplianceMsgChanged (): void {
     // emit event back up to parent
     this.emitcomplianceDialogMsg()
+  }
+
+  @Watch('codDate', { immediate: true })
+  onCodDateChanged (newVal: string, oldVal: string): void {
+    // update asOfDate with the new date
+    this.asOfDate = newVal
+
+    // update the appointment/cessation dates for applicable directors
+    this.updateNewDirectorDates(newVal, oldVal)
   }
 
   /** Emits an event containing the earliest director change date. */
