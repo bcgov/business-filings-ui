@@ -355,55 +355,14 @@ export default class App extends Mixins(
     this.setCurrentDate(this.dateToYyyyMmDd(jsDate))
 
     // check authorizations
-    try {
-      // load account information
-      await this.loadAccountInformation().catch(error => {
-        console.log('Account info error = ', error) // eslint-disable-line no-console
-        throw error
-      })
-
-      // safety check
-      if (!this.businessId) {
-        throw new Error('Missing Business ID')
-      }
-      // check if current user is authorized
-      const response = await AuthServices.fetchAuthorizations(
-        this.getAuthApiUrl, this.businessId
-      )
-      this.storeAuthorizations(response) // throws if no role
-      const authRoles: Array<AuthorizationRoles> = response.roles || []
-      if (!Array.isArray(authRoles)) {
-        throw new Error('Invalid auth roles 1')
-      }
-
-      // verify that array has "view" or "staff" roles
-      if (
-        !authRoles.includes(AuthorizationRoles.VIEW) &&
-        !authRoles.includes(AuthorizationRoles.STAFF)
-      ) {
-        throw new Error('Invalid auth roles 2')
-      }
-
-      this.setAuthRoles(authRoles)
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-      if (this.businessId) this.businessAuthErrorDialog = true
-      if (this.tempRegNumber) this.nameRequestAuthErrorDialog = true
-      return // do not execute remaining code
+    this.checkAuth()
+    // If the error dialogs have been tripped, then don't proceed
+    if (this.businessAuthErrorDialog === true || this.nameRequestAuthErrorDialog === true) {
+      return
     }
 
     // fetch user info and update Launch Darkly
-    // and save user's Keycloak GUID
-    try {
-      const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl)
-      this.setUserInfo(userInfo)
-      await this.updateLaunchDarkly(userInfo)
-      this.setUserKeycloakGuid(userInfo.keycloakGuid)
-    } catch (error) {
-      // just log the error -- no need to halt app
-      // eslint-disable-next-line no-console
-      console.log('Error fetching user info or updating Launch Darkly =', error)
-    }
+    this.setupLaunchDarkly()
 
     // check whether to redirect to the new Business Dashboard
     if (this.$route.query.noRedirect !== undefined) this.setNoRedirect(true)
@@ -475,6 +434,59 @@ export default class App extends Mixins(
     }
   }
 
+  /** Check authorizations. */
+  async checkAuth (): Promise<void> {
+    try {
+      // load account information
+      await this.loadAccountInformation().catch(error => {
+        console.log('Account info error = ', error) // eslint-disable-line no-console
+        throw error
+      })
+
+      // safety check
+      if (!this.businessId) {
+        throw new Error('Missing Business ID')
+      }
+      // check if current user is authorized
+      const response = await AuthServices.fetchAuthorizations(
+        this.getAuthApiUrl, this.businessId
+      )
+      this.storeAuthorizations(response) // throws if no role
+      const authRoles: Array<AuthorizationRoles> = response.roles || []
+      if (!Array.isArray(authRoles)) {
+        throw new Error('Invalid auth roles 1')
+      }
+
+      // verify that array has "view" or "staff" roles
+      if (
+        !authRoles.includes(AuthorizationRoles.VIEW) &&
+        !authRoles.includes(AuthorizationRoles.STAFF)
+      ) {
+        throw new Error('Invalid auth roles 2')
+      }
+
+      this.setAuthRoles(authRoles)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+      if (this.businessId) this.businessAuthErrorDialog = true
+      if (this.tempRegNumber) this.nameRequestAuthErrorDialog = true
+      // do not execute remaining code
+    }
+  }
+
+  /* Gather info for LD and save user's Keycloak GUID */
+  async setupLaunchDarkly (): Promise<void> {
+    try {
+      const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl)
+      this.setUserInfo(userInfo)
+      await this.updateLaunchDarkly(userInfo)
+      this.setUserKeycloakGuid(userInfo.keycloakGuid)
+    } catch (error) {
+      // just log the error -- no need to halt app
+      // eslint-disable-next-line no-console
+      console.log('Error fetching user info or updating Launch Darkly =', error)
+    }
+  }
   /** Gets Keycloak JWT and parses it. */
   getJWT (): any {
     const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
@@ -497,8 +509,8 @@ export default class App extends Mixins(
         try {
           currentAccount = JSON.parse(account)
           break
-        } catch (e) {
-          console.error('Failed to parse account from sessionStorage', e)
+        } catch (error) {
+          console.error('Failed to parse account from sessionStorage', error)
         }
         await sleep(100)
       }
