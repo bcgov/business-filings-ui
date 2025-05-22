@@ -15,7 +15,7 @@
           offset-y
           min-width="18rem"
         >
-          <template #activator="{ on }">
+          <template #activator="{ on, attrs }">
             <v-text-field
               id="cod-textfield"
               v-model="dateFormatted"
@@ -25,7 +25,9 @@
               hint="YYYY/MM/DD"
               append-icon="mdi-calendar"
               filled
+              v-bind="attrs"
               v-on="on"
+              @click:append="menu = true"
             />
           </template>
           <v-date-picker
