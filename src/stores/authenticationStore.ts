@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import { AccountTypes } from '@bcrs-shared-components/enums'
 import { AccountInformationIF, CurrentAccountIF, CurrentUserIF } from '@/interfaces'
 import { defineStore } from 'pinia'
 import { AuthorizationRoles } from '@/enums'
