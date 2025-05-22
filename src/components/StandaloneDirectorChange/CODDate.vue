@@ -23,8 +23,8 @@
               :rules="codDateRules"
               label="Enter your Director Change Date"
               hint="YYYY/MM/DD"
-              filled
               append-icon="mdi-calendar"
+              filled
               v-bind="attrs"
               v-on="on"
               @click:append="menu = true"
