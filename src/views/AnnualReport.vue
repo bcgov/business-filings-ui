@@ -1280,12 +1280,11 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     // ignore changes before data is loaded
     if (!this.dataLoaded) return null
 
-    // fetch original office addresses and directors with new date + update working data
-    // (this will overwrite the current data)
+    // fetch original office addresses and directors with new date
     this.isFetching = true
     if (!this.isVitestRunning) {
-      await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
-      await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
+      await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, false)
+      await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, false)
     }
     this.isFetching = false
   }

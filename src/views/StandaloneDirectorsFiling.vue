@@ -1008,11 +1008,10 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
     // ignore changes before data is loaded
     if (!this.dataLoaded) return null
 
-    // fetch original directors with new date + update working data
-    // (this will overwrite the current data)
+    // fetch original directors with new date
     this.isFetching = true
     if (!this.isVitestRunning) {
-      await this.$refs.directorsComponent.getOrigDirectors(this.codDate, true)
+      await this.$refs.directorsComponent.getOrigDirectors(this.codDate, false)
     }
     this.isFetching = false
   }

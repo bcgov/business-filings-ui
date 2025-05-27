@@ -736,7 +736,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   // @Getter(useBusinessStore) isBaseCompany!: boolean
 
   /** Effective date for fetching and appointing/ceasing directors. */
-  asOfDate: string
+  asOfDate: string = null
 
   /** Original directors from Legal API. */
   original: DirectorIF[] = []
@@ -1301,6 +1301,24 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   }
 
   /**
+   * Updates the appointment/cessation date for directors that were changed in this filing.
+   * @param newDate The new date.
+   * @param oldDate The old date.
+   */
+  updateChangedDirectorDates (newDate: string, oldDate: string): void {
+    if (oldDate === newDate) return
+
+    this.allDirectors.forEach(dir => {
+      if (this.isNew(dir)) {
+        dir.appointmentDate = newDate
+      }
+      if (!this.isActive(dir)) {
+        dir.cessationDate = newDate
+      }
+    })
+  }
+
+  /**
    * Restores the director's name after resetting or cancelling a name change.
    * @param id ID of the director currently being edited.
    * @param isRestore Boolean indicating a hard or soft name reset.
@@ -1469,6 +1487,12 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   onComplianceMsgChanged (): void {
     // emit event back up to parent
     this.emitcomplianceDialogMsg()
+  }
+
+  @Watch('asOfDate', { immediate: true })
+  onAsOfDateChanged (newVal: string, oldVal: string): void {
+    // update the appointment/cessation dates for applicable directors
+    this.updateChangedDirectorDates(newVal, oldVal)
   }
 
   /** Emits an event containing the earliest director change date. */
