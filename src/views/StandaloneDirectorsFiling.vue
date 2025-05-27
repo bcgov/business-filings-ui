@@ -132,7 +132,6 @@
                   <Directors
                     ref="directorsComponent"
                     :directors.sync="updatedDirectors"
-                    :codDate="codDate"
                     @directorsPaidChange="onDirectorsPaidChange($event)"
                     @directorsFreeChange="onDirectorsFreeChange($event)"
                     @directorFormValid="directorFormValid=$event"
@@ -1002,6 +1001,19 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
         this.onClickFilePayFinish()
         break
     }
+  }
+
+  @Watch('codDate')
+  async onCodDateChanged (): Promise<void> {
+    // ignore changes before data is loaded
+    if (!this.dataLoaded) return null
+
+    // fetch original directors with new date
+    this.isFetching = true
+    if (!this.isVitestRunning) {
+      await this.$refs.directorsComponent.getOrigDirectors(this.codDate, false)
+    }
+    this.isFetching = false
   }
 
   @Watch('isCertified')

@@ -728,11 +728,6 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    */
   @Prop({ default: () => [] }) readonly directors!: DirectorIF[]
 
-  /**
-   * Change of Director date from parent page, used to set our 'asOfDate' when a new date is selected.
-   */
-  @Prop({ default: '' }) readonly codDate!: string
-
   @Getter(useRootStore) getCurrentDate!: string
   @Getter(useRootStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getIdentifier!: string
@@ -741,7 +736,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   // @Getter(useBusinessStore) isBaseCompany!: boolean
 
   /** Effective date for fetching and appointing/ceasing directors. */
-  asOfDate: string
+  asOfDate: string = null
 
   /** Original directors from Legal API. */
   original: DirectorIF[] = []
@@ -1494,11 +1489,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.emitcomplianceDialogMsg()
   }
 
-  @Watch('codDate', { immediate: true })
-  onCodDateChanged (newVal: string, oldVal: string): void {
-    // update asOfDate with the new date
-    this.asOfDate = newVal
-
+  @Watch('asOfDate', { immediate: true })
+  onAsOfDateChanged (newVal: string, oldVal: string): void {
     // update the appointment/cessation dates for applicable directors
     this.updateChangedDirectorDates(newVal, oldVal)
   }
