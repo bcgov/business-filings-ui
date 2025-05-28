@@ -18,9 +18,6 @@ document.body.setAttribute('data-app', 'true')
 
 describe('Save Error Dialog', () => {
   it('displays generic message for normal users', async () => {
-    // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = shallowMount(SaveErrorDialog,
       {
         propsData: {
@@ -69,9 +66,6 @@ describe('Save Error Dialog', () => {
   })
 
   it('displays errors', () => {
-    // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = shallowMount(SaveErrorDialog,
       {
         propsData: {
@@ -93,9 +87,6 @@ describe('Save Error Dialog', () => {
   })
 
   it('displays warnings', () => {
-    // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = shallowMount(SaveErrorDialog,
       {
         propsData: {
@@ -116,9 +107,6 @@ describe('Save Error Dialog', () => {
   })
 
   it('emits an event when Exit button is clicked', async () => {
-    // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = mount(SaveErrorDialog,
       {
         vuetify,

@@ -326,7 +326,6 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   // enums for template
   readonly axios = axios
   readonly AllowableActions = AllowableActions
-  readonly IsAuthorized = IsAuthorized
 
   /** Whether this entity is a business (and not a draft IA/Registration). */
   get isBusiness (): boolean {
@@ -396,9 +395,9 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   /** Whether to disable the View and Change Business Information button. */
   get isChangeBusinessInfoDisabled (): boolean {
-    // enable if business is Not In Good Standing and user isn't staff
+    // enable if business is Not In Good Standing and user does not have override permissions
     // clicking button will show a dialog -- see promptChangeBusinessInfo()
-    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) return false
+    if (!this.isGoodStanding && !IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) return false
 
     // otherwise, disable if not allowed
     return !this.isAllowed(AllowableActions.BUSINESS_INFORMATION)
@@ -406,22 +405,23 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   /** Whether to disable the Dissolve this Business action. */
   get isDissolveBusinessDisabled (): boolean {
-    // enable if business is Not In Good Standing and user isn't staff
+    // enable if business is Not In Good Standing and user does not have override permissions
     // clicking button will show a dialog -- see promptDissolveBusiness()
-    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) return false
+    if (!this.isGoodStanding && !IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) return false
 
     // otherwise, disable if not allowed
     return !this.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)
   }
 
   /**
-   * If business is Not In Good Standing and user isn't staff, emits an event to display NIGS dialog.
+   * If business is Not In Good Standing and user doesn't have override permissions,
+   *  emits an event to display NIGS dialog.
    * Otherwise, navigates to Edit UI to create a Special Resolution or Change or Alteration filing.
    */
   promptChangeBusinessInfo (): void {
     const editUrl = `${this.getEditUrl}${this.getIdentifier}`
 
-    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) {
+    if (!this.isGoodStanding && !IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else if (this.isEntityCoop) {
       navigate(`${editUrl}/special-resolution`)
@@ -433,11 +433,12 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   }
 
   /**
-   * If business is Not In Good Standing and user isn't staff, emits an event to display NIGS dialog.
+   * If business is Not In Good Standing and user isn't doesn't have override permission,
+   *  emits an event to display NIGS dialog.
    * Otherwise, emits an event to prompt user to confirm Voluntary Dissolution.
    */
   promptDissolveBusiness (): void {
-    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) {
+    if (!this.isGoodStanding && !IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) {
       this.emitNotInGoodStanding(NigsMessage.DISSOLVE)
     } else {
       this.emitConfirmDissolution()

@@ -100,7 +100,7 @@
           text
           @click="exit()"
         >
-          {{ !IsAuthorized(AuthorizedActions.STAFF_BREADCRUMBS) ? 'Back to My Dashboard' : 'OK' }}
+          {{ !IsAuthorized(AuthorizedActions.STAFF_PAYMENT) ? 'Back to My Dashboard' : 'OK' }}
         </v-btn>
       </v-card-actions>
     </v-card>

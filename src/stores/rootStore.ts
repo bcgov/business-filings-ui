@@ -27,7 +27,6 @@ export const useRootStore = defineStore('root', {
     currentJsDate: null,
     bootstrapFilingStatus: null,
     bootstrapFilingType: null,
-    keycloakRoles: [],
     noRedirect: false,
     stateFiling: null,
     userKeycloakGuid: null,
@@ -96,14 +95,6 @@ export const useRootStore = defineStore('root', {
         return (phone + `${ext ? (' x' + ext) : ''}`)
       }
       return null
-    },
-
-    /**
-     * The roles from the Keycloak token (JWT).
-     * @deprecated Use `authenticationStore.getKeycloakRoles` instead.
-     */
-    getKeycloakRoles (state: RootStateIF): Array<string> {
-      return state.keycloakRoles
     },
 
     /** Whether initial route specified "noRedirect" URL parameter. */
@@ -408,11 +399,6 @@ export const useRootStore = defineStore('root', {
 
     setStateFiling (stateFilingResponse: any) {
       this.stateFiling = stateFilingResponse
-    },
-
-    /** Set the roles from the Keycloak token (JWT). */
-    setKeycloakRoles (keycloakRoles: Array<string>) {
-      this.keycloakRoles = keycloakRoles
     },
 
     setNoRedirect (val: boolean) {

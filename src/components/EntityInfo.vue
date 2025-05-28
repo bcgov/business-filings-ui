@@ -1,7 +1,6 @@
 <template>
   <div
     id="entity-info"
-    :class=" { 'staff': accessEntityMenu, 'hover': showHoverStyle }"
   >
     <v-container class="py-0">
       <v-row
@@ -131,11 +130,6 @@ export default class EntityInfo extends Vue {
     font-size: $px-11;
   }
 
-  // ENABLE THIS TO GET STAFF-SPECIFIC BACKGROUND IMAGE
-  // &.staff {
-  //   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='105' height='100'><text x='0' y='105' font-size='30' transform='rotate(-45 10,40)' opacity='0.1'>STAFF</text></svg>");
-  //   background-repeat: repeat-x;
-  // }
 }
 
 // vertical lines between items:

@@ -16,7 +16,6 @@ const rootStore = useRootStore()
 describe('NotEligibleExtensionDialog', () => {
   it('displays everything for normal users', () => {
     // init store
-    rootStore.keycloakRoles = ['']
     rootStore.setAuthRoles([AuthorizationRoles.VIEW])
 
     const wrapper = mount(NotEligibleExtensionDialog, { propsData: { dialog: true }, vuetify })
