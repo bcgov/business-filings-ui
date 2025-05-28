@@ -18,13 +18,6 @@ import { FilingNames } from '@bcrs-shared-components/enums'
 
 export default [
   {
-    path: '/',
-    name: Routes.DASHBOARD,
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
     path: '/agm-extension',
     name: Routes.AGM_EXTENSION,
     component: AgmExtension,

@@ -15,8 +15,6 @@ export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) isEntitySoleProp!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
 
-  readonly IsAuthorized = IsAuthorized
-  readonly AuthorizedActions = AuthorizedActions
   /**
    * Returns True if the specified action is allowed, else False.
    * @param action the action to check
@@ -99,7 +97,7 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.DETAIL_COMMENT: {
-        return (isBusiness && this.IsAuthorized(AuthorizedActions.STAFF_COMMENTS))
+        return (isBusiness && IsAuthorized(AuthorizedActions.DETAIL_COMMENTS))
       }
 
       case AllowableActions.DIGITAL_CREDENTIALS: {
@@ -166,7 +164,7 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.STAFF_COMMENT: {
-        return (isBusiness && this.IsAuthorized(AuthorizedActions.STAFF_COMMENTS))
+        return (isBusiness && IsAuthorized(AuthorizedActions.STAFF_COMMENTS))
       }
 
       case AllowableActions.TRANSITION: {

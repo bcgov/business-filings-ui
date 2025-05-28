@@ -3,7 +3,6 @@ import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { defineStore } from 'pinia'
 import { useBusinessStore } from './businessStore'
-import { useRootStore } from './rootStore'
 import { IsAuthorized } from '@/utils'
 import { AuthorizedActions } from '@/enums'
 
@@ -79,11 +78,6 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       return state.loadingOneIndex
     },
 
-    /** The currently expanded panel. */
-    getPanel (state: FilingHistoryListStateIF): number {
-      return state.panel
-    },
-
     /** A pending COA filing, or undefined. */
     getPendingCoa (): ApiFilingIF {
       const businessStore = useBusinessStore()
@@ -97,26 +91,6 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
           DateUtilities.isDateFuture(filing.effectiveDate)
         )
       })
-    },
-
-    /** Whether the Add Comment dialog should be displayed. */
-    isAddCommentDialog (state: FilingHistoryListStateIF): boolean {
-      return state.addCommentDialog
-    },
-
-    /** Whether the Download Error dialog should be displayed. */
-    isDownloadErrorDialog (state: FilingHistoryListStateIF): boolean {
-      return state.downloadErrorDialog
-    },
-
-    /** Whether the File Correction dialog should be displayed. */
-    isFileCorrectionDialog (state: FilingHistoryListStateIF): boolean {
-      return state.fileCorrectionDialog
-    },
-
-    /** Whether the Load Correction dialog should be displayed. */
-    isLoadCorrectionDialog (state: FilingHistoryListStateIF): boolean {
-      return state.loadCorrectionDialog
     },
 
     /** Whether all documents are downloading. */
@@ -168,14 +142,6 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
   actions: {
     setCurrentFiling (val: ApiFilingIF) {
       this.currentFiling = val
-    },
-
-    setDownloadErrorDialog (val: boolean) {
-      this.downloadErrorDialog = val
-    },
-
-    setFileCorrectionDialog (val: boolean) {
-      this.fileCorrectionDialog = val
     },
 
     setLoadingAll (val: boolean) {
@@ -230,41 +196,6 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
         }
       })
       this.filings = filings
-    },
-
-    /** Closes current panel or opens new panel and loads comments and documents. */
-    async toggleFilingHistoryItem (index: number): Promise<void> {
-      const rootStore = useRootStore()
-      try {
-        const isCurrentPanel = (this.getPanel === index)
-
-        // check if we're opening a new panel
-        if (!isCurrentPanel) {
-          // get a reference to the filing so we can update it right in the main list
-          const filing = this.getFilings[index]
-
-          // check if we're missing comments or documents
-          const promises: Array<Promise<void>> = []
-          if (filing.commentsLink && !filing.comments) promises.push(this.loadComments(filing))
-          if (filing.documentsLink && !filing.documents) promises.push(this.loadDocuments(filing))
-
-          if (promises.length > 0) {
-            rootStore.setFetchingDataSpinner(true)
-
-            // NB: errors are handled in loadComments() and loadDocuments()
-            await Promise.all(promises)
-
-            // leave busy spinner displayed another 250ms
-            // (to mitigate flashing when the promises are resolved quickly)
-            setTimeout(() => { rootStore.setFetchingDataSpinner(false) }, 250)
-          }
-        }
-
-        this.setPanel(isCurrentPanel ? null : index)
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log('toggleFilingHistoryItem() error =', error)
-      }
     },
 
     /** Loads the comments for this history item. */
@@ -366,30 +297,6 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
           // eslint-disable-next-line no-console
           console.log(`invalid document = ${title} | ${filename} | ${link}`)
         }
-      }
-    },
-
-    showCommentDialog (filing: ApiFilingIF): void {
-      this.currentFiling = filing
-      this.addCommentDialog = true
-    },
-
-    async hideCommentDialog (needReload: boolean): Promise<void> {
-      const rootStore = useRootStore()
-      try {
-        this.addCommentDialog = false
-
-        // if needed, reload comments for current filing
-        if (needReload) {
-          if (this.getCurrentFiling?.commentsLink) { // safety check
-            rootStore.setFetchingDataSpinner(true)
-            await this.loadComments(this.getCurrentFiling)
-            setTimeout(() => { rootStore.setFetchingDataSpinner(false) }, 250)
-          }
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log('hideCommentDialog() error =', error)
       }
     }
   }

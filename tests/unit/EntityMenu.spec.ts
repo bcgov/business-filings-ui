@@ -29,7 +29,6 @@ describe('Entity Menu - entities', () => {
     rootStore.setBootstrapFilingStatus(null)
     rootStore.setBootstrapFilingType(null)
     businessStore.setState(null)
-    rootStore.keycloakRoles = []
 
     const wrapper = mount(EntityMenu, {
       vuetify,
@@ -52,7 +51,6 @@ describe('Entity Menu - entities', () => {
     businessStore.setGoodStanding(true)
     businessStore.setLegalName('My Business')
     businessStore.setLegalType(CorpTypeCd.COOP)
-    rootStore.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method
     function isAllowed (action: AllowableActions): boolean {
@@ -87,7 +85,6 @@ describe('Entity Menu - entities', () => {
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
     rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
-    rootStore.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method
     function isAllowed (action: AllowableActions): boolean {
@@ -121,7 +118,6 @@ describe('Entity Menu - entities', () => {
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     rootStore.setBootstrapFilingStatus(FilingStatus.COMPLETED)
     rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
-    rootStore.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method
     function isAllowed (action: AllowableActions): boolean {
@@ -372,7 +368,6 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
   it('emits Not In Good Standing event if not in good standing', async () => {
     businessStore.setGoodStanding(false)
     businessStore.setState(EntityState.ACTIVE)
-    rootStore.keycloakRoles = [] // regular user
 
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {

@@ -15,9 +15,6 @@ const rootStore = useRootStore()
 
 describe('TechnicalErrorDialog', () => {
   it('displays everything for normal users', () => {
-    // init store
-    rootStore.keycloakRoles = ['']
-
     const wrapper = mount(TechnicalErrorDialog, { propsData: { dialog: true }, vuetify })
 
     expect(wrapper.find('.v-card__title').text()).toBe('Error')

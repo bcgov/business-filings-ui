@@ -5,7 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useRootStore } from '@/stores'
 import * as FeatureFlags from '@/utils/feature-flags'
 import MixinTester from '@/mixin-tester.vue'
-import { AuthorizationRoles, AuthorizedActions, AllowableActions, FilingSubTypes } from '@/enums'
+import { AuthorizationRoles, AllowableActions, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypeIF } from '@/interfaces'
@@ -389,9 +389,8 @@ describe('Allowable Actions Mixin', () => {
   it('identifies whether Staff Comment allowed', () => {
     // verify business but not staff
     store.setAuthRoles([AuthorizationRoles.VIEW])
-    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    vm.IsAuthorized(AuthorizedActions.STAFF_COMMENTS)
     vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(false)
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(false)
 
     // verify staff but no business

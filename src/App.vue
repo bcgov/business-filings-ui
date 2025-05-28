@@ -60,6 +60,20 @@
         v-html="bannerText"
       />
     </v-alert>
+    <div class="app-body">
+      <!-- only show pages while signing in or once the data is loaded -->
+      <main v-if="isSigninRoute || dataLoaded">
+        <Breadcrumb :breadcrumbs="breadcrumbs" />
+        <EntityInfo
+          v-if="!isAmalgamationSelectionRoute"
+          @confirmDissolution="confirmDissolutionDialog = true"
+          @notInGoodStanding="nigsMessage = $event; notInGoodStandingDialog = true"
+          @downloadBusinessSummary="downloadBusinessSummary()"
+          @viewAddDigitalCredentials="viewAddDigitalCredentials()"
+        />
+        <router-view />
+      </main>
+    </div>
 
     <SbcFooter :aboutText="aboutText" />
   </v-app>
@@ -91,6 +105,7 @@ import {
   AccountInformationIF,
   ApiFilingIF,
   ApiTaskIF,
+  DocumentIF,
   NameRequestIF,
   OfficeAddressIF,
   PartyIF
@@ -168,7 +183,6 @@ export default class App extends Mixins(
 
   // root store references
   @Getter(useRootStore) getAuthRoles!: Array<AuthorizationRoles>
-  @Getter(useRootStore) getKeycloakRoles!: Array<string>
   @Getter(useRootStore) isAuthorizationStatus!: boolean
   @Getter(useRootStore) showFetchingDataSpinner!: boolean
   @Getter(useRootStore) showStartingAmalgamationSpinner!: boolean
@@ -330,7 +344,6 @@ export default class App extends Mixins(
   @Action(useRootStore) setCurrentDate!: (x: string) => void
   @Action(useRootStore) setCurrentJsDate!: (x: Date) => void
   @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
-  @Action(useRootStore) setKeycloakRoles!: (x: Array<string>) => void
   @Action(useRootStore) setNameRequest!: (x: any) => void
   @Action(useRootStore) setNoRedirect!: (x: boolean) => void
   @Action(useRootStore) setParties!: (x: Array<PartyIF>) => void
@@ -354,8 +367,22 @@ export default class App extends Mixins(
     this.setCurrentJsDate(jsDate)
     this.setCurrentDate(this.dateToYyyyMmDd(jsDate))
 
-    // check authorizations
-    this.checkAuth()
+    // ensure user is authorized to access this business
+    try {
+      await this.checkAuth()
+    } catch (error) {
+      console.log('Auth error =', error) // eslint-disable-line no-console
+      this.businessAuthErrorDialog = true
+      return
+    }
+
+    // load account information
+    try {
+      await this.loadAccountInformation()
+    } catch (error) {
+      console.log('Account info error =', error) // eslint-disable-line no-console
+      return
+    }
     // If the error dialogs have been tripped, then don't proceed
     if (this.businessAuthErrorDialog === true || this.nameRequestAuthErrorDialog === true) {
       return
@@ -437,12 +464,6 @@ export default class App extends Mixins(
   /** Check authorizations. */
   async checkAuth (): Promise<void> {
     try {
-      // load account information
-      await this.loadAccountInformation().catch(error => {
-        console.log('Account info error = ', error) // eslint-disable-line no-console
-        throw error
-      })
-
       // safety check
       if (!this.businessId) {
         throw new Error('Missing Business ID')
@@ -451,10 +472,9 @@ export default class App extends Mixins(
       const response = await AuthServices.fetchAuthorizations(
         this.getAuthApiUrl, this.businessId
       )
-      this.storeAuthorizations(response) // throws if no role
       const authRoles: Array<AuthorizationRoles> = response.roles || []
       if (!Array.isArray(authRoles)) {
-        throw new Error('Invalid auth roles 1')
+        throw new Error('Invalid auth roles')
       }
 
       // verify that array has "view" or "staff" roles
@@ -462,7 +482,7 @@ export default class App extends Mixins(
         !authRoles.includes(AuthorizationRoles.VIEW) &&
         !authRoles.includes(AuthorizationRoles.STAFF)
       ) {
-        throw new Error('Invalid auth roles 2')
+        throw new Error('Invalid auth roles')
       }
 
       this.setAuthRoles(authRoles)
@@ -470,7 +490,6 @@ export default class App extends Mixins(
       console.log(error) // eslint-disable-line no-console
       if (this.businessId) this.businessAuthErrorDialog = true
       if (this.tempRegNumber) this.nameRequestAuthErrorDialog = true
-      // do not execute remaining code
     }
   }
 
@@ -498,7 +517,6 @@ export default class App extends Mixins(
 
   /**
    * Gets account info and stores it.
-   * Among other things, this is how we find out if this is a staff account.
    */
   private async loadAccountInformation (): Promise<any> {
     let currentAccount = null
@@ -537,15 +555,6 @@ export default class App extends Mixins(
     } catch (error) {
       throw new Error('Error parsing token - ' + error)
     }
-  }
-
-  /** Fetches Keycloak roles from JWT. */
-  fetchKeycloakRoles (jwt: any): Array<string> {
-    const keycloakRoles = jwt.roles
-    if (keycloakRoles && keycloakRoles.length > 0) {
-      return keycloakRoles
-    }
-    throw new Error('Error getting Keycloak roles')
   }
 
   storeAuthorizations (response: any): void {
@@ -701,6 +710,25 @@ export default class App extends Mixins(
       this.nameRequestInvalidDialog = false
       await this.fetchData()
     }
+  }
+  /** Request and Download Business Summary Document. */
+  async downloadBusinessSummary (): Promise<void> {
+    this.setFetchingDataSpinner(true)
+    const summaryDocument: DocumentIF = {
+      title: 'Summary',
+      filename: `${this.businessId} Summary - ${this.getCurrentDate}.pdf`,
+      link: `businesses/${this.businessId}/documents/summary`
+    }
+    await LegalServices.fetchDocument(summaryDocument).catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('fetchDocument() error =', error)
+      this.downloadErrorDialog = true
+    })
+    this.setFetchingDataSpinner(false)
+  }
+  /** Direct to Digital Credentials. **/
+  viewAddDigitalCredentials (): void {
+    this.$router.push({ name: Routes.DIGITAL_CREDENTIALS })
   }
 }
 </script>

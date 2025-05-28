@@ -105,7 +105,7 @@ export default class NameRequestInvalidDialog extends Vue {
   readonly AuthorizedActions = AuthorizedActions
 
   /** Enum definition for use in template. */
-  NameRequestStates = NameRequestStates
+  readonly NameRequestStates = NameRequestStates
 
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog!: boolean

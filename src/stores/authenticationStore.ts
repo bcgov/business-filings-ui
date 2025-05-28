@@ -63,16 +63,6 @@ export const useAuthenticationStore = defineStore('authentication', {
       return Vue.prototype.$store.getters['auth/keycloakGuid']
     },
 
-    /** The user's Keycloak roles. */
-    getKeycloakRoles (): Array<string> {
-      return this.getCurrentUser?.roles || []
-    },
-
-    /** The user's Keycloak bearer token. */
-    getKeycloakToken (): string {
-      return Vue.prototype.$store.state.auth?.token
-    },
-
     /** True if the user is (Keycloak) authenticated. */
     isAuthenticated (): boolean {
       return Vue.prototype.$store.getters['auth/isAuthenticated'] || false
