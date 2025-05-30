@@ -417,7 +417,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { navigate } from '@/utils'
+import { IsAuthorized, navigate } from '@/utils'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import Directors from '@/components/common/Directors.vue'
@@ -427,7 +427,7 @@ import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { FilingStatus, SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -469,7 +469,6 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useConfigurationStore) getPayApiUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isEntityCoop!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useBusinessStore) nextARDate!: string
 
   // variables for AgmDate component
@@ -939,9 +938,9 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     // prevent double saving
     if (this.busySaving) return
 
-    // if this is a staff user clicking File and Pay (not Submit)
+    // if this is a user with STAFF_PAYMENT permissions clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
       this.staffPaymentDialog = true
       return
     }
@@ -1220,7 +1219,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (this.isRoleStaff) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false
@@ -1248,7 +1247,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       case SaveErrorReasons.FILE_PAY:
         // close the dialog and retry file-pay
         this.saveErrorReason = null
-        if (this.isRoleStaff) await this.onClickFilePay(true)
+        if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
         else await this.onClickFilePay()
         break
     }

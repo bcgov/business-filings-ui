@@ -1,10 +1,10 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import { GetFeatureFlag } from '@/utils'
-import { AllowableActions, CorpTypeCd, FilingSubTypes } from '@/enums'
+import { GetFeatureFlag, IsAuthorized } from '@/utils'
+import { AllowableActions, AuthorizedActions, CorpTypeCd, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { AllowedActionsIF } from '@/interfaces'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useBusinessStore } from '@/stores'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {
@@ -14,7 +14,6 @@ export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) isEntityFirm!: boolean
   @Getter(useBusinessStore) isEntitySoleProp!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -98,7 +97,7 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.DETAIL_COMMENT: {
-        return (isBusiness && this.isRoleStaff)
+        return (isBusiness && IsAuthorized(AuthorizedActions.DETAIL_COMMENTS))
       }
 
       case AllowableActions.DIGITAL_CREDENTIALS: {
@@ -165,7 +164,7 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.STAFF_COMMENT: {
-        return (isBusiness && this.isRoleStaff)
+        return (isBusiness && IsAuthorized(AuthorizedActions.STAFF_COMMENTS))
       }
 
       case AllowableActions.TRANSITION: {
