@@ -268,7 +268,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
             }
           } else if (prop === 'uploadedCourtOrder') {
             const fileNumber = filing.data?.order?.fileNumber || '[unknown]'
-            const title = IsAuthorized(AuthorizedActions.COURT_ORDER_FILING)
+            const title = IsAuthorized(AuthorizedActions.STAFF_FILINGS)
               ? `${filing.displayName} ${fileNumber}` : `${filing.displayName}`
             const filename = title
             const link = documents[prop] as string

@@ -16,7 +16,7 @@ const rootStore = useRootStore()
 describe('FetchErrorDialog', () => {
   it('displays everything for normal users', () => {
     // init store
-    rootStore.setAuthRoles([AuthorizationRoles.VIEW])
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
 
     const wrapper = shallowMount(FetchErrorDialog, { propsData: { dialog: true }, vuetify })
 

@@ -27,6 +27,7 @@ export const useRootStore = defineStore('root', {
     currentJsDate: null,
     bootstrapFilingStatus: null,
     bootstrapFilingType: null,
+    keycloakRoles: [],
     noRedirect: false,
     stateFiling: null,
     userKeycloakGuid: null,
@@ -97,13 +98,20 @@ export const useRootStore = defineStore('root', {
       return null
     },
 
+    /**
+     * The roles from the Keycloak token (JWT).
+     */
+    getKeycloakRoles (state: RootStateIF): Array<string> {
+      return state.keycloakRoles
+    },
+
     /** Whether initial route specified "noRedirect" URL parameter. */
     isNoRedirect (state: RootStateIF): boolean {
       return state.noRedirect
     },
 
     /**
-     * The user's roles from the Auth API "authorizations" endpoint.
+     * The user's roles from the Keycloak token.
      */
     getAuthRoles (): Array<AuthorizationRoles> {
       return this.authRoles
@@ -123,17 +131,6 @@ export const useRootStore = defineStore('root', {
 
     getBootstrapFilingStatus (state: RootStateIF): FilingStatus {
       return state.bootstrapFilingStatus
-    },
-
-    /** Whether this is an amalgamation bootstrap filing that belongs in the Todo List. */
-    isAmalgamationTodo (state: RootStateIF): boolean {
-      return (
-        state.bootstrapFilingType === FilingTypes.AMALGAMATION_APPLICATION &&
-        (
-          this.getBootstrapFilingStatus === FilingStatus.DRAFT ||
-          this.getBootstrapFilingStatus === FilingStatus.PENDING
-        )
-      )
     },
 
     /** Whether this is a continuation in bootstrap filing that belongs in the Todo List. */
@@ -403,6 +400,11 @@ export const useRootStore = defineStore('root', {
 
     setNoRedirect (val: boolean) {
       this.noRedirect = val
+    },
+
+    /** Set the roles from the Keycloak token (JWT). */
+    setKeycloakRoles (keycloakRoles: Array<string>) {
+      this.keycloakRoles = keycloakRoles
     },
 
     setUserKeycloakGuid (userKeycloakGuid: string) {

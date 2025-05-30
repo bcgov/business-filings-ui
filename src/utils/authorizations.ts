@@ -9,8 +9,8 @@ import { AccountTypes, AuthorizationRoles, AuthorizedActions } from '@/enums'
 export function IsAuthorized (action: AuthorizedActions): boolean {
   switch (true) {
     case isBusinessRegistryStaff(): return BusinessRegistryStaffRoles.includes(action)
-    case isMaximusStaff(): return MaximusStaffRoles.includes(action) // NOSONAR - need it id roles required
-    case isContactCentreStaff(): return ContactCentreStaffRoles.includes(action) // NOSONAR - need to id roles
+    case isMaximusStaff(): return MaximusStaffRoles.includes(action)
+    case isContactCentreStaff(): return ContactCentreStaffRoles.includes(action)
     case isSbcFieldOfficeStaff(): return SbcFieldOfficeStaffRoles.includes(action)
     default: return DefaultRoles.includes(action)
   }
@@ -59,16 +59,21 @@ function isSbcFieldOfficeStaff (): boolean {
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
 const BusinessRegistryStaffRoles = [
+  AuthorizedActions.ADDRESS_CHANGE_FILING,
   AuthorizedActions.ADMIN_DISSOLUTION_FILING,
-  AuthorizedActions.AMALGAMATION_OUT_FILING,
+  AuthorizedActions.AGM_CHG_LOCATION_FILING,
+  AuthorizedActions.AGM_EXTENSION_FILING,
+  AuthorizedActions.AMALGAMATION_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
+  AuthorizedActions.CONSENT_AMALGAMATION_OUT_FILING,
+  AuthorizedActions.CONSENT_CONTINUATION_OUT_FILING,
   AuthorizedActions.CONTINUATION_OUT_FILING,
-  AuthorizedActions.COURT_ORDER_FILING,
   AuthorizedActions.COURT_ORDER_POA,
   AuthorizedActions.DETAIL_COMMENTS,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
   AuthorizedActions.EDITABLE_COMPLETING_PARTY,
   AuthorizedActions.FILE_AND_PAY,
+  AuthorizedActions.FIRM_CHANGE_FILING,
   AuthorizedActions.INCORPORATION_APPLICATION_FILING,
   AuthorizedActions.NO_COMPLETING_PARTY_MESSAGE_BOX,
   AuthorizedActions.NO_CONTACT_INFO,
@@ -76,34 +81,57 @@ const BusinessRegistryStaffRoles = [
   AuthorizedActions.OVERRIDE_NIGS,
   AuthorizedActions.STAFF_BREADCRUMBS,
   AuthorizedActions.STAFF_COMMENTS,
+  AuthorizedActions.STAFF_FILINGS,
   AuthorizedActions.STAFF_PAYMENT,
-  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
+  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT,
+  AuthorizedActions.VOLUNTARY_DISSOLUTION_FILING
 ]
 
 /**
  * The roles if the user is Maximus Staff.
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
-const MaximusStaffRoles = []
+const MaximusStaffRoles = [
+  AuthorizedActions.ADDRESS_CHANGE_FILING,
+  AuthorizedActions.BLANK_CERTIFY_STATE,
+  AuthorizedActions.EDITABLE_CERTIFY_NAME,
+  AuthorizedActions.FIRM_CHANGE_FILING,
+  AuthorizedActions.INCORPORATION_APPLICATION_FILING,
+  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT,
+  AuthorizedActions.VOLUNTARY_DISSOLUTION_FILING
+]
 
 /**
  * The roles if the user is Contact Centre Staff.
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
-const ContactCentreStaffRoles = []
+const ContactCentreStaffRoles = [
+  AuthorizedActions.ADDRESS_CHANGE_FILING,
+  AuthorizedActions.BLANK_CERTIFY_STATE,
+  AuthorizedActions.EDITABLE_CERTIFY_NAME,
+  AuthorizedActions.FIRM_CHANGE_FILING,
+  AuthorizedActions.INCORPORATION_APPLICATION_FILING,
+  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT,
+  AuthorizedActions.VOLUNTARY_DISSOLUTION_FILING
+]
 
 /**
  * The roles if the user is SBC Field Office Staff (aka SBC Staff Tier 2).
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
 const SbcFieldOfficeStaffRoles = [
+  AuthorizedActions.ADDRESS_CHANGE_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
+  AuthorizedActions.COURT_ORDER_POA,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
+  AuthorizedActions.EDITABLE_COMPLETING_PARTY,
   AuthorizedActions.DETAIL_COMMENTS,
   AuthorizedActions.FILE_AND_PAY,
+  AuthorizedActions.FIRM_CHANGE_FILING,
   AuthorizedActions.INCORPORATION_APPLICATION_FILING,
   AuthorizedActions.SBC_BREADCRUMBS,
-  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
+  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT,
+  AuthorizedActions.VOLUNTARY_DISSOLUTION_FILING
 ]
 
 /**
@@ -111,6 +139,11 @@ const SbcFieldOfficeStaffRoles = [
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
 const DefaultRoles = [
+  AuthorizedActions.ALTERATION_FILING,
+  AuthorizedActions.DIGITAL_CREDENTIALS,
   AuthorizedActions.FILE_AND_PAY,
-  AuthorizedActions.INCORPORATION_APPLICATION_FILING
+  AuthorizedActions.FIRM_CHANGE_FILING,
+  AuthorizedActions.FIRM_EDITABLE_DBA,
+  AuthorizedActions.SAVE_DRAFT,
+  AuthorizedActions.SPECIAL_RESOLUTION_FILING
 ]

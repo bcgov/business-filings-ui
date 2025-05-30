@@ -5,7 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import EntityMenu from '@/components/EntityInfo/EntityMenu.vue'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
-import { AllowableActions, CorpTypeCd, EntityState, FilingStatus } from '@/enums'
+import { AllowableActions, AuthorizationRoles, CorpTypeCd, EntityState, FilingStatus } from '@/enums'
 import * as utils from '@/utils'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 
@@ -26,9 +26,9 @@ describe('Entity Menu - entities', () => {
     businessStore.setGoodStanding(false)
     businessStore.setLegalName(null)
     businessStore.setLegalType(null)
+    businessStore.setState(null)
     rootStore.setBootstrapFilingStatus(null)
     rootStore.setBootstrapFilingType(null)
-    businessStore.setState(null)
 
     const wrapper = mount(EntityMenu, {
       vuetify,
@@ -51,6 +51,9 @@ describe('Entity Menu - entities', () => {
     businessStore.setGoodStanding(true)
     businessStore.setLegalName('My Business')
     businessStore.setLegalType(CorpTypeCd.COOP)
+    sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
+    vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.STAFF])
+    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
 
     // mock isAllowed mixin method
     function isAllowed (action: AllowableActions): boolean {
@@ -74,39 +77,6 @@ describe('Entity Menu - entities', () => {
     expect(wrapper.find('#business-information-button').exists()).toBe(true)
     expect(wrapper.find('.menu-btn').exists()).toBe(true)
     expect(wrapper.find('#download-summary-button').exists()).toBe(true)
-    expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
-
-    wrapper.destroy()
-  })
-
-  it('displays entity info properly for a draft IA', async () => {
-    // set store properties
-    businessStore.setLegalName('My Named Company')
-    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.setBootstrapFilingStatus(FilingStatus.DRAFT)
-    rootStore.setBootstrapFilingType(FilingTypes.INCORPORATION_APPLICATION)
-
-    // mock isAllowed mixin method
-    function isAllowed (action: AllowableActions): boolean {
-      if (action === AllowableActions.STAFF_COMMENT) return false
-      if (action === AllowableActions.BUSINESS_INFORMATION) return false
-      if (action === AllowableActions.VOLUNTARY_DISSOLUTION) return false
-      if (action === AllowableActions.BUSINESS_SUMMARY) return false
-      if (action === AllowableActions.DIGITAL_CREDENTIALS) return false
-      return false
-    }
-
-    const wrapper = mount(EntityMenu, {
-      vuetify,
-      mixins: [{ methods: { isAllowed } }],
-      propsData: { businessId: null }
-    })
-    await Vue.nextTick()
-
-    expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
-    expect(wrapper.find('#business-information-button').exists()).toBe(false)
-    expect(wrapper.find('.menu-btn').exists()).toBe(false)
-    expect(wrapper.find('#download-summary-button').exists()).toBe(false)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
 
     wrapper.destroy()
@@ -312,6 +282,7 @@ describe('Entity Menu - Amalgamate button tests', () => {
   it('amalgamate button is disabled if not allowed', async () => {
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.$state.businessInfo.state = EntityState.ACTIVE
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
 
     const wrapper = mount(EntityMenu, {
       vuetify,
@@ -422,6 +393,8 @@ describe('Entity Menu - Business Summary click tests', () => {
 
 describe('Entity Menu - Digital Business Cards tests', () => {
   it('renders More actions if historical and digital credential feature is allowed', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     businessStore.setState(EntityState.HISTORICAL)
 
     const wrapper = mount(EntityMenu, {
@@ -435,6 +408,8 @@ describe('Entity Menu - Digital Business Cards tests', () => {
   })
 
   it('displays the Digital Business Cards button', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
@@ -452,6 +427,7 @@ describe('Entity Menu - Digital Business Cards tests', () => {
   })
 
   it('emits View Add Digital Credentials event', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
@@ -471,6 +447,8 @@ describe('Entity Menu - Digital Business Cards tests', () => {
 
 describe('Entity Menu - More actions click tests', () => {
   it('renders More actions correctly', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,

@@ -288,7 +288,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
     this.data.isGoodStanding = this.isGoodStanding
     this.data.incorporationDate = this.getFoundingDate
 
-    // Pre-populate the certified block with the logged in user's name (if not staff)
+    // Pre-populate the certified block with the logged in user's name (if no permission for blank certificate)
     if (!this.IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }

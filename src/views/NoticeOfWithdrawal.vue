@@ -382,7 +382,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
     /** Called when component is created. */
     created (): void {
-      // do not proceed if user is not staff
+      // do not proceed if user is does not have required permissions
       if (!this.IsAuthorized(AuthorizedActions.NOTICE_WITHDRAWAL_FILING)) {
         this.staffRoleErrorDialog = true
         throw new Error('This is a Staff only Filing.')
@@ -424,8 +424,8 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       this.dataLoaded = true
 
-      // Pre-populate the certified block with the logged in user's name (if not staff)
-      if (!this.IsAuthorized(AuthorizedActions.THIRD_PARTY_CERTIFY_STMT) && this.getUserInfo) {
+      // Pre-populate the certified block with the logged in user's name unless they have proper permissions.
+      if (!this.IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
         this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
       }
 

@@ -417,8 +417,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
 
   /** Called when component is mounted. */
   mounted (): void {
-    // Pre-populate the certified block with the logged in user's name (if not staff)
-    if (this.IsAuthorized(AuthorizedActions.THIRD_PARTY_CERTIFY_STMT) && this.getUserInfo) {
+    // Pre-populate the certified block with the logged in user's name if no permission for blank certificate.
+    if (!this.IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 

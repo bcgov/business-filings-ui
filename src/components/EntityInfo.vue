@@ -57,9 +57,6 @@ import { IsAuthorized } from '@/utils/authorizations'
   }
 })
 export default class EntityInfo extends Vue {
-  /** For template. */
-  readonly AuthorizedActions = AuthorizedActions
-  readonly IsAuthorized = IsAuthorized
   /** Whether to show the hover style. */
   showHoverStyle = false
   accessEntityMenu = IsAuthorized(AuthorizedActions.ADMIN_DISSOLUTION_FILING) &&

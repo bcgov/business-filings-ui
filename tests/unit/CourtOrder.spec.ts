@@ -194,7 +194,7 @@ describe('Court Order View User', () => {
   beforeEach(() => {
     // init store
 
-    rootStore.setAuthRoles([AuthorizationRoles.VIEW])
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
   })
 
   it('throws an error when user is not staff', async () => {

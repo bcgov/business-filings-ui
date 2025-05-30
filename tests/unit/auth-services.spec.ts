@@ -16,7 +16,7 @@ describe('Auth Services', () => {
 
   it('fetches authorizations correctly', async () => {
     const AUTHORIZATIONS = {
-      roles: [AuthorizationRoles.VIEW]
+      roles: [AuthorizationRoles.PUBLIC_USER]
     }
 
     // mock endpoint
@@ -26,7 +26,7 @@ describe('Auth Services', () => {
     // call method
     const response = await AuthServices.fetchAuthorizations('', 'CP1234567')
     // verify data
-    expect(response).toEqual({ roles: AUTHORIZATIONS.roles })
+    expect(response).toEqual(AUTHORIZATIONS)
   })
 
   it('fetches user info correctly', async () => {

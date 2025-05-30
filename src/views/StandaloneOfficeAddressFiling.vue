@@ -605,7 +605,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     // prevent double saving
     if (this.busySaving) return
 
-    // if this is a staff user clicking File and Pay (not Submit)
+    // if this is a user with the STAFF_PAYMENT permission clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
     if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
       this.staffPaymentDialog = true
