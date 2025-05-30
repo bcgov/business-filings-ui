@@ -497,7 +497,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
   /** Called when component is created. */
   created (): void {
     // Safety check to make sure Staff is filing the Amalgamation Out.
-    if (!this.IsAuthorized(AuthorizedActions.AMALGAMATION_OUT_FILING)) {
+    if (!this.IsAuthorized(AuthorizedActions.STAFF_FILINGS)) {
       this.resumeErrorDialog = true
       throw new Error('This is a Staff only Filing.')
     }

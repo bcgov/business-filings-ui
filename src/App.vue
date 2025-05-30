@@ -83,7 +83,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import * as Sentry from '@sentry/browser'
-import { GetFeatureFlag, IsAuthorized, navigate, sleep, UpdateLdUser } from '@/utils'
+import { GetFeatureFlag, IsAuthorized, GetKeycloakRoles, navigate, sleep, UpdateLdUser } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
@@ -369,7 +369,20 @@ export default class App extends Mixins(
 
     // ensure user is authorized to access this business
     try {
-      await this.checkAuth()
+      // get roles from KC token
+      const authRoles = GetKeycloakRoles()
+      // safety check
+      if (!Array.isArray(authRoles)) {
+        throw new Error('Invalid roles')
+      }
+      // verify that response has one of the supported roles
+      // FUTURE: when we fetch authorized actions from Legal API, we'll instead check
+      //         that the list of actions isn't empty
+      const allRoles = Object.values(AuthorizationRoles)
+      if (!allRoles.some(role => authRoles.includes(role))) {
+        throw new Error('Missing valid role')
+      }
+      this.setAuthRoles(authRoles)
     } catch (error) {
       console.log('Auth error =', error) // eslint-disable-line no-console
       this.businessAuthErrorDialog = true
@@ -458,38 +471,6 @@ export default class App extends Mixins(
       this.storeAddresses({ data: { businessOffice: null } })
     } else {
       throw new Error('Incomplete business data')
-    }
-  }
-
-  /** Check authorizations. */
-  async checkAuth (): Promise<void> {
-    try {
-      // safety check
-      if (!this.businessId) {
-        throw new Error('Missing Business ID')
-      }
-      // check if current user is authorized
-      const response = await AuthServices.fetchAuthorizations(
-        this.getAuthApiUrl, this.businessId
-      )
-      const authRoles: Array<AuthorizationRoles> = response.roles || []
-      if (!Array.isArray(authRoles)) {
-        throw new Error('Invalid auth roles')
-      }
-
-      // verify that array has "view" or "staff" roles
-      if (
-        !authRoles.includes(AuthorizationRoles.VIEW) &&
-        !authRoles.includes(AuthorizationRoles.STAFF)
-      ) {
-        throw new Error('Invalid auth roles')
-      }
-
-      this.setAuthRoles(authRoles)
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-      if (this.businessId) this.businessAuthErrorDialog = true
-      if (this.tempRegNumber) this.nameRequestAuthErrorDialog = true
     }
   }
 

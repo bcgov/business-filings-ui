@@ -296,7 +296,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     businessStore.setIdentifier('BC0007291')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.setAuthRoles([AuthorizationRoles.VIEW])
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon

@@ -448,8 +448,8 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
     this.dataLoaded = true
 
-    // Pre-populate the certified block with the logged in user's name (if not staff)
-    if (!this.IsAuthorized(AuthorizedActions.THIRD_PARTY_CERTIFY_STMT) && this.getUserInfo) {
+    // Pre-populate the certified block with the logged in user's name if no permission for blank certificate
+    if (!this.IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
@@ -633,7 +633,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     // prevent double saving
     if (this.busySaving) return
 
-    // if this is a staff user clicking File and Pay (not Submit)
+    // if this is a user with STAFF_PAYMENT permissions clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
     if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
       this.staffPaymentDialog = true

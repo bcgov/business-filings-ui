@@ -318,10 +318,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
 
   paymentErrorDialog = false
 
-  // Template Enums
-  readonly AuthorizedActions = AuthorizedActions
-  readonly IsAuthorized = IsAuthorized
-
   /** Called when component is mounted. */
   async mounted (): Promise<void> {
     this.updateFilingData('add', FilingCodes.COURT_ORDER, undefined, false)
@@ -488,8 +484,8 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   }
   /** Called when component is created. */
   created (): void {
-    // Safety check to make sure Staff is filing the Continuation Out.
-    if (!this.IsAuthorized(AuthorizedActions.CONTINUATION_OUT_FILING)) {
+    // Safety check to make sure user has required permissions to file the Court Order.
+    if (!IsAuthorized(AuthorizedActions.STAFF_FILINGS)) {
       throw new Error('This is a Staff only Filing.')
     }
 

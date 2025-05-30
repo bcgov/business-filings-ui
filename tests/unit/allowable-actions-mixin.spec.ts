@@ -256,7 +256,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Detail Comment allowed', () => {
-    store.setAuthRoles([AuthorizationRoles.VIEW])
+    store.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
     // verify business but not staff
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(false)
@@ -388,7 +388,7 @@ describe('Allowable Actions Mixin', () => {
 
   it('identifies whether Staff Comment allowed', () => {
     // verify business but not staff
-    store.setAuthRoles([AuthorizationRoles.VIEW])
+    store.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
     vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(false)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(false)

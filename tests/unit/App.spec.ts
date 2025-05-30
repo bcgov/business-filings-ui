@@ -13,7 +13,7 @@ import App from '@/App.vue'
 import { AuthorizationRoles, AuthorizedActions } from '@/enums'
 import { AccountTypes, AmalgamationTypes } from '@bcrs-shared-components/enums'
 
-import { IsAuthorized } from '@/utils'
+import * as utils from '@/utils'
 
 // mock fetch() as it is not defined in Vitest
 // NB: it should be `global.fetch` but that doesn't work and this does
@@ -194,35 +194,20 @@ const USER_INFO = {
   lastname: 'Last',
   roles: '{one,two,three}'
 }
-
 describe('App as a COOP', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
   beforeAll(() => {
     sessionStorage.clear()
-    sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token') // anything non-falsy
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+    sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
   })
 
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from Auth API
-    get.withArgs('entities/CP0001191/authorizations')
-      .returns(new Promise(resolve => resolve({
-        data:
-        {
-          roles: [AuthorizationRoles.VIEW]
-        }
-      })))
-
-    // GET user info from Auth API
-    get.withArgs('users/@me')
-      .returns(new Promise(resolve => resolve({
-        data: USER_INFO
-      })))
+    vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.PUBLIC_USER])
 
     // GET entity info from Auth API
     get.withArgs('entities/CP0001191')
@@ -456,9 +441,9 @@ describe('App as a COOP', () => {
   it('gets staff permissions properly', () => {
     rootStore.setAuthRoles([AuthorizationRoles.STAFF])
 
-    expect(IsAuthorized(AuthorizedActions.CONTINUATION_OUT_FILING)).toBe(true)
-    expect(IsAuthorized(AuthorizedActions.STAFF_BREADCRUMBS)).toBe(true)
-    expect(IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS)).toBe(false)
+    expect(utils.IsAuthorized(AuthorizedActions.CONTINUATION_OUT_FILING)).toBe(true)
+    expect(utils.IsAuthorized(AuthorizedActions.STAFF_BREADCRUMBS)).toBe(true)
+    expect(utils.IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS)).toBe(false)
   })
 
   it('gets SBC staff permissions properly', () => {
@@ -469,16 +454,16 @@ describe('App as a COOP', () => {
       type: '',
       accountType: AccountTypes.SBC_STAFF
     }) // mock account type until #27536 is fixed
-    expect(IsAuthorized(AuthorizedActions.EDITABLE_CERTIFY_NAME)).toBe(true)
-    expect(IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS)).toBe(true)
-    expect(IsAuthorized(AuthorizedActions.STAFF_COMMENTS)).toBe(false)
+    expect(utils.IsAuthorized(AuthorizedActions.EDITABLE_CERTIFY_NAME)).toBe(true)
+    expect(utils.IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS)).toBe(true)
+    expect(utils.IsAuthorized(AuthorizedActions.STAFF_COMMENTS)).toBe(false)
   })
 
-  it('gets regular user permissions properly', () => {
-    rootStore.setAuthRoles([AuthorizationRoles.VIEW])
-    expect(IsAuthorized(AuthorizedActions.INCORPORATION_APPLICATION_FILING)).toBe(true)
-    expect(IsAuthorized(AuthorizedActions.FILE_AND_PAY)).toBe(true)
-    expect(IsAuthorized(AuthorizedActions.NO_CONTACT_INFO)).toBe(false)
+  it('gets default user permissions properly', () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    expect(utils.IsAuthorized(AuthorizedActions.INCORPORATION_APPLICATION_FILING)).toBe(true)
+    expect(utils.IsAuthorized(AuthorizedActions.FILE_AND_PAY)).toBe(true)
+    expect(utils.IsAuthorized(AuthorizedActions.NO_CONTACT_INFO)).toBe(false)
   })
 
   it('fetches Entity Info properly', () => {
@@ -537,21 +522,12 @@ describe('App as a BCOMP', () => {
 
   beforeAll(() => {
     sessionStorage.clear()
-    sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token')
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
+    sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
   })
 
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
-
-    // GET authorizations (role) from Auth API
-    get.withArgs('entities/BC0007291/authorizations')
-      .returns(new Promise(resolve => resolve({
-        data:
-        {
-          roles: [AuthorizationRoles.VIEW]
-        }
-      })))
 
     // GET user info from Auth API
     get.withArgs('users/@me')
@@ -649,7 +625,7 @@ describe('App as a BCOMP', () => {
               commentsCount: 0,
               displayName: 'Annual Report (2019)',
               effectiveDate: 'Wed, 2 Jan 2019 12:00:00 GMT',
-              filindId: 111,
+              filingId: 111,
               isFutureEffective: false,
               name: 'annualReport',
               status: 'COMPLETED',
@@ -662,7 +638,7 @@ describe('App as a BCOMP', () => {
               commentsCount: 0,
               displayName: 'Director Change',
               effectiveDate: 'Mon, 4 Mar 2019 12:00:00 GMT',
-              filindId: 222,
+              filingId: 222,
               isFutureEffective: false,
               name: 'changeOfDirectors',
               status: 'COMPLETED',
@@ -675,7 +651,7 @@ describe('App as a BCOMP', () => {
               commentsCount: 0,
               displayName: 'Address Change',
               effectiveDate: 'Mon, 6 May 2019 12:00:00 GMT',
-              filindId: 333,
+              filingId: 333,
               isFutureEffective: false,
               name: 'changeOfAddress',
               status: 'COMPLETED',
@@ -786,21 +762,14 @@ describe('App as a COMPLETED Incorporation Application', () => {
     filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
-    sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token')
+    sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
   })
 
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from Auth API
-    get.withArgs('entities/T123456789/authorizations')
-      .returns(new Promise(resolve => resolve({
-        data:
-        {
-          roles: [AuthorizationRoles.VIEW]
-        }
-      })))
+    vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.PUBLIC_USER])
 
     // GET user info from Auth API
     get.withArgs('users/@me')
@@ -926,21 +895,14 @@ describe('App as an historical business - Amalgamation', () => {
     filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
-    sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token')
+    sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
   })
 
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from Auth API
-    get.withArgs('entities/BC1234567/authorizations')
-      .returns(new Promise(resolve => resolve({
-        data:
-        {
-          roles: [AuthorizationRoles.VIEW]
-        }
-      })))
+    vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.PUBLIC_USER])
 
     // GET user info from Auth API
     get.withArgs('users/@me')
@@ -1046,21 +1008,14 @@ describe('App as an historical business - Voluntary Dissolution', () => {
     filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
-    sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token')
+    sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
   })
 
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from Auth API
-    get.withArgs('entities/BC1234567/authorizations')
-      .returns(new Promise(resolve => resolve({
-        data:
-        {
-          roles: [AuthorizationRoles.STAFF]
-        }
-      })))
+    vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.STAFF])
 
     // GET user info from Auth API
     get.withArgs('users/@me')

@@ -431,7 +431,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
 
   /** Called when component is created. */
   created (): void {
-    // Safety check to make sure Staff is filing the Continuation Out.
+    // Safety check to make sure user had proper permissions to file the Continuation Out.
     if (!this.IsAuthorized(AuthorizedActions.CONTINUATION_OUT_FILING)) {
       this.resumeErrorDialog = true
       throw new Error('This is a Staff only Filing.')
