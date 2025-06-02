@@ -8,10 +8,11 @@ import { AccountTypes, AuthorizationRoles, AuthorizedActions } from '@/enums'
  */
 export function IsAuthorized (action: AuthorizedActions): boolean {
   switch (true) {
-    case isBusinessRegistryStaff(): return BusinessRegistryStaffRoles.includes(action)
-    case isMaximusStaff(): return MaximusStaffRoles.includes(action)
-    case isContactCentreStaff(): return ContactCentreStaffRoles.includes(action)
-    case isSbcFieldOfficeStaff(): return SbcFieldOfficeStaffRoles.includes(action)
+    case isBusinessRegistryStaff(): return BusinessRegistryStaffActions.includes(action)
+    case isMaximusStaff(): return MaximusStaffActions.includes(action)
+    case isContactCentreStaff(): return ContactCentreStaffActions.includes(action)
+    case isSbcFieldOfficeStaff(): return SbcFieldOfficeStaffActions.includes(action)
+    case isPublicUser(): return PublicUserActions.includes(action)
     default: return DefaultRoles.includes(action)
   }
 }
@@ -55,10 +56,19 @@ function isSbcFieldOfficeStaff (): boolean {
 }
 
 /**
+ * Whether the user is a Public User.
+ * Ultimately we won't need this function and we'll just check auth roles for everything.
+ */
+function isPublicUser (): boolean {
+  const store = useRootStore()
+  return store.getAuthRoles.includes(AuthorizationRoles.PUBLIC_USER)
+}
+
+/**
  * The roles if the user is Business Registry Staff.
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
-const BusinessRegistryStaffRoles = [
+const BusinessRegistryStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
   AuthorizedActions.ADMIN_DISSOLUTION_FILING,
   AuthorizedActions.AGM_CHG_LOCATION_FILING,
@@ -91,7 +101,7 @@ const BusinessRegistryStaffRoles = [
  * The roles if the user is Maximus Staff.
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
-const MaximusStaffRoles = [
+const MaximusStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
@@ -105,7 +115,7 @@ const MaximusStaffRoles = [
  * The roles if the user is Contact Centre Staff.
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
-const ContactCentreStaffRoles = [
+const ContactCentreStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
@@ -119,7 +129,7 @@ const ContactCentreStaffRoles = [
  * The roles if the user is SBC Field Office Staff (aka SBC Staff Tier 2).
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
-const SbcFieldOfficeStaffRoles = [
+const SbcFieldOfficeStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.COURT_ORDER_POA,
@@ -132,6 +142,19 @@ const SbcFieldOfficeStaffRoles = [
   AuthorizedActions.SBC_BREADCRUMBS,
   AuthorizedActions.THIRD_PARTY_CERTIFY_STMT,
   AuthorizedActions.VOLUNTARY_DISSOLUTION_FILING
+]
+
+/**
+ * The roles for a regular public user.
+ * Ultimately won't need this list and we'll just check keycloak for everything.
+ */
+
+const PublicUserActions = [
+  AuthorizedActions.ALTERATION_FILING,
+  AuthorizedActions.DIGITAL_CREDENTIALS,
+  AuthorizedActions.FIRM_CHANGE_FILING,
+  AuthorizedActions.FIRM_EDITABLE_DBA,
+  AuthorizedActions.SPECIAL_RESOLUTION_FILING
 ]
 
 /**
