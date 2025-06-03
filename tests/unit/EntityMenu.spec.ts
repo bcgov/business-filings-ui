@@ -282,7 +282,7 @@ describe('Entity Menu - Amalgamate button tests', () => {
   it('amalgamate button is disabled if not allowed', async () => {
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.$state.businessInfo.state = EntityState.ACTIVE
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthRoles([AuthorizationRoles.SBC_STAFF])
 
     const wrapper = mount(EntityMenu, {
       vuetify,

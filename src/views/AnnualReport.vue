@@ -128,8 +128,8 @@
                   :newAgmDate="newAgmDate"
                   :newAgmExtension="newAgmExtension"
                   :newNoAgm="newNoAgm"
-                  :allowCoa="allowChange('coa')"
-                  :allowCod="allowChange('cod')"
+                  :allowCoa="allowChange('coa') && IsAuthorized(AuthorizedActions.ADDRESS_CHANGE_FILING)"
+                  :allowCod="allowChange('cod') && IsAuthorized(AuthorizedActions.DIRECTOR_CHANGE_FILING)"
                   :ARFilingYear="ARFilingYear"
                   @agmDate="onAgmDateChange($event)"
                   @agmExtension="onAgmExtensionChange($event)"
@@ -170,7 +170,7 @@
                   <h2 id="directors-header">
                     3. Directors
                   </h2>
-                  <p v-if="allowChange('cod')">
+                  <p v-if="allowChange('cod') && IsAuthorized(AuthorizedActions.DIRECTOR_CHANGE_FILING)">
                     Tell us who was elected or appointed and who ceased to be
                     a director at your {{ ARFilingYear }} AGM
                   </p>
@@ -457,6 +457,10 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     directorsComponent: Directors,
     officeAddressesComponent: OfficeAddresses
   }
+
+  // For Template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   @Getter(useBusinessStore) arMaxDate!: string
   @Getter(useBusinessStore) arMinDate!: string
