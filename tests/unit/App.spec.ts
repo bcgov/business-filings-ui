@@ -441,25 +441,19 @@ describe('App as a COOP', () => {
   it('gets staff permissions properly', () => {
     rootStore.setAuthRoles([AuthorizationRoles.STAFF])
 
-    expect(utils.IsAuthorized(AuthorizedActions.CONTINUATION_OUT_FILING)).toBe(true)
+    expect(utils.IsAuthorized(AuthorizedActions.STAFF_FILINGS)).toBe(true)
     expect(utils.IsAuthorized(AuthorizedActions.STAFF_BREADCRUMBS)).toBe(true)
     expect(utils.IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS)).toBe(false)
   })
 
   it('gets SBC staff permissions properly', () => {
     rootStore.setAuthRoles([AuthorizationRoles.SBC_STAFF])
-    rootStore.setAccountInformation({
-      id: 123456789,
-      label: '',
-      type: '',
-      accountType: AccountTypes.SBC_STAFF
-    }) // mock account type until #27536 is fixed
     expect(utils.IsAuthorized(AuthorizedActions.EDITABLE_CERTIFY_NAME)).toBe(true)
     expect(utils.IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS)).toBe(true)
     expect(utils.IsAuthorized(AuthorizedActions.STAFF_COMMENTS)).toBe(false)
   })
 
-  it('gets default user permissions properly', () => {
+  it('gets public user permissions properly', () => {
     rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
     expect(utils.IsAuthorized(AuthorizedActions.INCORPORATION_APPLICATION_FILING)).toBe(true)
     expect(utils.IsAuthorized(AuthorizedActions.FILE_AND_PAY)).toBe(true)

@@ -54,15 +54,18 @@
             v-if="dateText"
             class="restriction-messages mt-4"
           >
-            <span v-if="!allowCoa && !allowCod">
+            <span
+              v-if="!allowCoa && !IsAuthorized(AuthorizedActions.ADDRESS_CHANGE_FILING) &&
+                !allowCod && !IsAuthorized(AuthorizedActions.DIRECTOR_CHANGE_FILING)"
+            >
               You cannot change your Registered Office Addresses or Directors in this Annual Report
               because your AGM predates another filing that may have conflicting changes.
             </span>
-            <span v-else-if="!allowCoa">
+            <span v-else-if="!allowCoa && !IsAuthorized(AuthorizedActions.ADDRESS_CHANGE_FILING)">
               You cannot change your Registered Office Addresses in this Annual Report because your AGM
               predates another filing that may have conflicting changes.
             </span>
-            <span v-else-if="!allowCod">
+            <span v-else-if="!allowCod && !IsAuthorized(AuthorizedActions.DIRECTOR_CHANGE_FILING)">
               You cannot change your Directors in this Annual Report because your AGM predates another
               filing that may have conflicting changes.
             </span>
@@ -145,6 +148,8 @@ import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
 import { FormIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
+import { IsAuthorized } from '@/utils'
+import { AuthorizedActions } from '@/enums'
 
 @Component({})
 export default class AgmDate extends Mixins(DateMixin) {
@@ -172,6 +177,10 @@ export default class AgmDate extends Mixins(DateMixin) {
 
   /** The Annual Report filing year. */
   @Prop({ required: true }) readonly ARFilingYear!: number
+
+  /** For Template  */
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   // Getters
   @Getter(useBusinessStore) arMinDate!: string
