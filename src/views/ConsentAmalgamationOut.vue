@@ -251,7 +251,7 @@
                 id="consent-file-pay-btn"
                 color="primary"
                 large
-                :disabled="busySaving"
+                :disabled="busySaving || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >

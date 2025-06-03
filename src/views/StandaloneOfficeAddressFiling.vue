@@ -213,7 +213,7 @@
                 id="coa-file-pay-btn"
                 color="primary"
                 large
-                :disabled="!isPageValid || busySaving"
+                :disabled="!isPageValid || busySaving || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >

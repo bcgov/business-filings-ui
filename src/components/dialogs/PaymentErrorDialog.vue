@@ -13,10 +13,7 @@
 
       <v-card-text id="dialog-text">
         <!-- display common message -->
-        <div
-          v-if="!IsAuthorized(AuthorizedActions.NO_COMPLETING_PARTY_MESSAGE_BOX)"
-          class="font-15"
-        >
+        <div class="font-15">
           <p>
             We are unable to process your payment at this time. This {{ filingName }} has been saved
             as a DRAFT and you can retry your payment from the Business Dashboard at a later time.

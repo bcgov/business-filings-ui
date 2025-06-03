@@ -341,7 +341,7 @@
                 id="ar-file-pay-btn"
                 color="primary"
                 large
-                :disabled="!isPageValid || busySaving"
+                :disabled="!isPageValid || busySaving || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -944,7 +944,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
     // if this is a user with STAFF_PAYMENT permissions clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
-    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
+    if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
       this.staffPaymentDialog = true
       return
     }
@@ -1223,7 +1223,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
+    if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false
@@ -1251,7 +1251,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       case SaveErrorReasons.FILE_PAY:
         // close the dialog and retry file-pay
         this.saveErrorReason = null
-        if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
+        if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
         else await this.onClickFilePay()
         break
     }
