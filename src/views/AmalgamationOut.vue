@@ -320,7 +320,7 @@
                 color="primary"
                 large
                 class="mr-2"
-                :disabled="busySaving"
+                :disabled="busySaving || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >

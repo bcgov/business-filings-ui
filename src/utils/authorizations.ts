@@ -1,5 +1,5 @@
 import { useRootStore } from '@/stores/rootStore'
-import { AccountTypes, AuthorizationRoles, AuthorizedActions } from '@/enums'
+import { AuthorizationRoles, AuthorizedActions } from '@/enums'
 
 /**
  * Whether the specified action is authorized for the current user.

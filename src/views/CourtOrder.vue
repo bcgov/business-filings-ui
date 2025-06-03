@@ -202,6 +202,7 @@
                     solid
                     color="primary"
                     class="btn-outlined-primary mt-4"
+                    :disabled="!IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                     :loading="saving"
                     @click.native="onSave()"
                   >
@@ -260,6 +261,8 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   // For template
   readonly LegalServices = LegalServices
   readonly PageSizes = PageSizes
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
   // enum for template
   readonly FilingCodes = FilingCodes
   /** Prop to display the dialog. */
@@ -485,7 +488,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   /** Called when component is created. */
   created (): void {
     // Safety check to make sure user has required permissions to file the Court Order.
-    if (!IsAuthorized(AuthorizedActions.STAFF_FILINGS)) {
+    if (!this.IsAuthorized(AuthorizedActions.STAFF_FILINGS)) {
       throw new Error('This is a Staff only Filing.')
     }
 

@@ -2,10 +2,8 @@ import { defineStore } from 'pinia'
 import { AuthorizationRoles, CorpTypeCd, FilingStatus, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import {
-  AccountInformationIF,
   ApiTaskIF,
   DissolutionConfirmationResourceIF,
-  EmptyAccountInformation,
   FilingDataIF,
   OfficeAddressIF,
   PartyIF,
@@ -21,7 +19,6 @@ import { useFilingHistoryListStore } from './filingHistoryListStore'
 
 export const useRootStore = defineStore('root', {
   state: (): RootStateIF => ({
-    accountInformation: { ...EmptyAccountInformation },
     authRoles: [],
     currentDate: null,
     currentJsDate: null,
@@ -115,13 +112,6 @@ export const useRootStore = defineStore('root', {
      */
     getAuthRoles (): Array<AuthorizationRoles> {
       return this.authRoles
-    },
-
-    /**
-     * The Account Information object.
-     **/
-    getAccountInformation (): AccountInformationIF {
-      return this.accountInformation
     },
 
     /** Is True if business is pending dissolution. */
@@ -382,10 +372,6 @@ export const useRootStore = defineStore('root', {
   },
 
   actions: {
-    setAccountInformation (accountInfo: AccountInformationIF) {
-      this.accountInformation = accountInfo
-    },
-
     setFetchingDataSpinner (val: boolean) {
       this.fetchingDataSpinner = val
     },

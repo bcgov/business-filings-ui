@@ -19,6 +19,7 @@ import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } fr
 import { BusinessConfigCp } from '@/resources/CP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import * as utils from '@/utils'
+import { AuthorizationRoles } from '@/enums'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -285,6 +286,8 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('enables File & Pay button when form is validated', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -867,6 +870,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
 
   it('saves a new filing and redirects to Pay URL when this is a new AR and the File & Pay button ' +
     'is clicked', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -942,6 +947,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
 
   it('updates an existing filing and routes to the dashboard when this is a draft AR and the File & Pay button ' +
     'is clicked and payment action is not required', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -1932,6 +1939,8 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
   })
 
   it('sets the required fields to display errors from the api after a POST call', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     // make sure form is validated
     await wrapper.setData({
       agmDateValid: true,
@@ -1971,6 +1980,8 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
   })
 
   it('sets the required fields to display errors from the api after a PUT call', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     // make sure form is validated
     await wrapper.setData({
       agmDateValid: true,
@@ -2086,6 +2097,8 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
   })
 
   it('prevents saving if a pending task exists', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     await wrapper.setData({
       agmDateValid: true,
       addressesFormValid: true,
@@ -2209,6 +2222,8 @@ describe('Annual Report - payment required error', () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
     sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     const get = sinon.stub(axios, 'get')
 
     get.withArgs('businesses/CP0001191/tasks')

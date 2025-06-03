@@ -11,7 +11,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import App from '@/App.vue'
 import { AuthorizationRoles, AuthorizedActions } from '@/enums'
-import { AccountTypes, AmalgamationTypes } from '@bcrs-shared-components/enums'
+import { AmalgamationTypes } from '@bcrs-shared-components/enums'
 
 import * as utils from '@/utils'
 
