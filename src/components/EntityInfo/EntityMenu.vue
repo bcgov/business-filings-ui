@@ -427,8 +427,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) return false
 
     // otherwise, disable if not allowed
-    return !this.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION) &&
-      !this.IsAuthorized(AuthorizedActions.VOLUNTARY_DISSOLUTION_FILING)
+    return !this.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)
   }
 
   /**

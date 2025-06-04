@@ -12,5 +12,5 @@ export enum AuthorizationRoles {
   MAXIMUS_STAFF = 'maximus_staff',
   PUBLIC_USER = 'public_user',
   SBC_STAFF = 'sbc_staff',
-  STAFF = 'staff',
+  STAFF = 'staff'
 }

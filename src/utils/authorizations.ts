@@ -71,13 +71,10 @@ const BusinessRegistryStaffActions = [
   AuthorizedActions.ADMIN_DISSOLUTION_FILING,
   AuthorizedActions.AGM_CHG_LOCATION_FILING,
   AuthorizedActions.AGM_EXTENSION_FILING,
-  AuthorizedActions.ALTERATION_FILING,
   AuthorizedActions.AMALGAMATION_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.CONSENT_AMALGAMATION_OUT_FILING,
   AuthorizedActions.CONSENT_CONTINUATION_OUT_FILING,
-  AuthorizedActions.CONTINUATION_IN_FILING,
-  AuthorizedActions.CORRECTION_FILING,
   AuthorizedActions.COURT_ORDER_POA,
   AuthorizedActions.DETAIL_COMMENTS,
   AuthorizedActions.DIRECTOR_CHANGE_FILING,
@@ -93,8 +90,7 @@ const BusinessRegistryStaffActions = [
   AuthorizedActions.STAFF_COMMENTS,
   AuthorizedActions.STAFF_FILINGS,
   AuthorizedActions.STAFF_PAYMENT,
-  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT,
-  AuthorizedActions.VOLUNTARY_DISSOLUTION_FILING
+  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
 ]
 
 /**
@@ -103,14 +99,12 @@ const BusinessRegistryStaffActions = [
  */
 const MaximusStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
-  AuthorizedActions.ALTERATION_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.DIRECTOR_CHANGE_FILING,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
   AuthorizedActions.INCORPORATION_APPLICATION_FILING,
   AuthorizedActions.SBC_BREADCRUMBS,
-  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT,
-  AuthorizedActions.VOLUNTARY_DISSOLUTION_FILING
+  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
 ]
 
 /**
@@ -119,14 +113,12 @@ const MaximusStaffActions = [
  */
 const ContactCentreStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
-  AuthorizedActions.ALTERATION_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.DIRECTOR_CHANGE_FILING,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
   AuthorizedActions.INCORPORATION_APPLICATION_FILING,
   AuthorizedActions.SBC_BREADCRUMBS,
-  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT,
-  AuthorizedActions.VOLUNTARY_DISSOLUTION_FILING
+  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
 ]
 
 /**
@@ -144,8 +136,7 @@ const SbcFieldOfficeStaffActions = [
   AuthorizedActions.FILE_AND_PAY,
   AuthorizedActions.INCORPORATION_APPLICATION_FILING,
   AuthorizedActions.SBC_BREADCRUMBS,
-  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT,
-  AuthorizedActions.VOLUNTARY_DISSOLUTION_FILING
+  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
 ]
 
 /**
@@ -157,7 +148,6 @@ const PublicUserActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
   AuthorizedActions.AGM_CHG_LOCATION_FILING,
   AuthorizedActions.AGM_EXTENSION_FILING,
-  AuthorizedActions.ALTERATION_FILING,
   AuthorizedActions.AMALGAMATION_FILING,
   AuthorizedActions.CONSENT_AMALGAMATION_OUT_FILING,
   AuthorizedActions.CONSENT_CONTINUATION_OUT_FILING,
@@ -165,7 +155,5 @@ const PublicUserActions = [
   AuthorizedActions.DIRECTOR_CHANGE_FILING,
   AuthorizedActions.FILE_AND_PAY,
   AuthorizedActions.INCORPORATION_APPLICATION_FILING,
-  AuthorizedActions.SAVE_DRAFT,
-  AuthorizedActions.SPECIAL_RESOLUTION_FILING,
-  AuthorizedActions.VOLUNTARY_DISSOLUTION_FILING
+  AuthorizedActions.SAVE_DRAFT
 ]
