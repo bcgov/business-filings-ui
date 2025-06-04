@@ -42,12 +42,11 @@
 
 <script lang="ts">
 import { Component, Emit, Vue } from 'vue-property-decorator'
-import { NigsMessage, AuthorizedActions } from '@/enums'
+import { NigsMessage } from '@/enums'
 import EntityDefinitions from './EntityInfo/EntityDefinitions.vue'
 import EntityHeader from './EntityInfo/EntityHeader.vue'
 import EntityMenu from './EntityInfo/EntityMenu.vue'
 import { Routes, DCRoutes } from '@/enums/routes'
-import { IsAuthorized } from '@/utils/authorizations'
 
 @Component({
   components: {
@@ -57,10 +56,6 @@ import { IsAuthorized } from '@/utils/authorizations'
   }
 })
 export default class EntityInfo extends Vue {
-  /** Whether to show the hover style. */
-  showHoverStyle = false
-  accessEntityMenu = IsAuthorized(AuthorizedActions.ADMIN_DISSOLUTION_FILING) &&
-    IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)
   /** The Business ID string (may be null). */
   get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
@@ -118,10 +113,6 @@ export default class EntityInfo extends Vue {
 
 #entity-info {
   background: $BCgovInputBG;
-
-  &.hover {
-    background: $app-bg-lt-blue;
-  }
 
   .v-chip--label {
     font-size: $px-11;

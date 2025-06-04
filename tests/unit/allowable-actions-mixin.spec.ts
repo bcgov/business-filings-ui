@@ -9,7 +9,7 @@ import { AuthorizationRoles, AllowableActions, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypeIF } from '@/interfaces'
-import * as Authorizations from '@/utils/authorizations'
+import * as utils from '@/utils'
 
 Vue.use(Vuetify)
 
@@ -259,17 +259,17 @@ describe('Allowable Actions Mixin', () => {
     store.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
     // verify business but not staff
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(false)
+    vi.spyOn(utils, 'IsAuthorized').mockReturnValue(false)
     expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(false)
 
     // verify staff but no business
     store.setAuthRoles([AuthorizationRoles.STAFF])
-    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(true)
+    vi.spyOn(utils, 'IsAuthorized').mockReturnValue(true)
     sessionStorage.removeItem('BUSINESS_ID')
     expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(false)
 
     // verify both staff and business
-    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(true)
+    vi.spyOn(utils, 'IsAuthorized').mockReturnValue(true)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(true)
   })
@@ -389,18 +389,18 @@ describe('Allowable Actions Mixin', () => {
   it('identifies whether Staff Comment allowed', () => {
     // verify business but not staff
     store.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
-    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(false)
+    vi.spyOn(utils, 'IsAuthorized').mockReturnValue(false)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(false)
 
     // verify staff but no business
     store.setAuthRoles([AuthorizationRoles.STAFF])
-    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(true)
+    vi.spyOn(utils, 'IsAuthorized').mockReturnValue(true)
     sessionStorage.removeItem('BUSINESS_ID')
     expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(false)
 
     // verify both staff and business
-    vi.spyOn(Authorizations, 'IsAuthorized').mockReturnValue(true)
+    vi.spyOn(utils, 'IsAuthorized').mockReturnValue(true)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(true)
   })

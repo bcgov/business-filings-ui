@@ -83,7 +83,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import * as Sentry from '@sentry/browser'
-import { GetFeatureFlag, IsAuthorized, GetKeycloakRoles, navigate, sleep, UpdateLdUser } from '@/utils'
+import { GetFeatureFlag, IsAuthorized, GetKeycloakRoles, navigate, UpdateLdUser } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
@@ -197,17 +197,6 @@ export default class App extends Mixins(
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
-  /** True if "Loading Dashboard" spinner should be shown. */
-  get showLoadingDashboardSpinner (): boolean {
-    return (
-      !this.dataLoaded &&
-      !this.dashboardUnavailableDialog &&
-      !this.businessAuthErrorDialog &&
-      !this.nameRequestAuthErrorDialog &&
-      !this.nameRequestInvalidDialog
-    )
-  }
-
   /** True if route is Signin. */
   get isSigninRoute (): boolean {
     return (this.$route.name === Routes.SIGNIN)
@@ -243,13 +232,6 @@ export default class App extends Mixins(
     const bannerText: string = GetFeatureFlag('banner-text')
     // remove spaces so that " " becomes falsy
     return bannerText?.trim() || null
-  }
-
-  /** Spinner text. */
-  get spinnerText (): string {
-    if (this.showFetchingDataSpinner) return 'Fetching Data'
-    if (this.showStartingAmalgamationSpinner) return 'Starting Amalgamation'
-    return null
   }
 
   /** The route breadcrumbs list. */
@@ -389,13 +371,6 @@ export default class App extends Mixins(
       return
     }
 
-    // load account information
-    try {
-      await this.loadAccountInformation()
-    } catch (error) {
-      console.log('Account info error =', error) // eslint-disable-line no-console
-      return
-    }
     // If the error dialogs have been tripped, then don't proceed
     if (this.businessAuthErrorDialog === true || this.nameRequestAuthErrorDialog === true) {
       return
@@ -494,35 +469,6 @@ export default class App extends Mixins(
       return this.parseKcToken(keycloakToken)
     }
     throw new Error('Error getting Keycloak token')
-  }
-
-  /**
-   * Gets account info and stores it.
-   */
-  private async loadAccountInformation (): Promise<any> {
-    let currentAccount = null
-
-    for (let i = 0; i < 50; i++) {
-      const account = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
-      if (account) {
-        try {
-          currentAccount = JSON.parse(account)
-          break
-        } catch (error) {
-          console.error('Failed to parse account from sessionStorage', error)
-        }
-        await sleep(100)
-      }
-    }
-    if (currentAccount) {
-      const accountInfo: AccountInformationIF = {
-        accountType: currentAccount.accountType,
-        id: currentAccount.id,
-        label: currentAccount.label,
-        type: currentAccount.type
-      }
-      this.setAccountInformation(accountInfo)
-    }
   }
 
   /** Decodes and parses Keycloak token. */
