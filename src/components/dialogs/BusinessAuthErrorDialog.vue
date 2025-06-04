@@ -78,7 +78,7 @@ export default class BusinessAuthErrorDialog extends Vue {
   /** Prop to provide attachment selector. */
   @Prop({ default: '' }) readonly attach!: string
 
-  /* For Template Contact Info message */
+  // For Template Contact Info message
   readonly IsAuthorized = IsAuthorized
   readonly AuthorizedActions = AuthorizedActions
 
