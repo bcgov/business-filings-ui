@@ -7,22 +7,6 @@ import { AxiosResponse } from 'axios'
  */
 export default class AuthServices {
   /**
-   * Fetches authorizations of the specified entity.
-   * @param authApiUrl the auth API URL form storage
-   * @param businessId the temp or business identifier (eg, T1234567 or BC1219948)
-   * @returns a promise to return the authorizations object
-   */
-  static async fetchAuthorizations (authApiUrl: string, businessId: string): Promise<any> {
-    if (!businessId) throw new Error('Invalid id')
-
-    const url = `${authApiUrl}entities/${businessId}/authorizations`
-    return axios.get(url).then(response => {
-      if (response?.data) return response.data
-      throw new Error('Invalid response data')
-    })
-  }
-
-  /**
    * Fetches user info for the current user.
    * @returns the user info object
    */
