@@ -50,7 +50,7 @@ import { IsAuthorized } from '@/utils'
   components: { ContactInfo }
 })
 export default class ReplaceCredentialErrorDialog extends Vue {
-  /** For Template Contact Info message */
+  // For Template Contact Info message
   readonly IsAuthorized = IsAuthorized
   readonly AuthorizedActions = AuthorizedActions
 

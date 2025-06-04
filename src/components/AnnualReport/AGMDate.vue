@@ -178,7 +178,7 @@ export default class AgmDate extends Mixins(DateMixin) {
   /** The Annual Report filing year. */
   @Prop({ required: true }) readonly ARFilingYear!: number
 
-  /** For Template  */
+  // For Template
   readonly IsAuthorized = IsAuthorized
   readonly AuthorizedActions = AuthorizedActions
 
