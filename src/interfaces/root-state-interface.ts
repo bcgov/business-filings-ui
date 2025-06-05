@@ -17,7 +17,6 @@ export interface RootStateIF {
   // tombstone data
   authRoles: Array<AuthorizationRoles>
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
-  keycloakRoles: Array<string>
   currentJsDate: Date // 'now' as of dashboard loading in UTC
   noRedirect: boolean
   stateFiling: StateFilingIF

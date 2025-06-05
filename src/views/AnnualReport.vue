@@ -309,7 +309,7 @@
         <v-btn
           id="ar-save-btn"
           large
-          :disabled="busySaving"
+          :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="saving"
           @click="onClickSave()"
         >
@@ -318,7 +318,7 @@
         <v-btn
           id="ar-save-resume-btn"
           large
-          :disabled="busySaving"
+          :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="savingResuming"
           @click="onClickSaveResume()"
         >
@@ -387,7 +387,7 @@
                 id="ar-file-pay-bc-btn"
                 color="primary"
                 large
-                :disabled="!isPageValid || busySaving"
+                :disabled="!isPageValid || busySaving|| !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >

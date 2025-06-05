@@ -173,7 +173,7 @@
             <v-btn
               id="cod-save-btn"
               large
-              :disabled="busySaving"
+              :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
               :loading="saving"
               @click="onClickSave()"
             >
@@ -182,7 +182,7 @@
             <v-btn
               id="cod-save-resume-btn"
               large
-              :disabled="busySaving"
+              :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
               :loading="savingResuming"
               @click="onClickSaveResume()"
             >
@@ -312,7 +312,7 @@
             <v-btn
               id="cod-save-resume-btn"
               large
-              :disabled="busySaving"
+              :disabled="busySaving || IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
               :loading="savingResuming"
               @click="onClickSaveResume()"
             >

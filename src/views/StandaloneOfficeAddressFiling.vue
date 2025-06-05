@@ -181,7 +181,7 @@
         <v-btn
           id="coa-save-btn"
           large
-          :disabled="!saveDraftAllowed || busySaving"
+          :disabled="!saveDraftAllowed || busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="saving"
           @click="onClickSave()"
         >
@@ -190,7 +190,7 @@
         <v-btn
           id="coa-save-resume-btn"
           large
-          :disabled="!saveDraftAllowed || busySaving"
+          :disabled="!saveDraftAllowed || busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="savingResuming"
           @click="onClickSaveResume()"
         >
