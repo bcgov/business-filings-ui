@@ -24,7 +24,6 @@ export const useRootStore = defineStore('root', {
     currentJsDate: null,
     bootstrapFilingStatus: null,
     bootstrapFilingType: null,
-    keycloakRoles: [],
     noRedirect: false,
     stateFiling: null,
     userKeycloakGuid: null,
@@ -93,13 +92,6 @@ export const useRootStore = defineStore('root', {
         return (phone + `${ext ? (' x' + ext) : ''}`)
       }
       return null
-    },
-
-    /**
-     * The roles from the Keycloak token (JWT).
-     */
-    getKeycloakRoles (state: RootStateIF): Array<string> {
-      return state.keycloakRoles
     },
 
     /** Whether initial route specified "noRedirect" URL parameter. */
@@ -198,11 +190,6 @@ export const useRootStore = defineStore('root', {
           this.getBootstrapFilingStatus === FilingStatus.PAID
         )
       )
-    },
-
-    /** The Name Request (may be null). */
-    getNameRequest (state: RootStateIF): any {
-      return (state.nameRequest)
     },
 
     /** Whether to show the Fetching Data spinner. */
@@ -384,15 +371,6 @@ export const useRootStore = defineStore('root', {
       this.stateFiling = stateFilingResponse
     },
 
-    setNoRedirect (val: boolean) {
-      this.noRedirect = val
-    },
-
-    /** Set the roles from the Keycloak token (JWT). */
-    setKeycloakRoles (keycloakRoles: Array<string>) {
-      this.keycloakRoles = keycloakRoles
-    },
-
     setUserKeycloakGuid (userKeycloakGuid: string) {
       this.userKeycloakGuid = userKeycloakGuid
     },
@@ -412,10 +390,6 @@ export const useRootStore = defineStore('root', {
 
     setCurrentDate (currentDate: string) {
       this.currentDate = currentDate
-    },
-
-    setNameRequest (nameRequest: any) {
-      this.nameRequest = nameRequest
     },
 
     setBootstrapFilingStatus (status: FilingStatus) {

@@ -6,7 +6,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
-import { CorpTypeCd } from '@/enums'
+import { AuthorizationRoles, CorpTypeCd } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { LegalServices } from '@/services'
 import flushPromises from 'flush-promises'
@@ -138,6 +138,8 @@ describe('AGM Extension view', () => {
   })
 
   it('doesn\'t file and displays dialog when not eligible', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     // verify that dialog is initially disabled
     // (NB: stub doesn't show dialog="false")
     expect(wrapper.findComponent(NotEligibleExtensionDialog).attributes('dialog')).toBeUndefined()
@@ -150,7 +152,7 @@ describe('AGM Extension view', () => {
 
     // simulate valid certify data and component
     wrapper.setData({ certifiedBy: 'Full Name', isCertified: true, certifyFormValid: true })
-
+    await utils.sleep(300) // need to wait for debounce
     // click the file-pay button
     await wrapper.find('#file-pay-btn').trigger('click')
 
@@ -170,6 +172,8 @@ describe('AGM Extension view', () => {
   })
 
   it('files JSON data properly when eligible', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     // verify initial route name
     expect(wrapper.vm.$route.name).toBe('agm-extension')
 
@@ -252,6 +256,8 @@ describe('AGM Extension view', () => {
   })
 
   it('navigates to new business dashboard when feature flag is true', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     // mock hasPendingTasks()
     LegalServices.hasPendingTasks = vi.fn().mockResolvedValue(false)
 

@@ -327,7 +327,6 @@ export default class App extends Mixins(
   @Action(useRootStore) setCurrentJsDate!: (x: Date) => void
   @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
   @Action(useRootStore) setNameRequest!: (x: any) => void
-  @Action(useRootStore) setNoRedirect!: (x: boolean) => void
   @Action(useRootStore) setParties!: (x: Array<PartyIF>) => void
   @Action(useRootStore) setPendingsList!: (x: Array<any>) => void
   @Action(useRootStore) setRecordsAddress!: (x: OfficeAddressIF) => void
@@ -380,7 +379,6 @@ export default class App extends Mixins(
     this.setupLaunchDarkly()
 
     // check whether to redirect to the new Business Dashboard
-    if (this.$route.query.noRedirect !== undefined) this.setNoRedirect(true)
     if (!this.isNoRedirect && (this.$route.name === Routes.DASHBOARD)) {
       const identifier = (this.businessId || this.tempRegNumber)
       const dashboardUrl = `${this.getBusinessDashUrl}${identifier}${this.$route.fullPath}`

@@ -231,7 +231,7 @@
                 color="primary"
                 large
                 class="mr-2"
-                :disabled="busySaving || hasTakenEffect"
+                :disabled="busySaving || hasTakenEffect || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickSubmit()"
               >

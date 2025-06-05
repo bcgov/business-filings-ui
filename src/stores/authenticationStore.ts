@@ -22,14 +22,14 @@ export const useAuthenticationStore = defineStore('authentication', {
     },
 
     /**
-    * The Account Information object.
-    **/
+     * The Account Information object.
+     */
     getAccountInformation (): AccountInformationIF {
       return Vue.prototype.$store.state.account?.accountInformation
     },
     /**
-    * The user's roles from the Auth API "authorizations" endpoint.
-    */
+     * The user's roles from the Auth API "authorizations" endpoint.
+     */
     getAuthRoles (): Array<AuthorizationRoles> {
       return Vue.prototype.$store.state.account?.authRoles
     },

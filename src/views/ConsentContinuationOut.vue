@@ -219,7 +219,7 @@
         <v-btn
           id="consent-save-btn"
           large
-          :disabled="busySaving"
+          :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="saving"
           @click="onClickSave()"
         >
@@ -228,7 +228,7 @@
         <v-btn
           id="consent-save-resume-btn"
           large
-          :disabled="busySaving"
+          :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="savingResuming"
           @click="onClickSaveResume()"
         >
