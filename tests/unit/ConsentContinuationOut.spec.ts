@@ -16,6 +16,7 @@ import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { AuthorizationRoles } from '@/enums'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -45,7 +46,7 @@ describe('Consent to Continuation Out view', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['staff']
+    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
   })
 
   it('mounts the sub-components properly', async () => {
@@ -299,7 +300,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     businessStore.setIdentifier('BC0007291')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['user']
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon

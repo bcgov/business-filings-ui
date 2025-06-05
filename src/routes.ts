@@ -1,4 +1,3 @@
-import Dashboard from '@/views/Dashboard.vue'
 import AgmExtension from '@/views/AgmExtension.vue'
 import AgmLocationChg from '@/views/AgmLocationChg.vue'
 import AmalgamationSelection from '@/views/AmalgamationSelection.vue'
@@ -18,14 +17,6 @@ import { Routes } from '@/enums'
 import { FilingNames } from '@bcrs-shared-components/enums'
 
 export default [
-  {
-    path: '/',
-    name: Routes.DASHBOARD,
-    component: Dashboard,
-    meta: {
-      requiresAuth: true
-    }
-  },
   {
     path: '/agm-extension',
     name: Routes.AGM_EXTENSION,

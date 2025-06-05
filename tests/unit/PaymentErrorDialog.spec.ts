@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores'
 import { PaymentErrorDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
 
@@ -10,7 +9,6 @@ Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
-const rootStore = useRootStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -18,8 +16,6 @@ document.body.setAttribute('data-app', 'true')
 describe('Payment Error Dialog', () => {
   it('displays generic message for normal users', async () => {
     // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {
@@ -44,9 +40,6 @@ describe('Payment Error Dialog', () => {
   })
 
   it('displays generic message for staff', () => {
-    // init store
-    rootStore.keycloakRoles = ['staff']
-
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {
@@ -67,8 +60,6 @@ describe('Payment Error Dialog', () => {
 
   it('displays errors', () => {
     // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {
@@ -91,9 +82,6 @@ describe('Payment Error Dialog', () => {
   })
 
   it('displays warnings', () => {
-    // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {
@@ -115,9 +103,6 @@ describe('Payment Error Dialog', () => {
   })
 
   it('emits an event when Exit button is clicked', async () => {
-    // init store
-    rootStore.keycloakRoles = []
-
     const wrapper = mount(PaymentErrorDialog,
       {
         vuetify,
@@ -138,8 +123,6 @@ describe('Payment Error Dialog', () => {
   })
 
   it('renders error messages correctly when they are present', () => {
-    rootStore.keycloakRoles = []
-
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {
@@ -176,8 +159,6 @@ describe('Payment Error Dialog', () => {
   })
 
   it('renders warning messages correctly when they are present', () => {
-    rootStore.keycloakRoles = []
-
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {

@@ -32,7 +32,7 @@
         >
           <template #label>
             <div
-              v-if="isRoleStaff"
+              v-if="IsAuthorized(AuthorizedActions.THIRD_PARTY_CERTIFY_STMT)"
               class="certify-stmt"
             >
               <strong>{{ trimmedCertifiedBy || "[Legal Name]" }}</strong> certifies that they have relevant
@@ -63,9 +63,14 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DateUtilities } from '@/services'
 import { useRootStore } from '@/stores'
-
+import { AuthorizedActions } from '@/enums'
+import { IsAuthorized } from '@/utils'
 @Component({})
 export default class Certify extends Vue {
+  // for template
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
+
   // Refs
   $refs!: {
     certifyTextfieldRef: any,
@@ -73,7 +78,6 @@ export default class Certify extends Vue {
   }
 
   @Getter(useRootStore) getCurrentDate!: string
-  @Getter(useRootStore) isRoleStaff!: boolean
 
   /** Certified By prop. */
   @Prop({ default: '' }) readonly certifiedBy!: string

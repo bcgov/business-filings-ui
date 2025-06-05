@@ -13,22 +13,6 @@ describe('Auth Services', () => {
     sinon.restore()
   })
 
-  it('fetches authorizations correctly', async () => {
-    const AUTHORIZATIONS = {
-      roles: ['edit', 'view']
-    }
-
-    // mock endpoint
-    get.withArgs('entities/CP1234567/authorizations')
-      .returns(new Promise(resolve => resolve({ data: AUTHORIZATIONS })))
-
-    // call method
-    const response = await AuthServices.fetchAuthorizations('', 'CP1234567')
-
-    // verify data
-    expect(response).toEqual({ data: AUTHORIZATIONS })
-  })
-
   it('fetches user info correctly', async () => {
     const USER_INFO = {
       username: 'test/username',

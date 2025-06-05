@@ -202,6 +202,7 @@
                     solid
                     color="primary"
                     class="btn-outlined-primary mt-4"
+                    :disabled="!IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                     :loading="saving"
                     @click.native="onSave()"
                   >
@@ -228,13 +229,14 @@ import { ConfirmDialog } from '@/components/dialogs'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { ConfirmDialogType, FormIF, StaffPaymentIF } from '@/interfaces'
-import { EffectOfOrderTypes, PageSizes } from '@/enums'
+import { AuthorizedActions, EffectOfOrderTypes, PageSizes } from '@/enums'
 import { FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { EnumUtilities, LegalServices } from '@/services'
 import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment/'
+import { IsAuthorized } from '@/utils'
 
 @Component({
   components: {
@@ -259,6 +261,8 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   // For template
   readonly LegalServices = LegalServices
   readonly PageSizes = PageSizes
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
   // enum for template
   readonly FilingCodes = FilingCodes
   /** Prop to display the dialog. */
@@ -288,7 +292,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getUserInfo!: any
-  @Getter(useRootStore) isRoleStaff!: boolean
   // Properties
   customErrorMsg = ''
   notation = '' // notation text
@@ -484,9 +487,8 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   }
   /** Called when component is created. */
   created (): void {
-    // Safety check to make sure Staff is filing the Continuation Out.
-    if (!this.isRoleStaff) {
-      this.resumeErrorDialog = true
+    // Safety check to make sure user has required permissions to file the Court Order.
+    if (!this.IsAuthorized(AuthorizedActions.STAFF_FILINGS)) {
       throw new Error('This is a Staff only Filing.')
     }
 

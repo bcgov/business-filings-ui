@@ -28,7 +28,7 @@
             id="dialog-save-button"
             text
             color="primary"
-            :disabled="!detailCommentValid || saving"
+            :disabled="!detailCommentValid || saving || !IsAuthorized(AuthorizedActions.DETAIL_COMMENTS)"
             :loading="saving"
             @click.native="save()"
           >
@@ -55,6 +55,8 @@ import { Component, Prop, Watch, Emit, Vue } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { DetailComment } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
+import { IsAuthorized } from '@/utils'
+import { AuthorizedActions } from '@/enums'
 
 @Component({
   components: { DetailComment }
@@ -68,6 +70,10 @@ export default class AddCommentDialog extends Vue {
 
   /** The filing to add a comment to. */
   @Prop({ default: null }) readonly filing!: ApiFilingIF
+
+  // Template auth enums
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   /** The comment text. */
   comment = ''

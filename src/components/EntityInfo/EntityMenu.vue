@@ -1,7 +1,10 @@
 <template>
   <menu id="entity-menu">
     <!-- Staff Comments -->
-    <span v-if="!isDisableNonBenCorps && isAllowed(AllowableActions.STAFF_COMMENT)">
+    <span
+      v-if="!isDisableNonBenCorps &&
+        (isAllowed(AllowableActions.STAFF_COMMENT) && IsAuthorized(AuthorizedActions.STAFF_COMMENTS))"
+    >
       <StaffComments
         :axios="axios"
         :businessId="businessId"
@@ -124,7 +127,10 @@
         <v-list dense>
           <v-list-item-group color="primary">
             <!-- View/Add Digital Credentials -->
-            <span v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS)">
+            <span
+              v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS) &&
+                IsAuthorized(AuthorizedActions.DIGITAL_CREDENTIALS)"
+            >
               <v-tooltip
                 right
                 content-class="right-tooltip"
@@ -175,7 +181,8 @@
                   <v-list-item
                     v-if="showConsentAmalgamateOut"
                     id="consent-amalgamate-out-list-item"
-                    :disabled="!isAllowed(AllowableActions.CONSENT_AMALGAMATION_OUT)"
+                    :disabled="!isAllowed(AllowableActions.CONSENT_AMALGAMATION_OUT) &&
+                      !IsAuthorized(AuthorizedActions.CONSENT_AMALGAMATION_OUT_FILING)"
                     v-on="on"
                     @click="goToConsentAmalgamationOutFiling()"
                   >
@@ -196,7 +203,8 @@
                   <v-list-item
                     v-if="showConsentContinueOut"
                     id="consent-continue-out-list-item"
-                    :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
+                    :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT) &&
+                      !IsAuthorized(AuthorizedActions.CONSENT_CONTINUATION_OUT_FILING)"
                     v-on="on"
                     @click="goToConsentContinuationOutFiling()"
                   >
@@ -220,7 +228,8 @@
                   >
                     <v-list-item
                       id="agm-ext-list-item"
-                      :disabled="!isAllowed(AllowableActions.AGM_EXTENSION)"
+                      :disabled="!isAllowed(AllowableActions.AGM_EXTENSION) &&
+                        !IsAuthorized(AuthorizedActions.AGM_EXTENSION_FILING)"
                       v-on="on"
                       @click="goToAgmExtensionFiling()"
                     >
@@ -245,7 +254,8 @@
                   >
                     <v-list-item
                       id="agm-loc-chg-list-item"
-                      :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHANGE)"
+                      :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHANGE) &&
+                        !IsAuthorized(AuthorizedActions.AGM_CHG_LOCATION_FILING)"
                       v-on="on"
                       @click="goToAgmLocationChgFiling()"
                     >
@@ -273,7 +283,8 @@
                       small
                       text
                       color="primary"
-                      :disabled="!isAllowed(AllowableActions.AMALGAMATION)"
+                      :disabled="!isAllowed(AllowableActions.AMALGAMATION) &&
+                        !IsAuthorized(AuthorizedActions.AMALGAMATION_FILING)"
                       @click="goToAmalgamationSelection()"
                       v-on="on"
                     >
@@ -298,9 +309,9 @@ import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
-import { AllowableActions, NigsMessage, Routes } from '@/enums'
+import { AllowableActions, AuthorizedActions, NigsMessage, Routes } from '@/enums'
 import { AllowableActionsMixin } from '@/mixins'
-import { GetFeatureFlag, navigate } from '@/utils'
+import { GetFeatureFlag, IsAuthorized, navigate } from '@/utils'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
@@ -326,6 +337,8 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   // enums for template
   readonly axios = axios
   readonly AllowableActions = AllowableActions
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
 
   /** Whether this entity is a business (and not a draft IA/Registration). */
   get isBusiness (): boolean {
@@ -336,7 +349,10 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
    * More actions should only display if an entity is not historical or if the Digital Credentials
    * feature is available, otherwise an empty menu will display for historical entities. */
   get areMoreActionsAvailable (): boolean {
-    return !this.isHistorical || this.isAllowed(AllowableActions.DIGITAL_CREDENTIALS)
+    return (!this.isHistorical ||
+      (this.isAllowed(AllowableActions.DIGITAL_CREDENTIALS) &&
+      this.IsAuthorized(AuthorizedActions.DIGITAL_CREDENTIALS))
+    )
   }
 
   get enableAgmExtension (): boolean {
@@ -367,7 +383,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   /** The tooltip text for AGM Extension list item. Text is different if action item is disabled. */
   get agmExtensionToolTipText (): string {
-    if (!this.isAllowed(AllowableActions.AGM_EXTENSION)) {
+    if (!this.isAllowed(AllowableActions.AGM_EXTENSION) && !this.IsAuthorized(AuthorizedActions.AGM_EXTENSION_FILING)) {
       return 'The business must be in good standing to request an AGM extension.'
     } else {
       return 'Request an AGM extension. The longest extension granted at one time is six months.'
@@ -376,7 +392,8 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   /** The tooltip text for AGM Location Change list item. Text is different if action item is disabled. */
   get agmLocationChgToolTipText (): string {
-    if (!this.isAllowed(AllowableActions.AGM_LOCATION_CHANGE)) {
+    if (!this.isAllowed(AllowableActions.AGM_LOCATION_CHANGE) &&
+      !this.IsAuthorized(AuthorizedActions.AGM_CHG_LOCATION_FILING)) {
       return 'The business must be in good standing to request an AGM location change.'
     } else {
       return 'Request an AGM location change.'
@@ -395,9 +412,9 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   /** Whether to disable the View and Change Business Information button. */
   get isChangeBusinessInfoDisabled (): boolean {
-    // enable if business is Not In Good Standing and user isn't staff
+    // enable if business is Not In Good Standing and user does not have override permissions
     // clicking button will show a dialog -- see promptChangeBusinessInfo()
-    if (!this.isGoodStanding && !this.isRoleStaff) return false
+    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) return false
 
     // otherwise, disable if not allowed
     return !this.isAllowed(AllowableActions.BUSINESS_INFORMATION)
@@ -405,22 +422,23 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   /** Whether to disable the Dissolve this Business action. */
   get isDissolveBusinessDisabled (): boolean {
-    // enable if business is Not In Good Standing and user isn't staff
+    // enable if business is Not In Good Standing and user does not have override permissions
     // clicking button will show a dialog -- see promptDissolveBusiness()
-    if (!this.isGoodStanding && !this.isRoleStaff) return false
+    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) return false
 
     // otherwise, disable if not allowed
     return !this.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)
   }
 
   /**
-   * If business is Not In Good Standing and user isn't staff, emits an event to display NIGS dialog.
+   * If business is Not In Good Standing and user doesn't have override permissions,
+   *  emits an event to display NIGS dialog.
    * Otherwise, navigates to Edit UI to create a Special Resolution or Change or Alteration filing.
    */
   promptChangeBusinessInfo (): void {
     const editUrl = `${this.getEditUrl}${this.getIdentifier}`
 
-    if (!this.isGoodStanding && !this.isRoleStaff) {
+    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else if (this.isEntityCoop) {
       navigate(`${editUrl}/special-resolution`)
@@ -432,11 +450,12 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   }
 
   /**
-   * If business is Not In Good Standing and user isn't staff, emits an event to display NIGS dialog.
+   * If business is Not In Good Standing and user isn't doesn't have override permission,
+   *  emits an event to display NIGS dialog.
    * Otherwise, emits an event to prompt user to confirm Voluntary Dissolution.
    */
   promptDissolveBusiness (): void {
-    if (!this.isGoodStanding && !this.isRoleStaff) {
+    if (!this.isGoodStanding && !this.IsAuthorized(AuthorizedActions.OVERRIDE_NIGS)) {
       this.emitNotInGoodStanding(NigsMessage.DISSOLVE)
     } else {
       this.emitConfirmDissolution()

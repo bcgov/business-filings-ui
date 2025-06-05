@@ -59,7 +59,6 @@ describe('AGM Location Chg view', () => {
     businessStore.setIdentifier('BC0007291')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['user']
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
