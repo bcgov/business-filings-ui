@@ -16,23 +16,21 @@ export default class Dashboard extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useAuthenticationStore) getCurrentAccount!: CurrentAccountIF
 
-  /** Called when component is created. */
   created () {
     // Get businessId from route params if present
     const businessId = this.$route.params.businessId
     let url = ''
 
     if (businessId) {
-      // If on /:businessId/, redirect to dashboard with businessId
+      // If on there is a business id, but no further info, redirect to dashboard with businessId
       console.log(businessId)
       console.log(this.$route.fullPath)
       url = `${this.getDashboardUrl}${businessId}`
     } else {
-      // If on /, redirect to dashboard root
+      // If on root, redirect to BRD
       url = `${this.getBusinessRegDashUrl}`
     }
 
-    console.log('Redirecting to:', url)
     window.location.replace(url || '/')
   }
 }
