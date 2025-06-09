@@ -15,8 +15,15 @@ import Signout from '@/views/auth/Signout.vue'
 import { DigitalCredentialRoutes } from '@/resources/DigitalCredentialRoutes'
 import { Routes } from '@/enums'
 import { FilingNames } from '@bcrs-shared-components/enums'
+import Dashboard from './views/Dashboard.vue'
 
 export default [
+  {
+    // Return to BRD if the URL is hit directly
+    path: '/',
+    name: Routes.DASHBOARD,
+    component: Dashboard
+  },
   {
     path: '/agm-extension',
     name: Routes.AGM_EXTENSION,
@@ -229,18 +236,11 @@ export default [
     }
   },
   DigitalCredentialRoutes,
-  // {
-  //   path: '/about',
-  //   name: 'about',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   // ref: https://cli.vuejs.org/guide/html-and-static-assets.html#prefetch
-  //   component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-  // },
   {
-    // default/fallback route
-    path: '*',
-    redirect: '/'
+    // Return to new dashboard if we have a businessID, but no actual filing info
+    path: '/:businessId/',
+    name: 'BusinessDashboardRedirect',
+    component: Dashboard
   }
+
 ]
