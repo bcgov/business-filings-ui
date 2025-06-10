@@ -5,6 +5,14 @@
       attach="#annual-report"
     />
 
+    <AuthErrorDialog
+      attach="#annual-report"
+      :dialog="authErrorDialog"
+      :title="'Access Restricted'"
+      :text="`You are not authorized to complete this action.`"
+      @exit="goToDashboard(true)"
+    />
+
     <FetchErrorDialog
       attach="#annual-report"
       :dialog="fetchErrorDialog"
@@ -423,7 +431,7 @@ import ArDate from '@/components/AnnualReport/ARDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
-import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
+import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
@@ -436,6 +444,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
   components: {
     AgmDate,
     ArDate,
+    AuthErrorDialog,
     Certify,
     ConfirmDialog,
     Directors,
@@ -505,6 +514,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   staffPaymentDialog = false
 
   // variables for displaying dialogs
+  authErrorDialog = false
   fetchErrorDialog = false
   resumeErrorDialog = false
   saveErrorReason: SaveErrorReasons = null
@@ -591,6 +601,11 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
   /** Called when component is created. */
   created (): void {
+    if (!IsAuthorized(AuthorizedActions.ANNUAL_REPORT_FILING)) {
+      // user is not authorized to access annual reports, so route to dashboard
+      this.authErrorDialog = true
+      throw new Error('You are not authorized to complete this action.')
+    }
     // init
     this.setFilingData([])
 

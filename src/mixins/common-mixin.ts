@@ -1,10 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { isEqual, omit } from 'lodash'
 import { Getter } from 'pinia-class'
-import { RawLocation } from 'vue-router'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 import { navigate } from '@/utils'
-import { Routes } from '@/enums'
 
 /**
  * Mixin that provides some useful common utilities.
@@ -13,7 +11,6 @@ import { Routes } from '@/enums'
 export default class CommonMixin extends Vue {
   @Getter(useConfigurationStore) getBusinessDashUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
-  @Getter(useRootStore) isNoRedirect!: boolean
 
   /** True if Vitest is running the code. */
   get isVitestRunning (): boolean {
@@ -83,21 +80,12 @@ export default class CommonMixin extends Vue {
    * @param filingId the filing ID to include in the dashboard URL (optional)
    */
   protected navigateToBusinessDashboard (identifier = this.getIdentifier, filingId = NaN): void {
-    if (!this.isNoRedirect) {
-      // redirect to the new Business Dashboard
-      let dashboardUrl = `${this.getBusinessDashUrl}/${identifier}`
-      if (!isNaN(filingId)) {
-        dashboardUrl += `?filing_id=${filingId.toString()}`
-      }
-      navigate(dashboardUrl)
-    } else {
-      // stay in this UI
-      const route: RawLocation = { name: Routes.DASHBOARD }
-      if (!isNaN(filingId)) {
-        route.query = { filing_id: filingId.toString() }
-      }
-      this.$router.push(route).catch(() => {}) // ignore potential navigation abort errors
+    // redirect to the new Business Dashboard
+    let dashboardUrl = `${this.getBusinessDashUrl}/${identifier}`
+    if (!isNaN(filingId)) {
+      dashboardUrl += `?filing_id=${filingId.toString()}`
     }
+    navigate(dashboardUrl)
   }
 
   /**

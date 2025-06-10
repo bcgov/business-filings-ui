@@ -1,6 +1,7 @@
 import AddCommentDialog from './AddCommentDialog.vue'
 import AddStaffNotationDialog from './AddStaffNotationDialog.vue'
 import AffiliationErrorDialog from './AffiliationErrorDialog.vue'
+import AuthErrorDialog from './AuthErrorDialog.vue'
 import BusinessAuthErrorDialog from './BusinessAuthErrorDialog.vue'
 import CancelPaymentErrorDialog from './CancelPaymentErrorDialog.vue'
 import CoaWarningDialog from './CoaWarningDialog.vue'
@@ -28,6 +29,7 @@ export {
   AddCommentDialog,
   AddStaffNotationDialog,
   AffiliationErrorDialog,
+  AuthErrorDialog,
   BusinessAuthErrorDialog,
   CancelPaymentErrorDialog,
   CoaWarningDialog,

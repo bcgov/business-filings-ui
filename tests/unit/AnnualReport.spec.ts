@@ -56,6 +56,7 @@ describe('Annual Report - Part 1 - UI', () => {
     businessStore.businessInfo.arMinDate = '2017-01-01'
     businessStore.businessInfo.arMaxDate = '2018-04-30'
     businessStore.setLegalType(CorpTypeCd.COOP)
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
   })
 
   it('renders the Annual Report sub-components properly when entity is a Coop', () => {

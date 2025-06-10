@@ -24,7 +24,6 @@ export const useRootStore = defineStore('root', {
     currentJsDate: null,
     bootstrapFilingStatus: null,
     bootstrapFilingType: null,
-    noRedirect: false,
     stateFiling: null,
     userKeycloakGuid: null,
     businessEmail: null,
@@ -92,11 +91,6 @@ export const useRootStore = defineStore('root', {
         return (phone + `${ext ? (' x' + ext) : ''}`)
       }
       return null
-    },
-
-    /** Whether initial route specified "noRedirect" URL parameter. */
-    isNoRedirect (state: RootStateIF): boolean {
-      return state.noRedirect
     },
 
     /**

@@ -90,6 +90,10 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     businessStore.setFoundingDate('2018-03-01T00:00:00')
   })
 
+  beforeEach(() => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+  })
+
   it('renders the filing sub-components properly', () => {
     const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })

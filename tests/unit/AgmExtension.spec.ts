@@ -46,6 +46,7 @@ describe('AGM Extension view', () => {
     businessStore.setFoundingDate('2000-01-01T08:00:00.000+00:00')
     businessStore.setGoodStanding(true)
     rootStore.filingData = []
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
 
     // create local Vue and mock router
     const localVue = createLocalVue()

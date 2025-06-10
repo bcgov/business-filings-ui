@@ -4,6 +4,13 @@
       ref="confirm"
       attach="#standalone-office-address"
     />
+    <AuthErrorDialog
+      attach="#standalone-office-address"
+      :dialog="authErrorDialog"
+      :title="'Access Restricted'"
+      :text="`You are not authorized to complete this action.`"
+      @exit="goToDashboard(true)"
+    />
 
     <FetchErrorDialog
       attach="#standalone-office-address"
@@ -246,7 +253,7 @@ import { isEmpty } from 'lodash'
 import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, OfficeAddresses } from '@/components/common'
-import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
+import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
@@ -257,6 +264,7 @@ import { useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
+    AuthErrorDialog,
     OfficeAddresses,
     SbcFeeSummary,
     Certify,
@@ -283,6 +291,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   @Getter(useBusinessStore) isEntityCoop!: boolean
 
   // local variables
+  authErrorDialog = false
   updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
   filingId = NaN
   savedFiling: any = null // filing during save
@@ -355,6 +364,11 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
 
   /** Called when component is created. */
   created (): void {
+    if (!IsAuthorized(AuthorizedActions.ADDRESS_CHANGE_FILING)) {
+      // user is not authorized to change an address, so route to dashboard
+      this.authErrorDialog = true
+      throw new Error('You are not authorized to complete this action.')
+    }
     // init
     this.setFilingData([])
 

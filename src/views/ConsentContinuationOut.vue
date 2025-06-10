@@ -1,5 +1,12 @@
 <template>
   <div id="consent-continuation-out">
+    <AuthErrorDialog
+      attach="#consent-continuation-out"
+      :dialog="authErrorDialog"
+      :title="'Access Restricted'"
+      :text="`You are not authorized to complete this action.`"
+      @exit="goToDashboard(true)"
+    />
     <ConfirmDialog
       ref="confirm"
       attach="#consent-continuation-out"
@@ -283,7 +290,7 @@ import { StatusCodes } from 'http-status-codes'
 import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, ForeignJurisdiction } from '@/components/common'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
+import { AuthErrorDialog, ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
@@ -296,6 +303,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
+    AuthErrorDialog,
     Certify,
     ConfirmDialog,
     CourtOrderPoa,
@@ -353,6 +361,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   staffPaymentDialog = false
 
   // variables for displaying dialogs
+  authErrorDialog = false
   resumeErrorDialog = false
   saveErrorReason = null as SaveErrorReasons
   paymentErrorDialog = false
@@ -408,7 +417,12 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   created (): void {
     // init
     this.setFilingData([])
-
+    // Check priv's
+    if (!IsAuthorized(AuthorizedActions.CONSENT_CONTINUATION_OUT_FILING)) {
+      // user is not authorized for consent continuation out filings, so route to dashboard
+      this.authErrorDialog = true
+      throw new Error('You are not authorized to complete this action.')
+    }
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {

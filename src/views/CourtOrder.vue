@@ -3,6 +3,13 @@
     <ConfirmDialog
       ref="confirm"
     />
+
+    <ResumeErrorDialog
+      attach="#court-order"
+      :dialog="resumeErrorDialog"
+      @exit="goToDashboard(true)"
+    />
+
     <v-container
       id="court-order-container"
       class="view-container"
@@ -225,7 +232,7 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DateMixin, FilingMixin, CommonMixin } from '@/mixins'
-import { ConfirmDialog } from '@/components/dialogs'
+import { ConfirmDialog, ResumeErrorDialog } from '@/components/dialogs'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { ConfirmDialogType, FormIF, StaffPaymentIF } from '@/interfaces'
@@ -243,6 +250,7 @@ import { IsAuthorized } from '@/utils'
     ConfirmDialog,
     CourtOrderPoa,
     FileUploadPdf,
+    ResumeErrorDialog,
     SbcFeeSummary,
     StaffPaymentShared
   }
@@ -314,6 +322,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   filingId = 0 // id of this consent to continuation out filing
   showErrors = false // true when we press on File and Pay (trigger validation)
   haveChanges = false
+  resumeErrorDialog = false
 
   // variables for staff payment
   staffPaymentValid = false
@@ -488,7 +497,8 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   /** Called when component is created. */
   created (): void {
     // Safety check to make sure user has required permissions to file the Court Order.
-    if (!this.IsAuthorized(AuthorizedActions.STAFF_FILINGS)) {
+    if (!IsAuthorized(AuthorizedActions.STAFF_FILINGS)) {
+      this.resumeErrorDialog = true
       throw new Error('This is a Staff only Filing.')
     }
 
