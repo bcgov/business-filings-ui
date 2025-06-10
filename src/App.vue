@@ -112,7 +112,6 @@ import {
 } from '@/interfaces'
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
 import { AuthorizationRoles, AuthorizedActions, FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
-import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd }
   from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -315,8 +314,6 @@ export default class App extends Mixins(
   @Action(useRootStore) loadStateFiling!: () => Promise<void>
   @Action(useRootStore) setAccountInformation!: (x: AccountInformationIF) => void
   @Action(useRootStore) setAuthRoles!: (x: Array<AuthorizationRoles>) => void
-  @Action(useRootStore) setBootstrapFilingStatus!: (x: FilingStatus) => void
-  @Action(useRootStore) setBootstrapFilingType!: (x: FilingTypes) => void
   @Action(useRootStore) setBusinessAddress!: (x: OfficeAddressIF) => void
   @Action(useRootStore) setBusinessEmail!: (x: string) => void
   @Action(useRootStore) setBusinessPhone!: (x: string) => void
@@ -379,7 +376,7 @@ export default class App extends Mixins(
     this.setupLaunchDarkly()
 
     // check whether to redirect to the new Business Dashboard
-    if (!this.isNoRedirect && (this.$route.name === Routes.DASHBOARD)) {
+    if (this.$route.name === Routes.DASHBOARD) {
       const identifier = (this.businessId || this.tempRegNumber)
       const dashboardUrl = `${this.getBusinessDashUrl}${identifier}${this.$route.fullPath}`
       navigate(dashboardUrl)
@@ -479,15 +476,6 @@ export default class App extends Mixins(
       return JSON.parse(base64)
     } catch (error) {
       throw new Error('Error parsing token - ' + error)
-    }
-  }
-
-  storeAuthorizations (response: any): void {
-    const authRoles: Array<AuthorizationRoles> = response?.roles || []
-    if (authRoles && authRoles.length > 0) {
-      this.setAuthRoles(authRoles)
-    } else {
-      throw new Error('Invalid auth roles')
     }
   }
 

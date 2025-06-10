@@ -14,6 +14,7 @@ export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: 
   // FUTURE: improve Business ID / Temp Reg Number validation
   const id = pathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
   const businessIdRegex = /^(BC|C|CP|FM)\d{7}$/
+
   if (businessIdRegex.test(id)) {
     sessionStorage.setItem('BUSINESS_ID', id)
     // ensure we don't already have a Temp Reg Number in scope
@@ -22,6 +23,9 @@ export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: 
     sessionStorage.setItem('TEMP_REG_NUMBER', id)
     // ensure we don't already have a Business ID in scope
     sessionStorage.removeItem('BUSINESS_ID')
+    // If user hits just root with no other info, they are sent back to BRD
+  } else if (pathname === '/' || pathname === processEnvBaseUrl) {
+    return
   } else {
     throw new Error('Missing or invalid Business ID or Temporary Registration Number.')
   }

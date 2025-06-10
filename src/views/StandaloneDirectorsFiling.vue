@@ -1,5 +1,13 @@
 <template>
   <div id="standalone-directors">
+    <AuthErrorDialog
+      attach="#standalone-directors"
+      :dialog="authErrorDialog"
+      :title="'Access Restricted'"
+      :text="`You are not authorized to complete this action.`"
+      @exit="goToDashboard(true)"
+    />
+
     <ConfirmDialog
       ref="confirm"
       attach="#standalone-directors"
@@ -372,7 +380,7 @@ import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, SummaryDirectors } from '@/components/common'
-import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
+import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
@@ -383,6 +391,7 @@ import { useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
+    AuthErrorDialog,
     CodDate,
     Directors,
     SummaryDirectors,
@@ -409,6 +418,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   @Getter(useConfigurationStore) getPayApiUrl!: string
 
   // variables
+  authErrorDialog = false
   updatedDirectors = []
   fetchErrorDialog = false
   resumeErrorDialog = false
@@ -494,6 +504,12 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
 
   /** Called when component is created. */
   created (): void {
+    if (!IsAuthorized(AuthorizedActions.DIRECTOR_CHANGE_FILING)) {
+      // user is not authorized to access Director change filing, so route to dashboard
+      this.authErrorDialog = true
+      throw new Error('You are not authorized to complete this action.')
+    }
+
     // init
     this.setFilingData([])
 

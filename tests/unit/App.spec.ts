@@ -34,8 +34,6 @@ const businessStore = useBusinessStore()
 const filingHistoryListStore = useFilingHistoryListStore()
 const rootStore = useRootStore()
 
-rootStore.noRedirect = true
-
 const BCOMP_ADDRESSES = {
   registeredOffice: {
     mailingAddress: {
@@ -420,7 +418,6 @@ describe('App as a COOP', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
       localVue,
@@ -675,7 +672,6 @@ describe('App as a BCOMP', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
       localVue,
@@ -968,7 +964,6 @@ describe('App as an historical business - Amalgamation', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
       localVue,
@@ -1094,7 +1089,6 @@ describe('App as an historical business - Voluntary Dissolution', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
       localVue,

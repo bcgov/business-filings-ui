@@ -147,7 +147,6 @@ export const useConfigurationStore = defineStore('configuration', {
     /** Fetches the configuration from the web server and, if successful, triggers some actions. */
     loadConfiguration (env = import.meta.env): Promise<any> {
       // need to return a promise because action is called via dispatch
-      console.log('env', env)
       return new Promise((resolve) => {
         this.setConfiguration(env)
         this.setSessionVariables(env)

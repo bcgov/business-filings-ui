@@ -72,6 +72,7 @@ const BusinessRegistryStaffActions = [
   AuthorizedActions.AGM_CHG_LOCATION_FILING,
   AuthorizedActions.AGM_EXTENSION_FILING,
   AuthorizedActions.AMALGAMATION_FILING,
+  AuthorizedActions.ANNUAL_REPORT_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.CONSENT_AMALGAMATION_OUT_FILING,
   AuthorizedActions.CONSENT_CONTINUATION_OUT_FILING,
@@ -99,6 +100,7 @@ const BusinessRegistryStaffActions = [
  */
 const MaximusStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
+  AuthorizedActions.ANNUAL_REPORT_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.DIRECTOR_CHANGE_FILING,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
@@ -113,6 +115,7 @@ const MaximusStaffActions = [
  */
 const ContactCentreStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
+  AuthorizedActions.ANNUAL_REPORT_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.DIRECTOR_CHANGE_FILING,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
@@ -127,6 +130,7 @@ const ContactCentreStaffActions = [
  */
 const SbcFieldOfficeStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
+  AuthorizedActions.ANNUAL_REPORT_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.COURT_ORDER_POA,
   AuthorizedActions.DIRECTOR_CHANGE_FILING,
@@ -149,6 +153,7 @@ const PublicUserActions = [
   AuthorizedActions.AGM_CHG_LOCATION_FILING,
   AuthorizedActions.AGM_EXTENSION_FILING,
   AuthorizedActions.AMALGAMATION_FILING,
+  AuthorizedActions.ANNUAL_REPORT_FILING,
   AuthorizedActions.CONSENT_AMALGAMATION_OUT_FILING,
   AuthorizedActions.CONSENT_CONTINUATION_OUT_FILING,
   AuthorizedActions.DIGITAL_CREDENTIALS,

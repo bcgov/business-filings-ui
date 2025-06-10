@@ -4,6 +4,13 @@
       ref="confirm"
       attach="#consent-amalgamation-out"
     />
+    <AuthErrorDialog
+      attach="#consent-amalgamation-out"
+      :dialog="authErrorDialog"
+      :title="'Access Restricted'"
+      :text="`You are not authorized to complete this action.`"
+      @exit="goToDashboard(true)"
+    />
 
     <PaymentErrorDialog
       attach="#consent-amalgamation-out"
@@ -283,7 +290,7 @@ import { StatusCodes } from 'http-status-codes'
 import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, ForeignJurisdiction } from '@/components/common'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
+import { AuthErrorDialog, ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
@@ -296,6 +303,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
+    AuthErrorDialog,
     Certify,
     ConfirmDialog,
     CourtOrderPoa,
@@ -353,6 +361,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
   staffPaymentDialog = false
 
   // variables for displaying dialogs
+  authErrorDialog = false
   resumeErrorDialog = false
   saveErrorReason = null as SaveErrorReasons
   paymentErrorDialog = false
@@ -406,6 +415,11 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
 
   /** Called when component is created. */
   created (): void {
+    if (IsAuthorized(AuthorizedActions.CONSENT_AMALGAMATION_OUT_FILING)) {
+      // user is not authorized to access Consent Amal out filings, so route to dashboard
+      this.authErrorDialog = true
+      throw new Error('You are not authorized to complete this action.')
+    }
     // init
     this.setFilingData([])
 

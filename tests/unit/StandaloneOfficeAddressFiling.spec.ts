@@ -62,6 +62,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // init store
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
   })
 
   it('renders the filing sub-components properly', () => {

@@ -4,6 +4,13 @@
       ref="confirm"
       attach="#agm-extension"
     />
+    <AuthErrorDialog
+      attach="#agm-extension"
+      :dialog="authErrorDialog"
+      :title="'Access Restricted'"
+      :text="`You are not authorized to complete this action.`"
+      @exit="goToDashboard(true)"
+    />
 
     <PaymentErrorDialog
       attach="#agm-extension"
@@ -167,7 +174,9 @@ import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { Certify } from '@/components/common'
-import { ConfirmDialog, NotEligibleExtensionDialog, PaymentErrorDialog } from '@/components/dialogs'
+import {
+  AuthErrorDialog, ConfirmDialog, NotEligibleExtensionDialog, PaymentErrorDialog
+} from '@/components/dialogs'
 import AboutTheBusiness from '@/components/AgmExtension/AboutTheBusiness.vue'
 import AgmExtensionEvaluation from '@/components/AgmExtension/AgmExtensionEvaluation.vue'
 import AgmExtensionHelp from '@/components/AgmExtension/AgmExtensionHelp.vue'
@@ -184,6 +193,7 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
     AboutTheBusiness,
     AgmExtensionEvaluation,
     AgmExtensionHelp,
+    AuthErrorDialog,
     Certify,
     ConfirmDialog,
     ExpandableHelp,
@@ -226,6 +236,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
   // variables for displaying dialogs
   saveErrorReason: SaveErrorReasons = null
   paymentErrorDialog = false
+  authErrorDialog = false
 
   // other variables
   totalFee = 0
@@ -261,6 +272,11 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
 
   /** Called when component is created. */
   created (): void {
+    if (!IsAuthorized(AuthorizedActions.AGM_EXTENSION_FILING)) {
+      // user is not authorized to access AGM extensions, so route to dashboard
+      this.authErrorDialog = true
+      throw new Error('You are not authorized to complete this action.')
+    }
     // init
     this.setFilingData([])
 
