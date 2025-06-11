@@ -421,7 +421,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     if (!IsAuthorized(AuthorizedActions.CONSENT_CONTINUATION_OUT_FILING)) {
       // user is not authorized for consent continuation out filings, so route to dashboard
       this.authErrorDialog = true
-      throw new Error('You are not authorized to complete this action.')
+      return
     }
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {

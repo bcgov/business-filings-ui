@@ -23,8 +23,6 @@ export default class Dashboard extends Vue {
 
     if (businessId) {
       // If on there is a business id, but no further info, redirect to dashboard with businessId
-      console.log(businessId)
-      console.log(this.$route.fullPath)
       url = `${this.getDashboardUrl}${businessId}`
     } else {
       // If on root, redirect to BRD

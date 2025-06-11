@@ -407,7 +407,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
     if (!IsAuthorized(AuthorizedActions.AGM_CHG_LOCATION_FILING)) {
       // user is not authorized to access AGM location change, so route to dashboard
       this.authErrorDialog = true
-      throw new Error('You are not authorized to complete this action.')
+      return
     }
     // init
     this.setFilingData([])

@@ -275,7 +275,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
     if (!IsAuthorized(AuthorizedActions.AGM_EXTENSION_FILING)) {
       // user is not authorized to access AGM extensions, so route to dashboard
       this.authErrorDialog = true
-      throw new Error('You are not authorized to complete this action.')
+      return
     }
     // init
     this.setFilingData([])

@@ -367,7 +367,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     if (!IsAuthorized(AuthorizedActions.ADDRESS_CHANGE_FILING)) {
       // user is not authorized to change an address, so route to dashboard
       this.authErrorDialog = true
-      throw new Error('You are not authorized to complete this action.')
+      return
     }
     // init
     this.setFilingData([])

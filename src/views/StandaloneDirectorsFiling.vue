@@ -507,7 +507,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
     if (!IsAuthorized(AuthorizedActions.DIRECTOR_CHANGE_FILING)) {
       // user is not authorized to access Director change filing, so route to dashboard
       this.authErrorDialog = true
-      throw new Error('You are not authorized to complete this action.')
+      return
     }
 
     // init
