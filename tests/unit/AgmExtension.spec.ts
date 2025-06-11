@@ -153,7 +153,7 @@ describe('AGM Extension view', () => {
 
     // simulate valid certify data and component
     wrapper.setData({ certifiedBy: 'Full Name', isCertified: true, certifyFormValid: true })
-    await utils.sleep(300) // need to wait for debounce
+    await flushPromises()
     // click the file-pay button
     await wrapper.find('#file-pay-btn').trigger('click')
 

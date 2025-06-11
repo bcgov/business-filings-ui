@@ -17,8 +17,8 @@ export const useConfigurationStore = defineStore('configuration', {
       return this.getAuthWebUrl + 'business'
     },
 
-    getBusinessRegDashUrl (state: ConfigurationStateIF): string {
-      return state.configuration?.VUE_APP_BUSINESS_REG_DASH_URL
+    getBusinessRegistryDashboardUrl (state: ConfigurationStateIF): string {
+      return state.configuration?.VUE_APP_BUSINESS_REGISTRY_URL
     },
 
     getBusinessProfileUrl (): string {

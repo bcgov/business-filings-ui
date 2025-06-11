@@ -135,7 +135,6 @@ const SbcFieldOfficeStaffActions = [
   AuthorizedActions.DIRECTOR_CHANGE_FILING,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
   AuthorizedActions.EDITABLE_COMPLETING_PARTY,
-  AuthorizedActions.DETAIL_COMMENTS,
   AuthorizedActions.FILE_AND_PAY,
   AuthorizedActions.INCORPORATION_APPLICATION_FILING,
   AuthorizedActions.SBC_BREADCRUMBS,
