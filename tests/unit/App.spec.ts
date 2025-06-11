@@ -447,7 +447,7 @@ describe('App as a COOP', () => {
     rootStore.setAuthRoles([AuthorizationRoles.SBC_STAFF])
     expect(utils.IsAuthorized(AuthorizedActions.EDITABLE_CERTIFY_NAME)).toBe(true)
     expect(utils.IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS)).toBe(true)
-    expect(utils.IsAuthorized(AuthorizedActions.STAFF_COMMENTS)).toBe(false)
+    expect(utils.IsAuthorized(AuthorizedActions.STAFF_FILINGS)).toBe(false)
   })
 
   it('gets public user permissions properly', () => {
