@@ -386,6 +386,10 @@ export const useRootStore = defineStore('root', {
       this.currentDate = currentDate
     },
 
+    setNameRequest (nameRequest: any) {
+      this.nameRequest = nameRequest
+    },
+
     setBootstrapFilingStatus (status: FilingStatus) {
       this.bootstrapFilingStatus = status
     },
