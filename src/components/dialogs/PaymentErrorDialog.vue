@@ -97,7 +97,7 @@
           text
           @click="exit()"
         >
-          {{ !IsAuthorized(AuthorizedActions.STAFF_PAYMENT) ? 'Back to My Dashboard' : 'OK' }}
+          Back to My Dashboard
         </v-btn>
       </v-card-actions>
     </v-card>

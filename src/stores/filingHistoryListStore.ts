@@ -8,7 +8,6 @@ import { AuthorizedActions } from '@/enums'
 
 export const useFilingHistoryListStore = defineStore('filingHistoryList', {
   state: (): FilingHistoryListStateIF => ({
-    addCommentDialog: false,
     currentFiling: null,
     downloadErrorDialog: false,
     fileCorrectionDialog: false,

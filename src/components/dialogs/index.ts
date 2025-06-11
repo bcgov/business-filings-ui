@@ -1,4 +1,3 @@
-import AddCommentDialog from './AddCommentDialog.vue'
 import AddStaffNotationDialog from './AddStaffNotationDialog.vue'
 import AffiliationErrorDialog from './AffiliationErrorDialog.vue'
 import AuthErrorDialog from './AuthErrorDialog.vue'
@@ -26,7 +25,6 @@ import StaffRoleErrorDialog from './StaffRoleErrorDialog.vue'
 import TechnicalErrorDialog from './TechnicalErrorDialog.vue'
 
 export {
-  AddCommentDialog,
   AddStaffNotationDialog,
   AffiliationErrorDialog,
   AuthErrorDialog,

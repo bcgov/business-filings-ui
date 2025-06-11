@@ -76,8 +76,8 @@ const BusinessRegistryStaffActions = [
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.CONSENT_AMALGAMATION_OUT_FILING,
   AuthorizedActions.CONSENT_CONTINUATION_OUT_FILING,
+  AuthorizedActions.COURT_ORDER_FILING,
   AuthorizedActions.COURT_ORDER_POA,
-  AuthorizedActions.DETAIL_COMMENTS,
   AuthorizedActions.DIRECTOR_CHANGE_FILING,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
   AuthorizedActions.EDITABLE_COMPLETING_PARTY,
@@ -88,7 +88,6 @@ const BusinessRegistryStaffActions = [
   AuthorizedActions.NOTICE_WITHDRAWAL_FILING,
   AuthorizedActions.OVERRIDE_NIGS,
   AuthorizedActions.STAFF_BREADCRUMBS,
-  AuthorizedActions.STAFF_COMMENTS,
   AuthorizedActions.STAFF_FILINGS,
   AuthorizedActions.STAFF_PAYMENT,
   AuthorizedActions.THIRD_PARTY_CERTIFY_STMT

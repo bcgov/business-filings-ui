@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import { GetFeatureFlag, IsAuthorized } from '@/utils'
-import { AllowableActions, AuthorizedActions, CorpTypeCd, FilingSubTypes } from '@/enums'
+import { GetFeatureFlag } from '@/utils'
+import { AllowableActions, CorpTypeCd, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { AllowedActionsIF } from '@/interfaces'
 import { useBusinessStore } from '@/stores'
@@ -96,10 +96,11 @@ export default class AllowableActionsMixin extends Vue {
         return this.isAllowedFiling(FilingTypes.COURT_ORDER)
       }
 
+      /* Deprecated - Detail comments requiring permissions occur in dashboard now.
       case AllowableActions.DETAIL_COMMENT: {
-        return (isBusiness && IsAuthorized(AuthorizedActions.DETAIL_COMMENTS))
+        return (isBusiness && IsStaff())
       }
-
+      */
       case AllowableActions.DIGITAL_CREDENTIALS: {
         // NB: this feature is targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('enable-digital-credentials')
@@ -163,10 +164,11 @@ export default class AllowableActionsMixin extends Vue {
         )
       }
 
+      /* Deprecated - comments occur in dashboard now.
       case AllowableActions.STAFF_COMMENT: {
         return (isBusiness && IsAuthorized(AuthorizedActions.STAFF_COMMENTS))
       }
-
+      */
       case AllowableActions.TRANSITION: {
         return this.isAllowedFiling(FilingTypes.TRANSITION)
       }

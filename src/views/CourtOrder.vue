@@ -497,7 +497,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   /** Called when component is created. */
   created (): void {
     // Safety check to make sure user has required permissions to file the Court Order.
-    if (!IsAuthorized(AuthorizedActions.STAFF_FILINGS)) {
+    if (!IsAuthorized(AuthorizedActions.COURT_ORDER_FILING)) {
       this.resumeErrorDialog = true
       throw new Error('This is a Staff only Filing.')
     }

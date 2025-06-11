@@ -335,7 +335,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
   isCertified = false
   certifyFormValid = false
 
-  // variables for DetailComment component
+  // variables for DetailComment component. This is a special case we don't check permissions for DETAIL_COMMENT.
   reason = ''
   reasonValid = false
 

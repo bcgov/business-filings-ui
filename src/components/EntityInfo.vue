@@ -45,14 +45,12 @@ import { Component, Emit, Vue } from 'vue-property-decorator'
 import { NigsMessage } from '@/enums'
 import EntityDefinitions from './EntityInfo/EntityDefinitions.vue'
 import EntityHeader from './EntityInfo/EntityHeader.vue'
-import EntityMenu from './EntityInfo/EntityMenu.vue'
 import { Routes, DCRoutes } from '@/enums/routes'
 
 @Component({
   components: {
     EntityDefinitions,
-    EntityHeader,
-    EntityMenu
+    EntityHeader
   }
 })
 export default class EntityInfo extends Vue {
