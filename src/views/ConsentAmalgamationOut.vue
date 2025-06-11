@@ -418,7 +418,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
     if (!IsAuthorized(AuthorizedActions.CONSENT_AMALGAMATION_OUT_FILING)) {
       // user is not authorized to access Consent Amal out filings, so route to dashboard
       this.authErrorDialog = true
-      throw new Error('You are not authorized to complete this action.')
+      return
     }
     // init
     this.setFilingData([])

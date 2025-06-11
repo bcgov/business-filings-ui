@@ -604,7 +604,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     if (!IsAuthorized(AuthorizedActions.ANNUAL_REPORT_FILING)) {
       // user is not authorized to access annual reports, so route to dashboard
       this.authErrorDialog = true
-      throw new Error('You are not authorized to complete this action.')
+      return
     }
     // init
     this.setFilingData([])
