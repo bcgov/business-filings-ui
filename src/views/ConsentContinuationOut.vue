@@ -463,7 +463,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     this.dataLoaded = true
 
     // Pre-populate the certified block with the logged in user's name if no permission for blank certificate
-    if (!this.IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
+    if (!IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
@@ -649,7 +649,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
     // if this is a user with STAFF_PAYMENT permissions clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
-    if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
       this.staffPaymentDialog = true
       return
     }
@@ -848,7 +848,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false
@@ -876,7 +876,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       case SaveErrorReasons.FILE_PAY:
         // close the dialog and retry file-pay
         this.saveErrorReason = null
-        if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
+        if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
         else await this.onClickFilePay()
         break
     }

@@ -433,7 +433,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
   /** Called when component is mounted. */
   mounted (): void {
     // Pre-populate the certified block with the logged in user's name if no permission for blank certificate.
-    if (!this.IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
+    if (!IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
@@ -627,7 +627,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false
