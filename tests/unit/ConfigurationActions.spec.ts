@@ -1,6 +1,7 @@
 import { setBaseRouteAndBusinessId } from '@/utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useConfigurationStore } from '@/stores'
+import * as utils from '@/utils'
 
 // mock the console.info function to hide the output
 console.info = vi.fn()
@@ -22,6 +23,7 @@ describe('Configuration Actions', () => {
     VUE_APP_BUSINESS_CREATE_URL: 'business create url',
     VUE_APP_BUSINESS_EDIT_URL: 'business edit url',
     VUE_APP_BUSINESS_FILING_LD_CLIENT_ID: 'business filing ld client id',
+    VUE_APP_BUSINESS_REGISTRY_URL: 'business registry dashboard url',
     VUE_APP_DASHBOARD_URL: 'dashboard url',
     VUE_APP_LEGAL_API_URL: 'legal api url',
     VUE_APP_LEGAL_API_VERSION_2: '/legal api version 2',
@@ -121,18 +123,17 @@ describe('Configuration Actions', () => {
     expect(sessionStorage.getItem('TEMP_REG_NUMBER')).toBe('T1234567')
   })
 
-  it('throws error on invalid id', async () => {
-    // mock window.location getters
-    delete window.location
-    Object.defineProperty(window, 'location', {
-      value: new URL('http://localhost/business/ZZ1234567'),
-      configurable: true
-    })
+  it('redirects on invalid id', async () => {
+    const navigateSpy = vi.spyOn(utils, 'navigate').mockImplementation(() => true)
+    setBaseRouteAndBusinessId('/business/ZZ1234567', '/business/', window.location.origin)
+    const businessId = sessionStorage.getItem('BUSINESS_ID')
+    if (!businessId) {
+      const url = configurationStore.getBusinessRegistryDashboardUrl
+      utils.navigate(url)
+    }
 
-    // call method
-    expect(() => {
-      setBaseRouteAndBusinessId('ZZ1234567', '/business/', window.location.origin)
-    }).toThrow('Missing or invalid Business ID or Temporary Registration Number.')
+    expect(navigateSpy).toHaveBeenCalledWith('business registry dashboard url')
+    navigateSpy.mockRestore()
   })
 
   it('sessions variables correctly set for the SBC header', async () => {

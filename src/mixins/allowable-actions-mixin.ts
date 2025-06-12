@@ -96,11 +96,6 @@ export default class AllowableActionsMixin extends Vue {
         return this.isAllowedFiling(FilingTypes.COURT_ORDER)
       }
 
-      /* Deprecated - Detail comments requiring permissions occur in dashboard now.
-      case AllowableActions.DETAIL_COMMENT: {
-        return (isBusiness && IsStaff())
-      }
-      */
       case AllowableActions.DIGITAL_CREDENTIALS: {
         // NB: this feature is targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('enable-digital-credentials')
@@ -164,11 +159,6 @@ export default class AllowableActionsMixin extends Vue {
         )
       }
 
-      /* Deprecated - comments occur in dashboard now.
-      case AllowableActions.STAFF_COMMENT: {
-        return (isBusiness && IsAuthorized(AuthorizedActions.STAFF_COMMENTS))
-      }
-      */
       case AllowableActions.TRANSITION: {
         return this.isAllowedFiling(FilingTypes.TRANSITION)
       }
