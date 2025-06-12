@@ -22,6 +22,7 @@ export const useBusinessStore = defineStore('business', {
       hasRestrictions: null,
       identifier: null,
       lastAddressChangeDate: null,
+      lastAnnualGeneralMeetingDate: null,
       lastAnnualReportDate: null,
       lastDirectorChangeDate: null,
       legalName: null,
@@ -99,6 +100,11 @@ export const useBusinessStore = defineStore('business', {
     /** The last annual report change date. */
     getLastAnnualReportDate (state: BusinessStateIF): string {
       return state.businessInfo.lastAnnualReportDate
+    },
+
+    /** The last annual general meeting date. */
+    getLastAnnualGeneralMeetingDate (state: BusinessStateIF): string {
+      return state.businessInfo.lastAnnualGeneralMeetingDate
     },
 
     /** The last director change date. */

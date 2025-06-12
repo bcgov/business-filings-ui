@@ -40,7 +40,7 @@
             <v-date-picker
               v-model="datePicker"
               data-test-id="agm-date-picker"
-              :min="arMinDate"
+              :min="agmMinDate"
               :max="arMaxDate"
               no-title
               @input="menu=false"
@@ -178,6 +178,7 @@ export default class AgmDate extends Mixins(DateMixin) {
   @Getter(useBusinessStore) arMaxDate!: string
   @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useRootStore) getCurrentDate!: string
+  @Getter(useBusinessStore) getLastAnnualGeneralMeetingDate!: string
 
   // Local properties.
   dateText = '' // value in text field
@@ -225,6 +226,11 @@ export default class AgmDate extends Mixins(DateMixin) {
     // where Max AGM Date is 'today' in the AR Filing Year
     // up to Apr 30 in the next year
     return (this.compareYyyyMmDd(this.getCurrentDate, this.arMaxDate, '>'))
+  }
+
+  /** Whether to set Min AGM Date: cannot be earlier than an already reported AGM date. */
+  get agmMinDate (): string {
+    return this.latestYyyyMmDd(this.arMinDate, this.getLastAnnualGeneralMeetingDate)
   }
 
   /** Called when component is mounted. */
