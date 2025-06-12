@@ -80,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import * as Sentry from '@sentry/browser'
 import { GetFeatureFlag, IsAuthorized, GetKeycloakRoles, navigate, UpdateLdUser } from '@/utils'
@@ -178,6 +178,7 @@ export default class App extends Mixins(
   // configuration store references
   @Getter(useConfigurationStore) getAuthApiUrl!: string
   @Getter(useConfigurationStore) getCreateUrl!: string
+  @Getter(useConfigurationStore) getBusinessRegistryDashboardUrl!: string
 
   // root store references
   @Getter(useRootStore) getAuthRoles!: Array<AuthorizationRoles>
@@ -252,15 +253,6 @@ export default class App extends Mixins(
         this.getMyBusinessRegistryBreadcrumb())
     }
     return crumbs
-  }
-
-  @Watch('$route')
-  private async onRouteChanged (): Promise<void> {
-    // re-fetch all data when we (re)route to the dashboard
-    // (does not fire on initial dashboard load)
-    if (this.$route.name === Routes.DASHBOARD) {
-      await this.fetchData()
-    }
   }
 
   /** Called when component is created. */
@@ -365,14 +357,6 @@ export default class App extends Mixins(
     // fetch user info and update Launch Darkly
     this.setupLaunchDarkly()
 
-    // check whether to redirect to the new Business Dashboard
-    if (this.$route.name === Routes.DASHBOARD) {
-      const identifier = (this.businessId || this.tempRegNumber)
-      const dashboardUrl = `${this.getBusinessDashUrl}${identifier}${this.$route.fullPath}`
-      navigate(dashboardUrl)
-      return
-    }
-
     // is this a business entity?
     if (this.businessId) {
       try {
@@ -386,6 +370,8 @@ export default class App extends Mixins(
         // At this point the system doesn't know why it's incomplete.
         // Since this is not an expected behaviour, report this.
         Sentry.captureException(error)
+        // Return to BRD
+        navigate(this.getBusinessRegistryDashboardUrl)
       }
     }
   }

@@ -52,6 +52,14 @@ async function start () {
 
   setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // may throw an error
 
+  // Saftey check for proper business number
+  const businessId = sessionStorage.getItem('BUSINESS_ID')
+  console.log(`Business ID: ${businessId}`)
+  if (!businessId) {
+    const businessRegistryDashboardUrl = configurationStore.getBusinessRegistryDashboardUrl
+    navigate(businessRegistryDashboardUrl)
+    return
+  }
   // initialize Launch Darkly
   if (window['ldClientId']) {
     console.info('Initializing LaunchDarkly...') // eslint-disable-line no-console
