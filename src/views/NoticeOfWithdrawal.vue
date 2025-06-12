@@ -383,7 +383,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     /** Called when component is created. */
     created (): void {
       // do not proceed if user is does not have required permissions
-      if (!this.IsAuthorized(AuthorizedActions.NOTICE_WITHDRAWAL_FILING)) {
+      if (!IsAuthorized(AuthorizedActions.NOTICE_WITHDRAWAL_FILING)) {
         this.staffRoleErrorDialog = true
         throw new Error('This is a Staff only Filing.')
       }
@@ -425,7 +425,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       this.dataLoaded = true
 
       // Pre-populate the certified block with the logged in user's name unless they have proper permissions.
-      if (!this.IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
+      if (!IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
         this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
       }
 
@@ -654,7 +654,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
     /** Handles Exit event from Payment Error dialog. */
     onPaymentErrorDialogExit (): void {
-      if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
+      if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
         // close Payment Error dialog -- this
         // leaves user on Staff Payment dialog
         this.paymentErrorDialog = false

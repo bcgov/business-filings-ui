@@ -497,7 +497,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
   /** Called when component is created. */
   created (): void {
     // Safety check to make sure Staff is filing the Amalgamation Out.
-    if (!this.IsAuthorized(AuthorizedActions.STAFF_FILINGS)) {
+    if (!IsAuthorized(AuthorizedActions.STAFF_FILINGS)) {
       this.resumeErrorDialog = true
       throw new Error('This is a Staff only Filing.')
     }
@@ -910,7 +910,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
       case SaveErrorReasons.FILE_PAY:
         // close the dialog and retry file-pay
         this.saveErrorReason = null
-        if (this.IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
+        if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
         else await this.onClickFilePay()
         break
     }

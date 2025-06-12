@@ -10,15 +10,16 @@ import { CurrentAccountIF } from '@/interfaces'
 
 @Component({
 })
-export default class Dashboard extends Vue {
+export default class Default extends Vue {
   @Getter(useConfigurationStore) getDashboardUrl!: string
   @Getter(useConfigurationStore) getBusinessRegistryDashboardUrl!: string
+  @Getter(useConfigurationStore) getBusinessID
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useAuthenticationStore) getCurrentAccount!: CurrentAccountIF
 
   created () {
     // Get businessId from route params if present
-    const businessId = this.$route.params.businessId
+    const businessId = sessionStorage.getItem('BUSINESS_ID')
     let url = ''
 
     if (businessId) {

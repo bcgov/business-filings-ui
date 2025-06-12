@@ -16,15 +16,6 @@
             :businessId="businessId"
             :tempRegNumber="tempRegNumber"
           />
-          <EntityMenu
-            v-if="!(isInLocalFilingPage || isDCRoute)"
-            class="mt-2 ml-n3"
-            :businessId="businessId"
-            @confirmDissolution="emitConfirmDissolution()"
-            @downloadBusinessSummary="emitDownloadBusinessSummary()"
-            @notInGoodStanding="emitNotInGoodStanding($event)"
-            @viewAddDigitalCredentials="emitViewAddDigitalCredentials()"
-          />
         </v-col>
 
         <v-col

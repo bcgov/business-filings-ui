@@ -15,15 +15,9 @@ import Signout from '@/views/auth/Signout.vue'
 import { DigitalCredentialRoutes } from '@/resources/DigitalCredentialRoutes'
 import { Routes } from '@/enums'
 import { FilingNames } from '@bcrs-shared-components/enums'
-import Dashboard from './views/Dashboard.vue'
+import Default from './views/Default.vue'
 
 export default [
-  {
-    // Return to BRD if the URL is hit directly
-    path: '/',
-    name: Routes.DASHBOARD,
-    component: Dashboard
-  },
   {
     path: '/agm-extension',
     name: Routes.AGM_EXTENSION,
@@ -237,10 +231,10 @@ export default [
   },
   DigitalCredentialRoutes,
   {
-    // Return to new dashboard if we have a businessID, but no actual filing info
-    path: '/:businessId/',
-    name: 'BusinessDashboardRedirect',
-    component: Dashboard
+    // Return to Dash or BRD if there are no matches
+    path: '*',
+    name: Routes.DEFAULT,
+    component: Default
   }
 
 ]
