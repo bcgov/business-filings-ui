@@ -146,7 +146,6 @@ export const useConfigurationStore = defineStore('configuration', {
       return new Promise((resolve) => {
         this.setConfiguration(env)
         this.setSessionVariables(env)
-        console.log('*** legal api url =', this.getLegalApiUrl)
         this.setAxiosBaseUrl(this.getLegalApiUrl)
 
         resolve(import.meta.env)
