@@ -46,17 +46,18 @@ async function start () {
   const windowLocationPathname = window.location.pathname // eg, /business/CP1234567/...
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
+  // initialize Launch Darkly
+  window['ldClientId'] = import.meta.env.VUE_APP_BUSINESS_FILING_LD_CLIENT_ID
+  if (window['ldClientId']) {
+    console.info('Initializing LaunchDarkly...') // eslint-disable-line no-console
+    await InitLdClient()
+  }
+
   // first load the configuration, then set base route and check business id
   const configurationStore = useConfigurationStore()
   configurationStore.loadConfiguration()
 
   setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // may throw an error
-
-  // initialize Launch Darkly
-  if (window['ldClientId']) {
-    console.info('Initializing LaunchDarkly...') // eslint-disable-line no-console
-    await InitLdClient()
-  }
 
   if (GetFeatureFlag('sentry-enable')) {
     // initialize Sentry
