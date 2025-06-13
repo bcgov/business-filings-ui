@@ -102,7 +102,7 @@
                   class="py-8 px-5"
                 >
                   <DocumentDelivery
-                    editableCompletingParty="true"
+                    :editableCompletingParty="IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY)"
                     :contactValue="getBusinessEmail"
                     contactLabel="Registered Office"
                     :documentOptionalEmail="documentOptionalEmail"
