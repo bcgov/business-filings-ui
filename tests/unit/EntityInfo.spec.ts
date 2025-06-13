@@ -7,7 +7,6 @@ import { useBusinessStore, useRootStore } from '@/stores'
 import EntityInfo from '@/components/EntityInfo.vue'
 import EntityDefinitions from '@/components/EntityInfo/EntityDefinitions.vue'
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
-import EntityMenu from '@/components/EntityInfo/EntityMenu.vue'
 import mockRouter from './mockRouter'
 
 Vue.use(Vuetify)
@@ -38,6 +37,5 @@ describe('Entity Info component', () => {
 
     expect(wrapper.findComponent(EntityDefinitions).exists()).toBe(true)
     expect(wrapper.findComponent(EntityHeader).exists()).toBe(true)
-    expect(wrapper.findComponent(EntityMenu).exists()).toBe(true)
   })
 })

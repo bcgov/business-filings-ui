@@ -7,17 +7,6 @@ import { AxiosResponse } from 'axios'
  */
 export default class AuthServices {
   /**
-   * Fetches authorizations.
-   * @param authApiUrl
-   * @param businessId the business identifier (aka entity inc no)
-   * @returns the axios response
-   */
-  static async fetchAuthorizations (authApiUrl: string, businessId: string): Promise<AxiosResponse> {
-    const url = `${authApiUrl}entities/${businessId}/authorizations`
-    return axios.get(url)
-  }
-
-  /**
    * Fetches user info for the current user.
    * @returns the user info object
    */

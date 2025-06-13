@@ -19,6 +19,7 @@ import { BusinessConfigCp } from '@/resources/CP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingCodes } from '@bcrs-shared-components/enums'
 import * as utils from '@/utils'
+import { AuthorizationRoles } from '@/enums'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -87,6 +88,10 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     // set Last Filing Date and verify new Min Date
     rootStore.currentDate = '2019-07-15'
     businessStore.setFoundingDate('2018-03-01T00:00:00')
+  })
+
+  beforeEach(() => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
   })
 
   it('renders the filing sub-components properly', () => {
@@ -216,6 +221,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 
   it('enables File & Pay button when page valid flag is true', async () => {
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
     const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
       mocks: { $route },
@@ -698,6 +704,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     'is clicked - as a COOP', async () => {
     // init store
     businessStore.setLegalType(CorpTypeCd.COOP)
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
 
     const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
@@ -764,6 +771,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     'is clicked - as a BCOMP', async () => {
     // init store
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
 
     const $route = { query: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
@@ -828,6 +836,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     'is clicked and payment action is not required', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -1631,6 +1640,8 @@ describe('Standalone Directors Filing - payment required error', () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
     sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+
     const get = sinon.stub(axios, 'get')
 
     get.withArgs('businesses/CP0001191/tasks')

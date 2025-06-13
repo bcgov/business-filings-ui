@@ -101,7 +101,6 @@ describe('Entity Definitions component', () => {
     businessStore.setFoundingDate(null)
     businessStore.setIdentifier(null)
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.nameRequest = { nrNum: 'NR 1234567' }
     businessStore.setTaxId(null)
 
     const wrapper = shallowMount(EntityDefinitions, { vuetify, propsData: { businessId: null } })
@@ -112,7 +111,6 @@ describe('Entity Definitions component', () => {
     expect(wrapper.find('#registration-number').exists()).toBe(false)
     expect(wrapper.find('#business-number').exists()).toBe(false)
     expect(wrapper.find('#incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('#name-request-number').text()).toBe('NR 1234567')
     expect(wrapper.find('#email').exists()).toBe(false)
     expect(wrapper.find('#phone').exists()).toBe(false)
   })

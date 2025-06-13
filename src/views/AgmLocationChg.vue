@@ -5,6 +5,14 @@
       attach="#agm-location-chg"
     />
 
+    <AuthErrorDialog
+      attach="#agm-location-chg"
+      :dialog="authErrorDialog"
+      :title="'Access Restricted'"
+      :text="`You are not authorized to complete this action.`"
+      @exit="goToDashboard(true)"
+    />
+
     <PaymentErrorDialog
       attach="#agm-location-chg"
       filingName="AGM Location Change"
@@ -192,7 +200,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
-                  :disableEdit="!isRoleStaff"
+                  :disableEdit="!IsAuthorized(AuthorizedActions.EDITABLE_CERTIFY_NAME)"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.AGM_LOCATION_CHANGE)"
                   @valid="certifyFormValid=$event"
@@ -243,7 +251,7 @@
                 id="agm-loctn-chg-file-pay-btn"
                 color="primary"
                 large
-                :disabled="busySaving"
+                :disabled="busySaving || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -272,14 +280,14 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { navigate } from '@/utils'
+import { navigate, IsAuthorized } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, DetailComment } from '@/components/common'
-import { ConfirmDialog, PaymentErrorDialog } from '@/components/dialogs'
+import { AuthErrorDialog, ConfirmDialog, PaymentErrorDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { LegalServices } from '@/services/'
-import { SaveErrorReasons } from '@/enums'
+import { SaveErrorReasons, AuthorizedActions } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -290,6 +298,7 @@ import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
   components: {
     AgmLocation,
     AgmYear,
+    AuthErrorDialog,
     Certify,
     ConfirmDialog,
     DetailComment,
@@ -309,10 +318,11 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getUserInfo!: any
-  @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   // variables for main section
   agmLocation = ''
@@ -325,13 +335,14 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
   isCertified = false
   certifyFormValid = false
 
-  // variables for DetailComment component
+  // variables for DetailComment component. This is a special case we don't check permissions for DETAIL_COMMENT.
   reason = ''
   reasonValid = false
 
   // variables for displaying dialogs
   saveErrorReason: SaveErrorReasons = null
   paymentErrorDialog = false
+  authErrorDialog = false
 
   // other variables
   totalFee = 0
@@ -393,6 +404,11 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
 
   /** Called when component is created. */
   created (): void {
+    if (!IsAuthorized(AuthorizedActions.AGM_CHG_LOCATION_FILING)) {
+      // user is not authorized to access AGM location change, so route to dashboard
+      this.authErrorDialog = true
+      return
+    }
     // init
     this.setFilingData([])
 
@@ -416,8 +432,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
 
   /** Called when component is mounted. */
   mounted (): void {
-    // Pre-populate the certified block with the logged in user's name (if not staff)
-    if (!this.isRoleStaff && this.getUserInfo) {
+    // Pre-populate the certified block with the logged in user's name if no permission for blank certificate.
+    if (!IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
@@ -611,7 +627,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (this.isRoleStaff) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false

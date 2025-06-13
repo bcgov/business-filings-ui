@@ -5,6 +5,14 @@
       attach="#annual-report"
     />
 
+    <AuthErrorDialog
+      attach="#annual-report"
+      :dialog="authErrorDialog"
+      :title="'Access Restricted'"
+      :text="`You are not authorized to complete this action.`"
+      @exit="goToDashboard(true)"
+    />
+
     <FetchErrorDialog
       attach="#annual-report"
       :dialog="fetchErrorDialog"
@@ -309,7 +317,7 @@
         <v-btn
           id="ar-save-btn"
           large
-          :disabled="busySaving"
+          :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="saving"
           @click="onClickSave()"
         >
@@ -318,7 +326,7 @@
         <v-btn
           id="ar-save-resume-btn"
           large
-          :disabled="busySaving"
+          :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="savingResuming"
           @click="onClickSaveResume()"
         >
@@ -341,7 +349,7 @@
                 id="ar-file-pay-btn"
                 color="primary"
                 large
-                :disabled="!isPageValid || busySaving"
+                :disabled="!isPageValid || busySaving || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -387,7 +395,7 @@
                 id="ar-file-pay-bc-btn"
                 color="primary"
                 large
-                :disabled="!isPageValid || busySaving"
+                :disabled="!isPageValid || busySaving|| !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -417,17 +425,17 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { navigate } from '@/utils'
+import { IsAuthorized, navigate } from '@/utils'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
-import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
+import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { FilingStatus, SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -436,6 +444,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
   components: {
     AgmDate,
     ArDate,
+    AuthErrorDialog,
     Certify,
     ConfirmDialog,
     Directors,
@@ -458,6 +467,10 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     officeAddressesComponent: OfficeAddresses
   }
 
+  // For Template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
+
   @Getter(useBusinessStore) arMaxDate!: string
   @Getter(useBusinessStore) arMinDate!: string
   @Getter(useRootStore) getCurrentYear!: number
@@ -469,7 +482,6 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useConfigurationStore) getPayApiUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isEntityCoop!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useBusinessStore) nextARDate!: string
 
   // variables for AgmDate component
@@ -502,6 +514,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   staffPaymentDialog = false
 
   // variables for displaying dialogs
+  authErrorDialog = false
   fetchErrorDialog = false
   resumeErrorDialog = false
   saveErrorReason: SaveErrorReasons = null
@@ -588,6 +601,11 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
   /** Called when component is created. */
   created (): void {
+    if (!IsAuthorized(AuthorizedActions.ANNUAL_REPORT_FILING)) {
+      // user is not authorized to access annual reports, so route to dashboard
+      this.authErrorDialog = true
+      return
+    }
     // init
     this.setFilingData([])
 
@@ -939,9 +957,9 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     // prevent double saving
     if (this.busySaving) return
 
-    // if this is a staff user clicking File and Pay (not Submit)
+    // if this is a user with STAFF_PAYMENT permissions clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
       this.staffPaymentDialog = true
       return
     }
@@ -1220,7 +1238,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (this.isRoleStaff) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false
@@ -1248,7 +1266,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       case SaveErrorReasons.FILE_PAY:
         // close the dialog and retry file-pay
         this.saveErrorReason = null
-        if (this.isRoleStaff) await this.onClickFilePay(true)
+        if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
         else await this.onClickFilePay()
         break
     }

@@ -4,6 +4,13 @@
       ref="confirm"
       attach="#consent-amalgamation-out"
     />
+    <AuthErrorDialog
+      attach="#consent-amalgamation-out"
+      :dialog="authErrorDialog"
+      :title="'Access Restricted'"
+      :text="`You are not authorized to complete this action.`"
+      @exit="goToDashboard(true)"
+    />
 
     <PaymentErrorDialog
       attach="#consent-amalgamation-out"
@@ -121,7 +128,7 @@
                   class="py-8 px-5"
                 >
                   <DocumentDelivery
-                    editableCompletingParty="true"
+                    :editableCompletingParty="IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY)"
                     :contactValue="getBusinessEmail"
                     contactLabel="Business Office"
                     :documentOptionalEmail="documentOptionalEmail"
@@ -149,7 +156,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
-                  :disableEdit="!isRoleStaff"
+                  :disableEdit="!IsAuthorized(AuthorizedActions.EDITABLE_CERTIFY_NAME)"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                   @valid="certifyFormValid=$event"
@@ -158,7 +165,7 @@
             </section>
 
             <!-- Court Order and Plan of Arrangement -->
-            <section v-if="isRoleStaff">
+            <section v-if="IsAuthorized(AuthorizedActions.COURT_ORDER_POA)">
               <header>
                 <h2>Court Order and Plan of Arrangement</h2>
                 <p class="grey-text">
@@ -219,7 +226,7 @@
         <v-btn
           id="consent-save-btn"
           large
-          :disabled="busySaving"
+          :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="saving"
           @click="onClickSave()"
         >
@@ -228,7 +235,7 @@
         <v-btn
           id="consent-save-resume-btn"
           large
-          :disabled="busySaving"
+          :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT) "
           :loading="savingResuming"
           @click="onClickSaveResume()"
         >
@@ -251,7 +258,7 @@
                 id="consent-file-pay-btn"
                 color="primary"
                 large
-                :disabled="busySaving"
+                :disabled="busySaving || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -280,14 +287,14 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { navigate } from '@/utils'
+import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, ForeignJurisdiction } from '@/components/common'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
+import { AuthErrorDialog, ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
-import { EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -296,6 +303,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
+    AuthErrorDialog,
     Certify,
     ConfirmDialog,
     CourtOrderPoa,
@@ -321,10 +329,11 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getUserInfo!: any
-  @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
 
   // variables for Certify component
   certifiedBy = ''
@@ -352,6 +361,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
   staffPaymentDialog = false
 
   // variables for displaying dialogs
+  authErrorDialog = false
   resumeErrorDialog = false
   saveErrorReason = null as SaveErrorReasons
   paymentErrorDialog = false
@@ -405,6 +415,11 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
 
   /** Called when component is created. */
   created (): void {
+    if (!IsAuthorized(AuthorizedActions.CONSENT_AMALGAMATION_OUT_FILING)) {
+      // user is not authorized to access Consent Amal out filings, so route to dashboard
+      this.authErrorDialog = true
+      return
+    }
     // init
     this.setFilingData([])
 
@@ -447,8 +462,8 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
 
     this.dataLoaded = true
 
-    // Pre-populate the certified block with the logged in user's name (if not staff)
-    if (!this.isRoleStaff && this.getUserInfo) {
+    // Pre-populate the certified block with the logged in user's name if no permission for blank certificate
+    if (!IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
@@ -632,9 +647,9 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
     // prevent double saving
     if (this.busySaving) return
 
-    // if this is a staff user clicking File and Pay (not Submit)
+    // if this is a user with STAFF_PAYMENT permissions clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
       this.staffPaymentDialog = true
       return
     }
@@ -833,7 +848,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (this.isRoleStaff) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false
@@ -861,7 +876,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
       case SaveErrorReasons.FILE_PAY:
         // close the dialog and retry file-pay
         this.saveErrorReason = null
-        if (this.isRoleStaff) await this.onClickFilePay(true)
+        if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
         else await this.onClickFilePay()
         break
     }

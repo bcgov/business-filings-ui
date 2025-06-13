@@ -102,7 +102,7 @@
                   class="py-8 px-5"
                 >
                   <DocumentDelivery
-                    editableCompletingParty="true"
+                    :editableCompletingParty="IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY)"
                     :contactValue="getBusinessEmail"
                     contactLabel="Registered Office"
                     :documentOptionalEmail="documentOptionalEmail"
@@ -130,7 +130,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
-                  :disableEdit="!isRoleStaff"
+                  :disableEdit="!IsAuthorized(AuthorizedActions.EDITABLE_CERTIFY_NAME)"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.NOTICE_OF_WITHDRAWAL)"
                   @valid="certifyFormValid=$event"
@@ -139,7 +139,7 @@
             </section>
 
             <!-- Court Order and Plan of Arrangement -->
-            <section>
+            <section v-if="IsAuthorized(AuthorizedActions.COURT_ORDER_POA)">
               <header>
                 <h2>Court Order and Plan of Arrangement</h2>
                 <p class="grey-text">
@@ -167,7 +167,7 @@
             </section>
 
             <!-- Staff Payment -->
-            <section v-if="isRoleStaff">
+            <section v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)">
               <header class="pb-3">
                 <h2>Staff Payment</h2>
               </header>
@@ -231,7 +231,7 @@
                 color="primary"
                 large
                 class="mr-2"
-                :disabled="busySaving || hasTakenEffect"
+                :disabled="busySaving || hasTakenEffect || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickSubmit()"
               >
@@ -261,7 +261,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { navigate } from '@/utils'
+import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify } from '@/components/common'
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
@@ -270,7 +270,7 @@ import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDia
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { EffectOfOrderTypes, SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, EffectOfOrderTypes, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -304,10 +304,11 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     @Getter(useBusinessStore) getLegalName!: string
     @Getter(useConfigurationStore) getPayApiUrl!: string
     @Getter(useRootStore) getUserInfo!: any
-    @Getter(useRootStore) isRoleStaff!: boolean
 
     // enum for template
     readonly FilingCodes = FilingCodes
+    readonly AuthorizedActions = AuthorizedActions
+    readonly IsAuthorized = IsAuthorized
 
     // variables for POA arrangement checkboxes
     partOfPoa = false
@@ -381,8 +382,8 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
     /** Called when component is created. */
     created (): void {
-      // do not proceed if user is not staff
-      if (!this.isRoleStaff) {
+      // do not proceed if user is does not have required permissions
+      if (!IsAuthorized(AuthorizedActions.NOTICE_WITHDRAWAL_FILING)) {
         this.staffRoleErrorDialog = true
         throw new Error('This is a Staff only Filing.')
       }
@@ -423,8 +424,8 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
       this.dataLoaded = true
 
-      // Pre-populate the certified block with the logged in user's name (if not staff)
-      if (!this.isRoleStaff && this.getUserInfo) {
+      // Pre-populate the certified block with the logged in user's name unless they have proper permissions.
+      if (!IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
         this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
       }
 
@@ -653,7 +654,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
 
     /** Handles Exit event from Payment Error dialog. */
     onPaymentErrorDialogExit (): void {
-      if (this.isRoleStaff) {
+      if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
         // close Payment Error dialog -- this
         // leaves user on Staff Payment dialog
         this.paymentErrorDialog = false

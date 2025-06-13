@@ -13,10 +13,7 @@
 
       <v-card-text id="dialog-text">
         <!-- display common message -->
-        <div
-          v-if="!isRoleStaff"
-          class="font-15"
-        >
+        <div class="font-15">
           <p>
             We are unable to process your payment at this time. This {{ filingName }} has been saved
             as a DRAFT and you can retry your payment from the Business Dashboard at a later time.
@@ -26,7 +23,7 @@
         <!-- display generic message (no errors or warnings) -->
         <template v-if="(numErrors + numWarnings) < 1">
           <div
-            v-if="!isRoleStaff"
+            v-if="!IsAuthorized(AuthorizedActions.NO_CONTACT_INFO)"
             class="font-15"
           >
             <p>PayBC is normally available:</p>
@@ -82,7 +79,7 @@
           </div>
         </div>
 
-        <template v-if="!isRoleStaff">
+        <template v-if="!IsAuthorized(AuthorizedActions.NO_CONTACT_INFO)">
           <p class="font-15">
             If this error persists, please contact us:
           </p>
@@ -100,7 +97,7 @@
           text
           @click="exit()"
         >
-          {{ !isRoleStaff ? 'Back to My Dashboard' : 'OK' }}
+          Back to My Dashboard
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -109,16 +106,17 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { AuthorizedActions } from '@/enums'
 import { ContactInfo } from '@/components/common'
-import { useRootStore } from '@/stores'
+import { IsAuthorized } from '@/utils'
 
 @Component({
   components: { ContactInfo }
 })
 export default class PaymentErrorDialog extends Vue {
-  // Getter to check if logged in user is Staff.
-  @Getter(useRootStore) isRoleStaff!: boolean
+  // For Template Contact Info or message
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog!: boolean

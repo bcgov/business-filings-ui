@@ -4,6 +4,13 @@
       ref="confirm"
       attach="#standalone-office-address"
     />
+    <AuthErrorDialog
+      attach="#standalone-office-address"
+      :dialog="authErrorDialog"
+      :title="'Access Restricted'"
+      :text="`You are not authorized to complete this action.`"
+      @exit="goToDashboard(true)"
+    />
 
     <FetchErrorDialog
       attach="#standalone-office-address"
@@ -181,7 +188,7 @@
         <v-btn
           id="coa-save-btn"
           large
-          :disabled="!saveDraftAllowed || busySaving"
+          :disabled="!saveDraftAllowed || busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="saving"
           @click="onClickSave()"
         >
@@ -190,7 +197,7 @@
         <v-btn
           id="coa-save-resume-btn"
           large
-          :disabled="!saveDraftAllowed || busySaving"
+          :disabled="!saveDraftAllowed || busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="savingResuming"
           @click="onClickSaveResume()"
         >
@@ -213,7 +220,7 @@
                 id="coa-file-pay-btn"
                 color="primary"
                 large
-                :disabled="!isPageValid || busySaving"
+                :disabled="!isPageValid || busySaving || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -243,20 +250,21 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { navigate } from '@/utils'
+import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, OfficeAddresses } from '@/components/common'
-import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
+import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
+    AuthErrorDialog,
     OfficeAddresses,
     SbcFeeSummary,
     Certify,
@@ -281,9 +289,9 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   @Getter(useConfigurationStore) getPayApiUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isEntityCoop!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
 
   // local variables
+  authErrorDialog = false
   updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
   filingId = NaN
   savedFiling: any = null // filing during save
@@ -308,6 +316,10 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   saveWarnings = []
   totalFee = 0
   staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
+
+  // Authorized Enums
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
 
   /** True if loading container should be shown, else False. */
   get showLoadingContainer (): boolean {
@@ -352,6 +364,11 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
 
   /** Called when component is created. */
   created (): void {
+    if (!IsAuthorized(AuthorizedActions.ADDRESS_CHANGE_FILING)) {
+      // user is not authorized to change an address, so route to dashboard
+      this.authErrorDialog = true
+      return
+    }
     // init
     this.setFilingData([])
 
@@ -602,9 +619,9 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     // prevent double saving
     if (this.busySaving) return
 
-    // if this is a staff user clicking File and Pay (not Submit)
+    // if this is a user with the STAFF_PAYMENT permission clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
       this.staffPaymentDialog = true
       return
     }
@@ -810,7 +827,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (this.isRoleStaff) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false
@@ -838,7 +855,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
       case SaveErrorReasons.FILE_PAY:
         // close the dialog and retry file-pay
         this.saveErrorReason = null
-        if (this.isRoleStaff) await this.onClickFilePay(true)
+        if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
         else await this.onClickFilePay()
         break
     }
