@@ -25,6 +25,8 @@ describe('Configuration Actions', () => {
     VUE_APP_DASHBOARD_URL: 'dashboard url',
     VUE_APP_LEGAL_API_URL: 'legal api url',
     VUE_APP_LEGAL_API_VERSION_2: '/legal api version 2',
+    // VUE_APP_BUSINESS_API_GW_URL: 'business api gw url',
+    // VUE_APP_BUSINESS_API_VERSION_2: '/business api version 2',
     VUE_APP_PAY_API_URL: 'pay api url',
     VUE_APP_PAY_API_VERSION: '/pay api version',
     VUE_APP_REGISTRY_HOME_URL: 'registry home url',
