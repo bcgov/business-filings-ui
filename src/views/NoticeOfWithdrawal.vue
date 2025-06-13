@@ -139,7 +139,7 @@
             </section>
 
             <!-- Court Order and Plan of Arrangement -->
-            <section>
+            <section v-if="IsAuthorized(AuthorizedActions.COURT_ORDER_POA)">
               <header>
                 <h2>Court Order and Plan of Arrangement</h2>
                 <p class="grey-text">
