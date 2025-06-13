@@ -54,7 +54,6 @@ async function start () {
 
   // Saftey check for proper business number
   const businessId = sessionStorage.getItem('BUSINESS_ID')
-  console.log(`Business ID: ${businessId}`)
   if (!businessId) {
     const businessRegistryDashboardUrl = configurationStore.getBusinessRegistryDashboardUrl
     navigate(businessRegistryDashboardUrl)

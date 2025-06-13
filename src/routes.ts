@@ -15,7 +15,7 @@ import Signout from '@/views/auth/Signout.vue'
 import { DigitalCredentialRoutes } from '@/resources/DigitalCredentialRoutes'
 import { Routes } from '@/enums'
 import { FilingNames } from '@bcrs-shared-components/enums'
-import Default from './views/Default.vue'
+import Default from '@/views/Default.vue'
 
 export default [
   {
@@ -230,6 +230,7 @@ export default [
     }
   },
   DigitalCredentialRoutes,
+
   {
     // Return to Dash or BRD if there are no matches
     path: '*',

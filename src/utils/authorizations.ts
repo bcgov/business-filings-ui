@@ -87,6 +87,7 @@ const BusinessRegistryStaffActions = [
   AuthorizedActions.NO_CONTACT_INFO,
   AuthorizedActions.NOTICE_WITHDRAWAL_FILING,
   AuthorizedActions.OVERRIDE_NIGS,
+  AuthorizedActions.SAVE_DRAFT,
   AuthorizedActions.STAFF_BREADCRUMBS,
   AuthorizedActions.STAFF_FILINGS,
   AuthorizedActions.STAFF_PAYMENT,
@@ -137,6 +138,7 @@ const SbcFieldOfficeStaffActions = [
   AuthorizedActions.EDITABLE_COMPLETING_PARTY,
   AuthorizedActions.FILE_AND_PAY,
   AuthorizedActions.INCORPORATION_APPLICATION_FILING,
+  AuthorizedActions.SAVE_DRAFT,
   AuthorizedActions.SBC_BREADCRUMBS,
   AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
 ]
