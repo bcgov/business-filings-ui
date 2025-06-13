@@ -136,8 +136,8 @@
                   :newAgmDate="newAgmDate"
                   :newAgmExtension="newAgmExtension"
                   :newNoAgm="newNoAgm"
-                  :allowCoa="allowChange('coa') && IsAuthorized(AuthorizedActions.ADDRESS_CHANGE_FILING)"
-                  :allowCod="allowChange('cod') && IsAuthorized(AuthorizedActions.DIRECTOR_CHANGE_FILING)"
+                  :allowCoa="allowChange('coa')"
+                  :allowCod="allowChange('cod')"
                   :ARFilingYear="ARFilingYear"
                   @agmDate="onAgmDateChange($event)"
                   @agmExtension="onAgmExtensionChange($event)"
@@ -178,7 +178,7 @@
                   <h2 id="directors-header">
                     3. Directors
                   </h2>
-                  <p v-if="allowChange('cod') && IsAuthorized(AuthorizedActions.DIRECTOR_CHANGE_FILING)">
+                  <p v-if="allowChange('cod')">
                     Tell us who was elected or appointed and who ceased to be
                     a director at your {{ ARFilingYear }} AGM
                   </p>
