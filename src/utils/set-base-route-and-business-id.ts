@@ -9,29 +9,21 @@ export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: 
     throw new Error('Missing environment variables')
   }
 
-  // get Business ID / Temp Reg Number and validate that it looks OK
+  // get Business ID and validate that it looks OK
   // it should be first token after Base URL in Pathname
-  // FUTURE: improve Business ID / Temp Reg Number validation
   const id = pathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
   const businessIdRegex = /^(BC|C|CP|FM)\d{7}$/
   if (businessIdRegex.test(id)) {
     sessionStorage.setItem('BUSINESS_ID', id)
-    // ensure we don't already have a Temp Reg Number in scope
-    sessionStorage.removeItem('TEMP_REG_NUMBER')
-  } else if (id?.startsWith('T')) {
-    sessionStorage.setItem('TEMP_REG_NUMBER', id)
-    // ensure we don't already have a Business ID in scope
-    sessionStorage.removeItem('BUSINESS_ID')
-    // If user hits just root with no other info, they are sent back to BRD
   } else {
-    // Make sure we don't have anything already in scope
+    // Make sure we don't have any previously set values
+    // Handle no business id issue in main.ts
     sessionStorage.removeItem('BUSINESS_ID')
-    sessionStorage.removeItem('TEMP_REG_NUMBER')
-    return
+    throw new Error('Missing or invalid Business Id.')
   }
 
   // set Base for Vue Router
-  // eg, "/business/CPxxx/" or "/business/Txxx/"
+  // eg, "/business/CPxxx/"
   const vueRouterBase = processEnvBaseUrl + id + '/'
   sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
 

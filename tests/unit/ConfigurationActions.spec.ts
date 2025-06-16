@@ -108,32 +108,10 @@ describe('Configuration Actions', () => {
     })
   }
 
-  it('sets temp reg number correctly', async () => {
-    // mock window.location getters
-    delete window.location
-    Object.defineProperty(window, 'location', {
-      value: new URL('http://localhost/business/T1234567'),
-      configurable: true
-    })
-
-    // call method
-    setBaseRouteAndBusinessId('T1234567', '/business/', window.location.origin)
-
-    // verify data
-    expect(sessionStorage.getItem('TEMP_REG_NUMBER')).toBe('T1234567')
-  })
-
-  it('redirects on invalid id', async () => {
-    const navigateSpy = vi.spyOn(utils, 'navigate').mockImplementation(() => true)
-    setBaseRouteAndBusinessId('/business/ZZ1234567', '/business/', window.location.origin)
-    const businessId = sessionStorage.getItem('BUSINESS_ID')
-    if (!businessId) {
-      const url = configurationStore.getBusinessRegistryDashboardUrl
-      utils.navigate(url)
-    }
-
-    expect(navigateSpy).toHaveBeenCalledWith('business registry dashboard url')
-    navigateSpy.mockRestore()
+  it('throws an error on invalid id', () => {
+    expect(() => {
+      setBaseRouteAndBusinessId('/business/ZZ1234567', '/business/', window.location.origin)
+    }).toThrow('Missing or invalid Business Id.')
   })
 
   it('sessions variables correctly set for the SBC header', async () => {
