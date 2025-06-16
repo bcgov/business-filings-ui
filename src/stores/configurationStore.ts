@@ -1,6 +1,7 @@
 import { ConfigurationStateIF } from '@/interfaces'
 import { defineStore } from 'pinia'
 import axios from '@/axios-auth'
+import { GetFeatureFlag } from '@/utils'
 
 export const useConfigurationStore = defineStore('configuration', {
   state: (): ConfigurationStateIF => ({
@@ -52,9 +53,12 @@ export const useConfigurationStore = defineStore('configuration', {
       return state.configuration?.VUE_APP_BUSINESS_EDIT_URL
     },
 
+    /** Returns Legal API URL or Business API GW URL depending on FF. */
     getLegalApiUrl (state: ConfigurationStateIF): string {
       const configuration = state.configuration
-      return configuration.VUE_APP_LEGAL_API_URL + configuration.VUE_APP_LEGAL_API_VERSION_2 + '/'
+      return GetFeatureFlag('use-business-api-gw-url')
+        ? configuration.VUE_APP_BUSINESS_API_GW_URL + configuration.VUE_APP_BUSINESS_API_VERSION_2 + '/'
+        : configuration.VUE_APP_LEGAL_API_URL + configuration.VUE_APP_LEGAL_API_VERSION_2 + '/'
     },
 
     getAuthApiUrl (state: ConfigurationStateIF): string {

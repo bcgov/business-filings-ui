@@ -47,8 +47,9 @@ export default class FileUploadPdf extends Vue {
   pdfjsLib: any
 
   async created () {
-    /** Load the lib and worker this way to avoid a memory leak (esp in unit tests)
-     *  Must use legacy build for unit tests not running in Node 18+
+    /**
+     * Load the lib and worker this way to avoid a memory leak (esp in unit tests).
+     * Must use legacy build for unit tests not running in Node 18+.
      */
     this.pdfjsLib = pdfjs
     this.pdfjsLib.GlobalWorkerOptions.workerSrc = await import('pdfjs-dist/legacy/build/pdf.worker.entry')
@@ -210,7 +211,7 @@ export default class FileUploadPdf extends Vue {
       const document = await this.pdfjsLib.getDocument({ data: data }).promise
       const perms = await document.getPermissions()
       return { isEncrypted: false, isContentLocked: !!perms }
-    } catch (err) {
+    } catch (err: any) {
       if (err.name === 'PasswordException') {
         return { isEncrypted: true, isContentLocked: true }
       }

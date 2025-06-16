@@ -300,8 +300,12 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
   /** Whether the address form is valid. */
   get formValid (): boolean {
-    return ((this.deliveryAddressValid && (this.inheritDeliveryAddress || this.mailingAddressValid)) &&
-      (this.inheritRegisteredAddress || (this.recDeliveryAddressValid && (this.inheritRecDeliveryAddress || this.recMailingAddressValid))))
+    return (
+      (this.deliveryAddressValid && (this.inheritDeliveryAddress || this.mailingAddressValid)) &&
+      (this.inheritRegisteredAddress ||
+        (this.recDeliveryAddressValid && (this.inheritRecDeliveryAddress || this.recMailingAddressValid))
+      )
+    )
   }
 
   /** Whether any address has been modified from the original. */
