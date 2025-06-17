@@ -83,7 +83,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import * as Sentry from '@sentry/browser'
-import { GetFeatureFlag, IsAuthorized, GetKeycloakRoles, navigate, UpdateLdUser } from '@/utils'
+import { GetFeatureFlag, IsAuthorized, GetKeycloakRoles, navigate, sleep, UpdateLdUser } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
