@@ -274,10 +274,10 @@ export default class App extends Mixins(
     // just let signin page do its thing
     if (!this.isAuthenticated) return
 
-    // wait up to 1 second for account id to become available
+    // wait up to 5 seconds for account id to become available
     // if not found, some things may fail (but don't block)
     if (!this.isVitestRunning) {
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 50; i++) {
         if (this.getCurrentAccountId) break
         await sleep(100)
       }
