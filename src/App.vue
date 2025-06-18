@@ -166,7 +166,9 @@ import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd, GetCorpFullDescription, GetCorpNumberedDescription }
   from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from './stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore }
+  from './stores'
+import { sleep } from './utils'
 
 @Component({
   components: {
@@ -218,6 +220,10 @@ export default class App extends Mixins(
     CorpTypeCd.SOLE_PROP,
     CorpTypeCd.ULC_CONTINUE_IN
   ]
+
+  // authentication store references
+  @Getter(useAuthenticationStore) getCurrentAccountId!: number
+
   // business store references
   // @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   // @Getter(useBusinessStore) getIdentifier!: string
@@ -352,6 +358,15 @@ export default class App extends Mixins(
     // do not fetch data if we need to authenticate
     // just let signin page do its thing
     if (!this.isAuthenticated) return
+
+    // wait up to 1 second for account id to become available
+    // if not found, some things may fail (but don't block)
+    if (!this.isVitestRunning) {
+      for (let i = 0; i < 10; i++) {
+        if (this.getCurrentAccountId) break
+        await sleep(100)
+      }
+    }
 
     // ...otherwise proceed
     await this.fetchData()

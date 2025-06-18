@@ -5,7 +5,11 @@ import { defineStore } from 'pinia'
 
 export const useAuthenticationStore = defineStore('authentication', {
   getters: {
-    /** The Account ID, from session storage. */
+    /**
+     * The Account ID, from session storage.
+     * This is the same value as in the current account object.
+     * @deprecated use getCurrentAccountId instead
+     */
     getAccountId (): string {
       // if we can't get account id from ACCOUNT_ID
       // then try to get it from CURRENT_ACCOUNT
@@ -23,6 +27,14 @@ export const useAuthenticationStore = defineStore('authentication', {
      */
     getCurrentAccount (): CurrentAccountIF {
       return Vue.prototype.$store.state.account?.currentAccount
+    },
+
+    /**
+     * The (Keycloak) current account id.
+     * @remarks See getCurrentAccount remarks.
+     */
+    getCurrentAccountId (): number {
+      return this.getCurrentAccount?.id
     },
 
     /**
