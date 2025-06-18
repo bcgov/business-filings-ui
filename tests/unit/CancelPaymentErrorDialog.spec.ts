@@ -4,6 +4,7 @@ import { shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useRootStore } from '@/stores'
 import { CancelPaymentErrorDialog } from '@/components/dialogs'
+import { AuthorizationRoles } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -32,7 +33,7 @@ describe('CancelPaymentErrorDialog - Displays Error/Warning messages', () => {
 
   it('displays generic message for staff', () => {
     // init store
-    rootStore.keycloakRoles.push('staff')
+    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
 
     const wrapper = shallowMount(CancelPaymentErrorDialog,
       {

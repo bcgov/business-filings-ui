@@ -22,6 +22,7 @@ describe('Configuration Actions', () => {
     VUE_APP_BUSINESS_CREATE_URL: 'business create url',
     VUE_APP_BUSINESS_EDIT_URL: 'business edit url',
     VUE_APP_BUSINESS_FILING_LD_CLIENT_ID: 'business filing ld client id',
+    VUE_APP_BUSINESS_REGISTRY_URL: 'business registry dashboard url',
     VUE_APP_DASHBOARD_URL: 'dashboard url',
     VUE_APP_LEGAL_API_URL: 'legal api url',
     VUE_APP_LEGAL_API_VERSION_2: '/legal api version 2',
@@ -106,33 +107,10 @@ describe('Configuration Actions', () => {
     })
   }
 
-  it('sets temp reg number correctly', async () => {
-    // mock window.location getters
-    delete window.location
-    Object.defineProperty(window, 'location', {
-      value: new URL('http://localhost/business/T1234567'),
-      configurable: true
-    })
-
-    // call method
-    setBaseRouteAndBusinessId('T1234567', '/business/', window.location.origin)
-
-    // verify data
-    expect(sessionStorage.getItem('TEMP_REG_NUMBER')).toBe('T1234567')
-  })
-
-  it('throws error on invalid id', async () => {
-    // mock window.location getters
-    delete window.location
-    Object.defineProperty(window, 'location', {
-      value: new URL('http://localhost/business/ZZ1234567'),
-      configurable: true
-    })
-
-    // call method
+  it('throws an error on invalid id', () => {
     expect(() => {
-      setBaseRouteAndBusinessId('ZZ1234567', '/business/', window.location.origin)
-    }).toThrow('Missing or invalid Business ID or Temporary Registration Number.')
+      setBaseRouteAndBusinessId('/business/ZZ1234567', '/business/', window.location.origin)
+    }).toThrow('Missing or invalid Business Id.')
   })
 
   it('sessions variables correctly set for the SBC header', async () => {

@@ -1,7 +1,6 @@
 <template>
   <div
     id="entity-info"
-    :class=" { 'staff': isRoleStaff, 'hover': showHoverStyle }"
   >
     <v-container class="py-0">
       <v-row
@@ -16,15 +15,6 @@
           <EntityHeader
             :businessId="businessId"
             :tempRegNumber="tempRegNumber"
-          />
-          <EntityMenu
-            v-if="!(isInLocalFilingPage || isDCRoute)"
-            class="mt-2 ml-n3"
-            :businessId="businessId"
-            @confirmDissolution="emitConfirmDissolution()"
-            @downloadBusinessSummary="emitDownloadBusinessSummary()"
-            @notInGoodStanding="emitNotInGoodStanding($event)"
-            @viewAddDigitalCredentials="emitViewAddDigitalCredentials()"
           />
         </v-col>
 
@@ -43,27 +33,18 @@
 
 <script lang="ts">
 import { Component, Emit, Vue } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
 import { NigsMessage } from '@/enums'
 import EntityDefinitions from './EntityInfo/EntityDefinitions.vue'
 import EntityHeader from './EntityInfo/EntityHeader.vue'
-import EntityMenu from './EntityInfo/EntityMenu.vue'
-import { useRootStore } from '@/stores'
 import { Routes, DCRoutes } from '@/enums/routes'
 
 @Component({
   components: {
     EntityDefinitions,
-    EntityHeader,
-    EntityMenu
+    EntityHeader
   }
 })
 export default class EntityInfo extends Vue {
-  @Getter(useRootStore) isRoleStaff!: boolean
-
-  /** Whether to show the hover style. */
-  showHoverStyle = false
-
   /** The Business ID string (may be null). */
   get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
@@ -112,6 +93,7 @@ export default class EntityInfo extends Vue {
   @Emit('viewAddDigitalCredentials')
   emitViewAddDigitalCredentials (): void {}
 }
+
 </script>
 
 <!-- eslint-disable max-len -->
@@ -121,19 +103,10 @@ export default class EntityInfo extends Vue {
 #entity-info {
   background: $BCgovInputBG;
 
-  &.hover {
-    background: $app-bg-lt-blue;
-  }
-
   .v-chip--label {
     font-size: $px-11;
   }
 
-  // ENABLE THIS TO GET STAFF-SPECIFIC BACKGROUND IMAGE
-  // &.staff {
-  //   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='105' height='100'><text x='0' y='105' font-size='30' transform='rotate(-45 10,40)' opacity='0.1'>STAFF</text></svg>");
-  //   background-repeat: repeat-x;
-  // }
 }
 
 // vertical lines between items:

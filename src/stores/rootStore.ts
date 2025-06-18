@@ -1,9 +1,19 @@
 import { defineStore } from 'pinia'
-import { CorpTypeCd, FilingStatus, FilingSubTypes } from '@/enums'
+import { AuthorizationRoles, CorpTypeCd, FilingStatus, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
-import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF,
-  RootStateIF, TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
+import {
+  ApiTaskIF,
+  DissolutionConfirmationResourceIF,
+  FilingDataIF,
+  OfficeAddressIF,
+  PartyIF,
+  RootStateIF,
+  TodoListResourceIF,
+  IsoDatePacific,
+  StateFilingIF
+} from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
+
 import { useBusinessStore } from './businessStore'
 import { useFilingHistoryListStore } from './filingHistoryListStore'
 
@@ -14,8 +24,6 @@ export const useRootStore = defineStore('root', {
     currentJsDate: null,
     bootstrapFilingStatus: null,
     bootstrapFilingType: null,
-    keycloakRoles: [],
-    noRedirect: false,
     stateFiling: null,
     userKeycloakGuid: null,
     businessEmail: null,
@@ -86,34 +94,10 @@ export const useRootStore = defineStore('root', {
     },
 
     /**
-     * The roles from the Keycloak token (JWT).
-     * @deprecated Use `authenticationStore.getKeycloakRoles` instead.
+     * The user's roles from the Keycloak token.
      */
-    getKeycloakRoles (state: RootStateIF): Array<string> {
-      return state.keycloakRoles
-    },
-
-    /** Whether initial route specified "noRedirect" URL parameter. */
-    isNoRedirect (state: RootStateIF): boolean {
-      return state.noRedirect
-    },
-
-    /**
-     * Is True if Staff role is set.
-     * @deprecated Use `authenticationStore.isRoleStaff` instead.
-     */
-    isRoleStaff (state: RootStateIF): boolean {
-      return state.keycloakRoles.includes('staff')
-    },
-
-    /** Is True if app permissions includes Edit role. */
-    isRoleEdit (state: RootStateIF): boolean {
-      return state.authRoles.includes('edit')
-    },
-
-    /** Is True if app permission includes View role. */
-    isRoleView (state: RootStateIF): boolean {
-      return state.authRoles.includes('view')
+    getAuthRoles (): Array<AuthorizationRoles> {
+      return this.authRoles
     },
 
     /** Is True if business is pending dissolution. */
@@ -123,28 +107,6 @@ export const useRootStore = defineStore('root', {
 
     getBootstrapFilingStatus (state: RootStateIF): FilingStatus {
       return state.bootstrapFilingStatus
-    },
-
-    /** Whether this is an amalgamation bootstrap filing that belongs in the Todo List. */
-    isAmalgamationTodo (state: RootStateIF): boolean {
-      return (
-        state.bootstrapFilingType === FilingTypes.AMALGAMATION_APPLICATION &&
-        (
-          this.getBootstrapFilingStatus === FilingStatus.DRAFT ||
-          this.getBootstrapFilingStatus === FilingStatus.PENDING
-        )
-      )
-    },
-
-    /** Whether this is an amalgamation bootstrap filing that belongs in the Filing History List. */
-    isAmalgamationFiling (state: RootStateIF): boolean {
-      return (
-        state.bootstrapFilingType === FilingTypes.AMALGAMATION_APPLICATION &&
-        (
-          this.getBootstrapFilingStatus === FilingStatus.COMPLETED ||
-          this.getBootstrapFilingStatus === FilingStatus.PAID
-        )
-      )
     },
 
     /** Whether this is a continuation in bootstrap filing that belongs in the Todo List. */
@@ -222,38 +184,6 @@ export const useRootStore = defineStore('root', {
           this.getBootstrapFilingStatus === FilingStatus.PAID
         )
       )
-    },
-
-    /** Is True if this is a bootstrap todo item and should be displayed in the Todo List. */
-    isBootstrapTodo (): boolean {
-      return (
-        this.isAmalgamationTodo ||
-        this.isContinuationInTodo ||
-        this.isIncorporationApplicationTodo ||
-        this.isRegistrationTodo
-      )
-    },
-
-    /** Is True if this is a bootstrap pending item and should be displayed in the Pending List. */
-    isBootstrapPending (): boolean {
-      return (
-        this.isContinuationInPending
-      )
-    },
-
-    /** Is True if this is a bootstrap filing item and should be displayed in the Filing History List. */
-    isBootstrapFiling (): boolean {
-      return (
-        this.isAmalgamationFiling ||
-        this.isContinuationInFiling ||
-        this.isIncorporationApplicationFiling ||
-        this.isRegistrationFiling
-      )
-    },
-
-    /** The Name Request (may be null). */
-    getNameRequest (state: RootStateIF): any {
-      return (state.nameRequest)
     },
 
     /** Whether to show the Fetching Data spinner. */
@@ -435,15 +365,6 @@ export const useRootStore = defineStore('root', {
       this.stateFiling = stateFilingResponse
     },
 
-    /** Set the roles from the Keycloak token (JWT). */
-    setKeycloakRoles (keycloakRoles: Array<string>) {
-      this.keycloakRoles = keycloakRoles
-    },
-
-    setNoRedirect (val: boolean) {
-      this.noRedirect = val
-    },
-
     setUserKeycloakGuid (userKeycloakGuid: string) {
       this.userKeycloakGuid = userKeycloakGuid
     },
@@ -453,7 +374,7 @@ export const useRootStore = defineStore('root', {
     },
 
     /** Set the app permissions. */
-    setAuthRoles (authRoles: Array<string>) {
+    setAuthRoles (authRoles: Array<AuthorizationRoles>) {
       this.authRoles = authRoles
     },
 

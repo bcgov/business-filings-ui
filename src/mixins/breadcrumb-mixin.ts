@@ -2,8 +2,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
 import { CurrentAccountIF } from '@/interfaces'
-import { Routes } from '@/enums'
-import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore } from '@/stores'
 
 /**
  * Mixin that provides some useful Name Request utilities.
@@ -18,8 +17,6 @@ export default class BreadcrumbMixin extends Vue {
   @Getter(useConfigurationStore) getBusinessesUrl!: string
   @Getter(useConfigurationStore) getDashboardUrl!: string
   @Getter(useConfigurationStore) getRegHomeUrl!: string
-
-  @Getter(useRootStore) isNoRedirect!: boolean
 
   /** Returns the breadcrumb to the BC Registries Dashboard. */
   getBcRegistriesDashboardBreadcrumb (): BreadcrumbIF {
@@ -50,18 +47,10 @@ export default class BreadcrumbMixin extends Vue {
 
   /** Returns the breadcrumb to the Business Dashboard. */
   getDashboardBreadcrumb (): BreadcrumbIF {
-    if (!this.isNoRedirect) {
-      // redirect to new Business Dashboard
-      return {
-        text: this.getEntityName || 'Unknown Name',
-        href: `${this.getDashboardUrl}${this.getIdentifier}`
-      }
-    } else {
-      // route to old Entity Dashboard
-      return {
-        text: this.getEntityName || 'Unknown Name',
-        to: { name: Routes.DASHBOARD }
-      }
+    // redirect to new Business Dashboard
+    return {
+      text: this.getEntityName || 'Unknown Name',
+      href: `${this.getDashboardUrl}${this.getIdentifier}`
     }
   }
 }

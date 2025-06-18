@@ -57,7 +57,7 @@
           at another time.
         </p>
 
-        <template v-if="!isRoleStaff">
+        <template v-if="!IsAuthorized(AuthorizedActions.NO_CONTACT_INFO)">
           <p class="font-15">
             If this error persists, please contact us.
           </p>
@@ -92,20 +92,20 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { AuthorizedActions, NameRequestStates } from '@/enums'
 import { ContactInfo } from '@/components/common'
-import { NameRequestStates } from '@/enums'
-import { useRootStore } from '@/stores'
+import { IsAuthorized } from '@/utils'
 
 @Component({
   components: { ContactInfo }
 })
 export default class NameRequestInvalidDialog extends Vue {
-  // Getter definition for static type checking.
-  @Getter(useRootStore) isRoleStaff!: boolean
+  // For Template Contact Info message
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
-  // Enum definition for use in template.
-  NameRequestStates = NameRequestStates
+  /** Enum definition for use in template. */
+  readonly NameRequestStates = NameRequestStates
 
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog!: boolean

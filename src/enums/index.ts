@@ -2,6 +2,8 @@ export * from './actions'
 export * from './affiliationInvitation'
 export * from './allowableActions'
 export * from './amalgamationEnums'
+export * from './authorizationRoles'
+export * from './authorizedActions'
 export * from './correctionTypes'
 export * from './digitalCredentialTypes'
 export * from './effectOfOrderTypes'
@@ -20,3 +22,4 @@ export * from './warningTypes'
 
 // external enums
 export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'
+export { AccountTypes } from '@bcrs-shared-components/enums'

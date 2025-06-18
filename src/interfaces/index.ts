@@ -12,6 +12,7 @@ export type { AlterationIF, ContactPointIF, NameTranslationIF, ShareStructureIF,
   ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
 
 export * from './officer-interface' // must come before other interfaces that use it
+export * from './account-information'
 export * from './address-interfaces'
 export * from './affiliation-invitation-interface'
 export * from './agm-ext-eval-interface'

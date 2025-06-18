@@ -12,6 +12,7 @@ import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import vuetify from 'sbc-common-components/src/plugins/vuetify'
+import { AuthorizationRoles } from '@/enums'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -54,7 +55,7 @@ describe('Court Order View', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.keycloakRoles = ['staff']
+    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
     const localVue = createLocalVue()
     localVue.use(VueRouter)
   })
@@ -193,7 +194,7 @@ describe('Court Order View User', () => {
   beforeEach(() => {
     // init store
 
-    rootStore.keycloakRoles = ['user']
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
   })
 
   it('throws an error when user is not staff', async () => {

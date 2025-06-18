@@ -10,7 +10,7 @@ export enum CoreRoutes {
   CONSENT_CONTINUATION_OUT = 'consent-continuation-out',
   CONTINUATION_OUT = 'continuation-out',
   COURT_ORDER = 'court-order',
-  DASHBOARD = 'dashboard',
+  DEFAULT = 'default',
   NOTICE_OF_WITHDRAWAL = 'notice-of-withdrawal',
   STANDALONE_ADDRESSES = 'standalone-addresses',
   STANDALONE_DIRECTORS = 'standalone-directors',

@@ -1,5 +1,13 @@
 <template>
   <div id="standalone-directors">
+    <AuthErrorDialog
+      attach="#standalone-directors"
+      :dialog="authErrorDialog"
+      :title="'Access Restricted'"
+      :text="`You are not authorized to complete this action.`"
+      @exit="goToDashboard(true)"
+    />
+
     <ConfirmDialog
       ref="confirm"
       attach="#standalone-directors"
@@ -173,7 +181,7 @@
             <v-btn
               id="cod-save-btn"
               large
-              :disabled="busySaving"
+              :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
               :loading="saving"
               @click="onClickSave()"
             >
@@ -182,7 +190,7 @@
             <v-btn
               id="cod-save-resume-btn"
               large
-              :disabled="busySaving"
+              :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
               :loading="savingResuming"
               @click="onClickSaveResume()"
             >
@@ -312,7 +320,7 @@
             <v-btn
               id="cod-save-resume-btn"
               large
-              :disabled="busySaving"
+              :disabled="busySaving || IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
               :loading="savingResuming"
               @click="onClickSaveResume()"
             >
@@ -335,7 +343,7 @@
                     id="cod-file-pay-btn"
                     color="primary"
                     large
-                    :disabled="!isReviewPageValid || busySaving"
+                    :disabled="!isReviewPageValid || busySaving || !IsAuthorized(AuthorizedActions.FILE_AND_PAY)"
                     :loading="filingPaying"
                     @click="onClickFilePay()"
                   >
@@ -367,22 +375,23 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { navigate } from '@/utils'
+import { IsAuthorized, navigate } from '@/utils'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, SummaryDirectors } from '@/components/common'
-import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
+import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
+    AuthErrorDialog,
     CodDate,
     Directors,
     SummaryDirectors,
@@ -407,10 +416,9 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
-  // @Getter(useBusinessStore) isBaseCompany!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
 
   // variables
+  authErrorDialog = false
   updatedDirectors = []
   fetchErrorDialog = false
   resumeErrorDialog = false
@@ -441,6 +449,10 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   complianceDialogMsg = null
   totalFee = 0
   staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
+
+  // For template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   /** True if loading container should be shown, else False. */
   get showLoadingContainer (): boolean {
@@ -492,6 +504,12 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
 
   /** Called when component is created. */
   created (): void {
+    if (!IsAuthorized(AuthorizedActions.DIRECTOR_CHANGE_FILING)) {
+      // user is not authorized to access Director change filing, so route to dashboard
+      this.authErrorDialog = true
+      return
+    }
+
     // init
     this.setFilingData([])
 
@@ -738,9 +756,9 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
     // prevent double saving
     if (this.busySaving) return
 
-    // if this is a staff user clicking File and Pay (not Submit)
+    // if this is a user with STAFF_PAYMENT permissions clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT) && !fromStaffPayment) {
       this.staffPaymentDialog = true
       return
     }
@@ -948,7 +966,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
 
   /** Handles Exit event from Payment Error dialog. */
   onPaymentErrorDialogExit (): void {
-    if (this.isRoleStaff) {
+    if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
       // close Payment Error dialog -- this
       // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false
@@ -976,7 +994,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
       case SaveErrorReasons.FILE_PAY:
         // close the dialog and retry file-pay
         this.saveErrorReason = null
-        if (this.isRoleStaff) await this.onClickFilePay(true)
+        if (IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) await this.onClickFilePay(true)
         else await this.onClickFilePay()
         break
     }

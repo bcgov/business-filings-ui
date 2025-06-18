@@ -5,6 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useRootStore } from '@/stores'
 import { FetchErrorDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
+import { AuthorizationRoles } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -15,7 +16,7 @@ const rootStore = useRootStore()
 describe('FetchErrorDialog', () => {
   it('displays everything for normal users', () => {
     // init store
-    rootStore.keycloakRoles = ['']
+    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
 
     const wrapper = shallowMount(FetchErrorDialog, { propsData: { dialog: true }, vuetify })
 
@@ -32,7 +33,7 @@ describe('FetchErrorDialog', () => {
 
   it('does not display contact info for staff users', () => {
     // init store
-    rootStore.keycloakRoles = ['staff']
+    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
 
     const wrapper = shallowMount(FetchErrorDialog, { propsData: { dialog: true }, vuetify })
 
