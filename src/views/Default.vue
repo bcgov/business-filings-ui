@@ -11,7 +11,7 @@ import { CurrentAccountIF } from '@/interfaces'
 @Component({
 })
 export default class Default extends Vue {
-  @Getter(useConfigurationStore) getDashboardUrl!: string
+  @Getter(useConfigurationStore) getBusinessDashUrl!: string
   @Getter(useConfigurationStore) getBusinessRegistryDashboardUrl!: string
   @Getter(useConfigurationStore) getBusinessID
   @Getter(useBusinessStore) getIdentifier!: string
@@ -24,7 +24,7 @@ export default class Default extends Vue {
 
     if (businessId) {
       // If on there is a business id, but no further info, redirect to dashboard with businessId
-      url = `${this.getDashboardUrl}${businessId}`
+      url = `${this.getBusinessDashUrl}${businessId}`
     } else {
       // If on root, redirect to BRD
       url = `${this.getBusinessRegistryDashboardUrl}`
