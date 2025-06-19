@@ -315,6 +315,7 @@ export default class App extends Mixins(
   @Action(useRootStore) setCurrentDate!: (x: string) => void
   @Action(useRootStore) setCurrentJsDate!: (x: Date) => void
   @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
+  @Action(useRootStore) setFolioNumber!: (x: string) => void
   @Action(useRootStore) setNameRequest!: (x: any) => void
   @Action(useRootStore) setParties!: (x: Array<PartyIF>) => void
   @Action(useRootStore) setPendingsList!: (x: Array<any>) => void
@@ -494,6 +495,10 @@ export default class App extends Mixins(
       // store Corp Type Code to compare with Legal Type in business info
       const corpTypeCd = response?.data?.corpType?.code
       if (corpTypeCd) this.setCorpTypeCd(corpTypeCd)
+
+      // store Folio Number if present
+      const folioNumber = response?.data?.folioNumber
+      if (folioNumber) this.setFolioNumber(folioNumber)
     } else {
       throw new Error('Invalid entity contact info')
     }
