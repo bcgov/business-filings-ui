@@ -44,10 +44,11 @@ export default class TransactionalFolioNumber extends Vue {
     folioNumberInput: any
   }
 
-  // Props
+  /** Account Folio Number prop. */
   @Prop({ default: null }) readonly accountFolioNumber!: string
+
+  /** Transactional Folio Number prop. */
   @Prop({ default: null }) readonly transactionalFolioNumber!: string
-  @Prop({ default: false }) readonly doValidate!: boolean
 
   // Local properties
   localFolioNumber = ''
@@ -56,22 +57,37 @@ export default class TransactionalFolioNumber extends Vue {
   mounted (): void {
     // restore transactional FN if it exists, otherwise use account FN
     this.localFolioNumber = this.transactionalFolioNumber || this.accountFolioNumber
+    // Emit initial validity
+    this.emitValid(this.isValid)
+  }
+
+  /** Whether the folio number is valid. */
+  get isValid (): boolean {
+    return !this.localFolioNumber || this.localFolioNumber.length <= 50
   }
 
   @Watch('transactionalFolioNumber')
   onTransactionalFolioNumberPropChanged (val: string) {
     this.localFolioNumber = val
+    this.emitValid(this.isValid)
   }
 
   @Watch('localFolioNumber')
   onLocalFolioNumberChanged (val: string): void {
     this.emitTransactionalFolioNumber(val)
+    this.emitValid(this.isValid)
   }
 
+  /** Emits an event to update the transactional folio number. */
   @Emit('update:transactionalFolioNumber')
   emitTransactionalFolioNumber (val: string): string {
     return val
   }
+
+  /** Emits an event indicating whether or not the form is valid. */
+  @Emit('valid')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  emitValid (valid: boolean): void {}
 }
 </script>
 

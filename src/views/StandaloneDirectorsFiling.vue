@@ -281,6 +281,7 @@
                     :accountFolioNumber="getFolioNumber"
                     :transactionalFolioNumber="getTransactionalFolioNumber"
                     @update:transactionalFolioNumber="onTransactionalFolioNumberChange"
+                    @valid="folioNumberValid = $event"
                   />
                 </section>
 
@@ -459,6 +460,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   certifiedBy = ''
   certifyFormValid = false
   directorFormValid = true
+  folioNumberValid = true
   directorEditInProgress = false
   filingId = NaN
   savedFiling: any = null // filing during save
@@ -501,7 +503,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   /** True if review page is valid. */
   get isReviewPageValid (): boolean {
     const filingDataValid = (this.filingData.length > 0)
-    return (this.certifyFormValid && filingDataValid)
+    return (this.certifyFormValid && this.folioNumberValid && filingDataValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
