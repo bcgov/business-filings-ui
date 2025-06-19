@@ -14,6 +14,8 @@ import { AuthorizationRoles, AuthorizedActions } from '@/enums'
 import { AmalgamationTypes } from '@bcrs-shared-components/enums'
 
 import * as utils from '@/utils'
+import { BusinessRegistryStaffActions, PublicUserActions,
+  SbcFieldOfficeStaffActions } from './test-data/authorizedActions'
 
 // mock fetch() as it is not defined in Vitest
 // NB: it should be `global.fetch` but that doesn't work and this does
@@ -436,7 +438,7 @@ describe('App as a COOP', () => {
   })
 
   it('gets staff permissions properly', () => {
-    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
+    rootStore.setAuthorizedActions(BusinessRegistryStaffActions)
 
     expect(utils.IsAuthorized(AuthorizedActions.STAFF_FILINGS)).toBe(true)
     expect(utils.IsAuthorized(AuthorizedActions.STAFF_BREADCRUMBS)).toBe(true)
@@ -444,14 +446,14 @@ describe('App as a COOP', () => {
   })
 
   it('gets SBC staff permissions properly', () => {
-    rootStore.setAuthRoles([AuthorizationRoles.SBC_STAFF])
+    rootStore.setAuthorizedActions(SbcFieldOfficeStaffActions)
     expect(utils.IsAuthorized(AuthorizedActions.EDITABLE_CERTIFY_NAME)).toBe(true)
     expect(utils.IsAuthorized(AuthorizedActions.SBC_BREADCRUMBS)).toBe(true)
     expect(utils.IsAuthorized(AuthorizedActions.STAFF_FILINGS)).toBe(false)
   })
 
   it('gets public user permissions properly', () => {
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
     expect(utils.IsAuthorized(AuthorizedActions.INCORPORATION_APPLICATION_FILING)).toBe(true)
     expect(utils.IsAuthorized(AuthorizedActions.FILE_AND_PAY)).toBe(true)
     expect(utils.IsAuthorized(AuthorizedActions.NO_CONTACT_INFO)).toBe(false)

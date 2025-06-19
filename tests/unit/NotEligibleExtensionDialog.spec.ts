@@ -5,7 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useRootStore } from '@/stores'
 import { NotEligibleExtensionDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
-import { AuthorizationRoles } from '@/enums'
+import { BusinessRegistryStaffActions, PublicUserActions } from './test-data/authorizedActions'
 
 Vue.use(Vuetify)
 
@@ -16,7 +16,7 @@ const rootStore = useRootStore()
 describe('NotEligibleExtensionDialog', () => {
   it('displays everything for normal users', () => {
     // init store
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     const wrapper = mount(NotEligibleExtensionDialog, { propsData: { dialog: true }, vuetify })
 
@@ -31,7 +31,7 @@ describe('NotEligibleExtensionDialog', () => {
 
   it('does not display contact info for staff users', () => {
     // init store
-    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
+    rootStore.setAuthorizedActions(BusinessRegistryStaffActions)
 
     const wrapper = mount(NotEligibleExtensionDialog, { propsData: { dialog: true }, vuetify })
 

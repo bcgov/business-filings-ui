@@ -143,6 +143,7 @@ export default class App extends Mixins(
   NameRequestMixin
 ) {
   // local variables
+  authRoles = [] as Array<AuthorizationRoles>
   confirmDissolutionDialog = false
   downloadErrorDialog = false
   dataLoaded = false
@@ -182,7 +183,6 @@ export default class App extends Mixins(
   @Getter(useConfigurationStore) getBusinessRegistryDashboardUrl!: string
 
   // root store references
-  @Getter(useRootStore) getAuthRoles!: Array<AuthorizationRoles>
   @Getter(useRootStore) isAuthorizationStatus!: boolean
   @Getter(useRootStore) showFetchingDataSpinner!: boolean
   @Getter(useRootStore) showStartingAmalgamationSpinner!: boolean
@@ -306,6 +306,7 @@ export default class App extends Mixins(
   @Action(useRootStore) loadStateFiling!: () => Promise<void>
   @Action(useRootStore) setAccountInformation!: (x: AccountInformationIF) => void
   @Action(useRootStore) setAuthRoles!: (x: Array<AuthorizationRoles>) => void
+  @Action(useRootStore) setAuthorizedActions!: (x: Array<AuthorizedActions>) => void
   @Action(useRootStore) setBusinessAddress!: (x: OfficeAddressIF) => void
   @Action(useRootStore) setBusinessEmail!: (x: string) => void
   @Action(useRootStore) setBusinessPhone!: (x: string) => void
@@ -338,26 +339,11 @@ export default class App extends Mixins(
     this.setCurrentJsDate(jsDate)
     this.setCurrentDate(this.dateToYyyyMmDd(jsDate))
 
-    // ensure user is authorized to access this business
     try {
-      // get roles from KC token
-      const authRoles = GetKeycloakRoles()
-      // safety check
-      if (!Array.isArray(authRoles)) {
-        throw new Error('Invalid roles')
-      }
-      // verify that response has one of the supported roles
-      // FUTURE: when we fetch authorized actions from Legal API, we'll instead check
-      //         that the list of actions isn't empty
-      const allRoles = Object.values(AuthorizationRoles)
-      if (!allRoles.some(role => authRoles.includes(role))) {
-        throw new Error('Missing valid role')
-      }
-      this.setAuthRoles(authRoles)
+      await this.checkAuth()
     } catch (error) {
       console.log('Auth error =', error) // eslint-disable-line no-console
       this.businessAuthErrorDialog = true
-      return
     }
 
     // If the error dialogs have been tripped, then don't proceed
@@ -385,6 +371,24 @@ export default class App extends Mixins(
         navigate(this.getBusinessRegistryDashboardUrl)
       }
     }
+  }
+
+  private async checkAuth (): Promise<void> {
+    // get roles from KC token
+    this.authRoles = GetKeycloakRoles()
+    // safety check
+    if (!Array.isArray(this.authRoles)) {
+      throw new Error('Invalid roles')
+    }
+
+    // Gather authorized actions/permissions
+    const authorizedActions = await LegalServices.fetchAuthorizedActions()
+
+    if (!Array.isArray(authorizedActions) || authorizedActions.length < 1) {
+      throw new Error('Invalide or missing authorized actions')
+    }
+
+    this.setAuthorizedActions(authorizedActions)
   }
 
   /** Fetches and stores the business data. */
@@ -474,7 +478,7 @@ export default class App extends Mixins(
     const firstName: string = userInfo?.firstname
     const lastName: string = userInfo?.lastname
     // store auth roles in custom object
-    const custom = { roles: this.getAuthRoles } as any
+    const custom = { roles: this.authRoles } as any
 
     await UpdateLdUser(key, email, firstName, lastName, custom)
   }

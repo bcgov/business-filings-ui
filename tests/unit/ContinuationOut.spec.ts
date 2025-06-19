@@ -13,8 +13,9 @@ import { LegalServices } from '@/services'
 import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
+
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { AuthorizationRoles } from '@/enums'
+import { BusinessRegistryStaffActions } from './test-data/authorizedActions'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -40,7 +41,7 @@ describe('Continuation Out view', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
+    rootStore.setAuthorizedActions(BusinessRegistryStaffActions)
   })
 
   it('mounts the sub-components properly', async () => {

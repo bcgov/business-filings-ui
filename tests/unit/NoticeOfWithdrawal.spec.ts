@@ -13,7 +13,7 @@ import { FilingCodes } from '@bcrs-shared-components/enums'
 import VueRouter from 'vue-router'
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
 import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
-import { AuthorizationRoles } from '@/enums/authorizationRoles'
+import { BusinessRegistryStaffActions } from './test-data/authorizedActions'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -34,7 +34,7 @@ document.body.setAttribute('data-app', 'true')
 describe('Notice of Withdrawal view', () => {
   beforeEach(() => {
     // init store
-    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
+    rootStore.setAuthorizedActions(BusinessRegistryStaffActions)
   })
 
   it('mounts the sub-components properly', async () => {

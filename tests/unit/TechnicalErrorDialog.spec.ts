@@ -5,7 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useRootStore } from '@/stores'
 import TechnicalErrorDialog from '@/components/dialogs/TechnicalErrorDialog.vue'
 import { ContactInfo } from '@/components/common'
-import { AuthorizationRoles } from '@/enums'
+import { BusinessRegistryStaffActions } from './test-data/authorizedActions'
 
 Vue.use(Vuetify)
 
@@ -29,8 +29,7 @@ describe('TechnicalErrorDialog', () => {
   })
 
   it('does not display contact info for staff users', () => {
-    // init store
-    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
+    rootStore.setAuthorizedActions(BusinessRegistryStaffActions)
 
     const wrapper = mount(TechnicalErrorDialog, { propsData: { dialog: true }, vuetify })
 
