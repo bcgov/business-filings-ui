@@ -209,6 +209,16 @@ describe('App as a COOP', () => {
 
     vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.PUBLIC_USER])
 
+    // Permission stub - as public user.
+    get.withArgs('permissions')
+      .returns(Promise.resolve({
+        data: {
+          authorizedPermissions: [
+            PublicUserActions
+          ]
+        }
+      }))
+
     // GET entity info from Auth API
     get.withArgs('entities/CP0001191')
       .returns(new Promise(resolve => resolve({
@@ -527,6 +537,16 @@ describe('App as a BCOMP', () => {
       .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
+
+    // Get permissions from Legal API
+    get.withArgs('permissions')
+      .returns(Promise.resolve({
+        data: {
+          authorizedPermissions: [
+            PublicUserActions
+          ]
+        }
+      }))
 
     // GET entity info from Auth API
     get.withArgs('entities/BC0007291')
@@ -902,6 +922,16 @@ describe('App as an historical business - Amalgamation', () => {
         data: USER_INFO
       })))
 
+    // Get permissions from Legal API
+    get.withArgs('permissions')
+      .returns(Promise.resolve({
+        data: {
+          authorizedPermissions: [
+            BusinessRegistryStaffActions
+          ]
+        }
+      }))
+
     // GET entity info from Auth API
     get.withArgs('entities/BC1234567')
       .returns(new Promise(resolve => resolve({
@@ -1029,6 +1059,16 @@ describe('App as an historical business - Voluntary Dissolution', () => {
           ]
         }
       })))
+
+    // Get permissions from Legal API
+    get.withArgs('permissions')
+      .returns(Promise.resolve({
+        data: {
+          authorizedPermissions: [
+            BusinessRegistryStaffActions
+          ]
+        }
+      }))
 
     // GET business info from Legal API
     get.withArgs('businesses/BC1234567')
