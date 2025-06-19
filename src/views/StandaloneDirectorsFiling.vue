@@ -266,6 +266,7 @@
                   />
                 </section>
 
+                <!-- Folio Number -->
                 <section
                   v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
                 >

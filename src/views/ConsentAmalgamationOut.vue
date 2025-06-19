@@ -139,6 +139,26 @@
               </div>
             </section>
 
+            <!-- Folio Number -->
+            <section
+              v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
+            >
+              <header>
+                <h2 id="folio-number-header">
+                  Folio or Reference Number (Optional)
+                </h2>
+                <p>
+                  This is meant for your own tracking purposes and will appear on your receipt.
+                </p>
+              </header>
+              <TransactionalFolioNumber
+                :accountFolioNumber="getFolioNumber"
+                :transactionalFolioNumber="getTransactionalFolioNumber"
+                @update:transactionalFolioNumber="onTransactionalFolioNumberChange"
+                @valid="folioNumberValid = $event"
+              />
+            </section>
+
             <!-- Certify -->
             <section>
               <header>
@@ -285,11 +305,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, ForeignJurisdiction } from '@/components/common'
+import { Certify, ForeignJurisdiction, TransactionalFolioNumber } from '@/components/common'
 import { AuthErrorDialog, ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -313,7 +333,8 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     ResumeErrorDialog,
     SaveErrorDialog,
     SbcFeeSummary,
-    StaffPaymentDialog
+    StaffPaymentDialog,
+    TransactionalFolioNumber
   }
 })
 export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin) {
@@ -324,10 +345,14 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
     foreignJurisdictionRef: ForeignJurisdiction
   }
 
+  @Action(useRootStore) setTransactionalFolioNumber!: (x: string) => void
+
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useRootStore) getFolioNumber!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) getTransactionalFolioNumber!: string
   @Getter(useRootStore) getUserInfo!: any
 
   // enum for template
@@ -355,6 +380,9 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
   // variables for Document Delivery component
   documentDeliveryValid = true
   documentOptionalEmail = ''
+
+  // variables for Transactional Folio Number component
+  folioNumberValid = true
 
   // variables for staff payment
   staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
@@ -398,7 +426,8 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
       this.certifyFormValid &&
       this.foreignJurisdictionValid &&
       this.documentDeliveryValid &&
-      this.courtOrderValid
+      this.courtOrderValid &&
+      this.folioNumberValid
     )
   }
 
@@ -496,6 +525,9 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
       // load Certified By (but not Date)
       this.certifiedBy = filing.header.certifiedBy
 
+      // restore Transactional Folio Number
+      if (filing.header.folioNumber) this.setTransactionalFolioNumber(filing.header.folioNumber)
+
       // load Staff Payment properties
       if (filing.header.routingSlipNumber) {
         this.staffPaymentData = {
@@ -541,6 +573,10 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
       console.log('fetchDraftFiling() error =', error)
       this.resumeErrorDialog = true
     })
+  }
+
+  onTransactionalFolioNumberChange (newFolioNumber: string): void {
+    this.setTransactionalFolioNumber(newFolioNumber)
   }
 
   /**
@@ -737,7 +773,8 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
         name: FilingTypes.CONSENT_AMALGAMATION_OUT,
         certifiedBy: this.certifiedBy || '',
         email: this.getBusinessEmail || undefined,
-        date: this.getCurrentDate // NB: API will reassign this date according to its clock
+        date: this.getCurrentDate, // NB: API will reassign this date according to its clock
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || ''
       }
     }
 
