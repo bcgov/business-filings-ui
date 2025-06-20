@@ -271,7 +271,7 @@ describe('AGM Extension view', () => {
         certifiedBy: 'Full Name',
         date: '2023-11-06',
         name: 'agmExtension',
-        folioNumber: ''
+        folioNumber: undefined
       }
     }
     expect(LegalServices.createFiling).toHaveBeenCalledWith('BC1234567', data, false)

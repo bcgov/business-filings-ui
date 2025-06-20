@@ -63,7 +63,7 @@ export default class TransactionalFolioNumber extends Vue {
 
   /** Whether the folio number is valid. */
   get isValid (): boolean {
-    return !this.localFolioNumber || this.localFolioNumber.length <= 50
+    return (!this.$refs.folioNumberInput || this.$refs.folioNumberInput.valid)
   }
 
   @Watch('transactionalFolioNumber')
@@ -74,13 +74,14 @@ export default class TransactionalFolioNumber extends Vue {
 
   @Watch('localFolioNumber')
   onLocalFolioNumberChanged (val: string): void {
-    this.emitTransactionalFolioNumber(val)
+    this.$refs.folioNumberInput?.validate()
+    this.emitChange(val)
     this.emitValid(this.isValid)
   }
 
-  /** Emits an event to update the transactional folio number. */
-  @Emit('update:transactionalFolioNumber')
-  emitTransactionalFolioNumber (val: string): string {
+  /** Emits an event to change the transactional folio number. */
+  @Emit('change')
+  emitChange (val: string): string {
     return val
   }
 

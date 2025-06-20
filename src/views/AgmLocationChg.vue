@@ -202,7 +202,7 @@
                 <TransactionalFolioNumber
                   :accountFolioNumber="getFolioNumber"
                   :transactionalFolioNumber="getTransactionalFolioNumber"
-                  @update:transactionalFolioNumber="onTransactionalFolioNumberChange"
+                  @change="onTransactionalFolioNumberChange"
                   @valid="folioNumberValid = $event"
                 />
               </div>
@@ -588,7 +588,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
         name: FilingTypes.AGM_LOCATION_CHANGE,
         certifiedBy: this.certifiedBy || '',
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || ''
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined
       }
     }
 

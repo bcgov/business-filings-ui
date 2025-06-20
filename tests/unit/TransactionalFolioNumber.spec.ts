@@ -49,8 +49,8 @@ describe('TransactionalFolioNumber', () => {
     wrapper = factory({ accountFolioNumber: '1234', transactionalFolioNumber: null })
     const input = wrapper.find('input')
     await input.setValue('NEWFOLIO')
-    expect(wrapper.emitted('update:transactionalFolioNumber')).toBeTruthy()
-    expect(wrapper.emitted('update:transactionalFolioNumber').pop()[0]).toEqual('NEWFOLIO')
+    expect(wrapper.emitted('change')).toBeTruthy()
+    expect(wrapper.emitted('change').pop()[0]).toEqual('NEWFOLIO')
     // Should emit valid event when transactionalFolioNumber is updated
     expect(wrapper.emitted('valid')).toBeTruthy()
     expect(wrapper.emitted('valid').pop()[0]).toBe(true)

@@ -158,7 +158,7 @@
                 <TransactionalFolioNumber
                   :accountFolioNumber="getFolioNumber"
                   :transactionalFolioNumber="getTransactionalFolioNumber"
-                  @update:transactionalFolioNumber="onTransactionalFolioNumberChange"
+                  @change="onTransactionalFolioNumberChange"
                   @valid="folioNumberValid = $event"
                 />
               </div>
@@ -779,7 +779,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
         certifiedBy: this.certifiedBy || '',
         email: this.getBusinessEmail || undefined,
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || ''
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined
       }
     }
 

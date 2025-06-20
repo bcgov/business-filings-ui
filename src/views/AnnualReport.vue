@@ -277,7 +277,7 @@
                 <TransactionalFolioNumber
                   :accountFolioNumber="getFolioNumber"
                   :transactionalFolioNumber="getTransactionalFolioNumber"
-                  @update:transactionalFolioNumber="onTransactionalFolioNumberChange"
+                  @change="onTransactionalFolioNumberChange"
                   @valid="folioNumberValid = $event"
                 />
               </div>
@@ -1088,7 +1088,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
         ARFilingYear: this.ARFilingYear, // NB: used by TodoList when loading draft AR
         effectiveDate: this.yyyyMmDdToApi(this.asOfDate),
-        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || ''
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined
       }
     }
 

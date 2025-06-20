@@ -153,7 +153,7 @@
               <TransactionalFolioNumber
                 :accountFolioNumber="getFolioNumber"
                 :transactionalFolioNumber="getTransactionalFolioNumber"
-                @update:transactionalFolioNumber="onTransactionalFolioNumberChange"
+                @change="onTransactionalFolioNumberChange"
                 @valid="folioNumberValid = $event"
               />
             </section>
@@ -748,7 +748,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
         email: 'no_one@never.get',
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
         effectiveDate: this.yyyyMmDdToApi(this.coaDate),
-        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || ''
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined
       }
     }
 
