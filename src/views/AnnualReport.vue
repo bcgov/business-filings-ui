@@ -128,7 +128,7 @@
               <section>
                 <header>
                   <h2 id="agm-date-header">
-                    1. Annual General Meeting Date
+                    Annual General Meeting Date
                   </h2>
                   <p>Select your Annual General Meeting (AGM) date</p>
                 </header>
@@ -150,7 +150,7 @@
               <section v-show="agmDateValid">
                 <header>
                   <h2 id="addresses-header">
-                    2. Registered Office Addresses
+                    Registered Office Addresses
                     <span
                       v-if="agmDate"
                       class="as-of-date"
@@ -176,7 +176,7 @@
               <section v-show="agmDateValid">
                 <header>
                   <h2 id="directors-header">
-                    3. Directors
+                    Directors
                   </h2>
                   <p v-if="allowChange('cod')">
                     Tell us who was elected or appointed and who ceased to be
@@ -234,7 +234,7 @@
               <section>
                 <header>
                   <h2 id="business-details-header">
-                    1. Business Details
+                    Business Details
                   </h2>
                 </header>
                 <ArDate />
@@ -249,7 +249,7 @@
               <section>
                 <header>
                   <h2 id="directors-header-BC">
-                    2. Directors
+                    Directors
                   </h2>
                 </header>
                 <SummaryDirectors
@@ -258,20 +258,38 @@
               </section>
             </article>
 
+            <!-- Folio Number -->
+            <section
+              v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
+            >
+              <header>
+                <h2 id="folio-number-header">
+                  Folio or Reference Number (Optional)
+                </h2>
+                <p>
+                  This is meant for your own tracking purposes and will appear on your receipt.
+                </p>
+              </header>
+              <div
+                id="folio-number-section"
+                :class="{ 'invalid-section': !folioNumberValid && showErrors }"
+              >
+                <TransactionalFolioNumber
+                  :accountFolioNumber="getFolioNumber"
+                  :transactionalFolioNumber="getTransactionalFolioNumber"
+                  @update:transactionalFolioNumber="onTransactionalFolioNumberChange"
+                  @valid="folioNumberValid = $event"
+                />
+              </div>
+            </section>
+
             <!-- Certify -->
             <section v-show="isBaseCompany || agmDateValid">
               <header>
                 <h2
-                  v-if="isEntityCoop"
                   id="certify-header"
                 >
-                  4. Certify
-                </h2>
-                <h2
-                  v-else-if="isBaseCompany"
-                  id="certify-header"
-                >
-                  3. Certify
+                  Certify
                 </h2>
                 <p>Enter the legal name of the person authorized to complete and submit this Annual Report</p>
               </header>
@@ -422,7 +440,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 import { IsAuthorized, navigate } from '@/utils'
@@ -430,7 +448,8 @@ import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
+import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses,
+  TransactionalFolioNumber } from '@/components/common'
 import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -456,7 +475,8 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     SbcFeeSummary,
     StaffPaymentDialog,
     SummaryDirectors,
-    SummaryOfficeAddresses
+    SummaryOfficeAddresses,
+    TransactionalFolioNumber
   }
 })
 export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin) {
@@ -471,15 +491,19 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   readonly IsAuthorized = IsAuthorized
   readonly AuthorizedActions = AuthorizedActions
 
+  @Action(useRootStore) setTransactionalFolioNumber!: (x: string) => void
+
   @Getter(useBusinessStore) arMaxDate!: string
   @Getter(useBusinessStore) arMinDate!: string
   @Getter(useRootStore) getCurrentYear!: number
   @Getter(useConfigurationStore) getAuthWebUrl!: string
+  @Getter(useRootStore) getFolioNumber!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLastAddressChangeDate!: string
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) getTransactionalFolioNumber!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useBusinessStore) nextARDate!: string
@@ -508,6 +532,9 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   certifiedBy = ''
   isCertified = false
   certifyFormValid = null
+
+  // variables for Transactional Folio Number component
+  folioNumberValid = true
 
   // variables for staff payment
   staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
@@ -583,9 +610,9 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   get isPageValid (): boolean {
     if (this.isEntityCoop) {
       return (this.agmDateValid && this.addressesFormValid && this.directorFormValid &&
-        this.certifyFormValid && !this.directorEditInProgress && !this.isOfficeAddressEditing)
+        this.certifyFormValid && this.folioNumberValid && !this.directorEditInProgress && !this.isOfficeAddressEditing)
     }
-    return this.certifyFormValid
+    return this.certifyFormValid && this.folioNumberValid
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -718,6 +745,9 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
       // restore Certified By (but not Date)
       this.certifiedBy = header.certifiedBy
+
+      // restore Transactional Folio Number
+      if (filing.header.folioNumber) this.setTransactionalFolioNumber(filing.header.folioNumber)
 
       // restore Staff Payment data
       if (header.routingSlipNumber) {
@@ -862,6 +892,10 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     // use existing Priority and Waive Fees flags
     this.updateFilingData(val ? 'add' : 'remove', FilingCodes.ANNUAL_REPORT_OT, this.staffPaymentData.isPriority,
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+  }
+
+  onTransactionalFolioNumberChange (newFolioNumber: string): void {
+    this.setTransactionalFolioNumber(newFolioNumber)
   }
 
   /**
@@ -1053,7 +1087,8 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
         email: 'no_one@never.get',
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
         ARFilingYear: this.ARFilingYear, // NB: used by TodoList when loading draft AR
-        effectiveDate: this.yyyyMmDdToApi(this.asOfDate)
+        effectiveDate: this.yyyyMmDdToApi(this.asOfDate),
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || ''
       }
     }
 
@@ -1342,6 +1377,17 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
+#annual-report {
+  /* Set "header-counter" to 0 */
+  counter-reset: header-counter;
+}
+
+h2::before {
+  /* Increment "header-counter" by 1 */
+  counter-increment: header-counter;
+  content: counter(header-counter) '. ';
+}
 
 article {
   .v-card {
