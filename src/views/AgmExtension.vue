@@ -470,9 +470,8 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
       header: {
         name: FilingTypes.AGM_EXTENSION,
         certifiedBy: this.certifiedBy || '',
-        date: this.getCurrentDate,
+        date: this.getCurrentDate, // NB: API will reassign this date according to its clock
         folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || ''
-        // NB: API will reassign this date according to its clock
       }
     }
 

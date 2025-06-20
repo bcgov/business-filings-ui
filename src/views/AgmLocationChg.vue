@@ -183,6 +183,31 @@
               </div>
             </section>
 
+            <!-- Folio Number -->
+            <section
+              v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
+            >
+              <header>
+                <h2 id="folio-number-header">
+                  Folio or Reference Number (Optional)
+                </h2>
+                <p>
+                  This is meant for your own tracking purposes and will appear on your receipt.
+                </p>
+              </header>
+              <div
+                id="folio-number-section"
+                :class="{ 'invalid-section': !folioNumberValid && showErrors }"
+              >
+                <TransactionalFolioNumber
+                  :accountFolioNumber="getFolioNumber"
+                  :transactionalFolioNumber="getTransactionalFolioNumber"
+                  @update:transactionalFolioNumber="onTransactionalFolioNumberChange"
+                  @valid="folioNumberValid = $event"
+                />
+              </div>
+            </section>
+
             <!-- Certify -->
             <section>
               <header>
@@ -278,11 +303,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate, IsAuthorized } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, DetailComment } from '@/components/common'
+import { Certify, DetailComment, TransactionalFolioNumber } from '@/components/common'
 import { AuthErrorDialog, ConfirmDialog, PaymentErrorDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
@@ -304,7 +329,8 @@ import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
     DetailComment,
     ExpandableHelp,
     PaymentErrorDialog,
-    SbcFeeSummary
+    SbcFeeSummary,
+    TransactionalFolioNumber
   }
 })
 export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin) {
@@ -314,9 +340,13 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
     certifyRef: Certify
   }
 
+  @Action(useRootStore) setTransactionalFolioNumber!: (x: string) => void
+
   @Getter(useConfigurationStore) getAuthWebUrl!: string
+  @Getter(useRootStore) getFolioNumber!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) getTransactionalFolioNumber!: string
   @Getter(useRootStore) getUserInfo!: any
 
   // enum for template
@@ -338,6 +368,9 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
   // variables for DetailComment component. This is a special case we don't check permissions for DETAIL_COMMENT.
   reason = ''
   reasonValid = false
+
+  // variables for Folio Number section
+  folioNumberValid = true
 
   // variables for displaying dialogs
   saveErrorReason: SaveErrorReasons = null
@@ -361,7 +394,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.agmLocationValid && this.agmYearValid && this.certifyFormValid && this.reasonValid)
+    return (this.agmLocationValid && this.agmYearValid && this.certifyFormValid && this.folioNumberValid &&
+     this.reasonValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -446,6 +480,10 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
   beforeDestroy (): void {
     // remove event handler
     window.onbeforeunload = null
+  }
+
+  onTransactionalFolioNumberChange (newFolioNumber: string): void {
+    this.setTransactionalFolioNumber(newFolioNumber)
   }
 
   /**
@@ -549,7 +587,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
       header: {
         name: FilingTypes.AGM_LOCATION_CHANGE,
         certifiedBy: this.certifiedBy || '',
-        date: this.getCurrentDate // NB: API will reassign this date according to its clock
+        date: this.getCurrentDate, // NB: API will reassign this date according to its clock
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || ''
       }
     }
 
@@ -644,7 +683,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
     'agm-year-section',
     'reason-section',
     'location-section',
-    'certify-form-section'
+    'certify-form-section',
+    'folio-number-section'
   ]
 
   /** Object of valid flags. Must match validComponents. */
@@ -654,7 +694,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
       agmYear: this.agmYearValid,
       reason: this.reasonValid,
       location: this.agmLocationValid,
-      certifyForm: this.certifyFormValid
+      certifyForm: this.certifyFormValid,
+      folioNumber: this.folioNumberValid
     }
   }
 
