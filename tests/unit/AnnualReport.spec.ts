@@ -15,7 +15,8 @@ import AnnualReport from '@/views/AnnualReport.vue'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
-import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
+import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses,
+  TransactionalFolioNumber } from '@/components/common'
 import { BusinessConfigCp } from '@/resources/CP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import * as utils from '@/utils'
@@ -67,6 +68,7 @@ describe('Annual Report - Part 1 - UI', () => {
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
     expect(wrapper.findComponent(Directors).exists()).toBe(true)
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -117,7 +119,8 @@ describe('Annual Report - Part 1 - UI', () => {
       agmDateValid: true,
       addressesFormValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // confirm that flags are set correctly
@@ -136,7 +139,8 @@ describe('Annual Report - Part 1 - UI', () => {
       agmDateValid: false,
       addressesFormValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // confirm that flags are set correctly
@@ -155,7 +159,8 @@ describe('Annual Report - Part 1 - UI', () => {
       agmDateValid: true,
       addressesFormValid: false,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // confirm that flags are set correctly
@@ -176,7 +181,8 @@ describe('Annual Report - Part 1 - UI', () => {
       agmDateValid: true,
       addressesFormValid: false,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // confirm that change state is disabled
@@ -197,7 +203,8 @@ describe('Annual Report - Part 1 - UI', () => {
       agmDateValid: true,
       addressesFormValid: false,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // confirm that change state is enabled
@@ -218,7 +225,8 @@ describe('Annual Report - Part 1 - UI', () => {
       agmDateValid: true,
       addressesFormValid: false,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // confirm that change state is disabled
@@ -239,7 +247,8 @@ describe('Annual Report - Part 1 - UI', () => {
       agmDateValid: true,
       addressesFormValid: false,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // confirm that change state is enabled
@@ -258,7 +267,8 @@ describe('Annual Report - Part 1 - UI', () => {
       agmDateValid: true,
       addressesFormValid: true,
       directorFormValid: false,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // confirm that flags are set correctly
@@ -277,7 +287,28 @@ describe('Annual Report - Part 1 - UI', () => {
       agmDateValid: true,
       addressesFormValid: true,
       directorFormValid: true,
-      certifyFormValid: false
+      certifyFormValid: false,
+      folioNumberValid: true
+    })
+
+    // confirm that flags are set correctly
+    expect(vm.isPageValid).toEqual(false)
+
+    wrapper.destroy()
+  })
+
+  it('disables Validated flag when Transactional Folio Number form is invalid', async () => {
+    const $route = { query: { filingId: '0', arFilingYear: '2017' } }
+    const wrapper = shallowMount(AnnualReport, { mocks: { $route }, vuetify })
+    const vm: any = wrapper.vm
+
+    // set local properties
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true,
+      folioNumberValid: false
     })
 
     // confirm that flags are set correctly
@@ -319,6 +350,7 @@ describe('Annual Report - Part 1 - UI', () => {
       addressesFormValid: true,
       directorFormValid: true,
       certifyFormValid: true,
+      folioNumberValid: true,
       directorEditInProgress: false
     })
 
@@ -358,7 +390,8 @@ describe('Annual Report - Part 1 - UI', () => {
       agmDateValid: false,
       addressesFormValid: false,
       directorFormValid: false,
-      certifyFormValid: false
+      certifyFormValid: false,
+      folioNumberValid: false
     })
 
     // confirm that button is disabled
@@ -384,6 +417,7 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     expect(wrapper.findComponent(SummaryOfficeAddresses).exists()).toBe(true)
     expect(wrapper.findComponent(SummaryDirectors).exists()).toBe(true)
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -904,7 +938,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
       addressesFormValid: true,
       directorFormValid: true,
       certifyFormValid: true,
-      directorEditInProgress: false
+      directorEditInProgress: false,
+      folioNumberValid: true
     })
     rootStore.filingData = [
       {
@@ -982,7 +1017,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
       addressesFormValid: true,
       directorFormValid: true,
       certifyFormValid: true,
-      directorEditInProgress: false
+      directorEditInProgress: false,
+      folioNumberValid: true
     })
     rootStore.filingData = [
       {
@@ -1236,7 +1272,8 @@ describe('Annual Report - Part 4 - Saving', () => {
       agmDateValid: true,
       addressesFormValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // stub address data
@@ -1309,7 +1346,8 @@ describe('Annual Report - Part 4 - Saving', () => {
       agmDateValid: true,
       addressesFormValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // stub address data
@@ -1347,7 +1385,8 @@ describe('Annual Report - Part 4 - Saving', () => {
       agmDateValid: true,
       addressesFormValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // mock the navigate function
@@ -1373,7 +1412,8 @@ describe('Annual Report - Part 4 - Saving', () => {
       agmDateValid: true,
       addressesFormValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // click the Cancel button
@@ -1510,7 +1550,8 @@ describe('Annual Report - Part 5 - Data', () => {
       agmDateValid: true,
       addressesFormValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
   })
 
@@ -1730,7 +1771,8 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
       agmDateValid: true,
       addressesFormValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
   })
 
@@ -1947,7 +1989,8 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
       agmDateValid: true,
       addressesFormValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // confirm that flags are set correctly
@@ -1988,7 +2031,8 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
       agmDateValid: true,
       addressesFormValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // confirm that flags are set correctly
@@ -2105,7 +2149,8 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
       addressesFormValid: true,
       directorFormValid: true,
       certifyFormValid: true,
-      directorEditInProgress: false
+      directorEditInProgress: false,
+      folioNumberValid: true
     })
 
     // stub address data
@@ -2236,7 +2281,8 @@ describe('Annual Report - payment required error', () => {
       addressesFormValid: true,
       directorFormValid: true,
       certifyFormValid: true,
-      directorEditInProgress: false
+      directorEditInProgress: false,
+      folioNumberValid: true
     })
     rootStore.filingData = [
       {

@@ -256,8 +256,33 @@
 
                 <!-- Director Information -->
                 <section>
+                  <header>
+                    <h2 id="summary-director-header">
+                      Review and Confirm
+                    </h2>
+                  </header>
                   <SummaryDirectors
                     :directors="updatedDirectors"
+                  />
+                </section>
+
+                <!-- Folio Number -->
+                <section
+                  v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
+                >
+                  <header>
+                    <h2 id="folio-number-header">
+                      Folio or Reference Number (Optional)
+                    </h2>
+                    <p>
+                      This is meant for your own tracking purposes and will appear on your receipt.
+                    </p>
+                  </header>
+                  <TransactionalFolioNumber
+                    :accountFolioNumber="getFolioNumber"
+                    :transactionalFolioNumber="getTransactionalFolioNumber"
+                    @change="onTransactionalFolioNumberChange"
+                    @valid="folioNumberValid = $event"
                   />
                 </section>
 
@@ -320,7 +345,7 @@
             <v-btn
               id="cod-save-resume-btn"
               large
-              :disabled="busySaving || IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
+              :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
               :loading="savingResuming"
               @click="onClickSaveResume()"
             >
@@ -372,14 +397,14 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 import { IsAuthorized, navigate } from '@/utils'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, SummaryDirectors } from '@/components/common'
+import { Certify, SummaryDirectors, TransactionalFolioNumber } from '@/components/common'
 import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -387,7 +412,7 @@ import { LegalServices } from '@/services/'
 import { AuthorizedActions, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -402,7 +427,8 @@ import { useBusinessStore, useConfigurationStore } from '@/stores'
     PaymentErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
-    StaffPaymentDialog
+    StaffPaymentDialog,
+    TransactionalFolioNumber
   }
 })
 export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateMixin,
@@ -413,9 +439,13 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
     directorsComponent: Directors
   }
 
+  @Action(useRootStore) setTransactionalFolioNumber!: (x: string) => void
+
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) getFolioNumber!: string
+  @Getter(useRootStore) getTransactionalFolioNumber!: string
 
   // variables
   authErrorDialog = false
@@ -431,6 +461,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   certifiedBy = ''
   certifyFormValid = false
   directorFormValid = true
+  folioNumberValid = true
   directorEditInProgress = false
   filingId = NaN
   savedFiling: any = null // filing during save
@@ -473,7 +504,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   /** True if review page is valid. */
   get isReviewPageValid (): boolean {
     const filingDataValid = (this.filingData.length > 0)
-    return (this.certifyFormValid && filingDataValid)
+    return (this.certifyFormValid && this.folioNumberValid && filingDataValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -591,6 +622,9 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
       // restore Certified By (but not Date)
       this.certifiedBy = filing.header.certifiedBy
 
+      // restore Transactional Folio Number
+      if (filing.header.folioNumber) this.setTransactionalFolioNumber(filing.header.folioNumber)
+
       // restore Staff Payment data
       if (filing.header.routingSlipNumber) {
         this.staffPaymentData = {
@@ -661,6 +695,10 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
     // use existing Priority and Waive Fees flags
     this.updateFilingData(modified ? 'add' : 'remove', this.freeFeeCode,
       this.staffPaymentData.isPriority, (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+  }
+
+  onTransactionalFolioNumberChange (newFolioNumber: string): void {
+    this.setTransactionalFolioNumber(newFolioNumber)
   }
 
   /**
@@ -849,7 +887,8 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
         certifiedBy: this.certifiedBy || '',
         email: 'no_one@never.get',
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-        effectiveDate: this.yyyyMmDdToApi(this.codDate)
+        effectiveDate: this.yyyyMmDdToApi(this.codDate),
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined
       }
     }
 
@@ -1067,6 +1106,17 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
+#standalone-directors {
+  /* Set "header-counter" to 0 */
+  counter-reset: header-counter;
+}
+
+h2::before {
+  /* Increment "header-counter" by 1 */
+  counter-increment: header-counter;
+  content: counter(header-counter) '. ';
+}
 
 article {
   .v-card {

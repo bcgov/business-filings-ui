@@ -31,6 +31,7 @@ export interface RootStateIF {
   businessPhone: string
   businessPhoneExtension: string
   corpTypeCd: CorpTypeCd
+  folioNumber: string
 
   // other global data
   businessAddress: OfficeAddressIF
@@ -42,6 +43,7 @@ export interface RootStateIF {
   parties: Array<PartyIF>
   recordsAddress: OfficeAddressIF
   registeredAddress: OfficeAddressIF
+  transactionalFolioNumber: string
   // *** FUTURE: declare a type for pendingsList
   pendingsList: Array<any> // pendings list from bootstrap filing
   tasks: Array<ApiTaskIF> // "tasks" list from API (or bootstrap filing)

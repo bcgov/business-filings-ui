@@ -8,7 +8,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
-import { Certify, ForeignJurisdiction } from '@/components/common'
+import { Certify, ForeignJurisdiction, TransactionalFolioNumber } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { LegalServices } from '@/services'
@@ -70,6 +70,7 @@ describe('Consent to Continuation Out view', () => {
     expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(StaffPaymentDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(false)
 
     wrapper.destroy()
   })
@@ -123,6 +124,7 @@ describe('Consent to Continuation Out view', () => {
     vm.courtOrderValid = true
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = true
+    vm.folioNumberValid = true
     expect(vm.isPageValid).toBe(true)
 
     // verify "validated" - invalid Certify form
@@ -130,6 +132,7 @@ describe('Consent to Continuation Out view', () => {
     vm.courtOrderValid = true
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = true
+    vm.folioNumberValid = true
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Court Order form
@@ -137,6 +140,7 @@ describe('Consent to Continuation Out view', () => {
     vm.courtOrderValid = false
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = true
+    vm.folioNumberValid = true
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Document Delivery form
@@ -144,6 +148,7 @@ describe('Consent to Continuation Out view', () => {
     vm.courtOrderValid = true
     vm.documentDeliveryValid = false
     vm.foreignJurisdictionValid = true
+    vm.folioNumberValid = true
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Foreign Jurisdiction form
@@ -151,6 +156,15 @@ describe('Consent to Continuation Out view', () => {
     vm.courtOrderValid = true
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = false
+    vm.folioNumberValid = true
+    expect(vm.isPageValid).toBe(false)
+
+    // verify "validated" - invalid Transactional Folio Number form
+    vm.certifyFormValid = true
+    vm.courtOrderValid = true
+    vm.documentDeliveryValid = true
+    vm.foreignJurisdictionValid = true
+    vm.folioNumberValid = false
     expect(vm.isPageValid).toBe(false)
 
     wrapper.destroy()
@@ -378,6 +392,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(StaffPaymentDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -461,7 +476,8 @@ describe('Consent to Continue Out for general user and IAs only', () => {
       documentDeliveryValid: true,
       certifyFormValid: true,
       courtOrderValid: true,
-      foreignJurisdictionValid: true
+      foreignJurisdictionValid: true,
+      folioNumberValid: true
     })
 
     wrapper.vm.$data.dataLoaded = true

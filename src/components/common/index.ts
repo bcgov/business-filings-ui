@@ -14,6 +14,7 @@ import OfficeAddresses from './OfficeAddresses.vue'
 import Stepper from '@/components/common/Stepper.vue'
 import SummaryDirectors from './SummaryDirectors.vue'
 import SummaryOfficeAddresses from './SummaryOfficeAddresses.vue'
+import TransactionalFolioNumber from './TransactionalFolioNumber.vue'
 import VcardTemplate from './VcardTemplate.vue'
 import WarningPopover from './WarningPopover.vue'
 
@@ -37,6 +38,7 @@ export {
   Stepper,
   SummaryDirectors,
   SummaryOfficeAddresses,
+  TransactionalFolioNumber,
   VcardTemplate,
   WarningPopover
 }
