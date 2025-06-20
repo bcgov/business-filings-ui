@@ -151,12 +151,17 @@
                   This is meant for your own tracking purposes and will appear on your receipt.
                 </p>
               </header>
-              <TransactionalFolioNumber
-                :accountFolioNumber="getFolioNumber"
-                :transactionalFolioNumber="getTransactionalFolioNumber"
-                @update:transactionalFolioNumber="onTransactionalFolioNumberChange"
-                @valid="folioNumberValid = $event"
-              />
+              <div
+                id="folio-number-section"
+                :class="{ 'invalid-section': !folioNumberValid && showErrors }"
+              >
+                <TransactionalFolioNumber
+                  :accountFolioNumber="getFolioNumber"
+                  :transactionalFolioNumber="getTransactionalFolioNumber"
+                  @update:transactionalFolioNumber="onTransactionalFolioNumberChange"
+                  @valid="folioNumberValid = $event"
+                />
+              </div>
             </section>
 
             <!-- Certify -->
@@ -945,7 +950,8 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
     'foreign-jurisdiction-section',
     'document-delivery-section',
     'certify-form-section',
-    'court-order-section'
+    'court-order-section',
+    'folio-number-section'
   ]
 
   /** Object of valid flags. Must match validComponents. */
@@ -954,7 +960,8 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
       foreignJurisdiction: this.foreignJurisdictionValid,
       documentDelivery: this.documentDeliveryValid,
       certifyForm: this.certifyFormValid,
-      courtOrder: this.courtOrderValid
+      courtOrder: this.courtOrderValid,
+      folioNumber: this.folioNumberValid
     }
   }
 
@@ -962,6 +969,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
   @Watch('courtOrderValid')
   @Watch('documentDeliveryValid')
   @Watch('foreignJurisdictionValid')
+  @Watch('folioNumberValid')
   onHaveChanges (): void {
     this.haveChanges = true
   }
