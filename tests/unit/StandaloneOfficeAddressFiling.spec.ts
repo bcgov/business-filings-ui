@@ -10,7 +10,7 @@ import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
-import { Certify, OfficeAddresses } from '@/components/common'
+import { Certify, OfficeAddresses, TransactionalFolioNumber } from '@/components/common'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { BusinessConfigBen } from '@/resources/BEN'
@@ -71,6 +71,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
 
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -83,7 +84,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set local properties
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -101,7 +103,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set local properties
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: false
+      addressesFormValid: false,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -119,7 +122,27 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set local properties
     await wrapper.setData({
       certifyFormValid: false,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
+    })
+    rootStore.setFilingData([{} as any]) // dummy data
+
+    // confirm that flag is set correctly
+    expect(vm.isPageValid).toEqual(false)
+
+    wrapper.destroy()
+  })
+
+  it('disables Validated flag when Transactional Folio Number form is invalid', async () => {
+    const $route = { query: { filingId: 0 } } // new filing id
+    const wrapper = shallowMount(StandaloneOfficeAddressFiling, { mocks: { $route }, vuetify })
+    const vm: any = wrapper.vm
+
+    // set local properties
+    await wrapper.setData({
+      certifyFormValid: false,
+      addressesFormValid: true,
+      folioNumberValid: false
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -137,7 +160,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set local properties
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([]) // no data
 
@@ -171,7 +195,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set all properties truthy
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
     await Vue.nextTick()
@@ -207,7 +232,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set all properties falsy
     await wrapper.setData({
       certifyFormValid: false,
-      addressesFormValid: false
+      addressesFormValid: false,
+      folioNumberValid: false
     })
     rootStore.setFilingData([]) // no data
 
@@ -721,7 +747,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // make sure form is validated
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
 
     rootStore.setFilingData([{} as any]) // dummy data
@@ -783,7 +810,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // make sure form is validated
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -856,7 +884,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // make sure form is validated
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -1085,7 +1114,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     // make sure form is validated
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
     await Vue.nextTick()
@@ -1147,7 +1177,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     // make sure form is validated
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -1271,7 +1302,8 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
       // make sure form is validated
       await wrapper.setData({
         certifyFormValid: true,
-        addressesFormValid: true
+        addressesFormValid: true,
+        folioNumberValid: true
       })
 
       // sanity check
@@ -1304,7 +1336,8 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
     // make sure form is validated
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
 
     // mock the navigate function
@@ -1416,7 +1449,8 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
       // make sure form is validated
       await wrapper.setData({
         certifyFormValid: true,
-        addressesFormValid: true
+        addressesFormValid: true,
+        folioNumberValid: true
       })
 
       // sanity check
@@ -1449,7 +1483,8 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     // make sure form is validated
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
 
     // mock the navigate function
@@ -1531,6 +1566,7 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
     // make sure form is validated
     vm.addressesFormValid = true
     vm.certifyFormValid = true
+    vm.folioNumberValid = true
     vm.officeModifiedEventHandler(true)
   })
 
@@ -1820,7 +1856,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     // make sure form is validated
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
 
     // sanity check
@@ -1870,7 +1907,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     // make sure form is validated
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
 
     // sanity check
@@ -1985,7 +2023,8 @@ describe('Standalone Office Address Filing - payment required error', () => {
     // set all properties truthy
     await wrapper.setData({
       certifyFormValid: true,
-      addressesFormValid: true
+      addressesFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
