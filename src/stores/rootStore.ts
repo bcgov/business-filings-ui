@@ -30,6 +30,7 @@ export const useRootStore = defineStore('root', {
     businessPhone: null,
     businessPhoneExtension: null,
     corpTypeCd: null,
+    folioNumber: null,
     businessAddress: null,
     configObject: null,
     fetchingDataSpinner: false,
@@ -39,6 +40,7 @@ export const useRootStore = defineStore('root', {
     parties: [],
     recordsAddress: null,
     registeredAddress: null,
+    transactionalFolioNumber: null,
     pendingsList: [],
     tasks: [],
     userInfo: null
@@ -249,6 +251,16 @@ export const useRootStore = defineStore('root', {
       return state.userInfo
     },
 
+    /** The folio number from Auth db (may be null) */
+    getFolioNumber (state: RootStateIF): string {
+      return state.folioNumber
+    },
+
+    /** The transactional folio number (may be null) */
+    getTransactionalFolioNumber (state: RootStateIF): string {
+      return state.transactionalFolioNumber
+    },
+
     //
     // State Filing getters
     //
@@ -444,6 +456,14 @@ export const useRootStore = defineStore('root', {
 
     setCorpTypeCd (val: CorpTypeCd) {
       this.corpTypeCd = val
+    },
+
+    setFolioNumber (folioNumber: string) {
+      this.folioNumber = folioNumber
+    },
+
+    setTransactionalFolioNumber (transactionalFolioNumber: string) {
+      this.transactionalFolioNumber = transactionalFolioNumber
     },
 
     /**

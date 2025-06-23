@@ -103,36 +103,48 @@
           lg="9"
         >
           <article id="standalone-office-address-article">
-            <header>
-              <h1 id="address-change-header">
-                Address Change
-              </h1>
-
-              <p v-if="isEntityCoop">
-                Please change your Registered Office Address.
-              </p>
-              <p v-else-if="isBaseCompany">
-                Please change your Registered Office Address and Records Address.
-              </p>
-
-              <v-alert
-                v-if="isBaseCompany"
-                type="info"
-                outlined
-                icon="mdi-information"
-                class="white-background"
-              >
-                <span>Any address update will be effective tomorrow.</span>
-              </v-alert>
-            </header>
-
-            <!-- Office Addresses -->
             <section>
+              <header>
+                <h1 id="address-change-header">
+                  Address Change
+                </h1>
+                <h2>
+                  Address Information
+                </h2>
+                <p v-if="isEntityCoop">
+                  Please change your Registered Office Address.
+                </p>
+                <p v-else-if="isBaseCompany">
+                  Please change your Registered Office Address and Records Address.
+                </p>
+
+                <v-alert
+                  v-if="isBaseCompany"
+                  type="info"
+                  outlined
+                  icon="mdi-information"
+                  class="white-background"
+                >
+                  <span>Any address update will be effective tomorrow.</span>
+                </v-alert>
+              </header>
+
+              <!-- Office Addresses -->
               <OfficeAddresses
                 ref="officeAddressesComponent"
                 :addresses.sync="updatedAddresses"
                 @modified="officeModifiedEventHandler($event)"
                 @valid="addressesFormValid=$event"
+              />
+            </section>
+
+            <!-- Folio Number -->
+            <section v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)">
+              <TransactionalFolioNumber
+                :accountFolioNumber="getFolioNumber"
+                :transactionalFolioNumber="getTransactionalFolioNumber"
+                @change="onTransactionalFolioNumberChange"
+                @valid="folioNumberValid = $event"
               />
             </section>
 
@@ -247,12 +259,12 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, OfficeAddresses } from '@/components/common'
+import { Certify, OfficeAddresses, TransactionalFolioNumber } from '@/components/common'
 import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -260,7 +272,7 @@ import { LegalServices } from '@/services/'
 import { AuthorizedActions, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -273,7 +285,8 @@ import { useBusinessStore, useConfigurationStore } from '@/stores'
     PaymentErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
-    StaffPaymentDialog
+    StaffPaymentDialog,
+    TransactionalFolioNumber
   }
 })
 export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, DateMixin,
@@ -284,11 +297,15 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     officeAddressesComponent: OfficeAddresses
   }
 
+  @Action(useRootStore) setTransactionalFolioNumber!: (x: string) => void
+
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isEntityCoop!: boolean
+  @Getter(useRootStore) getFolioNumber!: string
+  @Getter(useRootStore) getTransactionalFolioNumber!: string
 
   // local variables
   authErrorDialog = false
@@ -308,6 +325,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   certifiedBy = ''
   certifyFormValid = false
   addressesFormValid: boolean = null
+  folioNumberValid = true
   saving = false // true only when saving
   savingResuming = false // true only when saving and resuming
   filingPaying = false // true only when filing and paying
@@ -332,7 +350,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   /** True if page is valid. */
   get isPageValid (): boolean {
     const filingDataValid = (this.filingData.length > 0)
-    return (this.certifyFormValid && this.addressesFormValid && filingDataValid)
+    return (this.certifyFormValid && this.addressesFormValid && this.folioNumberValid && filingDataValid)
   }
 
   /** True if saving a draft is allowed. */
@@ -455,6 +473,9 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
       // restore Certified By (but not Date)
       this.certifiedBy = filing.header.certifiedBy
 
+      // restore Transactional Folio Number
+      if (filing.header.folioNumber) this.setTransactionalFolioNumber(filing.header.folioNumber)
+
       // restore Staff Payment data
       if (filing.header.routingSlipNumber) {
         this.staffPaymentData = {
@@ -525,6 +546,10 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     // use existing Priority and Waive Fees flags
     this.updateFilingData(modified ? 'add' : 'remove', this.feeCode, this.staffPaymentData.isPriority,
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+  }
+
+  onTransactionalFolioNumberChange (newFolioNumber: string): void {
+    this.setTransactionalFolioNumber(newFolioNumber)
   }
 
   /**
@@ -712,7 +737,8 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
         certifiedBy: this.certifiedBy || '',
         email: 'no_one@never.get',
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-        effectiveDate: this.yyyyMmDdToApi(this.coaDate)
+        effectiveDate: this.yyyyMmDdToApi(this.coaDate),
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined
       }
     }
 
@@ -930,6 +956,16 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
+#standalone-office-address {
+  /* Set "header-counter" to 0 */
+  counter-reset: header-counter;
+}
+
+#standalone-office-address ::v-deep(section) h2::before {
+  counter-increment: header-counter;
+  content: counter(header-counter) '. ';
+}
 
 article {
   .v-card {

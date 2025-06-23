@@ -44,36 +44,56 @@
               </template>
             </ExpandableHelp>
 
-            <header>
-              <h2>Extension Detail</h2>
-              <p class="grey-text">
-                Enter the details about the extension request to evaluate the eligibility.
-              </p>
-            </header>
+            <section class="step-section">
+              <header>
+                <h2>Extension Detail</h2>
+                <p class="grey-text">
+                  Enter the details about the extension request to evaluate the eligibility.
+                </p>
+              </header>
 
-            <!-- About the Business -->
-            <AboutTheBusiness
-              class="mt-6"
-              :data.sync="data"
-            />
+              <!-- About the Business -->
+              <AboutTheBusiness
+                class="mt-6"
+                :data.sync="data"
+              />
 
-            <!-- Extension Request -->
-            <ExtensionRequest
-              class="mt-8"
-              :data.sync="data"
-              :showErrors="showErrors"
-              @valid="extensionRequestValid=$event"
-            />
+              <!-- Extension Request -->
+              <ExtensionRequest
+                class="mt-8"
+                :data.sync="data"
+                :showErrors="showErrors"
+                @valid="extensionRequestValid=$event"
+              />
 
-            <!-- AGM Extension Evaluation -->
-            <AgmExtensionEvaluation
-              class="mt-8"
-              :data.sync="data"
-              :evaluateResult="extensionRequestValid"
-            />
+              <!-- AGM Extension Evaluation -->
+              <AgmExtensionEvaluation
+                class="mt-8"
+                :data.sync="data"
+                :evaluateResult="extensionRequestValid"
+              />
+            </section>
+
+            <!-- Folio Number -->
+            <section
+              v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
+              class="step-section"
+            >
+              <div
+                id="folio-number-section"
+                :class="{ 'invalid-section': !folioNumberValid && showErrors }"
+              >
+                <TransactionalFolioNumber
+                  :accountFolioNumber="getFolioNumber"
+                  :transactionalFolioNumber="getTransactionalFolioNumber"
+                  @change="onTransactionalFolioNumberChange"
+                  @valid="folioNumberValid = $event"
+                />
+              </div>
+            </section>
 
             <!-- Certify -->
-            <section class="mt-8">
+            <section class="mt-8 step-section">
               <header>
                 <h2>Certify</h2>
                 <p class="grey-text">
@@ -168,12 +188,12 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { IsAuthorized, navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
-import { Certify } from '@/components/common'
+import { Certify, TransactionalFolioNumber } from '@/components/common'
 import {
   AuthErrorDialog, ConfirmDialog, NotEligibleExtensionDialog, PaymentErrorDialog
 } from '@/components/dialogs'
@@ -200,7 +220,8 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
     ExtensionRequest,
     NotEligibleExtensionDialog,
     PaymentErrorDialog,
-    SbcFeeSummary
+    SbcFeeSummary,
+    TransactionalFolioNumber
   }
 })
 export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin) {
@@ -210,9 +231,13 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
     certifyRef: Certify
   }
 
+  @Action(useRootStore) setTransactionalFolioNumber!: (x: string) => void
+
   @Getter(useConfigurationStore) getAuthWebUrl!: string
+  @Getter(useRootStore) getFolioNumber!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) getTransactionalFolioNumber!: string
   @Getter(useRootStore) getUserInfo!: any
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useFilingHistoryListStore) getTotalAgmExtensionDuration!: (year: number) => number;
@@ -232,6 +257,9 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
 
   // variables for Extension Request section
   extensionRequestValid = false
+
+  // variables for Folio Number section
+  folioNumberValid = true
 
   // variables for displaying dialogs
   saveErrorReason: SaveErrorReasons = null
@@ -256,7 +284,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.extensionRequestValid && this.certifyFormValid)
+    return (this.extensionRequestValid && this.certifyFormValid && this.folioNumberValid)
   }
 
   /** True when filing and paying. */
@@ -318,6 +346,10 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
   beforeDestroy (): void {
     // remove event handler
     window.onbeforeunload = null
+  }
+
+  onTransactionalFolioNumberChange (newFolioNumber: string): void {
+    this.setTransactionalFolioNumber(newFolioNumber)
   }
 
   /**
@@ -433,7 +465,8 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
       header: {
         name: FilingTypes.AGM_EXTENSION,
         certifiedBy: this.certifiedBy || '',
-        date: this.getCurrentDate // NB: API will reassign this date according to its clock
+        date: this.getCurrentDate, // NB: API will reassign this date according to its clock
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined
       }
     }
 
@@ -536,14 +569,16 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
     'extension-request',
-    'certify-form-section'
+    'certify-form-section',
+    'folio-number-section'
   ]
 
   /** Object of valid flags. Must match validComponents. */
   get validFlags (): object {
     return {
       extensionEligibility: this.extensionRequestValid,
-      certifyForm: this.certifyFormValid
+      certifyForm: this.certifyFormValid,
+      folioNumber: this.folioNumberValid
     }
   }
 
@@ -567,8 +602,14 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
   counter-reset: header-counter;
 }
 
-h2::before {
-  /* Increment "header-counter" by 1 */
+// Step headers defined in the view
+section.step-section > header > h2::before {
+  counter-increment: header-counter;
+  content: counter(header-counter) '. ';
+}
+
+// Step headers defined inside a component, e.g. TransactionalFolioNumber
+section.step-section ::v-deep(#transactional-folio-number > header > h2)::before {
   counter-increment: header-counter;
   content: counter(header-counter) '. ';
 }

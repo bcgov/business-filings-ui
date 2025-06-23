@@ -18,7 +18,7 @@ import AboutTheBusiness from '@/components/AgmExtension/AboutTheBusiness.vue'
 import AgmExtensionEvaluation from '@/components/AgmExtension/AgmExtensionEvaluation.vue'
 import AgmExtensionHelp from '@/components/AgmExtension/AgmExtensionHelp.vue'
 import { ConfirmDialog, NotEligibleExtensionDialog, PaymentErrorDialog } from '@/components/dialogs'
-import { Certify } from '@/components/common'
+import { Certify, TransactionalFolioNumber } from '@/components/common'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import ExtensionRequest from '@/components/AgmExtension/ExtensionRequest.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
@@ -90,13 +90,26 @@ describe('AGM Extension view', () => {
     expect(wrapper.findComponent(AgmExtensionEvaluation).exists()).toBe(true)
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
     expect(wrapper.findComponent(SbcFeeSummary).exists()).toBe(true)
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
 
     // verify titles
     expect(wrapper.find('article > h1').text()).toBe('AGM Extension')
-    expect(wrapper.find('article > header > h2').text()).toBe('Extension Detail')
-    expect(wrapper.find('article > header > p').text()).toContain('Enter the details about')
-    expect(wrapper.find('article > section > header > h2').text()).toBe('Certify')
-    expect(wrapper.find('article > section > header > p').text()).toContain('Enter the legal name')
+
+    const sections = wrapper.findAll('article > section.step-section')
+
+    // Extension section
+    expect(sections.at(0).find('header > h2').text()).toBe('Extension Detail')
+    expect(sections.at(0).find('header > p').text()).toContain('Enter the details about')
+
+    // Folio section
+    expect(sections.at(1).find('header > h2').text()).toBe('Folio or Reference Number (Optional)')
+    expect(sections.at(1).find('header > p').text())
+      .toContain('This is meant for your own tracking purposes and will appear on your receipt.')
+
+    // Certify section
+    expect(sections.at(2).find('header > h2').text()).toBe('Certify')
+    expect(sections.at(2).find('header > p').text())
+      .toContain('Enter the legal name of the person authorized to complete and submit this filing.')
   })
 
   it('displays expandable help properly', async () => {
@@ -123,7 +136,8 @@ describe('AGM Extension view', () => {
   it('reports invalid page when Extension Request is invalid', async () => {
     wrapper.setData({
       extensionRequestValid: false,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     await wrapper.find('#file-pay-btn').trigger('click')
     expect(wrapper.vm.isPageValid).toBe(false)
@@ -132,7 +146,18 @@ describe('AGM Extension view', () => {
   it('reports invalid page when Certify is invalid', async () => {
     wrapper.setData({
       extensionRequestValid: true,
-      certifyFormValid: false
+      certifyFormValid: false,
+      folioNumberValid: true
+    })
+    await wrapper.find('#file-pay-btn').trigger('click')
+    expect(wrapper.vm.isPageValid).toBe(false)
+  })
+
+  it('reports invalid page when Transacitonal Folio Number is invalid', async () => {
+    wrapper.setData({
+      extensionRequestValid: true,
+      certifyFormValid: true,
+      folioNumberValid: false
     })
     await wrapper.find('#file-pay-btn').trigger('click')
     expect(wrapper.vm.isPageValid).toBe(false)
@@ -148,7 +173,8 @@ describe('AGM Extension view', () => {
     // simulate ineligibility but valid component
     wrapper.setData({
       data: { isEligible: false },
-      extensionRequestValid: true
+      extensionRequestValid: true,
+      folioNumberValid: true
     })
 
     // simulate valid certify data and component
@@ -194,7 +220,8 @@ describe('AGM Extension view', () => {
     // simulate eligible data and valid component
     wrapper.setData({
       data: { isEligible: true },
-      extensionRequestValid: true
+      extensionRequestValid: true,
+      folioNumberValid: true
     })
 
     // simulate valid certify data and component
@@ -244,7 +271,8 @@ describe('AGM Extension view', () => {
       header: {
         certifiedBy: 'Full Name',
         date: '2023-11-06',
-        name: 'agmExtension'
+        name: 'agmExtension',
+        folioNumber: undefined
       }
     }
     expect(LegalServices.createFiling).toHaveBeenCalledWith('BC1234567', data, false)
@@ -275,7 +303,8 @@ describe('AGM Extension view', () => {
     // simulate eligible data and valid component
     wrapper.setData({
       data: { isEligible: true },
-      extensionRequestValid: true
+      extensionRequestValid: true,
+      folioNumberValid: true
     })
 
     // simulate valid certify data and component

@@ -8,7 +8,7 @@ import { createLocalVue, shallowMount, mount, Wrapper } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 import Directors from '@/components/common/Directors.vue'
-import { Certify } from '@/components/common'
+import { Certify, TransactionalFolioNumber } from '@/components/common'
 import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -80,7 +80,34 @@ const sampleDirectors = [
   }
 ]
 
-describe('Standalone Directors Filing - Part 1 - UI', () => {
+describe('Standalone Directors Filing - Part 1A - UI - Staff User', () => {
+  beforeAll(() => {
+    // init store
+    businessStore.setIdentifier('CP0001191')
+
+    // set Last Filing Date and verify new Min Date
+    rootStore.currentDate = '2019-07-15'
+    businessStore.setFoundingDate('2018-03-01T00:00:00')
+  })
+
+  beforeEach(() => {
+    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
+  })
+
+  it('renders the filing sub-components properly', () => {
+    const $route = { query: { filingId: 0 } } // new filing id
+    const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route } })
+
+    expect(wrapper.findComponent(CodDate).exists()).toBe(true)
+    expect(wrapper.findComponent(Directors).exists()).toBe(true)
+    expect(wrapper.findComponent(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+})
+
+describe('Standalone Directors Filing - Part 1B - UI - Public User', () => {
   beforeAll(() => {
     // init store
     businessStore.setIdentifier('CP0001191')
@@ -101,6 +128,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     expect(wrapper.findComponent(CodDate).exists()).toBe(true)
     expect(wrapper.findComponent(Directors).exists()).toBe(true)
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -114,7 +142,8 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     await wrapper.setData({
       codDateValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -134,7 +163,8 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     await wrapper.setData({
       codDateValid: false,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -154,7 +184,8 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     await wrapper.setData({
       codDateValid: true,
       directorFormValid: false,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -189,7 +220,29 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     await wrapper.setData({
       codDateValid: true,
       directorFormValid: true,
-      certifyFormValid: false
+      certifyFormValid: false,
+      folioNumberValid: true
+    })
+    rootStore.setFilingData([{} as any]) // dummy data
+
+    // confirm that flags are set correctly
+    expect(vm.isEditPageValid).toEqual(true)
+    expect(vm.isReviewPageValid).toEqual(false)
+
+    wrapper.destroy()
+  })
+
+  it('disables page valid flags when TransactionalFolioNumber component is invalid', async () => {
+    const $route = { query: { filingId: 0 } } // new filing id
+    const wrapper = shallowMount(StandaloneDirectorsFiling, { mocks: { $route }, vuetify })
+    const vm: any = wrapper.vm
+
+    // set local properties
+    await wrapper.setData({
+      codDateValid: true,
+      directorFormValid: true,
+      certifyFormValid: true,
+      folioNumberValid: false
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -209,7 +262,8 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     await wrapper.setData({
       codDateValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([]) // dummy data
 
@@ -244,7 +298,8 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
       inFilingReview: true,
       codDateValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
     await Vue.nextTick()
@@ -278,7 +333,8 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
       inFilingReview: true,
       codDateValid: false,
       directorFormValid: false,
-      certifyFormValid: false
+      certifyFormValid: false,
+      folioNumberValid: false
     })
     rootStore.setFilingData([]) // no data
 
@@ -729,7 +785,8 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       inFilingReview: true,
       codDateValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{ filingTypeCode: FilingCodes.DIRECTOR_CHANGE_OT,
       entityType: CorpTypeCd.COOP } as any])
@@ -795,7 +852,8 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       inFilingReview: true,
       codDateValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{ filingTypeCode: FilingCodes.DIRECTOR_CHANGE_OT,
       entityType: CorpTypeCd.BENEFIT_COMPANY } as any])
@@ -867,7 +925,8 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       inFilingReview: true,
       codDateValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -986,7 +1045,8 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
       codDateValid: true,
       inFilingReview: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -1024,7 +1084,8 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
       codDateValid: true,
       inFilingReview: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     // mock the navigate function
@@ -1127,7 +1188,8 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
       await wrapper.setData({
         codDateValid: true,
         directorFormValid: true,
-        certifyFormValid: true
+        certifyFormValid: true,
+        folioNumberValid: true
       })
       rootStore.setFilingData([{} as any]) // dummy data
 
@@ -1170,7 +1232,8 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
       inFilingReview: true,
       codDateValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
 
@@ -1307,7 +1370,8 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
     await wrapper.setData({
       codDateValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
 
     vm.onDirectorsPaidChange(true)
@@ -1517,7 +1581,8 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
         inFilingReview: true,
         codDateValid: true,
         directorFormValid: true,
-        certifyFormValid: true
+        certifyFormValid: true,
+        folioNumberValid: true
       })
       rootStore.setFilingData([{} as any]) // dummy data
 
@@ -1554,7 +1619,8 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
         inFilingReview: true,
         codDateValid: true,
         directorFormValid: true,
-        certifyFormValid: true
+        certifyFormValid: true,
+        folioNumberValid: true
       })
       rootStore.setFilingData([{} as any]) // dummy data
 
@@ -1670,7 +1736,8 @@ describe('Standalone Directors Filing - payment required error', () => {
       inFilingReview: true,
       codDateValid: true,
       directorFormValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      folioNumberValid: true
     })
     rootStore.setFilingData([{ filingTypeCode: FilingCodes.DIRECTOR_CHANGE_OT,
       entityType: CorpTypeCd.COOP } as any])
