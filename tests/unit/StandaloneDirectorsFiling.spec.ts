@@ -19,7 +19,7 @@ import { BusinessConfigCp } from '@/resources/CP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingCodes } from '@bcrs-shared-components/enums'
 import * as utils from '@/utils'
-import { PublicUserActions } from './test-data/authorizedActions'
+import { BusinessRegistryStaffActions, PublicUserActions } from './test-data/authorizedActions'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -91,7 +91,7 @@ describe('Standalone Directors Filing - Part 1A - UI - Staff User', () => {
   })
 
   beforeEach(() => {
-    rootStore.setAuthRoles([AuthorizationRoles.STAFF])
+    rootStore.setAuthorizedActions(BusinessRegistryStaffActions)
   })
 
   it('renders the filing sub-components properly', () => {
