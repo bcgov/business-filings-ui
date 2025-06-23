@@ -103,33 +103,33 @@
           lg="9"
         >
           <article id="standalone-office-address-article">
-            <header>
-              <h1 id="address-change-header">
-                Address Change
-              </h1>
-              <h2>
-                Address Information
-              </h2>
-              <p v-if="isEntityCoop">
-                Please change your Registered Office Address.
-              </p>
-              <p v-else-if="isBaseCompany">
-                Please change your Registered Office Address and Records Address.
-              </p>
-
-              <v-alert
-                v-if="isBaseCompany"
-                type="info"
-                outlined
-                icon="mdi-information"
-                class="white-background"
-              >
-                <span>Any address update will be effective tomorrow.</span>
-              </v-alert>
-            </header>
-
-            <!-- Office Addresses -->
             <section>
+              <header>
+                <h1 id="address-change-header">
+                  Address Change
+                </h1>
+                <h2>
+                  Address Information
+                </h2>
+                <p v-if="isEntityCoop">
+                  Please change your Registered Office Address.
+                </p>
+                <p v-else-if="isBaseCompany">
+                  Please change your Registered Office Address and Records Address.
+                </p>
+
+                <v-alert
+                  v-if="isBaseCompany"
+                  type="info"
+                  outlined
+                  icon="mdi-information"
+                  class="white-background"
+                >
+                  <span>Any address update will be effective tomorrow.</span>
+                </v-alert>
+              </header>
+
+              <!-- Office Addresses -->
               <OfficeAddresses
                 ref="officeAddressesComponent"
                 :addresses.sync="updatedAddresses"
@@ -139,17 +139,7 @@
             </section>
 
             <!-- Folio Number -->
-            <section
-              v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
-            >
-              <header>
-                <h2 id="folio-number-header">
-                  Folio or Reference Number (Optional)
-                </h2>
-                <p>
-                  This is meant for your own tracking purposes and will appear on your receipt.
-                </p>
-              </header>
+            <section v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)">
               <TransactionalFolioNumber
                 :accountFolioNumber="getFolioNumber"
                 :transactionalFolioNumber="getTransactionalFolioNumber"
@@ -972,8 +962,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   counter-reset: header-counter;
 }
 
-h2::before {
-  /* Increment "header-counter" by 1 */
+#standalone-office-address ::v-deep(section) h2::before {
   counter-increment: header-counter;
   content: counter(header-counter) '. ';
 }

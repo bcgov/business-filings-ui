@@ -140,17 +140,7 @@
             </section>
 
             <!-- Folio Number -->
-            <section
-              v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
-            >
-              <header>
-                <h2 id="folio-number-header">
-                  Folio or Reference Number (Optional)
-                </h2>
-                <p>
-                  This is meant for your own tracking purposes and will appear on your receipt.
-                </p>
-              </header>
+            <section v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)">
               <div
                 id="folio-number-section"
                 :class="{ 'invalid-section': !folioNumberValid && showErrors }"
@@ -994,8 +984,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
   counter-reset: header-counter;
 }
 
-h2::before {
-  /* Increment "header-counter" by 1 */
+#consent-amalgamation-out ::v-deep(section) h2::before {
   counter-increment: header-counter;
   content: counter(header-counter) '. ';
 }

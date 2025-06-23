@@ -1,7 +1,14 @@
 <template>
-  <div
-    id="transactional-folio-number"
-  >
+  <div id="transactional-folio-number">
+    <header>
+      <h2>
+        Folio or Reference Number (Optional)
+      </h2>
+      <p>
+        This is meant for your own tracking purposes and will appear on your receipt.
+      </p>
+    </header>
+
     <v-card flat>
       <v-row
         no-gutters
@@ -94,6 +101,11 @@ export default class TransactionalFolioNumber extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+h2 {
+  margin-bottom: 0.25rem;
+  margin-top: 3rem;
+  font-size: 1.125rem;
+}
 
 #transactional-folio-number {
   font-size: $px-16;

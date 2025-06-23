@@ -44,46 +44,41 @@
               </template>
             </ExpandableHelp>
 
-            <header>
-              <h2>Extension Detail</h2>
-              <p class="grey-text">
-                Enter the details about the extension request to evaluate the eligibility.
-              </p>
-            </header>
+            <section class="step-section">
+              <header>
+                <h2>Extension Detail</h2>
+                <p class="grey-text">
+                  Enter the details about the extension request to evaluate the eligibility.
+                </p>
+              </header>
 
-            <!-- About the Business -->
-            <AboutTheBusiness
-              class="mt-6"
-              :data.sync="data"
-            />
+              <!-- About the Business -->
+              <AboutTheBusiness
+                class="mt-6"
+                :data.sync="data"
+              />
 
-            <!-- Extension Request -->
-            <ExtensionRequest
-              class="mt-8"
-              :data.sync="data"
-              :showErrors="showErrors"
-              @valid="extensionRequestValid=$event"
-            />
+              <!-- Extension Request -->
+              <ExtensionRequest
+                class="mt-8"
+                :data.sync="data"
+                :showErrors="showErrors"
+                @valid="extensionRequestValid=$event"
+              />
 
-            <!-- AGM Extension Evaluation -->
-            <AgmExtensionEvaluation
-              class="mt-8"
-              :data.sync="data"
-              :evaluateResult="extensionRequestValid"
-            />
+              <!-- AGM Extension Evaluation -->
+              <AgmExtensionEvaluation
+                class="mt-8"
+                :data.sync="data"
+                :evaluateResult="extensionRequestValid"
+              />
+            </section>
 
             <!-- Folio Number -->
             <section
               v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
+              class="step-section"
             >
-              <header>
-                <h2 id="folio-number-header">
-                  Folio or Reference Number (Optional)
-                </h2>
-                <p>
-                  This is meant for your own tracking purposes and will appear on your receipt.
-                </p>
-              </header>
               <div
                 id="folio-number-section"
                 :class="{ 'invalid-section': !folioNumberValid && showErrors }"
@@ -98,7 +93,7 @@
             </section>
 
             <!-- Certify -->
-            <section class="mt-8">
+            <section class="mt-8 step-section">
               <header>
                 <h2>Certify</h2>
                 <p class="grey-text">
@@ -607,8 +602,14 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
   counter-reset: header-counter;
 }
 
-h2::before {
-  /* Increment "header-counter" by 1 */
+// Step headers defined in the view
+section.step-section > header > h2::before {
+  counter-increment: header-counter;
+  content: counter(header-counter) '. ';
+}
+
+// Step headers defined inside a component, e.g. TransactionalFolioNumber
+section.step-section ::v-deep(#transactional-folio-number > header > h2)::before {
   counter-increment: header-counter;
   content: counter(header-counter) '. ';
 }

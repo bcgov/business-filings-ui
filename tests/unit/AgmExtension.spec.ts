@@ -94,20 +94,21 @@ describe('AGM Extension view', () => {
 
     // verify titles
     expect(wrapper.find('article > h1').text()).toBe('AGM Extension')
-    expect(wrapper.find('article > header > h2').text()).toBe('Extension Detail')
-    expect(wrapper.find('article > header > p').text()).toContain('Enter the details about')
 
-    // Get all sections inside the article
-    const sections = wrapper.findAll('article > section')
+    const sections = wrapper.findAll('article > section.step-section')
+
+    // Extension section
+    expect(sections.at(0).find('header > h2').text()).toBe('Extension Detail')
+    expect(sections.at(0).find('header > p').text()).toContain('Enter the details about')
 
     // Folio section
-    expect(sections.at(0).find('header > h2').text()).toBe('Folio or Reference Number (Optional)')
-    expect(sections.at(0).find('header > p').text())
+    expect(sections.at(1).find('header > h2').text()).toBe('Folio or Reference Number (Optional)')
+    expect(sections.at(1).find('header > p').text())
       .toContain('This is meant for your own tracking purposes and will appear on your receipt.')
 
     // Certify section
-    expect(sections.at(1).find('header > h2').text()).toBe('Certify')
-    expect(sections.at(1).find('header > p').text())
+    expect(sections.at(2).find('header > h2').text()).toBe('Certify')
+    expect(sections.at(2).find('header > p').text())
       .toContain('Enter the legal name of the person authorized to complete and submit this filing.')
   })
 

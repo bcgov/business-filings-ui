@@ -267,17 +267,7 @@
                 </section>
 
                 <!-- Folio Number -->
-                <section
-                  v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
-                >
-                  <header>
-                    <h2 id="folio-number-header">
-                      Folio or Reference Number (Optional)
-                    </h2>
-                    <p>
-                      This is meant for your own tracking purposes and will appear on your receipt.
-                    </p>
-                  </header>
+                <section v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)">
                   <TransactionalFolioNumber
                     :accountFolioNumber="getFolioNumber"
                     :transactionalFolioNumber="getTransactionalFolioNumber"
@@ -1108,12 +1098,10 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
 @import '@/assets/styles/theme.scss';
 
 #standalone-directors {
-  /* Set "header-counter" to 0 */
   counter-reset: header-counter;
 }
 
-h2::before {
-  /* Increment "header-counter" by 1 */
+#standalone-directors ::v-deep(section) h2::before {
   counter-increment: header-counter;
   content: counter(header-counter) '. ';
 }
