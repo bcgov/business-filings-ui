@@ -214,7 +214,7 @@ describe('App as a COOP', () => {
       .returns(Promise.resolve({
         data: {
           authorizedPermissions: [
-            PublicUserActions
+            ...PublicUserActions
           ]
         }
       }))
@@ -543,7 +543,7 @@ describe('App as a BCOMP', () => {
       .returns(Promise.resolve({
         data: {
           authorizedPermissions: [
-            PublicUserActions
+            ...PublicUserActions
           ]
         }
       }))
@@ -927,7 +927,7 @@ describe('App as an historical business - Amalgamation', () => {
       .returns(Promise.resolve({
         data: {
           authorizedPermissions: [
-            BusinessRegistryStaffActions
+            ...BusinessRegistryStaffActions
           ]
         }
       }))
@@ -1065,7 +1065,7 @@ describe('App as an historical business - Voluntary Dissolution', () => {
       .returns(Promise.resolve({
         data: {
           authorizedPermissions: [
-            BusinessRegistryStaffActions
+            ...BusinessRegistryStaffActions
           ]
         }
       }))

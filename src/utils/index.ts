@@ -1,4 +1,4 @@
-export * from './authorizations'
+export * from './is-authorized'
 export * from './capitalize'
 export * from './feature-flags'
 export * from './get-keycloak-roles'

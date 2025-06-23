@@ -17,6 +17,13 @@
       @retry="onClickRetry(true)"
     />
 
+    <fetchErrorDialog
+      :dialog="fetchErrorDialog"
+      attach="#app"
+      @exit="onClickExit()"
+      @retry="onClickRetry(true)"
+    />
+
     <NameRequestAuthErrorDialog
       :dialog="nameRequestAuthErrorDialog"
       attach="#app"
@@ -93,6 +100,7 @@ import {
   ConfirmDissolutionDialog,
   DashboardUnavailableDialog,
   DownloadErrorDialog,
+  FetchErrorDialog,
   NameRequestAuthErrorDialog,
   NameRequestInvalidDialog,
   NotInGoodStandingDialog
@@ -126,6 +134,7 @@ import { sleep } from './utils'
     DashboardUnavailableDialog,
     DownloadErrorDialog,
     BusinessAuthErrorDialog,
+    FetchErrorDialog,
     NameRequestAuthErrorDialog,
     NameRequestInvalidDialog,
     NotInGoodStandingDialog,
@@ -149,6 +158,7 @@ export default class App extends Mixins(
   dataLoaded = false
   dashboardUnavailableDialog = false
   businessAuthErrorDialog = false
+  fetchErrorDialog = false
   nameRequestAuthErrorDialog = false
   nameRequestInvalidDialog = false
   nameRequestInvalidType = null as NameRequestStates
@@ -305,7 +315,6 @@ export default class App extends Mixins(
 
   @Action(useRootStore) loadStateFiling!: () => Promise<void>
   @Action(useRootStore) setAccountInformation!: (x: AccountInformationIF) => void
-  @Action(useRootStore) setAuthRoles!: (x: Array<AuthorizationRoles>) => void
   @Action(useRootStore) setAuthorizedActions!: (x: Array<AuthorizedActions>) => void
   @Action(useRootStore) setBusinessAddress!: (x: OfficeAddressIF) => void
   @Action(useRootStore) setBusinessEmail!: (x: string) => void
@@ -330,24 +339,38 @@ export default class App extends Mixins(
   async fetchData (): Promise<void> {
     this.dataLoaded = false
 
-    // store today's date every time the dashboard is loaded
-    const jsDate: Date = await this.getServerDate()
-    if (!this.isVitestRunning) {
-      // eslint-disable-next-line no-console
-      console.info(`It is currently ${this.dateToPacificDateTime(jsDate)}.`)
-    }
-    this.setCurrentJsDate(jsDate)
-    this.setCurrentDate(this.dateToYyyyMmDd(jsDate))
-
     try {
-      await this.checkAuth()
-    } catch (error) {
-      console.log('Auth error =', error) // eslint-disable-line no-console
-      this.businessAuthErrorDialog = true
-    }
+      // store today's date every time the dashboard is loaded
+      const jsDate: Date = await this.getServerDate()
+      if (!this.isVitestRunning) {
+      // eslint-disable-next-line no-console
+        console.info(`It is currently ${this.dateToPacificDateTime(jsDate)}.`)
+      }
+      this.setCurrentJsDate(jsDate)
+      this.setCurrentDate(this.dateToYyyyMmDd(jsDate))
 
+      // load authorized actions (aka permissions)
+      // must be called after we have current account info
+      await this.loadAuthorizedActions().catch(error => {
+        console.log('Authorized actions error =', error) // eslint-disable-line no-console
+        this.businessAuthErrorDialog = true
+        throw error // go to catch()
+      })
+      // load auth roles and store locally
+      this.authRoles = await this.loadAuthRoles().catch(error => {
+        console.log('Auth roles error =', error) // eslint-disable-line no-console
+        this.businessAuthErrorDialog = true
+        throw error
+      })
+    } catch (error) {
+      // show fetch error dialog if there isn't another dialog showing
+      this.fetchErrorDialog = true
+      console.log('Fetch data error = ', error) // eslint-disable-line no-console
+    }
     // If the error dialogs have been tripped, then don't proceed
-    if (this.businessAuthErrorDialog === true || this.nameRequestAuthErrorDialog === true) {
+    if (this.businessAuthErrorDialog === true ||
+    this.nameRequestAuthErrorDialog === true ||
+    this.fetchErrorDialog === true) {
       return
     }
 
@@ -373,22 +396,26 @@ export default class App extends Mixins(
     }
   }
 
-  private async checkAuth (): Promise<void> {
+  /** Fetches and stores authorized actions (aka permissions). */
+  private async loadAuthorizedActions (): Promise<void> {
+    // NB: will throw if API error
+    const authorizedActions = await LegalServices.fetchAuthorizedActions()
+    // verify we have _some_ authorized actions
+    if (!Array.isArray(authorizedActions) || authorizedActions.length < 1) {
+      throw new Error('Invalid or missing authorized actions')
+    }
+    this.setAuthorizedActions(authorizedActions)
+  }
+
+  /** Fetches auth roles. */
+  private async loadAuthRoles (): Promise<AuthorizationRoles[]> {
     // get roles from KC token
-    this.authRoles = GetKeycloakRoles()
+    const authRoles = GetKeycloakRoles()
     // safety check
-    if (!Array.isArray(this.authRoles)) {
+    if (!Array.isArray(authRoles)) {
       throw new Error('Invalid roles')
     }
-
-    // Gather authorized actions/permissions
-    const authorizedActions = await LegalServices.fetchAuthorizedActions()
-
-    if (!Array.isArray(authorizedActions) || authorizedActions.length < 1) {
-      throw new Error('Invalide or missing authorized actions')
-    }
-
-    this.setAuthorizedActions(authorizedActions)
+    return authRoles
   }
 
   /** Fetches and stores the business data. */
@@ -614,6 +641,7 @@ export default class App extends Mixins(
       // try to fetch the data again
       this.dashboardUnavailableDialog = false
       this.businessAuthErrorDialog = false
+      this.fetchErrorDialog = false
       this.nameRequestAuthErrorDialog = false
       this.nameRequestInvalidDialog = false
       await this.fetchData()
