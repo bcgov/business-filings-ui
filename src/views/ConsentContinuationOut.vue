@@ -241,7 +241,7 @@
         <v-btn
           id="consent-save-btn"
           large
-          :disabled=" busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
+          :disabled="busySaving || !IsAuthorized(AuthorizedActions.SAVE_DRAFT)"
           :loading="saving"
           @click="onClickSave()"
         >
