@@ -51,9 +51,6 @@ export default class TransactionalFolioNumber extends Vue {
     folioNumberInput: any
   }
 
-  /** Account Folio Number prop. */
-  @Prop({ default: null }) readonly accountFolioNumber!: string
-
   /** Transactional Folio Number prop. */
   @Prop({ default: null }) readonly transactionalFolioNumber!: string
 

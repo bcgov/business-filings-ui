@@ -141,7 +141,6 @@
             <!-- Folio Number -->
             <section v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)">
               <TransactionalFolioNumber
-                :accountFolioNumber="getFolioNumber"
                 :transactionalFolioNumber="getTransactionalFolioNumber"
                 @change="onTransactionalFolioNumberChange"
                 @valid="folioNumberValid = $event"

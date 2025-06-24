@@ -146,7 +146,6 @@
                 :class="{ 'invalid-section': !folioNumberValid && showErrors }"
               >
                 <TransactionalFolioNumber
-                  :accountFolioNumber="getFolioNumber"
                   :transactionalFolioNumber="getTransactionalFolioNumber"
                   @change="onTransactionalFolioNumberChange"
                   @valid="folioNumberValid = $event"
