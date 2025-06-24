@@ -736,7 +736,9 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       this.certifiedBy = header.certifiedBy
 
       // restore Transactional Folio Number
-      if (filing.header.folioNumber) this.setTransactionalFolioNumber(filing.header.folioNumber)
+      if (filing.header.isTransactionalFolioNumber && filing.header.folioNumber) {
+        this.setTransactionalFolioNumber(filing.header.folioNumber)
+      }
 
       // restore Staff Payment data
       if (header.routingSlipNumber) {
@@ -1077,7 +1079,8 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
         ARFilingYear: this.ARFilingYear, // NB: used by TodoList when loading draft AR
         effectiveDate: this.yyyyMmDdToApi(this.asOfDate),
-        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined,
+        isTransactionalFolioNumber: !!this.getTransactionalFolioNumber
       }
     }
 

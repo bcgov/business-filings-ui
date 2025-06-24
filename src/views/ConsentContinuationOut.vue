@@ -520,7 +520,9 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       this.certifiedBy = filing.header.certifiedBy
 
       // restore Transactional Folio Number
-      if (filing.header.folioNumber) this.setTransactionalFolioNumber(filing.header.folioNumber)
+      if (filing.header.isTransactionalFolioNumber && filing.header.folioNumber) {
+        this.setTransactionalFolioNumber(filing.header.folioNumber)
+      }
 
       // load Staff Payment properties
       if (filing.header.routingSlipNumber) {
@@ -768,7 +770,8 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
         certifiedBy: this.certifiedBy || '',
         email: this.getBusinessEmail || undefined,
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined,
+        isTransactionalFolioNumber: !!this.getTransactionalFolioNumber
       }
     }
 
