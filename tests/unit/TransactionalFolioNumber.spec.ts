@@ -27,9 +27,9 @@ describe('TransactionalFolioNumber', () => {
     expect(wrapper.find('input').exists()).toBe(true)
   })
 
-  it('shows accountFolioNumber if transactionalFolioNumber is not set', () => {
+  it('shows an empty field if transactionalFolioNumber is not set', () => {
     wrapper = factory({ accountFolioNumber: '1234', transactionalFolioNumber: null })
-    expect(wrapper.vm.$data.localFolioNumber).toBe('1234')
+    expect(wrapper.vm.$data.localFolioNumber).toBe('')
   })
 
   it('shows transactionalFolioNumber if set', () => {
