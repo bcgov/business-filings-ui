@@ -269,7 +269,6 @@
                 <!-- Folio Number -->
                 <section v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)">
                   <TransactionalFolioNumber
-                    :accountFolioNumber="getFolioNumber"
                     :transactionalFolioNumber="getTransactionalFolioNumber"
                     @change="onTransactionalFolioNumberChange"
                     @valid="folioNumberValid = $event"
@@ -613,7 +612,9 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
       this.certifiedBy = filing.header.certifiedBy
 
       // restore Transactional Folio Number
-      if (filing.header.folioNumber) this.setTransactionalFolioNumber(filing.header.folioNumber)
+      if (filing.header.isTransactionalFolioNumber && filing.header.folioNumber) {
+        this.setTransactionalFolioNumber(filing.header.folioNumber)
+      }
 
       // restore Staff Payment data
       if (filing.header.routingSlipNumber) {
@@ -878,7 +879,8 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
         email: 'no_one@never.get',
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
         effectiveDate: this.yyyyMmDdToApi(this.codDate),
-        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined,
+        isTransactionalFolioNumber: !!this.getTransactionalFolioNumber
       }
     }
 

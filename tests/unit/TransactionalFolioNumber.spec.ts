@@ -27,26 +27,26 @@ describe('TransactionalFolioNumber', () => {
     expect(wrapper.find('input').exists()).toBe(true)
   })
 
-  it('shows accountFolioNumber if transactionalFolioNumber is not set', () => {
-    wrapper = factory({ accountFolioNumber: '1234', transactionalFolioNumber: null })
-    expect(wrapper.vm.$data.localFolioNumber).toBe('1234')
+  it('shows an empty field if transactionalFolioNumber is not set', () => {
+    wrapper = factory({ transactionalFolioNumber: null })
+    expect(wrapper.vm.$data.localFolioNumber).toBe('')
   })
 
   it('shows transactionalFolioNumber if set', () => {
-    wrapper = factory({ accountFolioNumber: '1234', transactionalFolioNumber: '4321' })
+    wrapper = factory({ transactionalFolioNumber: '4321' })
     expect(wrapper.vm.$data.localFolioNumber).toBe('4321')
   })
 
   it('updates localFolioNumber when transactionalFolioNumber prop changes', async () => {
-    wrapper = factory({ accountFolioNumber: 'A', transactionalFolioNumber: 'B' })
-    expect(wrapper.vm.$data.localFolioNumber).toBe('B')
-    await wrapper.setProps({ transactionalFolioNumber: 'C' })
+    wrapper = factory({ transactionalFolioNumber: 'A' })
+    expect(wrapper.vm.$data.localFolioNumber).toBe('A')
+    await wrapper.setProps({ transactionalFolioNumber: 'B' })
     await Vue.nextTick()
-    expect(wrapper.vm.$data.localFolioNumber).toBe('C')
+    expect(wrapper.vm.$data.localFolioNumber).toBe('B')
   })
 
   it('has update event for transactionalFolioNumber when a user changes the folio number', async () => {
-    wrapper = factory({ accountFolioNumber: '1234', transactionalFolioNumber: null })
+    wrapper = factory({ transactionalFolioNumber: null })
     const input = wrapper.find('input')
     await input.setValue('NEWFOLIO')
     expect(wrapper.emitted('change')).toBeTruthy()
@@ -57,7 +57,7 @@ describe('TransactionalFolioNumber', () => {
   })
 
   it('limits input to 50 characters', async () => {
-    wrapper = factory({ accountFolioNumber: '', transactionalFolioNumber: '' })
+    wrapper = factory({ transactionalFolioNumber: '' })
     const input = wrapper.find('input')
     const longValue = 'x'.repeat(51)
     await input.setValue(longValue)
@@ -72,7 +72,7 @@ describe('TransactionalFolioNumber', () => {
   })
 
   it('accepts input up to 50 characters', async () => {
-    wrapper = factory({ accountFolioNumber: '', transactionalFolioNumber: '' })
+    wrapper = factory({ transactionalFolioNumber: '' })
     const input = wrapper.find('input')
     const validValue = 'x'.repeat(50)
     await input.setValue(validValue)

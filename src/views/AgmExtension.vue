@@ -84,7 +84,6 @@
                 :class="{ 'invalid-section': !folioNumberValid && showErrors }"
               >
                 <TransactionalFolioNumber
-                  :accountFolioNumber="getFolioNumber"
                   :transactionalFolioNumber="getTransactionalFolioNumber"
                   @change="onTransactionalFolioNumberChange"
                   @valid="folioNumberValid = $event"
@@ -466,7 +465,8 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
         name: FilingTypes.AGM_EXTENSION,
         certifiedBy: this.certifiedBy || '',
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined
+        folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined,
+        isTransactionalFolioNumber: !!this.getTransactionalFolioNumber
       }
     }
 

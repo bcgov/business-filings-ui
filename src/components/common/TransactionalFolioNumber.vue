@@ -51,9 +51,6 @@ export default class TransactionalFolioNumber extends Vue {
     folioNumberInput: any
   }
 
-  /** Account Folio Number prop. */
-  @Prop({ default: null }) readonly accountFolioNumber!: string
-
   /** Transactional Folio Number prop. */
   @Prop({ default: null }) readonly transactionalFolioNumber!: string
 
@@ -62,8 +59,8 @@ export default class TransactionalFolioNumber extends Vue {
 
   /** Called when component is mounted. */
   mounted (): void {
-    // restore transactional FN if it exists, otherwise use account FN
-    this.localFolioNumber = this.transactionalFolioNumber || this.accountFolioNumber
+    // restore transactional FN from draft if it exists, otherwise leave field empty
+    this.localFolioNumber = this.transactionalFolioNumber || ''
     // Emit initial validity
     this.emitValid(this.isValid)
   }
