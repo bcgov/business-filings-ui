@@ -1,5 +1,6 @@
-/** List of actions authorized via roles.
- * These come from Legal-api as strings
+/**
+ * Full list of authorized actions used in this app.
+ * A set of these come from Legal-api as strings for each user.
  */
 
 export enum AuthorizedActions {

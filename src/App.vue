@@ -24,13 +24,6 @@
       @retry="onClickRetry(true)"
     />
 
-    <NameRequestAuthErrorDialog
-      :dialog="nameRequestAuthErrorDialog"
-      attach="#app"
-      @exit="onClickExit()"
-      @retry="onClickRetry(true)"
-    />
-
     <NameRequestInvalidDialog
       :dialog="nameRequestInvalidDialog"
       :type="nameRequestInvalidType"
@@ -98,10 +91,8 @@ import EntityInfo from '@/components/EntityInfo.vue'
 import {
   BusinessAuthErrorDialog,
   ConfirmDissolutionDialog,
-  DashboardUnavailableDialog,
   DownloadErrorDialog,
   FetchErrorDialog,
-  NameRequestAuthErrorDialog,
   NameRequestInvalidDialog,
   NotInGoodStandingDialog
 } from '@/components/dialogs'
@@ -131,11 +122,9 @@ import { sleep } from './utils'
   components: {
     Breadcrumb,
     ConfirmDissolutionDialog,
-    DashboardUnavailableDialog,
     DownloadErrorDialog,
     BusinessAuthErrorDialog,
     FetchErrorDialog,
-    NameRequestAuthErrorDialog,
     NameRequestInvalidDialog,
     NotInGoodStandingDialog,
     SbcHeader,
@@ -156,10 +145,8 @@ export default class App extends Mixins(
   confirmDissolutionDialog = false
   downloadErrorDialog = false
   dataLoaded = false
-  dashboardUnavailableDialog = false
   businessAuthErrorDialog = false
   fetchErrorDialog = false
-  nameRequestAuthErrorDialog = false
   nameRequestInvalidDialog = false
   nameRequestInvalidType = null as NameRequestStates
   notInGoodStandingDialog = false
@@ -363,14 +350,16 @@ export default class App extends Mixins(
         throw error
       })
     } catch (error) {
-      // show fetch error dialog if there isn't another dialog showing
-      this.fetchErrorDialog = true
+      // show fetch error dialog if businessAuthErrorDialog isn't already showing
+      if (this.businessAuthErrorDialog === false) {
+        this.fetchErrorDialog = true
+      }
+      // Log error in console either way.
       console.log('Fetch data error = ', error) // eslint-disable-line no-console
     }
     // If the error dialogs have been tripped, then don't proceed
     if (this.businessAuthErrorDialog === true ||
-    this.nameRequestAuthErrorDialog === true ||
-    this.fetchErrorDialog === true) {
+      this.fetchErrorDialog === true) {
       return
     }
 
@@ -385,7 +374,7 @@ export default class App extends Mixins(
         this.dataLoaded = true
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
-        this.dashboardUnavailableDialog = true
+        this.fetchErrorDialog = true
         // Log exception to Sentry due to incomplete business data.
         // At this point the system doesn't know why it's incomplete.
         // Since this is not an expected behaviour, report this.
@@ -639,10 +628,8 @@ export default class App extends Mixins(
       location.reload()
     } else {
       // try to fetch the data again
-      this.dashboardUnavailableDialog = false
       this.businessAuthErrorDialog = false
       this.fetchErrorDialog = false
-      this.nameRequestAuthErrorDialog = false
       this.nameRequestInvalidDialog = false
       await this.fetchData()
     }

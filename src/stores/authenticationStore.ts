@@ -33,12 +33,6 @@ export const useAuthenticationStore = defineStore('authentication', {
     getAuthRoles (): Array<AuthorizationRoles> {
       return Vue.prototype.$store.state.account?.authRoles
     },
-    /**
-     * The user's allowable actions from Legal API
-     */
-    getAuthorizedActions (): Array<string> {
-      return Vue.prototype.$store.state.account?.authorizedActions
-    },
 
     /**
      * The (Keycloak) current account object.

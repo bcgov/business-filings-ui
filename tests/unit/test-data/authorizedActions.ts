@@ -1,8 +1,8 @@
 import { AuthorizedActions } from '@/enums'
 
 /**
- * The roles if the user is Business Registry Staff.
- * Ultimately we won't need this list and we'll just check auth roles for everything.
+ * The authorized actions if the user is Business Registry Staff.
+ * Hardcoded here for testing purposes.
  */
 export const BusinessRegistryStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
@@ -33,8 +33,8 @@ export const BusinessRegistryStaffActions = [
 ]
 
 /**
- * The roles if the user is Maximus Staff.
- * Ultimately we won't need this list and we'll just check auth roles for everything.
+ * The authorized actions if the user is Maximus Staff.
+ * Hardcoded here for testing purposes.
  */
 export const MaximusStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
@@ -48,8 +48,8 @@ export const MaximusStaffActions = [
 ]
 
 /**
- * The roles if the user is Contact Centre Staff.
- * Ultimately we won't need this list and we'll just check auth roles for everything.
+ * The authorized actions if the user is Contact Centre Staff.
+ * Hardcoded here for testing purposes.
  */
 export const ContactCentreStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
@@ -63,8 +63,8 @@ export const ContactCentreStaffActions = [
 ]
 
 /**
- * The roles if the user is SBC Field Office Staff (aka SBC Staff Tier 2).
- * Ultimately we won't need this list and we'll just check auth roles for everything.
+ * The authorized actions if the user is SBC Field Office Staff (aka SBC Staff Tier 2).
+ * Hardcoded here for testing purposes.
  */
 export const SbcFieldOfficeStaffActions = [
   AuthorizedActions.ADDRESS_CHANGE_FILING,
@@ -82,8 +82,8 @@ export const SbcFieldOfficeStaffActions = [
 ]
 
 /**
- * The roles for a regular public user.
- * Ultimately won't need this list and we'll just check keycloak for everything.
+ * The authorized actions for a regular public user.
+ * Hardcoded here for testing purposes.
  */
 
 export const PublicUserActions = [
