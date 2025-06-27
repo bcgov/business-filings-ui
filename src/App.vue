@@ -379,8 +379,6 @@ export default class App extends Mixins(
         // At this point the system doesn't know why it's incomplete.
         // Since this is not an expected behaviour, report this.
         Sentry.captureException(error)
-        // Return to BRD
-        navigate(this.getBusinessRegistryDashboardUrl)
       }
     }
   }
