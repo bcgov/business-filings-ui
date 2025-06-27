@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { AuthorizationRoles, CorpTypeCd, FilingStatus, FilingSubTypes } from '@/enums'
+import { AuthorizedActions, CorpTypeCd, FilingStatus, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import {
   ApiTaskIF,
@@ -19,7 +19,7 @@ import { useFilingHistoryListStore } from './filingHistoryListStore'
 
 export const useRootStore = defineStore('root', {
   state: (): RootStateIF => ({
-    authRoles: [],
+    authorizedActions: [],
     currentDate: null,
     currentJsDate: null,
     bootstrapFilingStatus: null,
@@ -96,10 +96,10 @@ export const useRootStore = defineStore('root', {
     },
 
     /**
-     * The user's roles from the Keycloak token.
+     * The user's auth actions (permissions).
      */
-    getAuthRoles (): Array<AuthorizationRoles> {
-      return this.authRoles
+    getAuthorizedActions (): Array<AuthorizedActions> {
+      return this.authorizedActions
     },
 
     /** Is True if business is pending dissolution. */
@@ -385,9 +385,9 @@ export const useRootStore = defineStore('root', {
       this.userInfo = val
     },
 
-    /** Set the app permissions. */
-    setAuthRoles (authRoles: Array<AuthorizationRoles>) {
-      this.authRoles = authRoles
+    /** Set the user's authorized actions (permissions). */
+    setAuthorizedActions (actions: Array<AuthorizedActions>) {
+      this.authorizedActions = actions
     },
 
     setCurrentJsDate (currentJsDate: Date) {

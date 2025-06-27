@@ -12,7 +12,7 @@ import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
-import { AuthorizationRoles } from '@/enums'
+import { PublicUserActions } from './test-data/authorizedActions'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -60,7 +60,7 @@ describe('AGM Location Chg view', () => {
     businessStore.setIdentifier('BC0007291')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     rootStore.filingData = []
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon

@@ -20,7 +20,7 @@ import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses,
 import { BusinessConfigCp } from '@/resources/CP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import * as utils from '@/utils'
-import { AuthorizationRoles } from '@/enums'
+import { PublicUserActions } from './test-data/authorizedActions'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -57,7 +57,7 @@ describe('Annual Report - Part 1 - UI', () => {
     businessStore.businessInfo.arMinDate = '2017-01-01'
     businessStore.businessInfo.arMaxDate = '2018-04-30'
     businessStore.setLegalType(CorpTypeCd.COOP)
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
   })
 
   it('renders the Annual Report sub-components properly when entity is a Coop', () => {
@@ -318,7 +318,7 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('enables File & Pay button when form is validated', async () => {
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -905,7 +905,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
 
   it('saves a new filing and redirects to Pay URL when this is a new AR and the File & Pay button ' +
     'is clicked', async () => {
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -983,7 +983,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
 
   it('updates an existing filing and routes to the dashboard when this is a draft AR and the File & Pay button ' +
     'is clicked and payment action is not required', async () => {
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -1982,7 +1982,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
   })
 
   it('sets the required fields to display errors from the api after a POST call', async () => {
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     // make sure form is validated
     await wrapper.setData({
@@ -2024,7 +2024,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
   })
 
   it('sets the required fields to display errors from the api after a PUT call', async () => {
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     // make sure form is validated
     await wrapper.setData({
@@ -2142,7 +2142,7 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
   })
 
   it('prevents saving if a pending task exists', async () => {
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     await wrapper.setData({
       agmDateValid: true,
@@ -2268,7 +2268,7 @@ describe('Annual Report - payment required error', () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
     sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     const get = sinon.stub(axios, 'get')
 

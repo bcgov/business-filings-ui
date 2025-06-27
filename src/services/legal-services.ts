@@ -3,7 +3,7 @@ import axios from '@/axios-auth'
 import { AxiosResponse } from 'axios'
 import { ApiBusinessIF, ApiFilingIF, CommentIF, DocumentIF, FetchDocumentsIF, PresignedUrlIF }
   from '@/interfaces'
-import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
+import { AuthorizedActions, DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
 import { StatusCodes } from 'http-status-codes'
 
 /**
@@ -27,6 +27,18 @@ export default class LegalServices {
         }
         return businessInfo
       })
+  }
+
+  /**
+   * Fetches the current account's authorized actions (permissions).
+   * @returns a promise to return the list of authorized actions
+   */
+  static async fetchAuthorizedActions (): Promise<AuthorizedActions[]> {
+    return axios.get('permissions').then(response => {
+      const data = response?.data
+      if (!data) throw new Error('Invalid API response')
+      return data.authorizedPermissions
+    })
   }
 
   /**

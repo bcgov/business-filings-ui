@@ -6,7 +6,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
-import { AuthorizationRoles, CorpTypeCd } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { LegalServices } from '@/services'
 import flushPromises from 'flush-promises'
@@ -22,6 +22,7 @@ import { Certify, TransactionalFolioNumber } from '@/components/common'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import ExtensionRequest from '@/components/AgmExtension/ExtensionRequest.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
+import { PublicUserActions } from './test-data/authorizedActions'
 
 // suppress warning "Unknown custom element <affix>" warnings
 Vue.config.silent = true
@@ -46,7 +47,7 @@ describe('AGM Extension view', () => {
     businessStore.setFoundingDate('2000-01-01T08:00:00.000+00:00')
     businessStore.setGoodStanding(true)
     rootStore.filingData = []
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -164,7 +165,7 @@ describe('AGM Extension view', () => {
   })
 
   it('doesn\'t file and displays dialog when not eligible', async () => {
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     // verify that dialog is initially disabled
     // (NB: stub doesn't show dialog="false")
@@ -199,7 +200,7 @@ describe('AGM Extension view', () => {
   })
 
   it('files JSON data properly when eligible', async () => {
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     // verify initial route name
     expect(wrapper.vm.$route.name).toBe('agm-extension')
@@ -286,7 +287,7 @@ describe('AGM Extension view', () => {
   })
 
   it('navigates to new business dashboard when feature flag is true', async () => {
-    rootStore.setAuthRoles([AuthorizationRoles.PUBLIC_USER])
+    rootStore.setAuthorizedActions(PublicUserActions)
 
     // mock hasPendingTasks()
     LegalServices.hasPendingTasks = vi.fn().mockResolvedValue(false)

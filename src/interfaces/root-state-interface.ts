@@ -1,4 +1,4 @@
-import { AuthorizationRoles, CorpTypeCd, FilingStatus } from '@/enums'
+import { AuthorizedActions, CorpTypeCd, FilingStatus } from '@/enums'
 import { ApiHeaderIF, ApiTaskIF, FilingDataIF, OfficeAddressIF, PartyIF } from '@/interfaces'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 
@@ -15,7 +15,7 @@ export interface StateFilingIF {
 /** The state model interface for the Root Store. */
 export interface RootStateIF {
   // tombstone data
-  authRoles: Array<AuthorizationRoles>
+  authorizedActions: Array<AuthorizedActions>
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
   currentJsDate: Date // 'now' as of dashboard loading in UTC
   stateFiling: StateFilingIF
