@@ -872,7 +872,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     return this.directorWarning(this.allDirectors)
   }
 
-  /** The entity types with correction form links. */
+  /** The entity types with a correction form link. */
   get isSupportedCorrectionType (): boolean {
     return this.isBaseCompany || this.isEntityCoop || this.isEntityFirm || this.isEntitySociety
   }
@@ -955,7 +955,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     return this.allDirectors.some(dir => this.isNameChanged(dir) || this.isAddressChanged(dir))
   }
 
-  /** Returns true if the legal name was not confirmed and the error should be displayed. */
+  /** Returns true if the legal name change was not confirmed and the error should be displayed. */
   legalNameError (index: number): boolean {
     return (
       this.activeIndex === index &&
