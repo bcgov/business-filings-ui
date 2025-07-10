@@ -263,6 +263,11 @@ export const useBusinessStore = defineStore('business', {
       return (this.isEntitySoleProp || this.isEntityPartnership)
     },
 
+    /** Whether the entity is a Society. */
+    isEntitySociety (): boolean {
+      return (this.getLegalType === CorpTypeCd.SOCIETY)
+    },
+
     /** Is True if business is in good standing. */
     isGoodStanding (state: BusinessStateIF): boolean {
       return state.businessInfo.goodStanding
