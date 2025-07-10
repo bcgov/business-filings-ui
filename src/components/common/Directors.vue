@@ -1744,6 +1744,7 @@ ul {
   span {
     flex: 1 1 auto;
     font-size: $px-16;
+    line-height: $px-24;
   }
 }
 
