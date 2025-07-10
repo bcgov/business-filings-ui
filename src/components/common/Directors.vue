@@ -99,7 +99,7 @@
                       v-model="newDirector.officer.middleInitial"
                       filled
                       class="item"
-                      label="Initial"
+                      label="Middle Name (Optional)"
                       :rules="directorMiddleInitialRules"
                     />
                     <v-text-field
@@ -237,7 +237,7 @@
       <!-- Current Director List -->
       <ul class="list director-list">
         <v-subheader
-          v-if="allDirectors.length && !directorEditInProgress"
+          v-if="allDirectors.length"
           class="director-header"
         >
           <span>Names</span>
@@ -252,7 +252,10 @@
           :id="`director-${dir.id}`"
           :key="index"
           class="director-list-item"
-          :class="{ 'remove' : !isActive(dir) || !isActionable(dir)}"
+          :class="{
+            'remove' : !isActive(dir) || !isActionable(dir),
+            'invalid-section': legalNameError(index)
+          }"
         >
           <div class="meta-container">
             <label>
@@ -494,7 +497,7 @@
                       v-model="dir.officer.middleInitial"
                       filled
                       class="item edit-director__middle-initial"
-                      label="Initial"
+                      label="Middle Name (Optional)"
                       :rules="directorMiddleInitialRules"
                     />
                     <v-text-field
@@ -504,6 +507,45 @@
                       label="Last Name"
                       :rules="directorLastNameRules"
                     />
+                  </div>
+                  <div
+                    v-show="editFormShowHide.showName"
+                    id="legal-name-confirmation"
+                    class="form__row legal-name-wrapper"
+                  >
+                    <v-checkbox
+                      v-model="legalNameConfirmed"
+                      class="legal-name-checkbox"
+                      :class="{ 'legal-name-checkbox-error': legalNameError(index) }"
+                      label="I confirm this person legally changed their name and that they remain the same person."
+                    />
+                    <div class="legal-name-info">
+                      <v-icon
+                        color="primary"
+                        class="info-icon"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <span>
+                        {{ legalNameCorrectionInfo.message }}
+                        <a
+                          :href="legalNameCorrectionInfo.link"
+                          target="_blank"
+                        >
+                          {{ legalNameCorrectionInfo.linkText }}
+                          <v-icon
+                            small
+                            color="primary"
+                          >mdi-open-in-new</v-icon>
+                        </a>
+                        <template v-if="isSupportedCorrectionType">
+                          to BC Registries.
+                        </template>
+                        <template v-else>
+                          , choose your business type and submit a Register Corrections form to BC Registries.
+                        </template>
+                      </span>
+                    </div>
                   </div>
 
                   <!-- v-show doesn't support <template> so use a <div> instead -->
@@ -697,6 +739,10 @@ import { Actions } from '@/enums'
 import { FormIF, AddressIF, DirectorIF, EmptyDirector, ComponentIF, AlertMessageIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
 
+const REGISTRIES_FORM_BASE_URL =
+  'https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/' +
+  'permits-licences-and-registration/registries-forms/'
+
 @Component({
   components: {
     BaseAddress,
@@ -728,6 +774,10 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    */
   @Prop({ default: () => [] }) readonly directors!: DirectorIF[]
 
+  @Getter(useBusinessStore) isBaseCompany!: boolean
+  @Getter(useBusinessStore) isEntitySociety!: boolean
+  @Getter(useBusinessStore) isEntityCoop!: boolean
+  @Getter(useBusinessStore) isEntityFirm!: boolean
   @Getter(useRootStore) getCurrentDate!: string
   @Getter(useRootStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getIdentifier!: string
@@ -760,6 +810,9 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   cessationDateTemp: string = null
   isEditingDirector = false
   messageIndex = -1
+
+  legalNameConfirmed = false
+  showErrors = false
 
   // This will hold a dynamic key for re-rendering the BaseAddress component
   baseAddressKey = 0
@@ -819,6 +872,47 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     return this.directorWarning(this.allDirectors)
   }
 
+  /** The entity types with correction form links. */
+  get isSupportedCorrectionType (): boolean {
+    return this.isBaseCompany || this.isEntityCoop || this.isEntityFirm || this.isEntitySociety
+  }
+
+  /** The legal name correction information. */
+  get legalNameCorrectionInfo (): { message: string, link: string, linkText: string } {
+    if (this.isSupportedCorrectionType) {
+      return {
+        message: 'To fix a spelling mistake in a name, submit a',
+        link: this.legalNameCorrectionFormLink,
+        linkText: 'Register Correction Form'
+      }
+    } else {
+      return {
+        message: 'To fix a spelling mistake in a name, go to',
+        link: this.legalNameCorrectionFormLink,
+        linkText: 'Forms, Fees and Information Packages'
+      }
+    }
+  }
+
+  /** The correction link based on the legal type. */
+  get legalNameCorrectionFormLink (): string {
+    if (this.isBaseCompany) {
+      return REGISTRIES_FORM_BASE_URL + 'register_correction_form_47.pdf'
+    }
+    if (this.isEntityCoop) {
+      return REGISTRIES_FORM_BASE_URL + 'form_58_coo_-_cooperative_correction.pdf'
+    }
+    if (this.isEntityFirm) {
+      return REGISTRIES_FORM_BASE_URL + 'form_02cor_correction_for_sp_gp_registration.pdf'
+    }
+    if (this.isEntitySociety) {
+      return REGISTRIES_FORM_BASE_URL + 'form_37_soc_-_corporate_register_correction.pdf'
+    } else {
+      return 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/' +
+             'businesses-incorporated-companies/forms-corporate-registry'
+    }
+  }
+
   /**
    * The array of validations rules for a director's first name.
    * NB: Do not validate inter word spacing because the Legal db needs to support
@@ -859,6 +953,16 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   /** Returns true if least one director has a free change. */
   isDirectorsFreeChange (): boolean {
     return this.allDirectors.some(dir => this.isNameChanged(dir) || this.isAddressChanged(dir))
+  }
+
+  /** Returns true if the legal name was not confirmed and the error should be displayed. */
+  legalNameError (index: number): boolean {
+    return (
+      this.activeIndex === index &&
+      this.editFormShowHide.showName &&
+      !this.legalNameConfirmed &&
+      this.showErrors
+    )
   }
 
   /** The array of validation rules for director appointment date. */
@@ -1234,7 +1338,10 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
       }
     }
 
-    if (mainFormIsValid && addressFormIsValid) {
+    // Legal name confirmation checkbox
+    this.showErrors = this.editFormShowHide.showName && !this.legalNameConfirmed
+
+    if (mainFormIsValid && addressFormIsValid && this.legalNameConfirmed) {
       // save data from BaseAddress component
       // - only save address if a change was made, ie there is an in-progress address from the component
       if (!Object.values(this.inProgressDelivAddress).every(el => el === undefined)) {
@@ -1298,6 +1405,10 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
       showName: true,
       showDates: true
     }
+
+    // reset legal name confirmation and error flags
+    this.legalNameConfirmed = false
+    this.showErrors = false
   }
 
   /**
@@ -1617,6 +1728,29 @@ ul {
   margin-top: 1.5rem;
 }
 
+.legal-name-wrapper {
+  margin-bottom: $px-24;
+}
+
+.legal-name-info {
+  display: flex;
+  align-items: flex-start;
+
+  .info-icon {
+    margin-right: 0.5rem;
+    margin-top: -2px;
+  }
+
+  span {
+    flex: 1 1 auto;
+    font-size: $px-16;
+  }
+}
+
+:deep(.legal-name-checkbox-error .v-label) {
+  color: $app-red !important;
+}
+
 @media (min-width: 768px) {
   .meta-container {
     flex-flow: row nowrap;
@@ -1679,11 +1813,6 @@ ul {
   .actions {
     flex: 0 0 auto;
   }
-}
-
-#new-director__middle-initial,
-.edit-director__middle-initial {
-  max-width: 6rem;
 }
 
 .new-director-btn {
