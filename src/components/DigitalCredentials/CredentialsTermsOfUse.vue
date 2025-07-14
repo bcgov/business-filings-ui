@@ -57,8 +57,9 @@
               </li>
               <li>
                 to the Registrar of Companies in a registration statement filed under section 88(1)(a) to
-                (c) of the <span class="font-italic">Partnership Act</span>, to create the Digital Business
-                Card, and
+                (c) of the <span class="font-italic">Partnership Act</span>, in accordance with the
+                <span class="font-italic">Freedom of Information and Protection of Privacy Act </span>
+                (FOIPPA), to create the Digital Business Card; and
               </li>
             </ol>
           </li>
@@ -131,6 +132,11 @@
             protections in connection with your device.
           </li>
         </ol>
+        <div>
+          If you have reason to believe that your Digital Business Card, Wallet, or device has been lost, stolen, or
+          otherwise compromised, or that there has been unauthorized access to your Digital Business Card, you must
+          immediately notify the Province.
+        </div>
       </div>
     </section>
     <section>
@@ -248,11 +254,11 @@
       </p>
       <p class="text-justify">
         The Province may at any time, in its sole discretion, make changes to these Terms of Use. When changes are
-        made, the Province will send a notification to your Wallet and to your email address, if you have provided
-        one, informing you that changes have been made to the Terms of Use. You are solely responsible for ensuring
-        that you have not disabled the “messages” function in your Wallet and for providing the Province with an up
-        to date email address, and if you do not do so you are solely responsible for monitoring the posted Terms of
-        Use found at <a
+        made, the Province will send a notification to your Wallet informing you that changes have been made to the
+        Terms of Use. You are solely responsible for ensuring that you have not disabled the “messages” function in
+        your Wallet and for providing the Province with an up to date email address, and if you do not do so you are
+        solely responsible for monitoring the posted Terms of Use found at
+        <a
           :href="touLink"
           target="_blank"
         >{{ touLink }}</a> for changes. The Province is not
