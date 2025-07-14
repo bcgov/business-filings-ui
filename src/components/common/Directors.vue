@@ -253,7 +253,7 @@
           :key="index"
           class="director-list-item"
           :class="{
-            'remove' : !isActive(dir) || !isActionable(dir),
+            'remove': !isActive(dir) || !isActionable(dir),
             'invalid-section': legalNameError(index)
           }"
         >
@@ -511,7 +511,7 @@
                   <div
                     v-show="editFormShowHide.showName"
                     id="legal-name-confirmation"
-                    class="form__row legal-name-wrapper"
+                    class="form__row mb-6"
                   >
                     <v-checkbox
                       v-model="legalNameConfirmed"
@@ -522,7 +522,7 @@
                     <div class="legal-name-info">
                       <v-icon
                         color="primary"
-                        class="info-icon"
+                        class="mr-2 mt-[2px]"
                       >
                         mdi-information-outline
                       </v-icon>
@@ -538,12 +538,9 @@
                             color="primary"
                           >mdi-open-in-new</v-icon>
                         </a>
-                        <template v-if="isSupportedCorrectionType">
-                          to BC Registries.
-                        </template>
-                        <template v-else>
-                          , choose your business type and submit a Register Corrections form to BC Registries.
-                        </template>
+                        {{ isSupportedCorrectionType
+                          ? ' to BC Registries.'
+                          : ', choose your business type and submit a Register Corrections form to BC Registries.' }}
                       </span>
                     </div>
                   </div>
@@ -1327,6 +1324,21 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   saveEditDirector (index: number, id: number): void {
     // get current director (object reference)
     const director = this.allDirectors[index]
+    const origDirector = this.original.find(d => d.id === id)
+
+    if (!origDirector) {
+      // eslint-disable-next-line no-console
+      console.log('saveEditDirector() could not find original director with id =', id)
+      this.cancelEditDirector()
+      return
+    }
+
+    const nameChanged = !isEqual(origDirector.officer, director.officer)
+
+    if (!nameChanged) {
+      this.cancelEditDirector()
+      return
+    }
 
     let mainFormIsValid = this.$refs.editDirectorForm[0].validate()
     let addressFormIsValid = this.$refs.baseAddressEdit[0].$refs.addressForm.validate() as boolean
@@ -1360,27 +1372,19 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
 
       /* COMPARE changes to original director data, for existing directors */
       if (director.actions.indexOf(Actions.APPOINTED) < 0) {
-        const origDirector = this.original.find(director => director.id === id)
-
-        // safety check
-        if (!origDirector) {
-          // eslint-disable-next-line no-console
-          console.log('saveEditDirector() could not find original director with id =', id)
-        } else {
-          // check whether either address has changed
-          if (!isEqual(origDirector.deliveryAddress, director.deliveryAddress) ||
+        // check whether either address has changed
+        if (!isEqual(origDirector.deliveryAddress, director.deliveryAddress) ||
             !isEqual(origDirector.mailingAddress, director.mailingAddress)) {
-            this.addAction(director, Actions.ADDRESSCHANGED)
-          } else {
-            this.removeAction(director, Actions.ADDRESSCHANGED)
-          }
+          this.addAction(director, Actions.ADDRESSCHANGED)
+        } else {
+          this.removeAction(director, Actions.ADDRESSCHANGED)
+        }
 
-          // check whether name has changed
-          if (!isEqual(origDirector.officer, director.officer)) {
-            this.addAction(director, Actions.NAMECHANGED)
-          } else {
-            this.removeAction(director, Actions.NAMECHANGED)
-          }
+        // check whether name has changed
+        if (!isEqual(origDirector.officer, director.officer)) {
+          this.addAction(director, Actions.NAMECHANGED)
+        } else {
+          this.removeAction(director, Actions.NAMECHANGED)
         }
       }
 
@@ -1728,18 +1732,9 @@ ul {
   margin-top: 1.5rem;
 }
 
-.legal-name-wrapper {
-  margin-bottom: $px-24;
-}
-
 .legal-name-info {
   display: flex;
   align-items: flex-start;
-
-  .info-icon {
-    margin-right: 0.5rem;
-    margin-top: -2px;
-  }
 
   span {
     flex: 1 1 auto;
