@@ -538,7 +538,7 @@
                             color="primary"
                           >mdi-open-in-new</v-icon>
                         </a>
-                        {{ isSupportedCorrectionType
+                        {{ hasCorrectionLink
                           ? ' to BC Registries.'
                           : ', choose your business type and submit a Register Corrections form to BC Registries.' }}
                       </span>
@@ -870,13 +870,13 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   }
 
   /** The entity types with a correction form link. */
-  get isSupportedCorrectionType (): boolean {
+  get hasCorrectionLink (): boolean {
     return this.isBaseCompany || this.isEntityCoop || this.isEntityFirm || this.isEntitySociety
   }
 
   /** The legal name correction information. */
   get legalNameCorrectionInfo (): { message: string, link: string, linkText: string } {
-    if (this.isSupportedCorrectionType) {
+    if (this.hasCorrectionLink) {
       return {
         message: 'To fix a spelling mistake in a name, submit a',
         link: this.legalNameCorrectionFormLink,
