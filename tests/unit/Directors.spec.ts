@@ -489,6 +489,9 @@ describe('Directors as a COOP (no sync)', () => {
     // Verify the reset is disabled prior to any director edit
     expect(vm.$el.querySelectorAll('.reset-name-btn')[0].disabled).toBe(true)
 
+    // Find and check the legal name confirmation checkbox
+    await wrapper.find('.legal-name-checkbox input').setChecked(true)
+
     // Click Done btn and update the directors name
     await wrapper.findAll('.done-edit-btn').at(0).trigger('click')
 
@@ -516,6 +519,9 @@ describe('Directors as a COOP (no sync)', () => {
 
     // Verify the reset is disabled prior to any director edit
     expect(vm.$el.querySelectorAll('.reset-name-btn')[0].disabled).toBe(true)
+
+    // Find and check the legal name confirmation checkbox
+    await wrapper.find('.legal-name-checkbox input').setChecked(true)
 
     // Click Done btn and update the directors name
     await wrapper.findAll('.done-edit-btn').at(0).trigger('click')
@@ -1044,4 +1050,196 @@ describe('Appoint New Director tests', () => {
   // FUTURE
   // it('can remove a new director', () => {
   // })
+})
+
+describe('Edit Directors - Legal Name Correction Information', () => {
+  let wrapper: Wrapper<Directors>
+  let vm: any
+
+  const REGISTRIES_FORM_BASE_URL =
+    'https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/' +
+    'permits-licences-and-registration/registries-forms/'
+
+  const cases = [
+    {
+      type: CorpTypeCd.BC_COMPANY,
+      description: 'Base Company(BC)',
+      link: REGISTRIES_FORM_BASE_URL + 'register_correction_form_47.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.BENEFIT_COMPANY,
+      description: 'Base Company(BEN)',
+      link: REGISTRIES_FORM_BASE_URL + 'register_correction_form_47.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.BC_ULC_COMPANY,
+      description: 'Base Company(ULC)',
+      link: REGISTRIES_FORM_BASE_URL + 'register_correction_form_47.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.BC_CCC,
+      description: 'Base Company(CC)',
+      link: REGISTRIES_FORM_BASE_URL + 'register_correction_form_47.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.CONTINUE_IN,
+      description: 'Base Company(C)',
+      link: REGISTRIES_FORM_BASE_URL + 'register_correction_form_47.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.BEN_CONTINUE_IN,
+      description: 'Base Company(CBEN)',
+      link: REGISTRIES_FORM_BASE_URL + 'register_correction_form_47.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.ULC_CONTINUE_IN,
+      description: 'Base Company(CUL)',
+      link: REGISTRIES_FORM_BASE_URL + 'register_correction_form_47.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.CCC_CONTINUE_IN,
+      description: 'Base Company(CCC)',
+      link: REGISTRIES_FORM_BASE_URL + 'register_correction_form_47.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.COOP,
+      description: 'Cooperative',
+      link: REGISTRIES_FORM_BASE_URL + 'form_58_coo_-_cooperative_correction.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.SOLE_PROP,
+      description: 'Firm(SP)',
+      link: REGISTRIES_FORM_BASE_URL + 'form_02cor_correction_for_sp_gp_registration.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.PARTNERSHIP,
+      description: 'Firm(GP)',
+      link: REGISTRIES_FORM_BASE_URL + 'form_02cor_correction_for_sp_gp_registration.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.SOCIETY,
+      description: 'Society',
+      link: REGISTRIES_FORM_BASE_URL + 'form_37_soc_-_corporate_register_correction.pdf',
+      texts: [
+        'To fix a spelling mistake in a name, submit a',
+        'Register Correction Form',
+        'to BC Registries.'
+      ]
+    },
+    {
+      type: CorpTypeCd.EXTRA_PRO_A,
+      description: 'unsupported entity type',
+      link: 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/' +
+        'businesses-incorporated-companies/forms-corporate-registry',
+      texts: [
+        'To fix a spelling mistake in a name, go to',
+        'Forms, Fees and Information Packages',
+        ', choose your business type and submit a Register Corrections form to BC Registries.'
+      ]
+    }
+  ]
+
+  function expectCorrectionInfo (wrapper, expected) {
+    const infoText = wrapper.find('.legal-name-info span').text()
+    expected.texts.forEach(t => expect(infoText).toContain(t))
+    const link = wrapper.find('.legal-name-info a')
+    expect(link.attributes('href')).toBe(expected.link)
+  }
+
+  beforeAll(() => {
+    setActivePinia(createPinia())
+    useBusinessStore().setIdentifier('CP0001191')
+  })
+
+  beforeEach(async () => {
+    sinon.stub(axios, 'get')
+      .withArgs('businesses/CP0001191/directors?date=2020-11-16')
+      .returns(Promise.resolve({
+        data: {
+          directors: [
+            {
+              officer: { firstName: 'Gary', lastName: 'Griffin' },
+              deliveryAddress: {},
+              role: 'director'
+            }
+          ]
+        }
+      }))
+    wrapper = mount(Directors, { vuetify })
+    vm = wrapper.vm
+    await vm.getOrigDirectors('2020-11-16', true)
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  cases.forEach(({ type, description, link, texts }) => {
+    it(`shows correct info for ${description}`, async () => {
+      const businessStore = useBusinessStore()
+      businessStore.setLegalType(type)
+      await Vue.nextTick()
+
+      await vm.editDirectorName(0)
+      await Vue.nextTick()
+
+      expectCorrectionInfo(wrapper, { texts, link })
+    })
+  })
 })
