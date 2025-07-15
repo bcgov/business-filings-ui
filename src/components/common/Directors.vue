@@ -870,6 +870,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   }
 
   /** The entity types with a correction form link. */
+  /** See also legalNameCorrectionFormLink below. */
   get hasCorrectionLink (): boolean {
     return this.isBaseCompany || this.isEntityCoop || this.isEntityFirm || this.isEntitySociety
   }
