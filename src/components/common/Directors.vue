@@ -1907,6 +1907,10 @@ ul {
   }
 }
 
+:deep(.legal-name-checkbox .v-label) {
+  color: $gray9 !important;
+}
+
 .mdi-information-outline::before {
   color: $BCgovIconBlue !important;
 }
