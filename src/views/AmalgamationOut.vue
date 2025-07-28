@@ -269,7 +269,7 @@
             >
               <SbcFeeSummary
                 :filingData="filingData"
-                :payURL="getPayApiUrl"
+                :payURL="getPayApiGwUrl"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -392,7 +392,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useBusinessStore) getLegalName!: string
-  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useConfigurationStore) getPayApiGwUrl!: string
 
   // enum for template
   readonly FilingCodes = FilingCodes

@@ -16,6 +16,9 @@ function getAccountId (): string {
   return accountId
 }
 
+const authApiGwUrl = import.meta.env.VUE_APP_AUTH_API_GW_URL
+const payApiGwUrl = import.meta.env.VUE_APP_PAY_API_GW_URL
+
 const instance = axios.create()
 
 // add request interceptor
@@ -33,7 +36,21 @@ instance.interceptors.request.use(
     // add these headers only if Vitest isn't running as it breaks some tests
     if (import.meta.env.VITEST === undefined) {
       request.headers.common['Account-Id'] = getAccountId()
-      request.headers.common['X-Apikey'] = import.meta.env.VUE_APP_BUSINESS_API_KEY
+      // add headers specific to various APIs
+      switch (true) {
+        case request.url?.startsWith(authApiGwUrl):
+          request.headers.common['X-Apikey'] = import.meta.env.VUE_APP_AUTH_API_KEY
+          break
+
+        case request.url?.startsWith(payApiGwUrl):
+          request.headers.common['X-Apikey'] = import.meta.env.VUE_APP_PAY_API_KEY
+          break
+
+        default:
+          // used by Business API GW and NAICS API
+          request.headers.common['X-Apikey'] = import.meta.env.VUE_APP_BUSINESS_API_KEY
+          break
+      }
     }
 
     return request

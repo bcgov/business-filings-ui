@@ -181,7 +181,7 @@
             >
               <SbcFeeSummary
                 :filingData="filingData"
-                :payURL="getPayApiUrl"
+                :payURL="getPayApiGwUrl"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -300,7 +300,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
-  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useConfigurationStore) getPayApiGwUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useRootStore) getFolioNumber!: string

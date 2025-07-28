@@ -72,9 +72,23 @@ export const useConfigurationStore = defineStore('configuration', {
       return ''
     },
 
+    getAuthApiGwUrl (state: ConfigurationStateIF): string {
+      if (state.configuration?.VUE_APP_AUTH_API_GW_URL && state.configuration?.VUE_APP_AUTH_API_VERSION) {
+        return state.configuration.VUE_APP_AUTH_API_GW_URL + state.configuration.VUE_APP_AUTH_API_VERSION + '/'
+      }
+      return ''
+    },
+
     getPayApiUrl (state: ConfigurationStateIF): string {
       if (state.configuration?.VUE_APP_PAY_API_URL && state.configuration?.VUE_APP_PAY_API_VERSION) {
         return state.configuration.VUE_APP_PAY_API_URL + state.configuration.VUE_APP_PAY_API_VERSION + '/'
+      }
+      return ''
+    },
+
+    getPayApiGwUrl (state: ConfigurationStateIF): string {
+      if (state.configuration?.VUE_APP_PAY_API_GW_URL && state.configuration?.VUE_APP_PAY_API_VERSION) {
+        return state.configuration.VUE_APP_PAY_API_GW_URL + state.configuration.VUE_APP_PAY_API_VERSION + '/'
       }
       return ''
     },

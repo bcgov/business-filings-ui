@@ -305,7 +305,7 @@
             >
               <SbcFeeSummary
                 :filingData="filingData"
-                :payURL="getPayApiUrl"
+                :payURL="getPayApiGwUrl"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -491,7 +491,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useBusinessStore) getLastAddressChangeDate!: string
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
-  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useConfigurationStore) getPayApiGwUrl!: string
   @Getter(useRootStore) getTransactionalFolioNumber!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isEntityCoop!: boolean

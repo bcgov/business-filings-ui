@@ -9,11 +9,11 @@ export default class PayServices {
   /**
    * Fetches a payment error object (description) by its code.
    * @param code the error code to look up
-   * @param payApiUrl
+   * @param payApiGwUrl
    * @returns the payment error object
    */
-  static async getPayErrorObj (payApiUrl: string, code: string): Promise<PaymentErrorIF> {
-    const url = `${payApiUrl}codes/errors/${code}`
+  static async getPayErrorObj (payApiGwUrl: string, code: string): Promise<PaymentErrorIF> {
+    const url = `${payApiGwUrl}codes/errors/${code}`
     return axios.get(url)
       .then(response => response?.data)
       .catch(() => {}) // ignore errors
@@ -21,12 +21,12 @@ export default class PayServices {
 
   /**
    * Fetches the CFS account ID from the pay-api.
-   * @param payApiUrl the URL of the pay-api
+   * @param payApiGwUrl the URL of the pay-api
    * @param accountId the ID for which to fetch the CFS account ID
    * @returns the CFS account ID
    */
-  static async fetchCfsAccountId (payApiUrl: string, accountId: number): Promise<string> {
-    const url = `${payApiUrl}accounts/${accountId}`
+  static async fetchCfsAccountId (payApiGwUrl: string, accountId: number): Promise<string> {
+    const url = `${payApiGwUrl}accounts/${accountId}`
     try {
       const response = await axios.get(url)
       return response?.data?.cfsAccount?.cfsAccountNumber

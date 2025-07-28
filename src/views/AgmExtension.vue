@@ -130,7 +130,7 @@
             >
               <SbcFeeSummary
                 :filingData="filingData"
-                :payURL="getPayApiUrl"
+                :payURL="getPayApiGwUrl"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -235,7 +235,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useRootStore) getFolioNumber!: string
   @Getter(useBusinessStore) getLegalName!: string
-  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useConfigurationStore) getPayApiGwUrl!: string
   @Getter(useRootStore) getTransactionalFolioNumber!: string
   @Getter(useRootStore) getUserInfo!: any
   @Getter(useBusinessStore) isGoodStanding!: boolean

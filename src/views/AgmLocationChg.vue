@@ -236,7 +236,7 @@
             >
               <SbcFeeSummary
                 :filingData="filingData"
-                :payURL="getPayApiUrl"
+                :payURL="getPayApiGwUrl"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -334,7 +334,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useRootStore) getFolioNumber!: string
   @Getter(useBusinessStore) getLegalName!: string
-  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useConfigurationStore) getPayApiGwUrl!: string
   @Getter(useRootStore) getTransactionalFolioNumber!: string
   @Getter(useRootStore) getUserInfo!: any
 

@@ -175,7 +175,7 @@ export default class App extends Mixins(
   @Getter(useBusinessStore) isEntitySoleProp!: boolean
 
   // configuration store references
-  @Getter(useConfigurationStore) getAuthApiUrl!: string
+  @Getter(useConfigurationStore) getAuthApiGwUrl!: string
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useConfigurationStore) getBusinessRegistryDashboardUrl!: string
 
@@ -409,7 +409,7 @@ export default class App extends Mixins(
   async fetchBusinessData (): Promise<void> {
     const data = await Promise.all([
       // FUTURE: all of these should be store actions
-      AuthServices.fetchEntityInfo(this.getAuthApiUrl, this.businessId),
+      AuthServices.fetchEntityInfo(this.getAuthApiGwUrl, this.businessId),
       this.loadBusinessInfo(),
       LegalServices.fetchTasks(this.businessId),
       this.loadFilings(this.businessId || this.tempRegNumber),
@@ -452,7 +452,7 @@ export default class App extends Mixins(
   /* Gather info for LD and save user's Keycloak GUID */
   async setupLaunchDarkly (): Promise<void> {
     try {
-      const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl)
+      const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiGwUrl)
       this.setUserInfo(userInfo)
       await this.updateLaunchDarkly(userInfo)
       this.setUserKeycloakGuid(userInfo.keycloakGuid)

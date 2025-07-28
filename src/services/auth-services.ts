@@ -10,8 +10,8 @@ export default class AuthServices {
    * Fetches user info for the current user.
    * @returns the user info object
    */
-  static async fetchUserInfo (authApiUrl: string): Promise<any> {
-    const url = `${authApiUrl}users/@me`
+  static async fetchUserInfo (authApiGwUrl: string): Promise<any> {
+    const url = `${authApiGwUrl}users/@me`
     return axios.get(url)
       .then(response => {
         const data = response?.data
@@ -24,43 +24,43 @@ export default class AuthServices {
 
   /**
    * Fetches entity info.
-   * @param authApiUrl
+   * @param authApiGwUrl
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
-  static async fetchEntityInfo (authApiUrl: string, businessId: string): Promise<AxiosResponse> {
-    const url = `${authApiUrl}entities/${businessId}`
+  static async fetchEntityInfo (authApiGwUrl: string, businessId: string): Promise<AxiosResponse> {
+    const url = `${authApiGwUrl}entities/${businessId}`
     return axios.get(url)
   }
 
   /**
    * Fetches affiliation invites tied to this entity.
-   * @param authApiUrl
+   * @param authApiGwUrl
    * @param businessId the business identifier (aka entity inc no)
    * @param orgId org which has access rights to display (current logged in org)
    * @returns the axios response
    */
-  static async fetchAffiliationInvitations (authApiUrl: string, businessId: string, orgId: number) {
-    const url = `${authApiUrl}affiliationInvitations`
+  static async fetchAffiliationInvitations (authApiGwUrl: string, businessId: string, orgId: number) {
+    const url = `${authApiGwUrl}affiliationInvitations`
     return axios.get(url, { params: { toOrgId: orgId, businessIdentifier: businessId, statuses: 'PENDING' } })
   }
 
   /**
    * Authorizes or refuses authorization for this invitation.
-   * @param authApiUrl
+   * @param authApiGwUrl
    * @param affiliationInvitationId id of affiliation to approve or not
    * @param isAuthorized boolean stating if invitation is authorized (true) or not authorized (false)
    * @returns the axios response
    */
   static async authorizeAffiliationInvitation (
-    authApiUrl: string,
+    authApiGwUrl: string,
     affiliationInvitationId: number,
     isAuthorized: boolean) {
     const action = isAuthorized ? 'accept' : 'refuse'
     const authorizePath = `affiliationInvitations/${affiliationInvitationId}/authorization/${action}`
 
     const url =
-      authApiUrl + authorizePath
+      authApiGwUrl + authorizePath
 
     return axios.patch(url)
   }

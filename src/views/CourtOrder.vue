@@ -187,7 +187,7 @@
             >
               <SbcFeeSummary
                 :filingData="filingData"
-                :payURL="getPayApiUrl"
+                :payURL="getPayApiGwUrl"
                 @total-fee="totalFee=$event"
               />
               <v-card-actions>
@@ -298,7 +298,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
-  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useConfigurationStore) getPayApiGwUrl!: string
   @Getter(useRootStore) getUserInfo!: any
   // Properties
   customErrorMsg = ''
