@@ -734,7 +734,7 @@ import { WarningPopover } from '@/components/common/'
 import { CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
 import { Actions } from '@/enums'
 import { FormIF, AddressIF, DirectorIF, EmptyDirector, ComponentIF, AlertMessageIF } from '@/interfaces'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 const REGISTRIES_FORM_BASE_URL =
   'https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/' +
@@ -781,6 +781,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
+  @Getter(useConfigurationStore) getLegalApiUrl!: string
 
   /** Effective date for fetching and appointing/ceasing directors. */
   asOfDate: string = null
@@ -1054,7 +1055,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   // FUTURE: this API call should be in the parent component or some mixin/service
   async fetchDirectors (): Promise<void> {
     if (this.getIdentifier && this.asOfDate) {
-      const url = `businesses/${this.getIdentifier}/directors?date=${this.asOfDate}`
+      const url = `${this.getLegalApiUrl}businesses/${this.getIdentifier}/directors?date=${this.asOfDate}`
       await axios.get(url).then(response => {
         if (response?.data?.directors) {
           const directors = response.data.directors as DirectorIF[]

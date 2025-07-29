@@ -8,7 +8,7 @@ import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import App from '@/App.vue'
 import { AuthorizationRoles, AuthorizedActions } from '@/enums'
 import { AmalgamationTypes } from '@bcrs-shared-components/enums'
@@ -33,6 +33,7 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
+const configurationStore = useConfigurationStore()
 const filingHistoryListStore = useFilingHistoryListStore()
 const rootStore = useRootStore()
 
@@ -202,6 +203,13 @@ describe('App as a COOP', () => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2',
+      'VUE_APP_AUTH_API_GW_URL': 'https://auth-api-gw.url/',
+      'VUE_APP_AUTH_API_VERSION': 'v1'
+    }
+    configurationStore.setConfiguration(configuration)
   })
 
   beforeEach(async () => {
@@ -209,8 +217,14 @@ describe('App as a COOP', () => {
 
     vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.PUBLIC_USER])
 
+    // GET user info from Auth API
+    get.withArgs('https://auth-api-gw.url/v1/users/@me')
+      .returns(new Promise(resolve => resolve({
+        data: USER_INFO
+      })))
+
     // Permission stub - as public user.
-    get.withArgs('permissions')
+    get.withArgs('https://legal-api.url/v2/permissions')
       .returns(Promise.resolve({
         data: {
           authorizedPermissions: [
@@ -220,7 +234,7 @@ describe('App as a COOP', () => {
       }))
 
     // GET entity info from Auth API
-    get.withArgs('entities/CP0001191')
+    get.withArgs('https://auth-api-gw.url/v1/entities/CP0001191')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -236,7 +250,7 @@ describe('App as a COOP', () => {
       })))
 
     // GET business info from Legal API
-    get.withArgs('businesses/CP0001191')
+    get.withArgs('https://legal-api.url/v2/businesses/CP0001191')
       .returns(new Promise(resolve => resolve({
         data: {
           business: {
@@ -251,7 +265,7 @@ describe('App as a COOP', () => {
       })))
 
     // GET tasks
-    get.withArgs('businesses/CP0001191/tasks')
+    get.withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -300,7 +314,7 @@ describe('App as a COOP', () => {
       })))
 
     // GET filings
-    get.withArgs('businesses/CP0001191/filings')
+    get.withArgs('https://legal-api.url/v2/businesses/CP0001191/filings')
       .returns(new Promise(resolve => resolve({
         data: {
           filings: [
@@ -348,7 +362,7 @@ describe('App as a COOP', () => {
       })))
 
     // GET addresses
-    get.withArgs('businesses/CP0001191/addresses')
+    get.withArgs('https://legal-api.url/v2/businesses/CP0001191/addresses')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -375,7 +389,7 @@ describe('App as a COOP', () => {
       })))
 
     // GET parties
-    get.withArgs('businesses/CP0001191/parties')
+    get.withArgs('https://legal-api.url/v2/businesses/CP0001191/parties')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -527,19 +541,28 @@ describe('App as a BCOMP', () => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2',
+      'VUE_APP_AUTH_API_GW_URL': 'https://auth-api-gw.url/',
+      'VUE_APP_AUTH_API_VERSION': 'v1'
+    }
+    configurationStore.setConfiguration(configuration)
   })
 
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
+    vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.PUBLIC_USER])
+
     // GET user info from Auth API
-    get.withArgs('users/@me')
+    get.withArgs('https://auth-api-gw.url/v1/users/@me')
       .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // Get permissions from Legal API
-    get.withArgs('permissions')
+    get.withArgs('https://legal-api.url/v2/permissions')
       .returns(Promise.resolve({
         data: {
           authorizedPermissions: [
@@ -549,7 +572,7 @@ describe('App as a BCOMP', () => {
       }))
 
     // GET entity info from Auth API
-    get.withArgs('entities/BC0007291')
+    get.withArgs('https://auth-api-gw.url/v1/entities/BC0007291')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -564,7 +587,7 @@ describe('App as a BCOMP', () => {
       })))
 
     // GET business info from Legal API
-    get.withArgs('businesses/BC0007291')
+    get.withArgs('https://legal-api.url/v2/businesses/BC0007291')
       .returns(new Promise(resolve => resolve({
         data: {
           business: {
@@ -579,7 +602,7 @@ describe('App as a BCOMP', () => {
       })))
 
     // GET tasks
-    get.withArgs('businesses/BC0007291/tasks')
+    get.withArgs('https://legal-api.url/v2/businesses/BC0007291/tasks')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -628,7 +651,7 @@ describe('App as a BCOMP', () => {
       })))
 
     // GET filings
-    get.withArgs('businesses/BC0007291/filings')
+    get.withArgs('https://legal-api.url/v2/businesses/BC0007291/filings')
       .returns(new Promise(resolve => resolve({
         data: {
           filings: [
@@ -676,13 +699,13 @@ describe('App as a BCOMP', () => {
       })))
 
     // GET addresses
-    get.withArgs('businesses/BC0007291/addresses')
+    get.withArgs('https://legal-api.url/v2/businesses/BC0007291/addresses')
       .returns(new Promise(resolve => resolve({
         data: BCOMP_ADDRESSES
       })))
 
     // GET parties
-    get.withArgs('businesses/BC0007291/parties')
+    get.withArgs('https://legal-api.url/v2/businesses/BC0007291/parties')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -909,6 +932,13 @@ describe('App as an historical business - Amalgamation', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2',
+      'VUE_APP_AUTH_API_GW_URL': 'https://auth-api-gw.url/',
+      'VUE_APP_AUTH_API_VERSION': 'v1'
+    }
+    configurationStore.setConfiguration(configuration)
   })
 
   beforeEach(async () => {
@@ -917,13 +947,13 @@ describe('App as an historical business - Amalgamation', () => {
     vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.PUBLIC_USER])
 
     // GET user info from Auth API
-    get.withArgs('users/@me')
+    get.withArgs('https://auth-api-gw.url/v1/users/@me')
       .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // Get permissions from Legal API
-    get.withArgs('permissions')
+    get.withArgs('https://legal-api.url/v2/permissions')
       .returns(Promise.resolve({
         data: {
           authorizedPermissions: [
@@ -933,7 +963,7 @@ describe('App as an historical business - Amalgamation', () => {
       }))
 
     // GET entity info from Auth API
-    get.withArgs('entities/BC1234567')
+    get.withArgs('https://auth-api-gw.url/v1/entities/BC1234567')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -949,7 +979,7 @@ describe('App as an historical business - Amalgamation', () => {
       })))
 
     // GET business info from Legal API
-    get.withArgs('businesses/BC1234567')
+    get.withArgs('https://legal-api.url/v2/businesses/BC1234567')
       .returns(new Promise(resolve => resolve({
         data: {
           business: {
@@ -977,19 +1007,19 @@ describe('App as an historical business - Amalgamation', () => {
       })))
 
     // GET tasks
-    get.withArgs('businesses/BC1234567/tasks')
+    get.withArgs('https://legal-api.url/v2/businesses/BC1234567/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // GET filings
-    get.withArgs('businesses/BC1234567/filings')
+    get.withArgs('https://legal-api.url/v2/businesses/BC1234567/filings')
       .returns(new Promise(resolve => resolve({ data: { filings: [] } })))
 
     // GET addresses
-    get.withArgs('businesses/BC1234567/addresses')
+    get.withArgs('https://legal-api.url/v2/businesses/BC1234567/addresses')
       .returns(new Promise(resolve => resolve({ data: {} })))
 
     // GET directors
-    get.withArgs('businesses/BC1234567/parties')
+    get.withArgs('https://legal-api.url/v2/businesses/BC1234567/parties')
       .returns(new Promise(resolve => resolve({ data: { parties: [] } })))
 
     // create a Local Vue and install router on it
@@ -1031,6 +1061,13 @@ describe('App as an historical business - Voluntary Dissolution', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2',
+      'VUE_APP_AUTH_API_GW_URL': 'https://auth-api-gw.url/',
+      'VUE_APP_AUTH_API_VERSION': 'v1'
+    }
+    configurationStore.setConfiguration(configuration)
   })
 
   beforeEach(async () => {
@@ -1039,13 +1076,13 @@ describe('App as an historical business - Voluntary Dissolution', () => {
     vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.STAFF])
 
     // GET user info from Auth API
-    get.withArgs('users/@me')
+    get.withArgs('https://auth-api-gw.url/v1/users/@me')
       .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET entity info from Auth API
-    get.withArgs('entities/BC1234567')
+    get.withArgs('https://auth-api-gw.url/v1/entities/BC1234567')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1061,7 +1098,7 @@ describe('App as an historical business - Voluntary Dissolution', () => {
       })))
 
     // Get permissions from Legal API
-    get.withArgs('permissions')
+    get.withArgs('https://legal-api.url/v2/permissions')
       .returns(Promise.resolve({
         data: {
           authorizedPermissions: [
@@ -1071,7 +1108,7 @@ describe('App as an historical business - Voluntary Dissolution', () => {
       }))
 
     // GET business info from Legal API
-    get.withArgs('businesses/BC1234567')
+    get.withArgs('https://legal-api.url/v2/businesses/BC1234567')
       .returns(new Promise(resolve => resolve({
         data: {
           business: {
@@ -1094,11 +1131,11 @@ describe('App as an historical business - Voluntary Dissolution', () => {
       })))
 
     // GET tasks
-    get.withArgs('businesses/BC1234567/tasks')
+    get.withArgs('https://legal-api.url/v2/businesses/BC1234567/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // GET filings
-    get.withArgs('businesses/BC1234567/filings')
+    get.withArgs('https://legal-api.url/v2/businesses/BC1234567/filings')
       .returns(new Promise(resolve => resolve({ data: { filings: [] } })))
 
     // GET state filing
@@ -1120,11 +1157,11 @@ describe('App as an historical business - Voluntary Dissolution', () => {
       })))
 
     // GET addresses
-    get.withArgs('businesses/BC1234567/addresses')
+    get.withArgs('https://legal-api.url/v2/businesses/BC1234567/addresses')
       .returns(new Promise(resolve => resolve({ data: {} })))
 
     // GET directors
-    get.withArgs('businesses/BC1234567/parties')
+    get.withArgs('https://legal-api.url/v2/businesses/BC1234567/parties')
       .returns(new Promise(resolve => resolve({ data: { parties: [] } })))
 
     // create a Local Vue and install router on it

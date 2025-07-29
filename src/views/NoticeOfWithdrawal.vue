@@ -201,7 +201,7 @@
             >
               <SbcFeeSummary
                 :filingData="filingData"
-                :payURL="getPayApiGwUrl"
+                :payURL="getPayApiUrl"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -302,7 +302,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     @Getter(useConfigurationStore) getAuthWebUrl!: string
     @Getter(useRootStore) getBusinessEmail!: string
     @Getter(useBusinessStore) getLegalName!: string
-    @Getter(useConfigurationStore) getPayApiGwUrl!: string
+    @Getter(useConfigurationStore) getPayApiUrl!: string
     @Getter(useRootStore) getUserInfo!: any
 
     // enum for template

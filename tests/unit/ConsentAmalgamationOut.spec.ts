@@ -45,6 +45,11 @@ describe('Consent to Amalgamation Out view', () => {
     businessStore.setLegalName('My Test Entity')
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
     rootStore.filingData = []
     rootStore.setAuthorizedActions(BusinessRegistryStaffActions)
   })
@@ -295,7 +300,9 @@ describe('Consent to Continue Out for general user and IAs only', () => {
 
     // set configurations
     const configuration = {
-      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
     }
     configurationStore.setConfiguration(configuration)
 
@@ -317,13 +324,13 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('businesses/BC0007291/tasks')
+      .withArgs('https://legal-api.url/v2/businesses/BC0007291/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save and file" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('businesses/BC0007291/filings')
+      .withArgs('https://legal-api.url/v2/businesses/BC0007291/filings')
       .returns(
         new Promise(resolve =>
           resolve({

@@ -29,7 +29,7 @@ describe('Auth Services', () => {
       .returns(new Promise(resolve => resolve({ data: USER_INFO })))
 
     // call method
-    const response = await AuthServices.fetchUserInfo('')
+    const response = await AuthServices.fetchUserInfo()
 
     // verify data
     expect(response).toEqual(USER_INFO)
@@ -51,7 +51,7 @@ describe('Auth Services', () => {
       .returns(new Promise(resolve => resolve({ data: ENTITY_INFO })))
 
     // call method
-    const response = await AuthServices.fetchEntityInfo('', 'CP1234567')
+    const response = await AuthServices.fetchEntityInfo('CP1234567')
 
     // verify data
     expect(response).toEqual({ data: ENTITY_INFO })

@@ -1,6 +1,5 @@
 import { ConfigurationStateIF } from '@/interfaces'
 import { defineStore } from 'pinia'
-import axios from '@/axios-auth'
 import { GetFeatureFlag } from '@/utils'
 
 export const useConfigurationStore = defineStore('configuration', {
@@ -154,17 +153,12 @@ export const useConfigurationStore = defineStore('configuration', {
       (<any>window).keycloakClientId = keycloakClientId
     },
 
-    setAxiosBaseUrl (legalApiUrl: string) {
-      axios.defaults.baseURL = legalApiUrl
-    },
-
     /** Fetches the configuration from the web server and, if successful, triggers some actions. */
     loadConfiguration (env = import.meta.env): Promise<any> {
       // need to return a promise because action is called via dispatch
       return new Promise((resolve) => {
         this.setConfiguration(env)
         this.setSessionVariables(env)
-        this.setAxiosBaseUrl(this.getLegalApiUrl)
 
         resolve(import.meta.env)
       })

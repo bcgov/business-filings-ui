@@ -47,7 +47,7 @@ instance.interceptors.request.use(
           break
 
         default:
-          // used by Business API GW and NAICS API
+          // used by Business API GW URL
           request.headers.common['X-Apikey'] = import.meta.env.VUE_APP_BUSINESS_API_KEY
           break
       }

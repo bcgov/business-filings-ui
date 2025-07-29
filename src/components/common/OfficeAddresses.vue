@@ -244,7 +244,7 @@ import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { CommonMixin } from '@/mixins'
 import { RegRecAddressesIF, AddressIF } from '@/interfaces'
 import { Actions } from '@/enums'
-import { useBusinessStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
@@ -264,6 +264,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
   // @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isBaseCompany!: boolean
+  @Getter(useConfigurationStore) getLegalApiUrl!: string
 
   /** Effective date for fetching office addresses. */
   asOfDate: string
@@ -334,7 +335,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         }
       } as RegRecAddressesIF
 
-      const url = `businesses/${this.getIdentifier}/addresses?date=${this.asOfDate}`
+      const url = `${this.getLegalApiUrl}businesses/${this.getIdentifier}/addresses?date=${this.asOfDate}`
       await axios.get(url).then(response => {
         // registered office is required for all companies
         const registeredOffice = response?.data?.registeredOffice

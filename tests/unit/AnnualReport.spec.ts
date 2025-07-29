@@ -42,7 +42,9 @@ describe('Annual Report - Part 1 - UI', () => {
   beforeAll(() => {
     // set configurations
     const configuration = {
-      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
     }
     configurationStore.setConfiguration(configuration)
 
@@ -402,6 +404,14 @@ describe('Annual Report - Part 1 - UI', () => {
 })
 
 describe('Annual Report - Part 1B - UI (BCOMP)', () => {
+  beforeAll(() => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
+  })
   beforeEach(() => {
     // init store
     businessStore.setIdentifier('BC0007291')
@@ -536,6 +546,14 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
 })
 
 describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
+  beforeAll(() => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
+  })
   beforeEach(() => {
     // init store
     businessStore.setIdentifier('CP0001191')
@@ -546,7 +564,7 @@ describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
     // mock "fetch a draft filing" endpoint
     sinon
       .stub(axios, 'get')
-      .withArgs('businesses/CP0001191/filings/123')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -614,6 +632,14 @@ describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
 })
 
 describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
+  beforeAll(() => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
+  })
   beforeEach(() => {
     // init store
     businessStore.setIdentifier('CP0001191')
@@ -624,7 +650,7 @@ describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
     // mock "fetch a draft filing" endpoint
     sinon
       .stub(axios, 'get')
-      .withArgs('businesses/CP0001191/filings/123')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -696,6 +722,14 @@ describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
 })
 
 describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
+  beforeAll(() => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
+  })
   beforeEach(() => {
     // init store
     businessStore.setIdentifier('CP0001191')
@@ -706,7 +740,7 @@ describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
     // mock "fetch a draft filing" endpoint
     sinon
       .stub(axios, 'get')
-      .withArgs('businesses/CP0001191/filings/123')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -775,6 +809,15 @@ describe('Annual Report - Part 3 - Submitting', () => {
   const { assign } = window.location
 
   beforeAll(() => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
+  })
+  beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: vi.fn() } as any
@@ -796,12 +839,12 @@ describe('Annual Report - Part 3 - Submitting', () => {
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinonAxiosGet
-      .withArgs('businesses/CP0001191/tasks')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "fetch a draft filing" endpoint
     sinonAxiosGet
-      .withArgs('businesses/CP0001191/filings/123')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -833,7 +876,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
     // mock "save and file" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('businesses/CP0001191/filings')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/filings')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -867,7 +910,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
     // mock "update and file" endpoint
     sinon
       .stub(axios, 'put')
-      .withArgs('businesses/CP0001191/filings/123')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -1073,6 +1116,14 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: vi.fn() } as any
+
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
   })
 
   afterAll(() => {
@@ -1091,13 +1142,13 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('businesses/BC0007291/tasks')
+      .withArgs('https://legal-api.url/v2/businesses/BC0007291/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save and file" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('businesses/BC0007291/filings')
+      .withArgs('https://legal-api.url/v2/businesses/BC0007291/filings')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -1205,6 +1256,16 @@ describe('Annual Report - Part 4 - Saving', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
+  
+  beforeAll(() => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
+  })
+
   beforeEach(() => {
     // init store
     businessStore.setIdentifier('CP0001191')
@@ -1216,13 +1277,13 @@ describe('Annual Report - Part 4 - Saving', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('businesses/CP0001191/tasks')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('businesses/CP0001191/filings?draft=true')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/filings?draft=true')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -1431,6 +1492,15 @@ describe('Annual Report - Part 5 - Data', () => {
   let vm: any
   let spy: any
 
+  beforeAll(() => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
+  })
+
   beforeEach(async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
@@ -1442,13 +1512,13 @@ describe('Annual Report - Part 5 - Data', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('businesses/CP0001191/tasks')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint - garbage response data, we aren't testing that
     spy = sinon
       .stub(axios, 'post')
-      .withArgs('businesses/CP0001191/filings?draft=true')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/filings?draft=true')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -1704,6 +1774,15 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
 
   const currentFilingYear = 2018
 
+  beforeAll(() => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
+  })
+
   beforeEach(async () => {
     // init store
     businessStore.setIdentifier('BC0007291')
@@ -1717,13 +1796,13 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('businesses/BC0007291/tasks')
+      .withArgs('https://legal-api.url/v2/businesses/BC0007291/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save" endpoint - garbage response data, we aren't testing that
     spy = sinon
       .stub(axios, 'post')
-      .withArgs('businesses/BC0007291/filings')
+      .withArgs('https://legal-api.url/v2/businesses/BC0007291/filings')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -1858,6 +1937,13 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: vi.fn() } as any
+
+    // set configurations
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
   })
 
   afterAll(() => {
@@ -1875,7 +1961,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('businesses/CP0001191/tasks')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "file post" endpoint
@@ -1912,7 +1998,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
       }
     })
     p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
-    sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
+    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
     const p2 = Promise.reject({
@@ -1948,7 +2034,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
       }
     })
     p2.catch(() => {}) // pre-empt "unhandled promise rejection" warning
-    sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123').returns(p2)
+    sinon.stub(axios, 'put').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123').returns(p2)
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -2074,6 +2160,13 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
   let vm: any
 
   beforeAll(() => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
+
     businessStore.setLegalName('Legal Name - CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setIdentifier('CP0001191')
@@ -2110,7 +2203,7 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
     // mock "get tasks" endpoint
     sinon
       .stub(axios, 'get')
-      .withArgs('businesses/CP0001191/tasks')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -2187,6 +2280,13 @@ describe('Annual Report - payment required error', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: vi.fn() } as any
+
+    // set configurations
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
   })
 
   afterAll(() => {
@@ -2231,7 +2331,7 @@ describe('Annual Report - payment required error', () => {
       }
     })
     p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
-    sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
+    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings').returns(p1)
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -2272,7 +2372,7 @@ describe('Annual Report - payment required error', () => {
 
     const get = sinon.stub(axios, 'get')
 
-    get.withArgs('businesses/CP0001191/tasks')
+    get.withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // make sure form is validated

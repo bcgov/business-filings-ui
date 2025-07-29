@@ -1,10 +1,14 @@
+import { createPinia, setActivePinia } from 'pinia'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
 import LegalServices from '@/services/legal-services'
+import { useConfigurationStore } from '@/stores/configurationStore'
 
 // mock some window.URL functions that are not defined in Vitest
 window.URL.createObjectURL = vi.fn()
 window.URL.revokeObjectURL = vi.fn()
+setActivePinia(createPinia())
+const configurationStore = useConfigurationStore()
 
 describe('Legal Services', () => {
   let get: any
@@ -15,6 +19,12 @@ describe('Legal Services', () => {
     get = sinon.stub(axios, 'get')
     post = sinon.stub(axios, 'post')
     put = sinon.stub(axios, 'put')
+    // init store
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
   })
 
   afterEach(() => {
@@ -28,7 +38,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567')
+    get.withArgs('https://legal-api.url/v2/businesses/CP1234567')
       .returns(new Promise(resolve => resolve({ data: { business: BUSINESS_INFO } })))
 
     // call method
@@ -46,7 +56,7 @@ describe('Legal Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/tasks')
+    get.withArgs('https://legal-api.url/v2/businesses/CP1234567/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: TASKS } })))
 
     // call method
@@ -64,7 +74,7 @@ describe('Legal Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/filings')
+    get.withArgs('https://legal-api.url/v2/businesses/CP1234567/filings')
       .returns(new Promise(resolve => resolve({ data: { filings: FILINGS } })))
 
     // call method
@@ -87,7 +97,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/addresses')
+    get.withArgs('https://legal-api.url/v2/businesses/CP1234567/addresses')
       .returns(new Promise(resolve => resolve({ data: ADDRESSES })))
 
     // call method
@@ -105,7 +115,7 @@ describe('Legal Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/parties?role=Director')
+    get.withArgs('https://legal-api.url/v2/businesses/CP1234567/parties?role=Director')
       .returns(new Promise(resolve => resolve({ data: DIRECTORS })))
 
     // call method
@@ -121,7 +131,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('businesses/T1234567/filings')
+    get.withArgs('https://legal-api.url/v2/businesses/T1234567/filings')
       .returns(new Promise(resolve => resolve({ data: IA })))
 
     // call method
@@ -137,7 +147,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('nameRequests/NR1234567/validate?phone=&email=')
+    get.withArgs('https://legal-api.url/v2/nameRequests/NR1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({ data: NR })))
 
     // call method
@@ -170,7 +180,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    post.withArgs('businesses/CP1234567/filings?draft=true')
+    post.withArgs('https://legal-api.url/v2/businesses/CP1234567/filings?draft=true')
       .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method
@@ -186,7 +196,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    put.withArgs('businesses/CP1234567/filings/1234?draft=true')
+    put.withArgs('https://legal-api.url/v2/businesses/CP1234567/filings/1234?draft=true')
       .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method

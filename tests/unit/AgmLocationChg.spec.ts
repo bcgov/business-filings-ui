@@ -43,7 +43,9 @@ describe('AGM Location Chg view', () => {
 
     // set configurations
     const configuration = {
-      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
     }
     configurationStore.setConfiguration(configuration)
 
@@ -65,13 +67,13 @@ describe('AGM Location Chg view', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('businesses/BC0007291/tasks')
+      .withArgs('https://legal-api.url/v2/businesses/BC0007291/tasks')
       .returns(Promise.resolve({ data: { tasks: [] } }))
 
     // mock "save and file" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('businesses/BC0007291/filings')
+      .withArgs('https://legal-api.url/v2/businesses/BC0007291/filings')
       .returns(Promise.resolve({
         data: {
           filing: {

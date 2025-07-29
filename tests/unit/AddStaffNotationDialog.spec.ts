@@ -4,7 +4,7 @@ import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { shallowMount, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 import axios from '@/axios-auth'
 import { AddStaffNotationDialog } from '@/components/dialogs'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -15,11 +15,21 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
+const configurationStore = useConfigurationStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
 describe('AddStaffNotationDialog', () => {
+  beforeAll(() => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    }
+    configurationStore.setConfiguration(configuration)
+  })
+
   it('renders the page contents correctly for standard filing', () => {
     const wrapper = shallowMount(AddStaffNotationDialog,
       {
@@ -394,7 +404,7 @@ describe('AddStaffNotationDialog', () => {
 
     sinon
       .stub(axios, 'post')
-      .withArgs('businesses/BC0870669/filings')
+      .withArgs('https://legal-api.url/v2/businesses/BC0870669/filings')
       .returns(new Promise(resolve => resolve({ data: { filing: {} } })))
 
     const wrapper = mount(AddStaffNotationDialog,
