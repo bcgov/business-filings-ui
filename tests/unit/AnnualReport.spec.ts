@@ -1256,7 +1256,6 @@ describe('Annual Report - Part 4 - Saving', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
-  
   beforeAll(() => {
     // set configurations
     const configuration = {
