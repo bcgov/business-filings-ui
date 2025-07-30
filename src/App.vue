@@ -99,7 +99,7 @@ import {
 import { ConfigJson } from '@/resources'
 import { BreadcrumbMixin, CommonMixin, DateMixin, DirectorMixin, FilingMixin, NameRequestMixin }
   from '@/mixins'
-import { AuthServices, LegalServices } from '@/services/'
+import { AuthServices, EnumUtilities, LegalServices } from '@/services/'
 import {
   AccountInformationIF,
   ApiFilingIF,
@@ -107,16 +107,18 @@ import {
   DocumentIF,
   NameRequestIF,
   OfficeAddressIF,
-  PartyIF
+  PartyIF,
+  TaskTodoIF
 } from '@/interfaces'
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
 import { AuthorizationRoles, AuthorizedActions, FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
-import { CorpTypeCd }
+import { CorpTypeCd, GetCorpFullDescription, GetCorpNumberedDescription }
   from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore }
   from './stores'
 import { sleep } from './utils'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 
 @Component({
   components: {
@@ -181,6 +183,9 @@ export default class App extends Mixins(
 
   // root store references
   @Getter(useRootStore) isAuthorizationStatus!: boolean
+  @Getter(useRootStore) isBootstrapFiling!: boolean
+  @Getter(useRootStore) isBootstrapPending!: boolean
+  @Getter(useRootStore) isBootstrapTodo!: boolean
   @Getter(useRootStore) showFetchingDataSpinner!: boolean
   @Getter(useRootStore) showStartingAmalgamationSpinner!: boolean
 
@@ -303,6 +308,8 @@ export default class App extends Mixins(
   @Action(useRootStore) loadStateFiling!: () => Promise<void>
   @Action(useRootStore) setAccountInformation!: (x: AccountInformationIF) => void
   @Action(useRootStore) setAuthorizedActions!: (x: Array<AuthorizedActions>) => void
+  @Action(useRootStore) setBootstrapFilingStatus!: (x: FilingStatus) => void
+  @Action(useRootStore) setBootstrapFilingType!: (x: FilingTypes) => void
   @Action(useRootStore) setBusinessAddress!: (x: OfficeAddressIF) => void
   @Action(useRootStore) setBusinessEmail!: (x: string) => void
   @Action(useRootStore) setBusinessPhone!: (x: string) => void
@@ -366,6 +373,10 @@ export default class App extends Mixins(
     // fetch user info and update Launch Darkly
     this.setupLaunchDarkly()
 
+    // Business id safety check
+    if (!this.businessId && !this.tempRegNumber) {
+      throw new Error('Missing Business Id or Temporary Registration Number')
+    }
     // is this a business entity?
     if (this.businessId) {
       try {
@@ -379,6 +390,28 @@ export default class App extends Mixins(
         // At this point the system doesn't know why it's incomplete.
         // Since this is not an expected behaviour, report this.
         Sentry.captureException(error)
+      }
+    }
+    // is this a bootstrap filing? (eg, incorporation/registration/amalgamation/continuation)
+    if (this.tempRegNumber) {
+      try {
+        this.nameRequestInvalidType = null // reset for new fetches
+
+        // fetch the bootstrap filing and store the bootstrap item
+        const response = await LegalServices.fetchBootstrapFiling(this.tempRegNumber)
+        this.storeBootstrapItem(response)
+
+        // if it is a todo or a pending filing, and it has a NR, load it
+        // (this is to display the NR details in the Todo List/Pending List)
+        if ((this.isBootstrapTodo || this.isBootstrapPending) && this.localNrNumber) {
+          const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
+          this.storeNrData(nr, response)
+        }
+
+        this.dataLoaded = true
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+        this.nameRequestInvalidDialog = true
       }
     }
   }
@@ -520,6 +553,168 @@ export default class App extends Mixins(
     } else {
       throw new Error('Invalid entity contact info')
     }
+  }
+  /**
+   * Verifies and stores a bootstrap item's data to make this UI (entity dashboard)
+   * look like a business.
+   */
+  storeBootstrapItem (response: any): void {
+    const filing = response?.filing
+    const filingName = filing.header?.name as FilingTypes
+    const status = filing.header.status as FilingStatus
+    const foundingDate = filing.header?.effectiveDate || null // use the FE date as the founding date
+    const email =
+        filing.incorporationApplication?.contactPoint?.email ||
+        filing.amalgamationApplication?.contactPoint?.email ||
+        filing.continuationIn?.contactPoint?.email ||
+        filing.registration?.contactPoint?.email || null
+
+    if (!filing || !filing.business || !filing.header || !filingName || !status) {
+      throw new Error(`Invalid boostrap filing - missing required property = ${filing}`)
+    }
+
+    // special check for amalgamation application
+    if (filingName === FilingTypes.AMALGAMATION_APPLICATION && !filing.amalgamationApplication.type) {
+      throw new Error('Invalid bootstrap filing - missing amalgamation type')
+    }
+
+    // NB: different object from actual NR
+    const nameRequest = filing[filingName].nameRequest as {
+      legalName?: string
+      legalType: CorpTypeCd
+      nrNumber: string
+    }
+    if (!nameRequest) {
+      throw new Error('Invalid bootstrap filing - missing name request object')
+    }
+
+    // verify that this is a supported entity type
+    const legalType = nameRequest.legalType
+    if (!legalType || !this.supportedEntityTypes.includes(legalType)) {
+      throw new Error(`Invalid bootstrap filing - missing or unsupported legal type = ${legalType}`)
+    }
+
+    // store business info
+    this.setBootstrapFilingStatus(status)
+    this.setBootstrapFilingType(filingName)
+    this.setIdentifier(this.tempRegNumber)
+    this.setLegalType(legalType)
+    this.setGoodStanding(true) // draft apps are always in good standing
+    this.setFoundingDate(foundingDate)
+    this.setBusinessEmail(email)
+
+    // save local NR Number if present
+    if (nameRequest.nrNumber) this.localNrNumber = nameRequest.nrNumber
+
+    // store Legal Name if present
+    // special case to identify numbered amalgamations
+    if (filingName === FilingTypes.AMALGAMATION_APPLICATION) {
+      this.setLegalName(nameRequest.legalName || 'Numbered Amalgamated Company')
+    } else { this.setLegalName(nameRequest.legalName || GetCorpNumberedDescription(this.getLegalType)) }
+
+    // store the bootstrap item in the right list
+    if (this.isBootstrapTodo) this.storeBootstrapTodo(response)
+    else if (this.isBootstrapPending) this.storeBootstrapPending(response)
+    else if (this.isBootstrapFiling) this.storeBootstrapFiling(response)
+    else throw new Error(`Invalid boostrap filing - not a task or pending or filing = ${filing}`)
+  }
+
+  /** Stores bootstrap item in the Todo List. */
+  storeBootstrapTodo (response: any): void {
+    const filing = response.filing as TaskTodoIF
+    // NB: these were already validated in storeBootstrapItem()
+    const header = filing.header
+    const data = filing[header.name]
+    const status = header.status
+
+    const description = GetCorpFullDescription(data.nameRequest.legalType)
+    const dba = this.isEntitySoleProp ? ' / Doing Business As (DBA) ' : ' '
+    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type, status)
+
+    // save display name for later
+    filing.displayName = EnumUtilities.isTypeAmalgamationApplication(header)
+      ? filingName
+      : `${description}${dba}${filingName}`
+
+    // add this as a task item
+    const taskItem: ApiTaskIF = {
+      enabled: true,
+      order: 1,
+      task: { filing }
+    }
+    this.setTasks([taskItem])
+  }
+
+  /** Stores bootstrap item in the Pending List. */
+  storeBootstrapPending (response: any): void {
+    const filing = response.filing as TaskTodoIF
+    // NB: these were already validated in storeBootstrapItem()
+    const header = filing.header
+    const data = filing[header.name]
+    const status = header.status
+
+    // set addresses
+    this.storeAddresses({ data: data.offices || [] })
+
+    // set parties
+    this.storeParties({ data: { parties: data.parties || [] } })
+
+    const description = GetCorpFullDescription(data.nameRequest.legalType)
+    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type, status)
+
+    // save display name for later
+    filing.displayName = `${description} ${filingName}`
+
+    // add this as a pending item
+    this.setPendingsList([filing])
+  }
+
+  /** Stores bootstrap item in the Filing History List. */
+  storeBootstrapFiling (response: any): void {
+    const filing = response.filing as TaskTodoIF
+    // NB: these were already validated in storeBootstrapItem()
+    const header = filing.header
+    const data = filing[header.name]
+    const status = header.status
+
+    // set addresses
+    this.storeAddresses({ data: data.offices || [] })
+
+    // set parties
+    this.storeParties({ data: { parties: data.parties || [] } })
+
+    const description = GetCorpFullDescription(data.nameRequest.legalType)
+    const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type, status)
+    const displayName = EnumUtilities.isTypeAmalgamationApplication(header)
+      ? filingName
+      : `${description} ${filingName}`
+
+    // add this as a filing item
+    const filingItem = {
+      availableOnPaperOnly: header.availableOnPaperOnly,
+      businessIdentifier: filing.business.identifier || this.getIdentifier,
+      commentsCount: response.commentsCount,
+      commentsLink: response.commentsLink,
+      displayLedger: response.displayLedger,
+      displayName,
+      documentsLink: response.documentsLink,
+      effectiveDate: this.apiToUtcString(header.effectiveDate),
+      filingId: header.filingId,
+      filingLink: response.filingLink,
+      filingSubType: data.type,
+      isFutureEffective: header.isFutureEffective,
+      name: header.name,
+      status: header.status,
+      submittedDate: this.apiToUtcString(header.date),
+      submitter: header.submitter,
+      data: {
+        applicationDate: this.dateToYyyyMmDd(this.apiToDate(header.date)),
+        legalFilings: [header.name],
+        order: data.courtOrder
+      },
+      latestReviewComment: header.latestReviewComment
+    } as ApiFilingIF
+    this.setFilings([filingItem])
   }
 
   storeNrData (nr: NameRequestIF, app: any): void {
