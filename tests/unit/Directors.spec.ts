@@ -31,11 +31,10 @@ describe('Directors as a COOP', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
     rootStore.configObject = BusinessConfigCp
   })
 
@@ -335,11 +334,10 @@ describe('Directors as a COOP (no sync)', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
     rootStore.configObject = BusinessConfigCp
   })
 
@@ -583,11 +581,10 @@ describe('Directors as a BCOMP', () => {
     businessStore.setIdentifier('BC0007291')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
     rootStore.configObject = BusinessConfigBen
   })
 
@@ -905,11 +902,10 @@ describe('Appoint New Director tests', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
     rootStore.configObject = BusinessConfigCp
   })
 
@@ -1225,11 +1221,10 @@ describe('Edit Directors - Legal Name Correction Information', () => {
   beforeAll(() => {
     setActivePinia(createPinia())
     useBusinessStore().setIdentifier('CP0001191')
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(async () => {

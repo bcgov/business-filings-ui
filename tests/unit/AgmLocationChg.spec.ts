@@ -42,12 +42,11 @@ describe('AGM Location Chg view', () => {
     window.location = { assign: vi.fn() } as any
 
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')

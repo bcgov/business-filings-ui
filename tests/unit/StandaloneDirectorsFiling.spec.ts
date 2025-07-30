@@ -348,11 +348,10 @@ describe('Standalone Directors Filing - Part 1B - UI - Public User', () => {
 describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff payment', () => {
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
   beforeEach(() => {
     // init store
@@ -443,11 +442,10 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
 describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payment', () => {
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(() => {
@@ -543,11 +541,10 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
 describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff payment', () => {
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(() => {
@@ -643,12 +640,11 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     window.location = { assign: vi.fn() } as any
 
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
@@ -998,11 +994,10 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'t need to be paid', () => {
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(() => {
@@ -1149,11 +1144,10 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     window.location = { assign: vi.fn() } as any
 
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {
@@ -1316,11 +1310,10 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
 
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(async () => {
@@ -1480,11 +1473,10 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
     window.location = { assign: vi.fn() } as any
 
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {
@@ -1716,11 +1708,10 @@ describe('Standalone Directors Filing - payment required error', () => {
     window.location = { assign: vi.fn() } as any
 
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {

@@ -203,13 +203,12 @@ describe('App as a COOP', () => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2',
       'VUE_APP_AUTH_API_GW_URL': 'https://auth-api-gw.url/',
       'VUE_APP_AUTH_API_VERSION': 'v1'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(async () => {
@@ -541,13 +540,12 @@ describe('App as a BCOMP', () => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2',
       'VUE_APP_AUTH_API_GW_URL': 'https://auth-api-gw.url/',
       'VUE_APP_AUTH_API_VERSION': 'v1'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(async () => {
@@ -932,13 +930,12 @@ describe('App as an historical business - Amalgamation', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2',
       'VUE_APP_AUTH_API_GW_URL': 'https://auth-api-gw.url/',
       'VUE_APP_AUTH_API_VERSION': 'v1'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(async () => {
@@ -1061,13 +1058,12 @@ describe('App as an historical business - Voluntary Dissolution', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'dummy-token')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2',
       'VUE_APP_AUTH_API_GW_URL': 'https://auth-api-gw.url/',
       'VUE_APP_AUTH_API_VERSION': 'v1'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(async () => {

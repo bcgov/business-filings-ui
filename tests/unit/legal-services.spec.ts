@@ -20,11 +20,10 @@ describe('Legal Services', () => {
     post = sinon.stub(axios, 'post')
     put = sinon.stub(axios, 'put')
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterEach(() => {

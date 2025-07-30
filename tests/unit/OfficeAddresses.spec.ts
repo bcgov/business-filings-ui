@@ -34,11 +34,10 @@ function getAddressX (x: number, type: string): any {
 describe('OfficeAddresses as a COOP', () => {
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setIdentifier('CP0000841')
   })

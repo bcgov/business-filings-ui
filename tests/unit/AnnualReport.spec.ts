@@ -41,12 +41,11 @@ const rootStore = useRootStore()
 describe('Annual Report - Part 1 - UI', () => {
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
@@ -406,11 +405,10 @@ describe('Annual Report - Part 1 - UI', () => {
 describe('Annual Report - Part 1B - UI (BCOMP)', () => {
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
   beforeEach(() => {
     // init store
@@ -548,11 +546,10 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
 describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
   beforeEach(() => {
     // init store
@@ -634,11 +631,10 @@ describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
 describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
   beforeEach(() => {
     // init store
@@ -724,11 +720,10 @@ describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
 describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
   beforeEach(() => {
     // init store
@@ -810,12 +805,11 @@ describe('Annual Report - Part 3 - Submitting', () => {
 
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
   beforeAll(() => {
     // mock the window.location.assign function
@@ -1118,12 +1112,11 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     window.location = { assign: vi.fn() } as any
 
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {
@@ -1258,11 +1251,10 @@ describe('Annual Report - Part 4 - Saving', () => {
 
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(() => {
@@ -1493,11 +1485,10 @@ describe('Annual Report - Part 5 - Data', () => {
 
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(async () => {
@@ -1775,11 +1766,10 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
 
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(async () => {
@@ -1938,11 +1928,10 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     window.location = { assign: vi.fn() } as any
 
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {
@@ -2160,11 +2149,10 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
 
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
 
     businessStore.setLegalName('Legal Name - CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
@@ -2281,11 +2269,10 @@ describe('Annual Report - payment required error', () => {
     window.location = { assign: vi.fn() } as any
 
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {

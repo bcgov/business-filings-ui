@@ -62,11 +62,10 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // init store
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
     rootStore.setAuthorizedActions(PublicUserActions)
   })
 
@@ -286,11 +285,10 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
 describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff payment', () => {
   beforeAll(() => {
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(() => {
@@ -366,11 +364,10 @@ describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff p
 describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff payment', () => {
   beforeAll(() => {
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(() => {
@@ -450,11 +447,10 @@ describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff 
 describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staff payment', () => {
   beforeAll(() => {
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(() => {
@@ -528,11 +524,10 @@ describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staf
 describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => {
   beforeAll(() => {
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(() => {
@@ -611,12 +606,11 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     window.location = { assign: vi.fn() } as any
 
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {
@@ -968,12 +962,11 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     window.location = { assign: vi.fn() } as any
 
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {
@@ -1274,11 +1267,10 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
     window.location = { assign: vi.fn() } as any
 
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {
@@ -1420,11 +1412,10 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     window.location = { assign: vi.fn() } as any
 
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {
@@ -1572,11 +1563,10 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
 
   beforeAll(() => {
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(() => {
@@ -1670,11 +1660,10 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
 
   beforeAll(() => {
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   beforeEach(() => {
@@ -1777,11 +1766,10 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     window.location = { assign: vi.fn() } as any
 
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {
@@ -2026,11 +2014,10 @@ describe('Standalone Office Address Filing - payment required error', () => {
     window.location = { assign: vi.fn() } as any
 
     // init store
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   afterAll(() => {

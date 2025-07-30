@@ -23,11 +23,10 @@ document.body.setAttribute('data-app', 'true')
 describe('AddStaffNotationDialog', () => {
   beforeAll(() => {
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
       'VUE_APP_LEGAL_API_VERSION_2': 'v2'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
   })
 
   it('renders the page contents correctly for standard filing', () => {
