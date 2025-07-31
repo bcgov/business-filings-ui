@@ -15,6 +15,7 @@ describe('Configuration Actions', () => {
     VUE_APP_PATH: '/business',
     VUE_APP_ADDRESS_COMPLETE_KEY: 'address complete key',
     VUE_APP_AUTH_API_URL: 'auth api url',
+    VUE_APP_AUTH_API_GW_URL: 'auth api gw url',
     VUE_APP_AUTH_API_VERSION: '/auth api version',
     VUE_APP_AUTH_WEB_URL: 'auth web url',
     VUE_APP_BUSINESSES_URL: 'businesses url',
@@ -29,6 +30,7 @@ describe('Configuration Actions', () => {
     // VUE_APP_BUSINESS_API_GW_URL: 'business api gw url',
     // VUE_APP_BUSINESS_API_VERSION_2: '/business api version 2',
     VUE_APP_PAY_API_URL: 'pay api url',
+    VUE_APP_PAY_API_GW_URL: 'pay api gw url',
     VUE_APP_PAY_API_VERSION: '/pay api version',
     VUE_APP_REGISTRY_HOME_URL: 'registry home url',
     VUE_APP_SENTRY_DSN: 'sentry dsn',
@@ -53,6 +55,7 @@ describe('Configuration Actions', () => {
     await configurationStore.loadConfiguration(env)
     expect(configurationStore.getAddressCompleteKey).toBe('address complete key')
     expect(configurationStore.getAuthApiUrl).toBe('auth api url/auth api version/')
+    expect(configurationStore.getAuthApiGwUrl).toBe('auth api gw url/auth api version/')
     expect(configurationStore.getAuthWebUrl).toBe('auth web url')
     expect(configurationStore.getCreateUrl).toBe('business create url')
     expect(configurationStore.getEditUrl).toBe('business edit url')
@@ -61,6 +64,7 @@ describe('Configuration Actions', () => {
     expect(configurationStore.getCorporateOnlineUrl).toBe('corporate online url')
     expect(configurationStore.getLegalApiUrl).toBe('legal api url/legal api version 2/')
     expect(configurationStore.getPayApiUrl).toBe('pay api url/pay api version/')
+    expect(configurationStore.getPayApiGwUrl).toBe('pay api gw url/pay api version/')
     expect(configurationStore.getRegHomeUrl).toBe('registry home url')
     expect(configurationStore.getSentryDsn).toBe('sentry dsn')
     expect(configurationStore.getSiteminderLogoutUrl).toBe('siteminder logout url')

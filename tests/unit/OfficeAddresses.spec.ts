@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import { mount } from '@vue/test-utils'
 import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 import { OfficeAddresses } from '@/components/common'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
@@ -15,6 +15,7 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
+const configurationStore = useConfigurationStore()
 const sinonAxiosGet = sinon.stub(axios, 'get')
 
 function getAddressX (x: number, type: string): any {
@@ -32,6 +33,11 @@ function getAddressX (x: number, type: string): any {
 
 describe('OfficeAddresses as a COOP', () => {
   beforeAll(() => {
+    // set configurations
+    configurationStore.setConfiguration({
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    })
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setIdentifier('CP0000841')
   })
@@ -42,7 +48,7 @@ describe('OfficeAddresses as a COOP', () => {
 
     // mock GET addresses
     sinonAxiosGet
-      .withArgs('businesses/CP0000841/addresses?date=2020-11-16')
+      .withArgs('https://legal-api.url/v2/businesses/CP0000841/addresses?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {
@@ -120,7 +126,7 @@ describe('OfficeAddresses as a COOP', () => {
 
     // mock GET addresses
     sinonAxiosGet
-      .withArgs('businesses/CP0000841/addresses?date=2020-11-16')
+      .withArgs('https://legal-api.url/v2/businesses/CP0000841/addresses?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {
@@ -210,7 +216,7 @@ describe('OfficeAddresses as a BCOMP', () => {
 
     // mock GET addresses
     sinonAxiosGet
-      .withArgs('businesses/BC1218881/addresses?date=2020-11-16')
+      .withArgs('https://legal-api.url/v2/businesses/BC1218881/addresses?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {
@@ -327,7 +333,7 @@ describe('OfficeAddresses as a BCOMP', () => {
 
     // mock GET addresses
     sinonAxiosGet
-      .withArgs('businesses/BC1218881/addresses?date=2020-11-16')
+      .withArgs('https://legal-api.url/v2/businesses/BC1218881/addresses?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {

@@ -5,18 +5,25 @@ import { ApiBusinessIF, ApiFilingIF, CommentIF, DocumentIF, FetchDocumentsIF, Pr
   from '@/interfaces'
 import { AuthorizedActions, DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
 import { StatusCodes } from 'http-status-codes'
+import { useConfigurationStore } from '@/stores/configurationStore'
 
 /**
  * Class that provides integration with the Legal API.
  */
 export default class LegalServices {
+  /** The legal Api URL. */
+  static get legalApiUrl (): string {
+    const configStore = useConfigurationStore()
+    return configStore.getLegalApiUrl
+  }
+
   /**
    * Fetches business object.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the business object
    */
   static async fetchBusiness (businessId: string): Promise<ApiBusinessIF> {
-    const url = `businesses/${businessId}`
+    const url = `${this.legalApiUrl}businesses/${businessId}`
     return axios.get(url)
       .then(response => {
         const businessInfo = response?.data?.business as ApiBusinessIF
@@ -34,7 +41,7 @@ export default class LegalServices {
    * @returns a promise to return the list of authorized actions
    */
   static async fetchAuthorizedActions (): Promise<AuthorizedActions[]> {
-    return axios.get('permissions').then(response => {
+    return axios.get(`${this.legalApiUrl}permissions`).then(response => {
       const data = response?.data
       if (!data) throw new Error('Invalid API response')
       return data.authorizedPermissions
@@ -47,7 +54,7 @@ export default class LegalServices {
    * @returns the axios response
    */
   static async fetchTasks (businessId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/tasks`
+    const url = `${this.legalApiUrl}businesses/${businessId}/tasks`
     return axios.get(url)
   }
 
@@ -57,7 +64,7 @@ export default class LegalServices {
    * @returns the filings list
    */
   static async fetchFilings (businessId: string): Promise<ApiFilingIF[]> {
-    const url = `businesses/${businessId}/filings`
+    const url = `${this.legalApiUrl}businesses/${businessId}/filings`
     return axios.get(url)
       .then(response => {
         const filings = response?.data?.filings as ApiFilingIF[]
@@ -77,7 +84,7 @@ export default class LegalServices {
    * @returns the axios response
    */
   static async fetchAddresses (businessId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/addresses`
+    const url = `${this.legalApiUrl}businesses/${businessId}/addresses`
     return axios.get(url)
   }
 
@@ -88,7 +95,7 @@ export default class LegalServices {
    * @returns the axios response
    */
   static async fetchParties (businessId: string, role: Roles = null): Promise<AxiosResponse> {
-    let url = `businesses/${businessId}/parties`
+    let url = `${this.legalApiUrl}businesses/${businessId}/parties`
     if (role) url += `?role=${role}`
     return axios.get(url)
   }
@@ -101,7 +108,7 @@ export default class LegalServices {
    * @returns the bootstrap filing response (a single filing)
    */
   static async fetchBootstrapFiling (tempRegNumber: string): Promise<any> {
-    const url = `businesses/${tempRegNumber}/filings`
+    const url = `${this.legalApiUrl}businesses/${tempRegNumber}/filings`
     return axios.get(url)
       // workaround because data is at "response.data.data"
       .then(response => response?.data)
@@ -115,7 +122,7 @@ export default class LegalServices {
    * @returns a promise to return the NR data, or null if not found
    */
   static async fetchNameRequest (nrNumber: string, phone = '', email = ''): Promise<any> {
-    const url = `nameRequests/${nrNumber}/validate?phone=${phone}&email=${email}`
+    const url = `${this.legalApiUrl}nameRequests/${nrNumber}/validate?phone=${phone}&email=${email}`
 
     return axios.get(url)
       .then(response => {
@@ -143,7 +150,7 @@ export default class LegalServices {
    * @returns the filing object
    */
   static async fetchFiling (url: string): Promise<any> {
-    return axios.get(url)
+    return axios.get(url, { baseURL: this.legalApiUrl })
       .then(response => {
         const filing = response?.data?.filing
         if (!filing) {
@@ -163,7 +170,7 @@ export default class LegalServices {
    * @returns the filing object
    */
   static async createFiling (businessId: string, filing: any, isDraft: boolean): Promise<any> {
-    let url = `businesses/${businessId}/filings`
+    let url = `${this.legalApiUrl}businesses/${businessId}/filings`
     if (isDraft) {
       url += '?draft=true'
     }
@@ -186,7 +193,7 @@ export default class LegalServices {
    * @returns the filing object associated with the temporary business
    */
   static async createDraftBusiness (businessRequest: any): Promise<any> {
-    const url = `businesses?draft=true`
+    const url = `${this.legalApiUrl}businesses?draft=true`
 
     return axios.post(url, businessRequest)
       .then(response => {
@@ -209,7 +216,7 @@ export default class LegalServices {
    * @returns the filing object
    */
   static async updateFiling (businessId: string, filing: any, filingId: number, isDraft: boolean): Promise<any> {
-    let url = `businesses/${businessId}/filings/${filingId}`
+    let url = `${this.legalApiUrl}businesses/${businessId}/filings/${filingId}`
     if (isDraft) {
       url += '?draft=true'
     }
@@ -232,7 +239,7 @@ export default class LegalServices {
    * @returns the comments array
    */
   static async fetchComments (url: string): Promise<CommentIF[]> {
-    return axios.get(url)
+    return axios.get(url, { baseURL: this.legalApiUrl })
       .then(response => {
         const comments = response?.data?.comments
         if (!comments) {
@@ -250,7 +257,7 @@ export default class LegalServices {
    * @returns the fetch documents object
    */
   static async fetchDocuments (url: string): Promise<FetchDocumentsIF> {
-    return axios.get(url)
+    return axios.get(url, { baseURL: this.legalApiUrl })
       .then(response => {
         const documents = response?.data?.documents
         if (!documents) {
@@ -275,7 +282,8 @@ export default class LegalServices {
 
     const config = {
       headers: { 'Accept': 'application/pdf' },
-      responseType: 'blob' as 'json'
+      responseType: 'blob' as 'json',
+      baseURL: this.legalApiUrl
     }
 
     return axios.get(document.link, config).then(response => {
@@ -333,7 +341,7 @@ export default class LegalServices {
    * @returns the presigned url object
    */
   static async getPresignedUrl (fileName: string): Promise<PresignedUrlIF> {
-    const url = `documents/${fileName}/signatures`
+    const url = `${this.legalApiUrl}documents/${fileName}/signatures`
     return axios.get(url)
       .then(response => response?.data)
   }
@@ -353,7 +361,7 @@ export default class LegalServices {
       'x-amz-meta-key': `${key}`,
       'Content-Disposition': `attachment; filename=${file.name}`
     }
-    return axios.put(url, file, { headers })
+    return axios.put(url, file, { headers, baseURL: this.legalApiUrl })
   }
 
   //
@@ -366,7 +374,7 @@ export default class LegalServices {
    * @returns the axios response
    */
   static async fetchCredentials (businessId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials`
+    const url = `${this.legalApiUrl}businesses/${businessId}/digitalCredentials`
     return axios.get(url)
       .catch(error => {
         // display error in console if not HTTP 401
@@ -385,7 +393,7 @@ export default class LegalServices {
    * @returns the axios response
    */
   static async createCredentialOutOfBandInvitation (businessId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/invitation`
+    const url = `${this.legalApiUrl}businesses/${businessId}/digitalCredentials/invitation`
     return axios.post(url)
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -400,7 +408,7 @@ export default class LegalServices {
    * @returns the axios response
    */
   static async fetchCredentialConnections (businessId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/connections`
+    const url = `${this.legalApiUrl}businesses/${businessId}/digitalCredentials/connections`
     return axios.get(url)
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -415,7 +423,7 @@ export default class LegalServices {
    * @returns the axios response
    */
   static async removeActiveCredentialConnection (businessId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/activeConnection`
+    const url = `${this.legalApiUrl}businesses/${businessId}/digitalCredentials/activeConnection`
     return axios.delete(url)
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -431,7 +439,7 @@ export default class LegalServices {
    * @returns the axios response
    */
   static async removeCredentialConnection (businessId: string, connectionId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/connections/${connectionId}`
+    const url = `${this.legalApiUrl}businesses/${businessId}/digitalCredentials/connections/${connectionId}`
     return axios.delete(url)
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -450,7 +458,7 @@ export default class LegalServices {
     businessId: string,
     connectionId: string)
     : Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/connections/${connectionId}/attest`
+    const url = `${this.legalApiUrl}businesses/${businessId}/digitalCredentials/connections/${connectionId}/attest`
     return axios.post(url)
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -470,7 +478,7 @@ export default class LegalServices {
     credentialType: DigitalCredentialTypes,
     preconditionsResolved?: { selfAttestedRoles: string[] })
     : Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/${credentialType}`
+    const url = `${this.legalApiUrl}businesses/${businessId}/digitalCredentials/${credentialType}`
     return axios.post(url, { preconditionsResolved })
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -490,7 +498,7 @@ export default class LegalServices {
     credentialId: string,
     reissue = false)
     : Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/${credentialId}/revoke`
+    const url = `${this.legalApiUrl}businesses/${businessId}/digitalCredentials/${credentialId}/revoke`
     return axios.post(url, { reissue })
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -506,7 +514,7 @@ export default class LegalServices {
    * @returns the axios response
    */
   static async removeCredential (businessId: string, credentialId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/${credentialId}`
+    const url = `${this.legalApiUrl}businesses/${businessId}/digitalCredentials/${credentialId}`
     return axios.delete(url)
       .catch(error => {
         // eslint-disable-next-line no-console

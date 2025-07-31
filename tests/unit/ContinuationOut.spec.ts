@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import ContinuationOut from '@/views/ContinuationOut.vue'
 import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
@@ -30,6 +30,7 @@ const localVue = createLocalVue()
 localVue.use(VueRouter)
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
+const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
 
 describe('Continuation Out view', () => {
@@ -40,6 +41,10 @@ describe('Continuation Out view', () => {
     businessStore.setLegalName('My Test Entity')
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
+    configurationStore.setConfiguration({
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    })
     rootStore.filingData = []
     rootStore.setAuthorizedActions(BusinessRegistryStaffActions)
   })

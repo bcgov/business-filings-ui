@@ -37,10 +37,9 @@ describe('Court Order View', () => {
     window.location = { assign: vi.fn() } as any
 
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
@@ -181,10 +180,9 @@ describe('Court Order View User', () => {
     window.location = { assign: vi.fn() } as any
 
     // set configurations
-    const configuration = {
+    configurationStore.setConfiguration({
       'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
-    }
-    configurationStore.setConfiguration(configuration)
+    })
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')

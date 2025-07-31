@@ -16,9 +16,11 @@ steps:
   - name: node:20.5.1
     entrypoint: npm
     env:
+      - 'VUE_APP_AUTH_API_KEY=$_VUE_APP_AUTH_API_KEY'
       - 'VUE_APP_ADDRESS_COMPLETE_KEY=$_VUE_APP_ADDRESS_COMPLETE_KEY'
       - 'VUE_APP_BUSINESS_API_KEY=$_VUE_APP_BUSINESS_API_KEY'
       - 'VUE_APP_BUSINESS_FILING_LD_CLIENT_ID=$_VUE_APP_BUSINESS_FILING_LD_CLIENT_ID'
+      - 'VUE_APP_PAY_API_KEY=$_VUE_APP_PAY_API_KEY'
     args: ['run', 'build']
 
   #

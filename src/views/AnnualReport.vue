@@ -487,6 +487,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useRootStore) getCurrentYear!: number
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useRootStore) getFolioNumber!: string
+  @Getter(useConfigurationStore) getLegalApiUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLastAddressChangeDate!: string
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
@@ -713,7 +714,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   }
 
   async fetchDraftFiling (): Promise<void> {
-    const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
+    const url = `${this.getLegalApiUrl}businesses/${this.getIdentifier}/filings/${this.filingId}`
     await LegalServices.fetchFiling(url).then(filing => {
       // verify data
       if (!filing) throw new Error('Missing filing')

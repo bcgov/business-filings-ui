@@ -5,7 +5,7 @@ import { mount, Wrapper } from '@vue/test-utils'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import Directors from '@/components/common/Directors.vue'
 import { BusinessConfigBen } from '@/resources/BEN'
 import { BusinessConfigCp } from '@/resources/CP'
@@ -19,6 +19,7 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
+const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
 
 describe('Directors as a COOP', () => {
@@ -30,13 +31,17 @@ describe('Directors as a COOP', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
+    configurationStore.setConfiguration({
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    })
     rootStore.configObject = BusinessConfigCp
   })
 
   beforeEach(async () => {
     // mock GET directors
     sinon.stub(axios, 'get')
-      .withArgs('businesses/CP0001191/directors?date=2020-11-16')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/directors?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -329,13 +334,17 @@ describe('Directors as a COOP (no sync)', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
+    configurationStore.setConfiguration({
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    })
     rootStore.configObject = BusinessConfigCp
   })
 
   beforeEach(async () => {
     // mock GET directors
     sinon.stub(axios, 'get')
-      .withArgs('businesses/CP0001191/directors?date=2020-11-16')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/directors?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -572,13 +581,17 @@ describe('Directors as a BCOMP', () => {
     businessStore.setIdentifier('BC0007291')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
+    configurationStore.setConfiguration({
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    })
     rootStore.configObject = BusinessConfigBen
   })
 
   beforeEach(async () => {
     // mock GET directors
     sinon.stub(axios, 'get')
-      .withArgs('businesses/BC0007291/directors?date=2020-11-16')
+      .withArgs('https://legal-api.url/v2/businesses/BC0007291/directors?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -889,13 +902,17 @@ describe('Appoint New Director tests', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setFoundingDate('2018-03-01T00:00:00')
+    configurationStore.setConfiguration({
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    })
     rootStore.configObject = BusinessConfigCp
   })
 
   beforeEach(async () => {
     // mock GET directors
     sinon.stub(axios, 'get')
-      .withArgs('businesses/CP0001191/directors?date=2020-11-16')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/directors?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1204,11 +1221,15 @@ describe('Edit Directors - Legal Name Correction Information', () => {
   beforeAll(() => {
     setActivePinia(createPinia())
     useBusinessStore().setIdentifier('CP0001191')
+    configurationStore.setConfiguration({
+      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
+      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+    })
   })
 
   beforeEach(async () => {
     sinon.stub(axios, 'get')
-      .withArgs('businesses/CP0001191/directors?date=2020-11-16')
+      .withArgs('https://legal-api.url/v2/businesses/CP0001191/directors?date=2020-11-16')
       .returns(Promise.resolve({
         data: {
           directors: [
