@@ -15,6 +15,12 @@ export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: 
   const businessIdRegex = /^(BC|C|CP|FM)\d{7}$/
   if (businessIdRegex.test(id)) {
     sessionStorage.setItem('BUSINESS_ID', id)
+    // ensure we don't already have a Temp Reg Number in scope
+    sessionStorage.removeItem('TEMP_REG_NUMBER')
+  } else if (id?.startsWith('T')) {
+    sessionStorage.setItem('TEMP_REG_NUMBER', id)
+    // ensure we don't already have a Business ID in scope
+    sessionStorage.removeItem('BUSINESS_ID')
   } else {
     // Make sure we don't have any previously set values
     // Handle no business id issue in main.ts
@@ -23,7 +29,7 @@ export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: 
   }
 
   // set Base for Vue Router
-  // eg, "/business/CPxxx/"
+  // eg, "/business/CPxxx/" or "/business/Txxxxx/"
   const vueRouterBase = processEnvBaseUrl + id + '/'
   sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
 
