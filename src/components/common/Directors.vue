@@ -1355,7 +1355,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     // Legal name confirmation checkbox
     this.showErrors = this.editFormShowHide.showName && !this.legalNameConfirmed
 
-    if (mainFormIsValid && addressFormIsValid && this.legalNameConfirmed) {
+    if (mainFormIsValid && addressFormIsValid && (!this.editFormShowHide.showName || this.legalNameConfirmed)) {
       // save data from BaseAddress component
       // - only save address if a change was made, ie there is an in-progress address from the component
       if (!Object.values(this.inProgressDelivAddress).every(el => el === undefined)) {
