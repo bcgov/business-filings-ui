@@ -1268,6 +1268,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     // clear in-progress director data from form in BaseAddress component - ie: start fresh
     this.inProgressDelivAddress = null
     this.inProgressMailAddress = null
+    this.inheritDeliveryAddress = false
     this.directorEditInProgress = true
     this.activeIndex = index
     this.messageIndex = index
