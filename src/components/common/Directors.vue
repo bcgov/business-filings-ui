@@ -1351,12 +1351,11 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     if (mainFormIsValid && addressFormIsValid && (!this.editFormShowHide.showName || this.legalNameConfirmed)) {
       // save data from BaseAddress component
       // - only save address if a change was made, ie there is an in-progress address from the component
-      console.log('inProgressMailAddress1:', this.inProgressMailAddress)
+
       if (!Object.values(this.inProgressDelivAddress).every(el => el === undefined)) {
         director.deliveryAddress = this.inProgressDelivAddress
       }
 
-     console.log('inProgressMailAddress2:', this.inProgressMailAddress)
       if (this.isBaseCompany) {
         if (!Object.values(this.inProgressMailAddress).every(el => el === undefined)) {
           director.mailingAddress = this.inProgressMailAddress
