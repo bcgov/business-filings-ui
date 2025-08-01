@@ -1268,6 +1268,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     // clear in-progress director data from form in BaseAddress component - ie: start fresh
     this.inProgressDelivAddress = null
     this.inProgressMailAddress = null
+    this.inheritDeliveryAddress = false
     this.directorEditInProgress = true
     this.activeIndex = index
     this.messageIndex = index
@@ -1350,10 +1351,12 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     if (mainFormIsValid && addressFormIsValid && (!this.editFormShowHide.showName || this.legalNameConfirmed)) {
       // save data from BaseAddress component
       // - only save address if a change was made, ie there is an in-progress address from the component
+      console.log('inProgressMailAddress1:', this.inProgressMailAddress)
       if (!Object.values(this.inProgressDelivAddress).every(el => el === undefined)) {
         director.deliveryAddress = this.inProgressDelivAddress
       }
 
+     console.log('inProgressMailAddress2:', this.inProgressMailAddress)
       if (this.isBaseCompany) {
         if (!Object.values(this.inProgressMailAddress).every(el => el === undefined)) {
           director.mailingAddress = this.inProgressMailAddress
