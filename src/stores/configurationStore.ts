@@ -1,6 +1,5 @@
 import { ConfigurationStateIF } from '@/interfaces'
 import { defineStore } from 'pinia'
-import axios from '@/axios-auth'
 import { GetFeatureFlag } from '@/utils'
 
 export const useConfigurationStore = defineStore('configuration', {
@@ -72,9 +71,23 @@ export const useConfigurationStore = defineStore('configuration', {
       return ''
     },
 
+    getAuthApiGwUrl (state: ConfigurationStateIF): string {
+      if (state.configuration?.VUE_APP_AUTH_API_GW_URL && state.configuration?.VUE_APP_AUTH_API_VERSION) {
+        return state.configuration.VUE_APP_AUTH_API_GW_URL + state.configuration.VUE_APP_AUTH_API_VERSION + '/'
+      }
+      return ''
+    },
+
     getPayApiUrl (state: ConfigurationStateIF): string {
       if (state.configuration?.VUE_APP_PAY_API_URL && state.configuration?.VUE_APP_PAY_API_VERSION) {
         return state.configuration.VUE_APP_PAY_API_URL + state.configuration.VUE_APP_PAY_API_VERSION + '/'
+      }
+      return ''
+    },
+
+    getPayApiGwUrl (state: ConfigurationStateIF): string {
+      if (state.configuration?.VUE_APP_PAY_API_GW_URL && state.configuration?.VUE_APP_PAY_API_VERSION) {
+        return state.configuration.VUE_APP_PAY_API_GW_URL + state.configuration.VUE_APP_PAY_API_VERSION + '/'
       }
       return ''
     },
@@ -140,17 +153,12 @@ export const useConfigurationStore = defineStore('configuration', {
       (<any>window).keycloakClientId = keycloakClientId
     },
 
-    setAxiosBaseUrl (legalApiUrl: string) {
-      axios.defaults.baseURL = legalApiUrl
-    },
-
     /** Fetches the configuration from the web server and, if successful, triggers some actions. */
     loadConfiguration (env = import.meta.env): Promise<any> {
       // need to return a promise because action is called via dispatch
       return new Promise((resolve) => {
         this.setConfiguration(env)
         this.setSessionVariables(env)
-        this.setAxiosBaseUrl(this.getLegalApiUrl)
 
         resolve(import.meta.env)
       })
