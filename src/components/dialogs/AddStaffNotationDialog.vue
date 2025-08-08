@@ -88,8 +88,6 @@
               :maxSize="MAX_FILE_SIZE"
               :pageSize="PageSizes.LETTER_PORTRAIT"
               :userId="getKeycloakGuid"
-              :getPresignedUrl="LegalServices.getPresignedUrl"
-              :uploadToUrl="LegalServices.uploadToUrl"
             />
           </div>
 
@@ -175,7 +173,6 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   readonly NOTATION_MAX_LENGTH = 2000 // characters
 
   // For template
-  readonly LegalServices = LegalServices
   readonly PageSizes = PageSizes
 
   /** Prop to display the dialog. */
