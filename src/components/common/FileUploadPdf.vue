@@ -16,11 +16,11 @@
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios'
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { PageSizes, PAGE_SIZE_DICT } from '@/enums'
-import { PdfInfoIF, PresignedUrlIF } from '@/interfaces'
+import { PdfInfoIF } from '@/interfaces'
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf'
+import { LegalServices } from '@/services'
 
 @Component({})
 export default class FileUploadPdf extends Vue {
@@ -31,12 +31,6 @@ export default class FileUploadPdf extends Vue {
   @Prop({ default: 0 }) readonly maxSize!: number // in MB
   @Prop({ default: null }) readonly pageSize!: PageSizes
   @Prop({ required: true }) readonly userId!: string
-
-  // Network service functions
-  @Prop({ required: true })
-  readonly getPresignedUrl!: (fileName: string) => Promise<PresignedUrlIF>
-  @Prop({ required: true })
-  readonly uploadToUrl!: (url: string, file: File, key: string, userId: string) => Promise<AxiosResponse>
 
   /** Component key, used to force it to re-render. */
   count = 0
@@ -251,10 +245,10 @@ export default class FileUploadPdf extends Vue {
   async uploadFile (file: File): Promise<string> {
     try {
       // NB: will throw on API error
-      const psu = await this.getPresignedUrl(file.name)
+      const psu = await LegalServices.getPresignedUrl(file.name)
 
       // NB: will throw on API error
-      const res = await this.uploadToUrl(psu.preSignedUrl, file, psu.key,
+      const res = await LegalServices.uploadToUrl(psu.preSignedUrl, file, psu.key,
         this.userId)
 
       // check if successful

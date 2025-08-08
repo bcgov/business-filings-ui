@@ -101,8 +101,6 @@
                               :maxSize="MAX_FILE_SIZE"
                               :pageSize="PageSizes.LETTER_PORTRAIT"
                               :userId="getKeycloakGuid"
-                              :getPresignedUrl="LegalServices.getPresignedUrl"
-                              :uploadToUrl="LegalServices.uploadToUrl"
                             />
                             <v-icon>mdi-plus</v-icon>
                             <span>Add a Document</span>
@@ -240,7 +238,6 @@ import { AuthorizedActions, EffectOfOrderTypes, PageSizes } from '@/enums'
 import { FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { EnumUtilities, LegalServices } from '@/services'
 import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment/'
 import { IsAuthorized } from '@/utils'
@@ -267,7 +264,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   readonly NOTATION_MAX_LENGTH = 2000 // characters
 
   // For template
-  readonly LegalServices = LegalServices
   readonly PageSizes = PageSizes
   readonly AuthorizedActions = AuthorizedActions
   readonly IsAuthorized = IsAuthorized
@@ -289,11 +285,11 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   @Prop({ default: false }) readonly courtOrderNumberRequired!: boolean
 
   // Global getters
-  @Getter(useRootStore) getCurrentDate!: string
-  @Getter(useBusinessStore) getFoundingDate!: Date
+  // @Getter(useRootStore) getCurrentDate!: string
+  // @Getter(useBusinessStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getLegalName!: string
-  @Getter(useBusinessStore) getLegalType!: CorpTypeCd
-  @Getter(useBusinessStore) getIdentifier!: string
+  // @Getter(useBusinessStore) getLegalType!: CorpTypeCd
+  // @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useAuthenticationStore) getKeycloakGuid!: string
   @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useConfigurationStore) getAuthWebUrl!: string
