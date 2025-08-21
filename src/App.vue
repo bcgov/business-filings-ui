@@ -470,7 +470,7 @@ export default class App extends Mixins(
     ).catch(error => {
       if (error.response.status === 404 &&
         error.response.config.url.includes('addresses') &&
-        error.response?.data?.rootCause?.message.includes('address not found')) hasBAError = true
+        error.response.data?.rootCause?.message.includes('address not found')) hasBAError = true
     })
 
     if (data) {

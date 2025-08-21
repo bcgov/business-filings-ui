@@ -380,7 +380,7 @@ export default class LegalServices {
         // display error in console if not HTTP 401
         if (error?.response?.status !== StatusCodes.UNAUTHORIZED) {
           // eslint-disable-next-line no-console
-          console.log(error.response?.data?.rootCause?.message)
+          console.log(error.response.data?.rootCause?.message)
         }
 
         return null
@@ -397,7 +397,7 @@ export default class LegalServices {
     return axios.post(url)
       .catch(error => {
         // eslint-disable-next-line no-console
-        console.log(error.response?.data?.rootCause?.message)
+        console.log(error.response.data?.rootCause?.message)
         return null
       })
   }
@@ -412,7 +412,7 @@ export default class LegalServices {
     return axios.get(url)
       .catch(error => {
         // eslint-disable-next-line no-console
-        console.log(error.response?.data?.rootCause?.message)
+        console.log(error.response.data?.rootCause?.message)
         return null
       })
   }
@@ -427,7 +427,7 @@ export default class LegalServices {
     return axios.delete(url)
       .catch(error => {
         // eslint-disable-next-line no-console
-        console.log(error.response?.data?.rootCause?.message)
+        console.log(error.response.data?.rootCause?.message)
         return null
       })
   }
@@ -443,7 +443,7 @@ export default class LegalServices {
     return axios.delete(url)
       .catch(error => {
         // eslint-disable-next-line no-console
-        console.log(error.response?.data?.rootCause?.message)
+        console.log(error.response.data?.rootCause?.message)
         return null
       })
   }
@@ -462,7 +462,7 @@ export default class LegalServices {
     return axios.post(url)
       .catch(error => {
         // eslint-disable-next-line no-console
-        console.log(error.response?.data?.rootCause?.message)
+        console.log(error.response.data?.rootCause?.message)
         return null
       })
   }
@@ -482,7 +482,7 @@ export default class LegalServices {
     return axios.post(url, { preconditionsResolved })
       .catch(error => {
         // eslint-disable-next-line no-console
-        console.log(error.response?.data?.rootCause?.message)
+        console.log(error.response.data?.rootCause?.message)
         return null
       })
   }
@@ -502,7 +502,7 @@ export default class LegalServices {
     return axios.post(url, { reissue })
       .catch(error => {
         // eslint-disable-next-line no-console
-        console.log(error.response?.data?.rootCause?.message)
+        console.log(error.response.data?.rootCause?.message)
         return null
       })
   }
@@ -518,7 +518,7 @@ export default class LegalServices {
     return axios.delete(url)
       .catch(error => {
         // eslint-disable-next-line no-console
-        console.log(error.response?.data?.rootCause?.message)
+        console.log(error.response.data?.rootCause?.message)
         return null
       })
   }
