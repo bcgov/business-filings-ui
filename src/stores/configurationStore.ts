@@ -32,8 +32,8 @@ export const useConfigurationStore = defineStore('configuration', {
       return this.getRegHomeUrl + 'login'
     },
 
-    getBusinessesUrl (state: ConfigurationStateIF): string {
-      return state.configuration?.VUE_APP_BUSINESSES_URL || ''
+    getBusinessRegistryUrl (state: ConfigurationStateIF): string {
+      return state.configuration?.VUE_APP_BUSINESS_REGISTRY_URL || ''
     },
 
     getBusinessDashUrl (state: ConfigurationStateIF): string {
@@ -124,9 +124,8 @@ export const useConfigurationStore = defineStore('configuration', {
     },
 
     setSessionVariables (data: any) {
-      // The following four session variables are used by SBC Header (a common component):
+      // The following four session variables are used by SBC Header (a SBC common component):
       sessionStorage.setItem('AUTH_WEB_URL', data.VUE_APP_AUTH_WEB_URL)
-      sessionStorage.setItem('BUSINESSES_URL', data.VUE_APP_BUSINESSES_URL)
       sessionStorage.setItem('REGISTRY_HOME_URL', data.VUE_APP_REGISTRY_HOME_URL)
       sessionStorage.setItem('AUTH_API_URL', data.VUE_APP_AUTH_API_URL + data.VUE_APP_AUTH_API_VERSION + '/')
       sessionStorage.setItem('STATUS_API_URL', data.VUE_APP_STATUS_API_URL + data.VUE_APP_STATUS_API_VERSION)

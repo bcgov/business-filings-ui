@@ -13,7 +13,6 @@ export interface ConfigurationStateIF {
     VUE_APP_BUSINESS_EDIT_URL: string,
     VUE_APP_BUSINESS_FILING_LD_CLIENT_ID: string,
     VUE_APP_BUSINESS_REGISTRY_URL: string,
-    VUE_APP_BUSINESSES_URL: string,
     VUE_APP_CORPORATE_ONLINE_URL: string,
     VUE_APP_DASHBOARD_URL: string,
     VUE_APP_HOTJAR_ID: string

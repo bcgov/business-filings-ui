@@ -14,8 +14,9 @@ export default class BreadcrumbMixin extends Vue {
   @Getter(useBusinessStore) getEntityName!: string
   @Getter(useBusinessStore) getIdentifier!: string
 
-  @Getter(useConfigurationStore) getBusinessesUrl!: string
+  @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useConfigurationStore) getBusinessDashUrl!: string
+  @Getter(useConfigurationStore) getBusinessRegistryUrl!: string
   @Getter(useConfigurationStore) getRegHomeUrl!: string
 
   /** Returns the breadcrumb to the BC Registries Dashboard. */
@@ -33,7 +34,7 @@ export default class BreadcrumbMixin extends Vue {
     const accountId = this.getCurrentAccount?.id || 0
     return {
       text: 'My Business Registry',
-      href: `${this.getBusinessesUrl}account/${accountId}/business`
+      href: `${this.getBusinessRegistryUrl}account/${accountId}`
     }
   }
 
@@ -41,7 +42,7 @@ export default class BreadcrumbMixin extends Vue {
   getStaffDashboardBreadcrumb (): BreadcrumbIF {
     return {
       text: 'Staff Dashboard',
-      href: `${this.getBusinessesUrl}staff/dashboard/active`
+      href: `${this.getAuthWebUrl}staff/dashboard/active`
     }
   }
 
