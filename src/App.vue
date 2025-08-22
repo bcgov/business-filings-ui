@@ -809,7 +809,7 @@ export default class App extends Mixins(
 
   /** Handles Exit click event from dialogs. */
   onClickExit (): void {
-    navigate(this.getBusinessesUrl)
+    navigate(this.getBusinessRegistryUrl)
   }
 
   /** Handles Retry click event from dialogs. */
