@@ -11,6 +11,8 @@
     <ConfirmPreconditionDialog
       v-for="(precondition, index) in preconditions"
       :key="index"
+      :attest-name="attestName"
+      :attest-business="attestBusiness"
       :dialog="pendingPreconditions[precondition]?.presented"
       :precondition="precondition"
       attach="#app"
@@ -179,6 +181,14 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
   connection: WalletConnectionIF = null;
   issuedCredential: DigitalCredentialIF = null;
   pendingPreconditions: PendingPreconditions = {};
+
+  get attestBusiness (): string {
+    return this.getAllowedActions?.digitalBusinessCardPreconditions?.attestBusiness || ''
+  }
+
+  get attestName (): string {
+    return this.getAllowedActions?.digitalBusinessCardPreconditions?.attestName || ''
+  }
 
   get preconditions (): string[] {
     return this.getAllowedActions?.digitalBusinessCardPreconditions?.attestRoles || []
