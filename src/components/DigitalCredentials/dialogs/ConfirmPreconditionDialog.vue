@@ -7,36 +7,14 @@
     :attach="attach"
     content-class="confirm-precondition-dialog"
   >
-    <v-card class="pa-5">
-      <v-card-subtitle
-        class="pt-5"
-        align="center"
-      >
-        <v-icon
-          color="error"
-          large
-        >
-          mdi-information-outline
-        </v-icon>
-        <v-btn
-          small
-          text
-          color="primary"
-          class="close-btn"
-          @click="close()"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-card-subtitle>
-
+    <v-card class="py-10 px-16">
       <v-card-text>
         <p
           id="dialog-title"
           class="warning-title"
         >
-          Please confirm your role
+          Are you {{ attestName }}, a {{ precondition }} with {{ attestBusiness }}?
         </p>
-        <p>{{ precondition }}</p>
       </v-card-text>
 
       <v-card-actions>
@@ -51,7 +29,7 @@
             outlined
             @click="close()"
           >
-            <span>Decline</span>
+            <span>No</span>
           </v-btn>
           <v-btn
             id="dialog-confirm-button"
@@ -59,7 +37,7 @@
             color="primary"
             @click="proceed()"
           >
-            Confirm
+            Yes, it's me
           </v-btn>
         </v-row>
       </v-card-actions>
@@ -81,6 +59,12 @@ export default class ConfirmPreconditionDialog extends Vue {
   /** Prop to display the precondition */
   @Prop({ default: '' }) precondition!: string
 
+  /** Prop to display the user name */
+  @Prop({ default: '' }) attestName!: string
+
+  /** Prop to display the business name */
+  @Prop({ default: '' }) attestBusiness!: string
+
   // Pass click events to parent.
   @Emit() close (): void {
     return undefined
@@ -94,11 +78,6 @@ export default class ConfirmPreconditionDialog extends Vue {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.close-btn {
-  position: absolute;
-  right: $px-32;
-}
-
 .action-btn {
   min-height: 44px;
 }
@@ -109,17 +88,5 @@ export default class ConfirmPreconditionDialog extends Vue {
   color: $gray9;
   text-align: center;
   line-height: $px-34;
-}
-
-.warning-text {
-  font-weight: normal;
-  font-size: $px-16;
-  color: $gray7;
-  line-height: $px-24;
-}
-
-// Vuetify overrides
-:deep(.v-dialog .v-card .v-card__text) {
-  padding-top: 0 !important;
 }
 </style>

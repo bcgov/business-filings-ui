@@ -12,6 +12,8 @@ export interface FilingTypeIF {
 export interface AllowedActionsIF {
   digitalBusinessCard: boolean
   digitalBusinessCardPreconditions?: {
+    attestBusiness?: string,
+    attestName?: string,
     attestRoles: string[]
   }
   filing: {
