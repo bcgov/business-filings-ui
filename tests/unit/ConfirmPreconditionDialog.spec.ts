@@ -4,8 +4,6 @@ import { shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useRootStore } from '@/stores'
 import ConfirmPreconditionDialog from '@/components/DigitalCredentials/dialogs/ConfirmPreconditionDialog.vue'
-import { BusinessConfigBen } from '@/resources/BEN'
-import { BusinessConfigGp } from '@/resources/GP'
 import { BusinessConfigSp } from '@/resources/SP'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
