@@ -82,7 +82,6 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import * as Sentry from '@sentry/browser'
 import { GetFeatureFlag, IsAuthorized, GetKeycloakRoles, navigate, UpdateLdUser } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
@@ -386,10 +385,6 @@ export default class App extends Mixins(
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
         this.fetchErrorDialog = true
-        // Log exception to Sentry due to incomplete business data.
-        // At this point the system doesn't know why it's incomplete.
-        // Since this is not an expected behaviour, report this.
-        Sentry.captureException(error)
       }
     }
     // is this a bootstrap filing? (eg, incorporation/registration/amalgamation/continuation)

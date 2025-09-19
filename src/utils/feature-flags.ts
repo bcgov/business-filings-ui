@@ -12,7 +12,6 @@ const defaultFlagSet: LDFlagSet = {
   'businesses-to-manage-in-colin': [],
   'enable-digital-credentials': false,
   'enable-legal-name-fix': false,
-  'sentry-enable': false, // by default, no sentry logs
   'show-alert-phone-numbers-firm': false,
   'supported-agm-extension-entities': [],
   'supported-agm-location-chg-entities': [],

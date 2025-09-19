@@ -111,10 +111,6 @@ export const useConfigurationStore = defineStore('configuration', {
     /** Get Launch Darkly Client ID */
     getBusinessFilingLdClientId (state: ConfigurationStateIF): string {
       return state.configuration?.VUE_APP_BUSINESS_FILING_LD_CLIENT_ID
-    },
-
-    getSentryDsn (state: ConfigurationStateIF): string {
-      return state.configuration?.VUE_APP_SENTRY_DSN
     }
   },
 
@@ -138,9 +134,6 @@ export const useConfigurationStore = defineStore('configuration', {
 
       const ldClientId: string = data.VUE_APP_BUSINESS_FILING_LD_CLIENT_ID;
       (<any>window).ldClientId = ldClientId
-
-      const sentryDsn: string = data.VUE_APP_SENTRY_DSN;
-      (<any>window).sentryDsn = sentryDsn
 
       const keycloakAuthUrl: string = data.VUE_APP_KEYCLOAK_AUTH_URL;
       (<any>window).keycloakAuthUrl = keycloakAuthUrl

@@ -32,7 +32,6 @@ describe('Configuration Actions', () => {
     VUE_APP_PAY_API_GW_URL: 'pay api gw url',
     VUE_APP_PAY_API_VERSION: '/pay api version',
     VUE_APP_REGISTRY_HOME_URL: 'registry home url',
-    VUE_APP_SENTRY_DSN: 'sentry dsn',
     VUE_APP_SITEMINDER_LOGOUT_URL: 'siteminder logout url',
     VUE_APP_STATUS_API_URL: 'status api url',
     VUE_APP_STATUS_API_VERSION: '/status api version',
@@ -64,7 +63,6 @@ describe('Configuration Actions', () => {
     expect(configurationStore.getPayApiUrl).toBe('pay api url/pay api version/')
     expect(configurationStore.getPayApiGwUrl).toBe('pay api gw url/pay api version/')
     expect(configurationStore.getRegHomeUrl).toBe('registry home url')
-    expect(configurationStore.getSentryDsn).toBe('sentry dsn')
     expect(configurationStore.getSiteminderLogoutUrl).toBe('siteminder logout url')
     expect(configurationStore.getStatusApiUrl).toBe('status api url/status api version')
   })
