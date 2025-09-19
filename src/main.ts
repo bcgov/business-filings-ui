@@ -7,7 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { GetFeatureFlag, InitLdClient, navigate, setBaseRouteAndBusinessId, sleep } from '@/utils'
+import { InitLdClient, navigate, setBaseRouteAndBusinessId, sleep } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getPiniaStore, getVuexStore } from '@/stores'
 import '@/assets/styles/base.scss'
@@ -15,8 +15,6 @@ import '@/assets/styles/layout.scss'
 import '@/assets/styles/overrides.scss'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import App from '@/App.vue'
-import * as Integrations from '@sentry/integrations'
-import * as Sentry from '@sentry/vue'
 import Hotjar from 'vue-hotjar'
 import { useConfigurationStore } from './stores'
 
@@ -58,21 +56,6 @@ async function start () {
   configurationStore.loadConfiguration()
 
   setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // may throw an error
-
-  if (GetFeatureFlag('sentry-enable')) {
-    // initialize Sentry
-    const sentryDsn = window['sentryDsn']
-    if (sentryDsn) {
-      console.info('Initializing Sentry...') // eslint-disable-line no-console
-      Sentry.init({
-        Vue,
-        dsn: sentryDsn,
-        integrations: [
-          new Integrations.CaptureConsole({ levels: ['error'] })
-        ]
-      })
-    }
-  }
 
   // initialize Hotjar
   if (window['hotjarId']) {
@@ -128,11 +111,6 @@ async function start () {
 
 // execution and error handling
 start().catch(async (error) => {
-  // Log any error after configuring sentry.
-  // It helps to identify configuration issues specific to the environment.
-  // Note that it won't log anything related to `fetchConfig()` since sentry is depending on a config value.
-  Sentry.captureException(error)
-
   console.error(error) // eslint-disable-line no-console
   await sleep(100) // wait for console error to be shown before alert
 

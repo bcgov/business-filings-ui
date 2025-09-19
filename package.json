@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "8.0.14",
+  "version": "8.0.15",
   "private": true,
   "appName": "Business Filings UI",
   "sbcName": "SBC Common Components",
@@ -34,8 +34,6 @@
     "@bcrs-shared-components/staff-payment": "2.1.11",
     "@mdi/font": "^5.9.55",
     "@reactivex/rxjs": "^6.6.7",
-    "@sentry/integrations": "^7.50.0",
-    "@sentry/vue": "^7.50.0",
     "axios": "^0.27.2",
     "core-js": "^3.30.1",
     "country-list": "^2.2.0",
