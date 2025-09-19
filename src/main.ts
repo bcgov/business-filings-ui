@@ -7,7 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { GetFeatureFlag, InitLdClient, navigate, setBaseRouteAndBusinessId, sleep } from '@/utils'
+import { InitLdClient, navigate, setBaseRouteAndBusinessId, sleep } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getPiniaStore, getVuexStore } from '@/stores'
 import '@/assets/styles/base.scss'
