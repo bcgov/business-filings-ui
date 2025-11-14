@@ -912,6 +912,9 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     }
   }
 
+  /** Maximum length for director names. */
+  readonly DIRECTOR_NAME_MAX_LENGTH = 30
+
   /**
    * The array of validations rules for a director's first name.
    * NB: Do not validate inter word spacing because the Legal db needs to support
@@ -920,7 +923,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   readonly directorFirstNameRules: Array<(v) => boolean | string> = [
     v => !!v || 'A first name is required',
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    v => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
+    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+    v => v.length <= this.DIRECTOR_NAME_MAX_LENGTH || `Cannot exceed ${this.DIRECTOR_NAME_MAX_LENGTH} characters`
   ]
 
   /**
@@ -930,7 +934,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    */
   readonly directorMiddleInitialRules: Array<(v) => boolean | string> = [
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    v => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
+    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+    v => v.length <= this.DIRECTOR_NAME_MAX_LENGTH || `Cannot exceed ${this.DIRECTOR_NAME_MAX_LENGTH} characters`
   ]
 
   /**
@@ -941,7 +946,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   readonly directorLastNameRules: Array<(v) => boolean | string> = [
     v => !!v || 'A last name is required',
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    v => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
+    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+    v => v.length <= this.DIRECTOR_NAME_MAX_LENGTH || `Cannot exceed ${this.DIRECTOR_NAME_MAX_LENGTH} characters`
   ]
 
   /** Returns true if at least one director has a paid change. */

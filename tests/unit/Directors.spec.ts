@@ -966,6 +966,16 @@ describe('Appoint New Director tests', () => {
     expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toContain('Invalid spaces')
   })
 
+  it('displays error for invalid First Name - leading spaces', async () => {
+    await wrapper.find('#new-director__first-name').setValue('Firstaaaaaaabbbbbbbbbbccccccccccc')
+    await Vue.nextTick()
+
+    expect(vm.newDirector.officer.firstName).toBe('Firstaaaaaaabbbbbbbbbbccccccccccc')
+
+    // verify that validation error is displayed
+    expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toContain('Cannot exceed 30 characters')
+  })
+
   it('allows First Name with multiple inline spaces', async () => {
     await wrapper.find('#new-director__first-name').setValue('First  First')
     await Vue.nextTick()
@@ -1006,6 +1016,16 @@ describe('Appoint New Director tests', () => {
     expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toContain('Invalid spaces')
   })
 
+  it('displays error for invalid Middle Initial - exceeding max length', async () => {
+    await wrapper.find('#new-director__middle-initial').setValue('MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM')
+    await Vue.nextTick()
+
+    expect(vm.newDirector.officer.middleInitial).toBe('MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM')
+
+    // verify that validation error is displayed
+    expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toContain('Cannot exceed 30 characters')
+  })
+
   it('allows Middle Initial with multiple inline spaces', async () => {
     await wrapper.find('#new-director__middle-initial').setValue('M  M')
     await Vue.nextTick()
@@ -1044,6 +1064,16 @@ describe('Appoint New Director tests', () => {
 
     // verify that validation error is displayed
     expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toContain('Invalid spaces')
+  })
+
+  it('displays error for invalid Last Name - exceeding max length', async () => {
+    await wrapper.find('#new-director__last-name').setValue('Lastaaaaaaabbbbbbbbbbccccccccccc')
+    await Vue.nextTick()
+
+    expect(vm.newDirector.officer.lastName).toBe('Lastaaaaaaabbbbbbbbbbccccccccccc')
+
+    // verify that validation error is displayed
+    expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toContain('Cannot exceed 30 characters')
   })
 
   it('allows Last Name with multiple inline spaces', async () => {
