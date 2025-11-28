@@ -996,6 +996,23 @@ describe('Appoint New Director tests', () => {
     expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toBe('')
   })
 
+  it('accepts blank Middle Initial', async () => {
+    await wrapper.find('#new-director__middle-initial').setValue('')
+    await Vue.nextTick()
+
+    expect(vm.newDirector.officer.middleInitial).toBe('')
+
+    // verify that there are no validation errors
+    expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toBe('')
+  })
+
+  it('handles undefined Middle Initial', async () => {
+    await wrapper.find('#new-director__middle-initial').setValue(undefined)
+    await Vue.nextTick()
+
+    expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toBe('')
+  })
+
   it('displays error for invalid Middle Initial - leading spaces', async () => {
     await wrapper.find('#new-director__middle-initial').setValue('  M')
     await Vue.nextTick()

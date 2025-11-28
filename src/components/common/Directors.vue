@@ -924,7 +924,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     v => !!v || 'A first name is required',
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    v => v.length <= this.DIRECTOR_NAME_MAX_LENGTH || `Cannot exceed ${this.DIRECTOR_NAME_MAX_LENGTH} characters`
+    v => !v || v.length <= this.DIRECTOR_NAME_MAX_LENGTH || `Cannot exceed ${this.DIRECTOR_NAME_MAX_LENGTH} characters`
   ]
 
   /**
@@ -935,7 +935,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   readonly directorMiddleInitialRules: Array<(v) => boolean | string> = [
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    v => v.length <= this.DIRECTOR_NAME_MAX_LENGTH || `Cannot exceed ${this.DIRECTOR_NAME_MAX_LENGTH} characters`
+    v => !v || v.length <= this.DIRECTOR_NAME_MAX_LENGTH || `Cannot exceed ${this.DIRECTOR_NAME_MAX_LENGTH} characters`
   ]
 
   /**
@@ -947,7 +947,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     v => !!v || 'A last name is required',
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    v => v.length <= this.DIRECTOR_NAME_MAX_LENGTH || `Cannot exceed ${this.DIRECTOR_NAME_MAX_LENGTH} characters`
+    v => !v || v.length <= this.DIRECTOR_NAME_MAX_LENGTH || `Cannot exceed ${this.DIRECTOR_NAME_MAX_LENGTH} characters`
   ]
 
   /** Returns true if at least one director has a paid change. */
