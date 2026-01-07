@@ -3,13 +3,13 @@ import { required, maxLength } from 'vuelidate/lib/validators'
 // The Address schema containing Vuelidate rules.
 // NB: This should match the subject JSON schema.
 
-const requiredNoWhitespace = (val) => {
+export const requiredNoWhitespace = (val) => {
   if (!val) return true
   const trimmed = val.trim()
   return trimmed.length > 0 && trimmed === val
 }
 
-const noLeadingTrailingSpaces = (val) => {
+export const noLeadingTrailingSpaces = (val) => {
   if (!val) return true
   return val.trim() === val
 }
