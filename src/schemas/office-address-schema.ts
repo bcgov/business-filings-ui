@@ -2,17 +2,32 @@ import { required, maxLength } from 'vuelidate/lib/validators'
 
 // The Address schema containing Vuelidate rules.
 // NB: This should match the subject JSON schema.
+
+const requiredNoWhitespace = (val) => {
+  if (!val) return true
+  const trimmed = val.trim()
+  return trimmed.length > 0 && trimmed === val
+}
+
+const noLeadingTrailingSpaces = (val) => {
+  if (!val) return true
+  return val.trim() === val
+}
+
 export const officeAddressSchema = {
   streetAddress: {
     required,
-    maxLength: maxLength(50)
+    maxLength: maxLength(50),
+    requiredNoWhitespace
   },
   streetAddressAdditional: {
-    maxLength: maxLength(50)
+    maxLength: maxLength(50),
+    noLeadingTrailingSpaces
   },
   addressCity: {
     required,
-    maxLength: maxLength(40)
+    maxLength: maxLength(40),
+    requiredNoWhitespace
   },
   addressCountry: {
     required,
@@ -26,9 +41,11 @@ export const officeAddressSchema = {
   },
   postalCode: {
     required,
-    maxLength: maxLength(15)
+    maxLength: maxLength(15),
+    requiredNoWhitespace
   },
   deliveryInstructions: {
-    maxLength: maxLength(80)
+    maxLength: maxLength(80),
+    noLeadingTrailingSpaces
   }
 }
