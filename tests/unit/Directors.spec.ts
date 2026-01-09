@@ -501,6 +501,9 @@ describe('Directors as a COOP (no sync)', () => {
     // Find and check the legal name confirmation checkbox
     await wrapper.find('.legal-name-checkbox input').setChecked(true)
 
+    vm.$refs.baseAddressEdit = [{ $refs: { addressForm: { validate: () => true } } }]
+    vm.$refs.mailAddressEdit = [{ $refs: { addressForm: { validate: () => true } } }]
+
     // Click Done btn and update the directors name
     await wrapper.findAll('.done-edit-btn').at(0).trigger('click')
 
@@ -531,6 +534,9 @@ describe('Directors as a COOP (no sync)', () => {
 
     // Find and check the legal name confirmation checkbox
     await wrapper.find('.legal-name-checkbox input').setChecked(true)
+
+    vm.$refs.baseAddressEdit = [{ $refs: { addressForm: { validate: () => true } } }]
+    vm.$refs.mailAddressEdit = [{ $refs: { addressForm: { validate: () => true } } }]
 
     // Click Done btn and update the directors name
     await wrapper.findAll('.done-edit-btn').at(0).trigger('click')

@@ -727,6 +727,7 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { Getter } from 'pinia-class'
+import { validatePostalCode } from '@/validators'
 import { required, maxLength } from 'vuelidate/lib/validators'
 import { cloneDeep, isEqual } from 'lodash'
 import { BaseAddress } from '@bcrs-shared-components/base-address'
@@ -858,7 +859,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     },
     postalCode: {
       required,
-      maxLength: maxLength(15)
+      maxLength: maxLength(15),
+      validatePostalCode
     },
     deliveryInstructions: {
       maxLength: maxLength(80)
