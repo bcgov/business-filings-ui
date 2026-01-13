@@ -1,4 +1,4 @@
-import { validatePostalCode, noLeadingTrailingSpaces, requiredNoWhitespace } from '@/schemas/validators'
+import { validatePostalCode, noLeadingTrailingSpaces, requiredNoWhitespace } from '@/schemas'
 
 describe('validatePostalCode', () => {
   const mockVm = (country: string) => ({

@@ -834,8 +834,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    */
   inheritDeliveryAddress = false
 
-  /** The Address schema containing Vuelidate rules. */
-  directorAddressSchema = directorAddressSchema
+  // For Template
+  readonly directorAddressSchema = directorAddressSchema
 
   /** The relevant alert if a director change causes the business to be out of compliance. */
   get complianceMsg (): AlertMessageIF {
