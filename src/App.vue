@@ -99,9 +99,9 @@ import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
 import { AuthorizationRoles, AuthorizedActions, FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
 import { CorpTypeCd, GetCorpFullDescription, GetCorpNumberedDescription }
   from '@bcrs-shared-components/corp-type-module'
-import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from './stores'
-import { FilingTypes } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 
 @Component({
   components: {

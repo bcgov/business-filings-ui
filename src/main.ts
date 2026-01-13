@@ -9,14 +9,13 @@ import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import { InitLdClient, Navigate, SetBaseRouteAndBusinessId, Sleep } from '@/utils'
 import { getVueRouter } from '@/router'
-import { getPiniaStore, getVuexStore } from '@/stores'
+import { getPiniaStore, getVuexStore, useConfigurationStore } from '@/stores'
 import '@/assets/styles/base.scss'
 import '@/assets/styles/layout.scss'
 import '@/assets/styles/overrides.scss'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import App from '@/App.vue'
 import Hotjar from 'vue-hotjar'
-import { useConfigurationStore } from './stores'
 
 // get rid of "You are running Vue in development mode" console message
 Vue.config.productionTip = false
