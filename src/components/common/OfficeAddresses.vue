@@ -296,8 +296,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** V-model for "Records Addresses same as Registered Addresses" checkbox. */
   inheritRegisteredAddress = true
 
-  /** The Address schema containing Vuelidate rules. */
-  officeAddressSchema = officeAddressSchema
+  // For Template
+  readonly officeAddressSchema = officeAddressSchema
 
   /** Whether the address form is valid. */
   get formValid (): boolean {

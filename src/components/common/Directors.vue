@@ -118,7 +118,7 @@
                       ref="baseAddressNew"
                       :key="baseAddressKey"
                       :editing="true"
-                      :schema="addressSchema"
+                      :schema="directorAddressSchema"
                       @update:address="updateDeliveryAddress"
                     />
                   </div>
@@ -139,7 +139,7 @@
                           ref="mailAddressNew"
                           :key="mailAddressKey"
                           :editing="true"
-                          :schema="addressSchema"
+                          :schema="directorAddressSchema"
                           @update:address="updateMailingAddress"
                         />
                       </div>
@@ -554,7 +554,7 @@
                         :key="activeIndex"
                         :address="dir.deliveryAddress"
                         :editing="true"
-                        :schema="addressSchema"
+                        :schema="directorAddressSchema"
                         @update:address="updateDeliveryAddress"
                       />
                     </div>
@@ -576,7 +576,7 @@
                             :key="activeIndex"
                             :address="dir.mailingAddress"
                             :editing="true"
-                            :schema="addressSchema"
+                            :schema="directorAddressSchema"
                             @update:address="updateMailingAddress"
                           />
                         </div>
@@ -727,8 +727,8 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { Getter } from 'pinia-class'
-import { required, maxLength } from 'vuelidate/lib/validators'
 import { cloneDeep, isEqual } from 'lodash'
+import { directorAddressSchema } from '@/schemas'
 import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { WarningPopover } from '@/components/common/'
 import { CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
@@ -834,36 +834,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    */
   inheritDeliveryAddress = false
 
-  /**
-   * The Address schema containing Vuelidate rules.
-   * NB: This should match the subject JSON schema.
-   */
-  addressSchema = {
-    streetAddress: {
-      required,
-      maxLength: maxLength(50)
-    },
-    streetAddressAdditional: {
-      maxLength: maxLength(50)
-    },
-    addressCity: {
-      required,
-      maxLength: maxLength(40)
-    },
-    addressCountry: {
-      required
-    },
-    addressRegion: {
-      maxLength: maxLength(2)
-    },
-    postalCode: {
-      required,
-      maxLength: maxLength(15)
-    },
-    deliveryInstructions: {
-      maxLength: maxLength(80)
-    }
-  }
+  // For Template
+  readonly directorAddressSchema = directorAddressSchema
 
   /** The relevant alert if a director change causes the business to be out of compliance. */
   get complianceMsg (): AlertMessageIF {

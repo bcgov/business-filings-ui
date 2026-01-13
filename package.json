@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "8.0.18",
+  "version": "8.0.19",
   "private": true,
   "appName": "Business Filings UI",
   "sbcName": "SBC Common Components",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@babel/compat-data": "^7.21.5",
-    "@bcrs-shared-components/base-address": "2.0.46",
+    "@bcrs-shared-components/base-address": "2.0.56",
     "@bcrs-shared-components/breadcrumb": "2.1.11",
     "@bcrs-shared-components/confirm-dialog": "1.2.1",
     "@bcrs-shared-components/corp-type-module": "1.0.16",
@@ -29,7 +29,7 @@
     "@bcrs-shared-components/expandable-help": "1.0.1",
     "@bcrs-shared-components/folio-number-input": "1.1.18",
     "@bcrs-shared-components/interfaces": "1.1.13",
-    "@bcrs-shared-components/mixins": "1.1.30",
+    "@bcrs-shared-components/mixins": "1.2.2",
     "@bcrs-shared-components/staff-comments": "1.3.11",
     "@bcrs-shared-components/staff-payment": "2.1.11",
     "@mdi/font": "^5.9.55",
