@@ -1,5 +1,5 @@
 import { required, maxLength } from 'vuelidate/lib/validators'
-import { validatePostalCode, noLeadingTrailingSpaces, requiredNoWhitespace } from '@/validators'
+import { noLeadingTrailingSpaces, requiredNoWhitespace, validatePostalCode } from './validators'
 
 // The Address schema containing Vuelidate rules.
 // NB: This should match the subject JSON schema.
