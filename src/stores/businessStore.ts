@@ -2,7 +2,7 @@ import { AllowedActionsIF, AmalgamatedIntoIF, ApiBusinessIF, ApiDateTimeUtc, Bus
   from '@/interfaces'
 import { defineStore } from 'pinia'
 import { CorpTypeCd, EntityState, WarningTypes } from '@/enums'
-import { DateUtilities, LegalServices } from '@/services/'
+import { DateUtilities, LegalServices } from '@/services'
 import { GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
 import { useRootStore } from './rootStore'
 import { GetFeatureFlag } from '@/utils'

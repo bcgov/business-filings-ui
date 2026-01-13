@@ -82,41 +82,25 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { GetFeatureFlag, IsAuthorized, GetKeycloakRoles, navigate, UpdateLdUser } from '@/utils'
+import { GetCurrentAccount, GetFeatureFlag, IsAuthorized, GetKeycloakRoles, Navigate, Sleep, UpdateLdUser }
+  from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
 import EntityInfo from '@/components/EntityInfo.vue'
-import {
-  BusinessAuthErrorDialog,
-  ConfirmDissolutionDialog,
-  DownloadErrorDialog,
-  FetchErrorDialog,
-  NameRequestInvalidDialog,
-  NotInGoodStandingDialog
-} from '@/components/dialogs'
+import { BusinessAuthErrorDialog, ConfirmDissolutionDialog, DownloadErrorDialog, FetchErrorDialog,
+  NameRequestInvalidDialog, NotInGoodStandingDialog } from '@/components/dialogs'
 import { ConfigJson } from '@/resources'
-import { BreadcrumbMixin, CommonMixin, DateMixin, DirectorMixin, FilingMixin, NameRequestMixin }
-  from '@/mixins'
-import { AuthServices, EnumUtilities, LegalServices } from '@/services/'
-import {
-  AccountInformationIF,
-  ApiFilingIF,
-  ApiTaskIF,
-  DocumentIF,
-  NameRequestIF,
-  OfficeAddressIF,
-  PartyIF,
-  TaskTodoIF
-} from '@/interfaces'
+import { BreadcrumbMixin, CommonMixin, DateMixin, DirectorMixin, FilingMixin, NameRequestMixin } from '@/mixins'
+import { AuthServices, EnumUtilities, LegalServices } from '@/services'
+import { ApiFilingIF, ApiTaskIF, DocumentIF, NameRequestIF, OfficeAddressIF, PartyIF, TaskTodoIF, UserInfoIF }
+  from '@/interfaces'
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
 import { AuthorizationRoles, AuthorizedActions, FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
 import { CorpTypeCd, GetCorpFullDescription, GetCorpNumberedDescription }
   from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore }
-  from './stores'
-import { sleep } from './utils'
+import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 
 @Component({
@@ -169,11 +153,15 @@ export default class App extends Mixins(
     CorpTypeCd.ULC_CONTINUE_IN
   ]
 
-  // authentication store references
-  @Getter(useAuthenticationStore) getCurrentAccountId!: number
-
   // business store references
   @Getter(useBusinessStore) isEntitySoleProp!: boolean
+
+  @Action(useBusinessStore) loadBusinessInfo!: () => Promise<void>
+  @Action(useBusinessStore) setGoodStanding!: (x: boolean) => Promise<void>
+  @Action(useBusinessStore) setLegalName!: (x: string) => Promise<void>
+  @Action(useBusinessStore) setLegalType!: (x: CorpTypeCd) => Promise<void>
+  @Action(useBusinessStore) setIdentifier!: (x: string) => Promise<void>
+  @Action(useBusinessStore) setFoundingDate!: (x: string) => Promise<void>
 
   // configuration store references
   @Getter(useConfigurationStore) getAuthApiGwUrl!: string
@@ -181,12 +169,39 @@ export default class App extends Mixins(
   @Getter(useConfigurationStore) getBusinessRegistryDashboardUrl!: string
 
   // root store references
+  @Getter(useRootStore) getUserInfo!: UserInfoIF
   @Getter(useRootStore) isAuthorizationStatus!: boolean
   @Getter(useRootStore) isBootstrapFiling!: boolean
   @Getter(useRootStore) isBootstrapPending!: boolean
   @Getter(useRootStore) isBootstrapTodo!: boolean
   @Getter(useRootStore) showFetchingDataSpinner!: boolean
   @Getter(useRootStore) showStartingAmalgamationSpinner!: boolean
+
+  @Action(useRootStore) loadStateFiling!: () => Promise<void>
+  @Action(useRootStore) setAuthorizedActions!: (x: Array<AuthorizedActions>) => void
+  @Action(useRootStore) setBootstrapFilingStatus!: (x: FilingStatus) => void
+  @Action(useRootStore) setBootstrapFilingType!: (x: FilingTypes) => void
+  @Action(useRootStore) setBusinessAddress!: (x: OfficeAddressIF) => void
+  @Action(useRootStore) setBusinessEmail!: (x: string) => void
+  @Action(useRootStore) setBusinessPhone!: (x: string) => void
+  @Action(useRootStore) setBusinessPhoneExtension!: (x: string) => void
+  @Action(useRootStore) setConfigObject!: (x: any) => void
+  @Action(useRootStore) setCorpTypeCd!: (x: CorpTypeCd) => void
+  @Action(useRootStore) setCurrentDate!: (x: string) => void
+  @Action(useRootStore) setCurrentJsDate!: (x: Date) => void
+  @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
+  @Action(useRootStore) setFolioNumber!: (x: string) => void
+  @Action(useRootStore) setNameRequest!: (x: any) => void
+  @Action(useRootStore) setParties!: (x: Array<PartyIF>) => void
+  @Action(useRootStore) setPendingsList!: (x: Array<any>) => void
+  @Action(useRootStore) setRecordsAddress!: (x: OfficeAddressIF) => void
+  @Action(useRootStore) setRegisteredAddress!: (x: OfficeAddressIF) => void
+  @Action(useRootStore) setTasks!: (x: Array<ApiTaskIF>) => void
+  @Action(useRootStore) setUserInfo!: (x: UserInfoIF) => void
+
+  // filing store references
+  @Action(useFilingHistoryListStore) loadFilings!: (x: string) => Promise<void>
+  @Action(useFilingHistoryListStore) setFilings!: (x: ApiFilingIF[]) => void
 
   /** The Business ID string. */
   get businessId (): string {
@@ -206,14 +221,6 @@ export default class App extends Mixins(
   /** True if route is Signout. */
   get isSignoutRoute (): boolean {
     return (this.$route.name === Routes.SIGNOUT)
-  }
-
-  /** True if user is authenticated. */
-  // FUTURE: use `authenticationStore.isAuthenticated` instead?
-  get isAuthenticated (): boolean {
-    const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
-    // FUTURE: also check that token isn't expired!
-    return !!keycloakToken
   }
 
   /** Is true if this is the amalgamation selection panel page. */
@@ -273,18 +280,18 @@ export default class App extends Mixins(
   async mounted (): Promise<void> {
     // do not fetch data if we need to authenticate
     // just let signin page do its thing
-    if (!this.isAuthenticated) return
+    const isAuthenticated = !!sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
+    if (!isAuthenticated) return
 
     // wait up to 5 seconds for account id to become available
-    // if not found, some things may fail (but don't block)
+    // if not found, some things may fail, but proceed anyway
     if (!this.isVitestRunning) {
       for (let i = 0; i < 50; i++) {
-        if (this.getCurrentAccountId) break
-        await sleep(100)
+        if (GetCurrentAccount()?.id) break
+        await Sleep(100)
       }
     }
 
-    // ...otherwise proceed
     await this.fetchData()
   }
 
@@ -293,40 +300,6 @@ export default class App extends Mixins(
     // stop listening for reload data events
     this.$root.$off('reloadData')
   }
-
-  @Action(useBusinessStore) loadBusinessInfo!: () => Promise<void>
-  @Action(useBusinessStore) setGoodStanding!: (x: boolean) => Promise<void>
-  @Action(useBusinessStore) setLegalName!: (x: string) => Promise<void>
-  @Action(useBusinessStore) setLegalType!: (x: CorpTypeCd) => Promise<void>
-  @Action(useBusinessStore) setIdentifier!: (x: string) => Promise<void>
-  @Action(useBusinessStore) setFoundingDate!: (x: string) => Promise<void>
-
-  @Action(useFilingHistoryListStore) loadFilings!: (x: string) => Promise<void>
-  @Action(useFilingHistoryListStore) setFilings!: (x: ApiFilingIF[]) => void
-
-  @Action(useRootStore) loadStateFiling!: () => Promise<void>
-  @Action(useRootStore) setAccountInformation!: (x: AccountInformationIF) => void
-  @Action(useRootStore) setAuthorizedActions!: (x: Array<AuthorizedActions>) => void
-  @Action(useRootStore) setBootstrapFilingStatus!: (x: FilingStatus) => void
-  @Action(useRootStore) setBootstrapFilingType!: (x: FilingTypes) => void
-  @Action(useRootStore) setBusinessAddress!: (x: OfficeAddressIF) => void
-  @Action(useRootStore) setBusinessEmail!: (x: string) => void
-  @Action(useRootStore) setBusinessPhone!: (x: string) => void
-  @Action(useRootStore) setBusinessPhoneExtension!: (x: string) => void
-  @Action(useRootStore) setConfigObject!: (x: any) => void
-  @Action(useRootStore) setCorpTypeCd!: (x: CorpTypeCd) => void
-  @Action(useRootStore) setCurrentDate!: (x: string) => void
-  @Action(useRootStore) setCurrentJsDate!: (x: Date) => void
-  @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
-  @Action(useRootStore) setFolioNumber!: (x: string) => void
-  @Action(useRootStore) setNameRequest!: (x: any) => void
-  @Action(useRootStore) setParties!: (x: Array<PartyIF>) => void
-  @Action(useRootStore) setPendingsList!: (x: Array<any>) => void
-  @Action(useRootStore) setRecordsAddress!: (x: OfficeAddressIF) => void
-  @Action(useRootStore) setRegisteredAddress!: (x: OfficeAddressIF) => void
-  @Action(useRootStore) setTasks!: (x: Array<ApiTaskIF>) => void
-  @Action(useRootStore) setUserInfo!: (x: any) => void
-  @Action(useRootStore) setUserKeycloakGuid!: (x: string) => void
 
   /** Fetches business data / incorp app data. */
   async fetchData (): Promise<void> {
@@ -482,47 +455,43 @@ export default class App extends Mixins(
     try {
       const userInfo = await AuthServices.fetchUserInfo()
       this.setUserInfo(userInfo)
-      await this.updateLaunchDarkly(userInfo)
-      this.setUserKeycloakGuid(userInfo.keycloakGuid)
+      await this.updateLaunchDarkly()
     } catch (error) {
       // just log the error -- no need to halt app
       // eslint-disable-next-line no-console
       console.log('Error fetching user info or updating Launch Darkly =', error)
     }
   }
-  /** Gets Keycloak JWT and parses it. */
-  getJWT (): any {
-    const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
-    if (keycloakToken) {
-      return this.parseKcToken(keycloakToken)
-    }
-    throw new Error('Error getting Keycloak token')
-  }
-
-  /** Decodes and parses Keycloak token. */
-  parseKcToken (token: string): any {
-    try {
-      const base64Url = token.split('.')[1]
-      const base64 = decodeURIComponent(window.atob(base64Url).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-      }).join(''))
-      return JSON.parse(base64)
-    } catch (error) {
-      throw new Error('Error parsing token - ' + error)
-    }
-  }
 
   /** Updates Launch Darkly with current user info. */
-  async updateLaunchDarkly (userInfo: any): Promise<void> {
-    // since username is unique, use it as the user key
-    const key: string = userInfo.username
-    const email: string = userInfo.contacts[0]?.email || userInfo.email
-    const firstName: string = userInfo?.firstname
-    const lastName: string = userInfo?.lastname
-    // store auth roles in custom object
-    const custom = { roles: this.authRoles } as any
+  async updateLaunchDarkly (): Promise<void> {
+    // don't run when Vitest is running the code
+    if (import.meta.env.VITEST) return
 
-    await UpdateLdUser(key, email, firstName, lastName, custom)
+    const userInfo = this.getUserInfo
+    const userContext = userInfo && {
+      kind: 'user',
+      key: userInfo.keycloakGuid,
+      roles: this.authRoles,
+      appSource: import.meta.env.APP_NAME,
+      loginSource: userInfo.loginSource,
+      lastName: userInfo.lastname,
+      firstName: userInfo.firstname,
+      email: userInfo.contacts[0]?.email || userInfo.email
+    }
+
+    const currentAccount = GetCurrentAccount()
+    const orgContext = currentAccount && {
+      kind: 'org',
+      key: currentAccount.id.toString(),
+      type: currentAccount.type,
+      accountStatus: currentAccount.accountStatus,
+      accountType: currentAccount.accountType,
+      appSource: import.meta.env.APP_NAME,
+      label: currentAccount.label
+    }
+
+    await UpdateLdUser(userContext, orgContext)
   }
 
   /** Stores entity info from Auth API. */
@@ -799,12 +768,12 @@ export default class App extends Mixins(
     }
 
     const url = `${this.getCreateUrl}define-dissolution?id=${this.getIdentifier}`
-    navigate(url)
+    Navigate(url)
   }
 
   /** Handles Exit click event from dialogs. */
   onClickExit (): void {
-    navigate(this.getBusinessRegistryUrl)
+    Navigate(this.getBusinessRegistryUrl)
   }
 
   /** Handles Retry click event from dialogs. */

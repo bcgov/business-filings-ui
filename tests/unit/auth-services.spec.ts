@@ -1,6 +1,14 @@
+import Vue from 'vue'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
 import AuthServices from '@/services/auth-services'
+import { getPiniaStore } from '@/stores'
+
+// This is needed to fix "getActivePinia was called with no active Pinia" error.
+// Type assertion is to turn off type checking.
+// Ref: https://stackoverflow.com/questions/74865884/cant-access-pinia-store-in-beforeenter-in-vue-2-app
+const pinia = getPiniaStore()
+Vue.use(pinia as any)
 
 describe('Auth Services', () => {
   let get: any

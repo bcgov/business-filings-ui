@@ -1,5 +1,5 @@
 import { AuthorizedActions, CorpTypeCd, FilingStatus } from '@/enums'
-import { ApiHeaderIF, ApiTaskIF, FilingDataIF, OfficeAddressIF, PartyIF } from '@/interfaces'
+import { ApiHeaderIF, ApiTaskIF, FilingDataIF, OfficeAddressIF, PartyIF, UserInfoIF } from '@/interfaces'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 
 /** Interface for the state filing object. */
@@ -19,7 +19,6 @@ export interface RootStateIF {
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
   currentJsDate: Date // 'now' as of dashboard loading in UTC
   stateFiling: StateFilingIF
-  userKeycloakGuid: string
 
   // bootstrap filing properties
   // (amalgamations/incorp applications/registrations/continuation ins only)
@@ -47,5 +46,5 @@ export interface RootStateIF {
   // *** FUTURE: declare a type for pendingsList
   pendingsList: Array<any> // pendings list from bootstrap filing
   tasks: Array<ApiTaskIF> // "tasks" list from API (or bootstrap filing)
-  userInfo: any // from auth db
+  userInfo: UserInfoIF // from auth db
 }

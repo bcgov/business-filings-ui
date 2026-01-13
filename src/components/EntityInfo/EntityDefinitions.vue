@@ -108,7 +108,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DateUtilities } from '@/services'
-import { navigate } from '@/utils'
+import { Navigate } from '@/utils'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({})
@@ -180,7 +180,7 @@ export default class EntityDefinitions extends Vue {
 
   /** Navigates to the Auth UI to update business profile. */
   editBusinessProfile (): void {
-    navigate(this.getBusinessProfileUrl)
+    Navigate(this.getBusinessProfileUrl)
   }
 }
 </script>

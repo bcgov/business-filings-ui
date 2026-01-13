@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
-import { sleep } from '@/utils/sleep'
+import { Sleep } from '@/utils'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -63,7 +63,7 @@ describe('AgmYear', () => {
     vm.onValueChanged(today.getFullYear())
     const input = wrapper.find('#year-txt')
     await input.setValue(today.getFullYear())
-    await sleep(300) // need to wait for debounce
+    await Sleep(300) // need to wait for debounce
 
     expect(wrapper.emitted('input').pop()[0]).toBe(today.getFullYear().toString())
     expect(wrapper.emitted('valid').pop()[0]).toBe(true)
@@ -83,7 +83,7 @@ describe('AgmYear', () => {
     vm.onValueChanged('')
     const input = wrapper.find('#year-txt')
     await input.setValue('')
-    await sleep(300) // need to wait for debounce
+    await Sleep(300) // need to wait for debounce
 
     expect(wrapper.emitted('input').pop()[0]).toBe('')
     expect(wrapper.emitted('valid').pop()[0]).toBe(false)
@@ -103,7 +103,7 @@ describe('AgmYear', () => {
     vm.onValueChanged(today.getFullYear() - 3)
     const input = wrapper.find('#year-txt')
     await input.setValue(today.getFullYear() - 3)
-    await sleep(300) // need to wait for debounce
+    await Sleep(300) // need to wait for debounce
 
     expect(wrapper.emitted('input').pop()[0]).toBe((today.getFullYear() - 3).toString())
     expect(wrapper.emitted('valid').pop()[0]).toBe(false)
@@ -123,7 +123,7 @@ describe('AgmYear', () => {
     vm.onValueChanged(today.getFullYear() + 2)
     const input = wrapper.find('#year-txt')
     await input.setValue(today.getFullYear() + 2)
-    await sleep(300) // need to wait for debounce
+    await Sleep(300) // need to wait for debounce
 
     expect(wrapper.emitted('input').pop()[0]).toBe((today.getFullYear() + 2).toString())
     expect(wrapper.emitted('valid').pop()[0]).toBe(false)

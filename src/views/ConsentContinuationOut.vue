@@ -301,16 +301,16 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { IsAuthorized, navigate } from '@/utils'
+import { IsAuthorized, Navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, ForeignJurisdiction, TransactionalFolioNumber } from '@/components/common'
 import { AuthErrorDialog, ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { EnumUtilities, LegalServices } from '@/services/'
+import { EnumUtilities, LegalServices } from '@/services'
 import { AuthorizedActions, EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, StaffPaymentIF, UserInfoIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -348,7 +348,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getTransactionalFolioNumber!: string
-  @Getter(useRootStore) getUserInfo!: any
+  @Getter(useRootStore) getUserInfo!: UserInfoIF
 
   // enum for template
   readonly FilingCodes = FilingCodes
@@ -733,7 +733,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
         const payUrl = this.getAuthWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable
         // otherwise, user will have to retry payment later
-        navigate(payUrl)
+        Navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
         this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)

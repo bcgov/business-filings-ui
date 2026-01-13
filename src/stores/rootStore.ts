@@ -1,17 +1,8 @@
 import { defineStore } from 'pinia'
 import { AuthorizedActions, CorpTypeCd, FilingStatus, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
-import {
-  ApiTaskIF,
-  DissolutionConfirmationResourceIF,
-  FilingDataIF,
-  OfficeAddressIF,
-  PartyIF,
-  RootStateIF,
-  TodoListResourceIF,
-  IsoDatePacific,
-  StateFilingIF
-} from '@/interfaces'
+import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, IsoDatePacific, OfficeAddressIF, PartyIF,
+  RootStateIF, StateFilingIF, TodoListResourceIF, UserInfoIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 
 import { useBusinessStore } from './businessStore'
@@ -25,7 +16,6 @@ export const useRootStore = defineStore('root', {
     bootstrapFilingStatus: null,
     bootstrapFilingType: null,
     stateFiling: null,
-    userKeycloakGuid: null,
     businessEmail: null,
     businessPhone: null,
     businessPhoneExtension: null,
@@ -430,11 +420,7 @@ export const useRootStore = defineStore('root', {
       this.stateFiling = stateFilingResponse
     },
 
-    setUserKeycloakGuid (userKeycloakGuid: string) {
-      this.userKeycloakGuid = userKeycloakGuid
-    },
-
-    setUserInfo (val: any) {
+    setUserInfo (val: UserInfoIF) {
       this.userInfo = val
     },
 

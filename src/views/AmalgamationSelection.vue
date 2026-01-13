@@ -144,14 +144,14 @@
 </template>
 
 <script lang="ts">
-import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import { Action, Getter } from 'pinia-class'
 import { Component, Mixins } from 'vue-property-decorator'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { AmalgamationTypes, CorrectNameOptions, FilingTypes } from '@bcrs-shared-components/enums'
 import { AmlRoles, AmlTypes } from '@/enums'
 import { LegalServices } from '@/services'
-import { navigate } from '@/utils'
+import { GetCurrentAccount, Navigate } from '@/utils'
 import { TechnicalErrorDialog } from '@/components/dialogs'
 import { CommonMixin } from '@/mixins'
 
@@ -161,7 +161,6 @@ import { CommonMixin } from '@/mixins'
   }
 })
 export default class AmalgamationSelection extends Mixins(CommonMixin) {
-  @Getter(useAuthenticationStore) getAccountId!: string
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useRootStore) getFullPhoneNumber!: string
@@ -224,7 +223,7 @@ export default class AmalgamationSelection extends Mixins(CommonMixin) {
         ? 'amalg-short-information'
         : 'amalg-reg-information'
       const amalgamationUrl = `${this.getCreateUrl}${route}?id=${businessId}`
-      navigate(amalgamationUrl)
+      Navigate(amalgamationUrl)
       return
     } catch (error) {
       console.log('Error - unable to amalgamate now =', error)
@@ -279,7 +278,7 @@ export default class AmalgamationSelection extends Mixins(CommonMixin) {
       filing: {
         header: {
           name: FilingTypes.AMALGAMATION_APPLICATION,
-          accountId: this.getAccountId
+          accountId: GetCurrentAccount()?.id || 0
         },
         business: {
           legalType: this.legalType

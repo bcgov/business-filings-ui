@@ -1,17 +1,18 @@
-import { AccountTypes } from '@bcrs-shared-components/enums'
+// import { AccountTypes } from '@bcrs-shared-components/enums'
+import { Account } from 'sbc-common-components/src/util/constants'
 
 /**
- * The current account interface.
- * (Each Keycloak user (login) can have several accounts.)
+ * The Current Account interface.
+ * @example See CURRENT_ACCOUNT in session storage.
  */
 export interface CurrentAccountIF {
   accountStatus: string
-  accountType: AccountTypes
-  additionalLabel: string
+  accountType: Account
+  additionalLabel?: string
   id: number
   label: string
-  productSettings: string
+  productSettings?: string
   type: string
-  urlorigin: string
-  urlpath: string
+  urlorigin?: string
+  urlpath?: string
 }

@@ -100,7 +100,7 @@
                               :customErrorMSg="courtOrderCustomValidationMsg"
                               :maxSize="MAX_FILE_SIZE"
                               :pageSize="PageSizes.LETTER_PORTRAIT"
-                              :userId="getKeycloakGuid"
+                              :userId="getUserInfo?.keycloakGuid"
                             />
                             <v-icon>mdi-plus</v-icon>
                             <span>Add a Document</span>
@@ -233,11 +233,11 @@ import { DateMixin, FilingMixin, CommonMixin } from '@/mixins'
 import { ConfirmDialog, ResumeErrorDialog } from '@/components/dialogs'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
-import { ConfirmDialogType, FormIF, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, FormIF, StaffPaymentIF, UserInfoIF } from '@/interfaces'
 import { AuthorizedActions, EffectOfOrderTypes, PageSizes } from '@/enums'
 import { FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { EnumUtilities, LegalServices } from '@/services'
-import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment/'
 import { IsAuthorized } from '@/utils'
@@ -267,8 +267,8 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   readonly PageSizes = PageSizes
   readonly AuthorizedActions = AuthorizedActions
   readonly IsAuthorized = IsAuthorized
-  // enum for template
   readonly FilingCodes = FilingCodes
+
   /** Prop to display the dialog. */
   @Prop({ required: true }) readonly dialog!: boolean
 
@@ -290,12 +290,12 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   @Getter(useBusinessStore) getLegalName!: string
   // @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   // @Getter(useBusinessStore) getIdentifier!: string
-  @Getter(useAuthenticationStore) getKeycloakGuid!: string
   @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
-  @Getter(useRootStore) getUserInfo!: any
+  @Getter(useRootStore) getUserInfo!: UserInfoIF
+
   // Properties
   customErrorMsg = ''
   notation = '' // notation text

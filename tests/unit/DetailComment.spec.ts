@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { DetailComment } from '@/components/common'
-import { sleep } from '@/utils/sleep'
+import { Sleep } from '@/utils'
 
 Vue.use(Vuetify)
 
@@ -57,7 +57,7 @@ describe('DetailComment', () => {
     // change the value
     // NB: need to wait for debounce
     await wrapper.setProps({ value: 'testing 1 2 3' })
-    await sleep(300)
+    await Sleep(300)
 
     // verify valid event
     expect(wrapper.emitted('valid').pop()[0]).toEqual(true)
@@ -78,7 +78,7 @@ describe('DetailComment', () => {
     // apparently you can't set a textarea's value, so do it explicitly
     // NB: need to wait for debounce
     vm.onValueChanged('testing 4 5 6')
-    await sleep(300)
+    await Sleep(300)
     vm.emitInput('testing 4 5 6')
 
     // verify valid and input events

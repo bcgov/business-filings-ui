@@ -1,19 +1,15 @@
-import { createPinia, setActivePinia } from 'pinia'
-import { useAuthenticationStore } from '@/stores'
-
-setActivePinia(createPinia())
-const authenticationStore = useAuthenticationStore()
+import { GetCurrentAccount } from '@/utils'
 
 /**
- * Navigates to the specified URL, including Account ID param if available.
+ * Navigates to the specified URL, adding Account ID param if available.
  * This function may or may not return. The caller should account for this!
  */
-export function navigate (url: string): boolean {
+export function Navigate (url: string): boolean {
   try {
     if (!url) throw new Error('empty URL')
 
     // get account id and set in params
-    const accountId = authenticationStore.getAccountId
+    const accountId = GetCurrentAccount()?.id
     if (accountId) {
       if (url.includes('?')) {
         url += `&accountid=${accountId}`

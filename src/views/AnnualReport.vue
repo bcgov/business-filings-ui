@@ -432,7 +432,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { IsAuthorized, navigate } from '@/utils'
+import { IsAuthorized, Navigate } from '@/utils'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import Directors from '@/components/common/Directors.vue'
@@ -442,7 +442,7 @@ import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses,
 import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { LegalServices } from '@/services/'
+import { LegalServices } from '@/services'
 import { AuthorizedActions, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
@@ -1036,7 +1036,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
         const payUrl = this.getAuthWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable
         // otherwise, user will have to retry payment later
-        navigate(payUrl)
+        Navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
         this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)

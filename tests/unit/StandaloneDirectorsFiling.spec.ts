@@ -969,7 +969,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     expect(button.attributes('disabled')).toBeUndefined()
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 
@@ -1083,7 +1083,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     rootStore.setFilingData([{} as any]) // dummy data
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 
@@ -1121,7 +1121,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     })
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
     rootStore.setFilingData([{} as any]) // dummy data
@@ -1285,7 +1285,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 

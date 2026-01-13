@@ -4,7 +4,7 @@
  * of session storage
  */
 
-export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: string, rootUrl: string): void {
+export function SetBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: string, rootUrl: string): void {
   if (!processEnvBaseUrl || !pathname || !rootUrl) {
     throw new Error('Missing environment variables')
   }

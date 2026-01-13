@@ -189,22 +189,20 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { IsAuthorized, navigate } from '@/utils'
+import { IsAuthorized, Navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { Certify, TransactionalFolioNumber } from '@/components/common'
-import {
-  AuthErrorDialog, ConfirmDialog, NotEligibleExtensionDialog, PaymentErrorDialog
-} from '@/components/dialogs'
+import { AuthErrorDialog, ConfirmDialog, NotEligibleExtensionDialog, PaymentErrorDialog } from '@/components/dialogs'
 import AboutTheBusiness from '@/components/AgmExtension/AboutTheBusiness.vue'
 import AgmExtensionEvaluation from '@/components/AgmExtension/AgmExtensionEvaluation.vue'
 import AgmExtensionHelp from '@/components/AgmExtension/AgmExtensionHelp.vue'
 import ExtensionRequest from '@/components/AgmExtension/ExtensionRequest.vue'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { LegalServices } from '@/services/'
+import { LegalServices } from '@/services'
 import { AuthorizedActions, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
-import { AgmExtEvalIF, ConfirmDialogType, EmptyAgmExtEval } from '@/interfaces'
+import { AgmExtEvalIF, ConfirmDialogType, EmptyAgmExtEval, UserInfoIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
@@ -237,7 +235,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getTransactionalFolioNumber!: string
-  @Getter(useRootStore) getUserInfo!: any
+  @Getter(useRootStore) getUserInfo!: UserInfoIF
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useFilingHistoryListStore) getTotalAgmExtensionDuration!: (year: number) => number;
 
@@ -428,7 +426,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
         const payUrl = this.getAuthWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable
         // otherwise, user will have to retry payment later
-        navigate(payUrl)
+        Navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
         this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)

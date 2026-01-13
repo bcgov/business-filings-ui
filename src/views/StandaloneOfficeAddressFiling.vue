@@ -261,13 +261,13 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { IsAuthorized, navigate } from '@/utils'
+import { IsAuthorized, Navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, OfficeAddresses, TransactionalFolioNumber } from '@/components/common'
 import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { LegalServices } from '@/services/'
+import { LegalServices } from '@/services'
 import { AuthorizedActions, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
@@ -699,7 +699,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
         const payUrl = this.getAuthWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable
         // otherwise, user will have to retry payment later
-        navigate(payUrl)
+        Navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
         this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)

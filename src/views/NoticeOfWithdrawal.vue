@@ -261,7 +261,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { IsAuthorized, navigate } from '@/utils'
+import { IsAuthorized, Navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify } from '@/components/common'
 import RecordToBeWithdrawn from '@/components/NoticeOfWithdrawal/RecordToBeWithdrawn.vue'
@@ -269,10 +269,10 @@ import StaffPayment from '@/components/NoticeOfWithdrawal/StaffPayment.vue'
 import { ConfirmDialog, StaffRoleErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { LegalServices } from '@/services/'
+import { LegalServices } from '@/services'
 import { AuthorizedActions, EffectOfOrderTypes, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, StaffPaymentIF, UserInfoIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -303,7 +303,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
     @Getter(useRootStore) getBusinessEmail!: string
     @Getter(useBusinessStore) getLegalName!: string
     @Getter(useConfigurationStore) getPayApiUrl!: string
-    @Getter(useRootStore) getUserInfo!: any
+    @Getter(useRootStore) getUserInfo!: UserInfoIF
 
     // enum for template
     readonly FilingCodes = FilingCodes
@@ -508,7 +508,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
           const payUrl = this.getAuthWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
           // assume Pay URL is always reachable
           // otherwise, user will have to retry payment later
-          navigate(payUrl)
+          Navigate(payUrl)
         } else {
           // route to dashboard with filing id parameter
           this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)

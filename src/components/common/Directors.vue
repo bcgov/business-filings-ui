@@ -771,13 +771,13 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    */
   @Prop({ default: () => [] }) readonly directors!: DirectorIF[]
 
-  @Getter(useBusinessStore) isBaseCompany!: boolean
+  // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isEntitySociety!: boolean
   @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useBusinessStore) isEntityFirm!: boolean
   @Getter(useRootStore) getCurrentDate!: string
   @Getter(useRootStore) getFoundingDate!: Date
-  @Getter(useBusinessStore) getIdentifier!: string
+  // @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean

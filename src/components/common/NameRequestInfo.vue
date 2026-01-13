@@ -31,7 +31,7 @@
               mdi-check
             </v-icon>
             <span class="key">Status:</span>
-            <span class="val">{{ capitalize(state) }}</span>
+            <span class="val">{{ Capitalize(state) }}</span>
           </li>
           <li id="condition-consent">
             <v-icon
@@ -90,7 +90,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { getName } from 'country-list'
-import { capitalize, formatPhoneNumber } from '@/utils'
+import { Capitalize, FormatPhoneNumber } from '@/utils'
 import { NameRequestStates } from '@/enums'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { NameRequestIF, NameRequestApplicantIF } from '@/interfaces'
@@ -106,7 +106,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, NameRequestMixin)
 
   // For template
   readonly NameRequestStates = NameRequestStates
-  readonly capitalize = capitalize
+  readonly Capitalize = Capitalize
 
   // Constants
   readonly RECEIVED_STATE = 'Received'
@@ -206,7 +206,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, NameRequestMixin)
 
   /** The applicant's phone number. */
   get phoneNumber (): string {
-    return formatPhoneNumber(this.applicant?.phoneNumber)
+    return FormatPhoneNumber(this.applicant?.phoneNumber)
   }
 }
 </script>

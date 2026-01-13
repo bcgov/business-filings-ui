@@ -2,6 +2,7 @@
 import axios from '@/axios-auth'
 import { AxiosResponse } from 'axios'
 import { useConfigurationStore } from '@/stores/configurationStore'
+import { UserInfoIF } from '@/interfaces'
 
 /**
  * Class that provides integration with the Auth API.
@@ -17,7 +18,7 @@ export default class AuthServices {
    * Fetches user info for the current user.
    * @returns the user info object
    */
-  static async fetchUserInfo (): Promise<any> {
+  static async fetchUserInfo (): Promise<UserInfoIF> {
     const url = `${this.authApiGwUrl}users/@me`
     return axios.get(url)
       .then(response => {

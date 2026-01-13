@@ -294,16 +294,16 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { navigate, IsAuthorized } from '@/utils'
+import { IsAuthorized, Navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, DetailComment, TransactionalFolioNumber } from '@/components/common'
 import { AuthErrorDialog, ConfirmDialog, PaymentErrorDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
-import { LegalServices } from '@/services/'
+import { LegalServices } from '@/services'
 import { SaveErrorReasons, AuthorizedActions } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
-import { ConfirmDialogType } from '@/interfaces'
+import { ConfirmDialogType, UserInfoIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import AgmLocation from '@/components/AgmLocationChange/AgmLocation.vue'
 import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
@@ -336,7 +336,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getTransactionalFolioNumber!: string
-  @Getter(useRootStore) getUserInfo!: any
+  @Getter(useRootStore) getUserInfo!: UserInfoIF
 
   // enum for template
   readonly FilingCodes = FilingCodes
@@ -540,7 +540,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
         const payUrl = this.getAuthWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable
         // otherwise, user will have to retry payment later
-        navigate(payUrl)
+        Navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
         this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)

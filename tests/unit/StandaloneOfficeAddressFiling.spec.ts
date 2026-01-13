@@ -867,7 +867,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 
@@ -936,7 +936,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 
@@ -1235,7 +1235,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     expect(button.attributes('disabled')).toBeUndefined()
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 
@@ -1385,7 +1385,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
     })
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 
@@ -1538,7 +1538,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     })
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 

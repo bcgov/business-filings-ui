@@ -6,7 +6,7 @@
  * @example '1234567890' -> '(123) 456-7890'
  * @example '1234567890123' -> '1234567890123'
  */
-export function formatPhoneNumber (s: string): string {
+export function FormatPhoneNumber (s: string): string {
   if (!s) {
     return ''
   }

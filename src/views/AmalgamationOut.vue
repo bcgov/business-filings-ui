@@ -349,13 +349,13 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { IsAuthorized, navigate } from '@/utils'
+import { IsAuthorized, Navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { BusinessNameForeign, Certify, DetailComment, EffectiveDate, ForeignJurisdiction } from '@/components/common'
 import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { EnumUtilities, LegalServices } from '@/services/'
+import { EnumUtilities, LegalServices } from '@/services'
 import { AuthorizedActions, EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType } from '@/interfaces'
@@ -765,7 +765,7 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
         const payUrl = this.getAuthWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable
         // otherwise, user will have to retry payment later
-        navigate(payUrl)
+        Navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
         this.navigateToBusinessDashboard(this.getIdentifier, this.filingId)
