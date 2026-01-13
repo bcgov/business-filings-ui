@@ -1,18 +1,8 @@
 import { defineStore } from 'pinia'
 import { AuthorizedActions, CorpTypeCd, FilingStatus, FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
-import {
-  ApiTaskIF,
-  DissolutionConfirmationResourceIF,
-  FilingDataIF,
-  OfficeAddressIF,
-  PartyIF,
-  RootStateIF,
-  TodoListResourceIF,
-  IsoDatePacific,
-  StateFilingIF,
-  UserInfoIF
-} from '@/interfaces'
+import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, IsoDatePacific, OfficeAddressIF, PartyIF,
+  RootStateIF, StateFilingIF, TodoListResourceIF, UserInfoIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 
 import { useBusinessStore } from './businessStore'

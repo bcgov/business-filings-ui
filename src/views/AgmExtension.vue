@@ -193,9 +193,7 @@ import { IsAuthorized, Navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { Certify, TransactionalFolioNumber } from '@/components/common'
-import {
-  AuthErrorDialog, ConfirmDialog, NotEligibleExtensionDialog, PaymentErrorDialog
-} from '@/components/dialogs'
+import { AuthErrorDialog, ConfirmDialog, NotEligibleExtensionDialog, PaymentErrorDialog } from '@/components/dialogs'
 import AboutTheBusiness from '@/components/AgmExtension/AboutTheBusiness.vue'
 import AgmExtensionEvaluation from '@/components/AgmExtension/AgmExtensionEvaluation.vue'
 import AgmExtensionHelp from '@/components/AgmExtension/AgmExtensionHelp.vue'

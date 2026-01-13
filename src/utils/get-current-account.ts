@@ -6,6 +6,6 @@ import { CurrentAccountIF } from '@/interfaces'
  * @remarks This isn't set right away - see await in App.vue::mounted().
  */
 export function GetCurrentAccount (): CurrentAccountIF {
-  const currentAccount = sessionStorage.getItem('CURRENT_ACCOUNT') || null
-  return JSON.parse(currentAccount)
+  const currentAccount = sessionStorage.getItem('CURRENT_ACCOUNT')
+  return currentAccount ? JSON.parse(currentAccount) : null
 }

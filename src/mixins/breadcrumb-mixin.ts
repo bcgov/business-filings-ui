@@ -24,7 +24,7 @@ export default class BreadcrumbMixin extends Mixins(CommonMixin) {
     const params = accountId ? `?accountid=${accountId}` : ''
     return {
       text: 'BC Registries Dashboard',
-      href: `${this.getRegHomeUrl}dashboard/${params}`
+      href: `${this.getRegHomeUrl}dashboard${params}`
     }
   }
 
@@ -52,7 +52,7 @@ export default class BreadcrumbMixin extends Mixins(CommonMixin) {
     const params = accountId ? `?accountid=${accountId}` : ''
     return {
       text: this.getEntityName || 'Unknown Name',
-      href: `${this.getBusinessDashUrl}${this.getIdentifier}/${params}`
+      href: `${this.getBusinessDashUrl}${this.getIdentifier}${params}`
     }
   }
 }

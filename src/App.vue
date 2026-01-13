@@ -93,8 +93,9 @@ import { BusinessAuthErrorDialog, ConfirmDissolutionDialog, DownloadErrorDialog,
 import { ConfigJson } from '@/resources'
 import { BreadcrumbMixin, CommonMixin, DateMixin, DirectorMixin, FilingMixin, NameRequestMixin } from '@/mixins'
 import { AuthServices, EnumUtilities, LegalServices } from '@/services'
-import { ApiFilingIF, ApiTaskIF, DocumentIF, NameRequestIF, OfficeAddressIF, PartyIF, TaskTodoIF } from '@/interfaces'
-import { BreadcrumbIF, UserInfoIF } from '@bcrs-shared-components/interfaces'
+import { ApiFilingIF, ApiTaskIF, DocumentIF, NameRequestIF, OfficeAddressIF, PartyIF, TaskTodoIF, UserInfoIF }
+  from '@/interfaces'
+import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
 import { AuthorizationRoles, AuthorizedActions, FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
 import { CorpTypeCd, GetCorpFullDescription, GetCorpNumberedDescription }
   from '@bcrs-shared-components/corp-type-module'
