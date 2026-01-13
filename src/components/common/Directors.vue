@@ -727,7 +727,6 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { Getter } from 'pinia-class'
-import { required, maxLength } from 'vuelidate/lib/validators'
 import { cloneDeep, isEqual } from 'lodash'
 import { directorAddressSchema } from '@/schemas'
 import { BaseAddress } from '@bcrs-shared-components/base-address'
@@ -834,6 +833,9 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * is the same as the delivery address.
    */
   inheritDeliveryAddress = false
+
+  /** The Address schema containing Vuelidate rules. */
+  directorAddressSchema = directorAddressSchema
 
   /** The relevant alert if a director change causes the business to be out of compliance. */
   get complianceMsg (): AlertMessageIF {
