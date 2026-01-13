@@ -26,7 +26,8 @@ export function getVueRouter () {
 
   router.beforeEach((to, from, next) => {
     // check if we need to authenticate
-    if (requiresAuth(to) && !isAuthenticated()) {
+    const isAuthenticated = !!sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
+    if (requiresAuth(to) && !isAuthenticated) {
       next({ name: Routes.SIGNIN })
     } else {
       next()
@@ -36,13 +37,6 @@ export function getVueRouter () {
   /** Returns True if route requires authentication, else False. */
   function requiresAuth (route: Route): boolean {
     return route.matched.some(r => r.meta?.requiresAuth)
-  }
-
-  /** Returns True if user is authenticated, else False. */
-  // FUTURE: use `authenticationStore.isAuthenticated` instead?
-  function isAuthenticated (): boolean {
-    // FUTURE: also check that token isn't expired!
-    return !!sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
   }
 
   return router

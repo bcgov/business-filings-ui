@@ -229,7 +229,7 @@ describe('AGM Extension view', () => {
     wrapper.setData({ certifiedBy: 'Full Name', isCertified: true, certifyFormValid: true })
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 
@@ -313,7 +313,7 @@ describe('AGM Extension view', () => {
     wrapper.setData({ certifiedBy: 'Full Name', isCertified: true, certifyFormValid: true })
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 

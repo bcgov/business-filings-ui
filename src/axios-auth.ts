@@ -1,20 +1,11 @@
 import axios from 'axios'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { GetCurrentAccount } from '@/utils'
 
 /**
- * This file exports an instance of Axios with some extra request headers.
+ * This file exports an instance of Axios with some extra request headers,
+ * which is used by the various services (Legal, Auth, etc).
  */
-
-function getAccountId (): string {
-  // if we can't get account id from ACCOUNT_ID
-  // then try to get it from CURRENT_ACCOUNT
-  let accountId = sessionStorage.getItem('ACCOUNT_ID')
-  if (!accountId) {
-    const currentAccount = sessionStorage.getItem('CURRENT_ACCOUNT')
-    accountId = JSON.parse(currentAccount)?.id
-  }
-  return accountId
-}
 
 const authApiGwUrl = import.meta.env.VUE_APP_AUTH_API_GW_URL
 const payApiGwUrl = import.meta.env.VUE_APP_PAY_API_GW_URL
@@ -29,13 +20,13 @@ instance.interceptors.request.use(
       return request
     }
 
-    const kcToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
-    request.headers.common['Authorization'] = `Bearer ${kcToken}`
+    const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
+    request.headers.common['Authorization'] = `Bearer ${keycloakToken}`
     request.headers.common['App-Name'] = import.meta.env.APP_NAME
 
     // add these headers only if Vitest isn't running as it breaks some tests
     if (import.meta.env.VITEST === undefined) {
-      request.headers.common['Account-Id'] = getAccountId()
+      request.headers.common['Account-Id'] = GetCurrentAccount()?.id || 0
       // add headers specific to various APIs
       switch (true) {
         case request.url?.startsWith(authApiGwUrl):

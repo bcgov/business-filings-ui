@@ -10,7 +10,8 @@ import {
   RootStateIF,
   TodoListResourceIF,
   IsoDatePacific,
-  StateFilingIF
+  StateFilingIF,
+  UserInfoIF
 } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 
@@ -25,7 +26,6 @@ export const useRootStore = defineStore('root', {
     bootstrapFilingStatus: null,
     bootstrapFilingType: null,
     stateFiling: null,
-    userKeycloakGuid: null,
     businessEmail: null,
     businessPhone: null,
     businessPhoneExtension: null,
@@ -430,11 +430,7 @@ export const useRootStore = defineStore('root', {
       this.stateFiling = stateFilingResponse
     },
 
-    setUserKeycloakGuid (userKeycloakGuid: string) {
-      this.userKeycloakGuid = userKeycloakGuid
-    },
-
-    setUserInfo (val: any) {
+    setUserInfo (val: UserInfoIF) {
       this.userInfo = val
     },
 

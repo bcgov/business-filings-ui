@@ -7,7 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { InitLdClient, navigate, setBaseRouteAndBusinessId, sleep } from '@/utils'
+import { InitLdClient, Navigate, SetBaseRouteAndBusinessId, Sleep } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getPiniaStore, getVuexStore } from '@/stores'
 import '@/assets/styles/base.scss'
@@ -28,9 +28,6 @@ Vue.use(Vue2Filters) // needed by SbcFeeSummary
 
 const store = getVuexStore()
 const pinia = getPiniaStore()
-
-// attach global Vuex store to Vue instance
-Vue.prototype.$store = store
 
 // This is needed to fix "getActivePinia was called with no active Pinia" error.
 // Type assertion is to turn off type checking.
@@ -55,7 +52,7 @@ async function start () {
   const configurationStore = useConfigurationStore()
   configurationStore.loadConfiguration()
 
-  setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // may throw an error
+  SetBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // may throw an error
 
   // initialize Hotjar
   if (window['hotjarId']) {
@@ -112,11 +109,11 @@ async function start () {
 // execution and error handling
 start().catch(async (error) => {
   console.error(error) // eslint-disable-line no-console
-  await sleep(100) // wait for console error to be shown before alert
+  await Sleep(100) // wait for console error to be shown before alert
 
   alert('There was an error starting this page. (See console for details.)\n' +
     'Please try again later.')
 
   // try to navigate to Business Registry home page
-  navigate(sessionStorage.getItem('BUSINESSES_URL'))
+  Navigate(sessionStorage.getItem('BUSINESSES_URL'))
 })

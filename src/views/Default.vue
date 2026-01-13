@@ -5,17 +5,13 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import { useAuthenticationStore, useBusinessStore, useConfigurationStore } from '@/stores'
-import { CurrentAccountIF } from '@/interfaces'
+import { useConfigurationStore } from '@/stores'
 
 @Component({
 })
 export default class Default extends Vue {
   @Getter(useConfigurationStore) getBusinessDashUrl!: string
   @Getter(useConfigurationStore) getBusinessRegistryDashboardUrl!: string
-  @Getter(useConfigurationStore) getBusinessID
-  @Getter(useBusinessStore) getIdentifier!: string
-  @Getter(useAuthenticationStore) getCurrentAccount!: CurrentAccountIF
 
   created () {
     // Get businessId from route params if present

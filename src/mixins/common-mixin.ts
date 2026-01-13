@@ -2,7 +2,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { isEqual, omit } from 'lodash'
 import { Getter } from 'pinia-class'
 import { useBusinessStore, useConfigurationStore } from '@/stores'
-import { navigate } from '@/utils'
+import { Navigate } from '@/utils'
 
 /**
  * Mixin that provides some useful common utilities.
@@ -85,7 +85,7 @@ export default class CommonMixin extends Vue {
     if (!isNaN(filingId)) {
       dashboardUrl += `?filing_id=${filingId.toString()}`
     }
-    navigate(dashboardUrl)
+    Navigate(dashboardUrl)
   }
 
   /**

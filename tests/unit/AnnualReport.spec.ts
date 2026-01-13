@@ -1084,7 +1084,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 
@@ -1376,7 +1376,7 @@ describe('Annual Report - Part 4 - Saving', () => {
     })
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 
@@ -1417,7 +1417,7 @@ describe('Annual Report - Part 4 - Saving', () => {
     })
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 
@@ -1442,7 +1442,7 @@ describe('Annual Report - Part 4 - Saving', () => {
     })
 
     // mock the navigate function
-    const mockNavigate = vi.spyOn(utils, 'navigate').mockImplementation(() => {
+    const mockNavigate = vi.spyOn(utils, 'Navigate').mockImplementation(() => {
       return true
     })
 

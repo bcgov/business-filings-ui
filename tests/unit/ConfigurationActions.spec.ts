@@ -1,4 +1,4 @@
-import { setBaseRouteAndBusinessId } from '@/utils'
+import { SetBaseRouteAndBusinessId } from '@/utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useConfigurationStore } from '@/stores'
 
@@ -49,7 +49,7 @@ describe('Configuration Actions', () => {
     })
 
     // call method
-    setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
+    SetBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
     await configurationStore.loadConfiguration(env)
     expect(configurationStore.getAddressCompleteKey).toBe('address complete key')
     expect(configurationStore.getAuthApiUrl).toBe('auth api url/auth api version/')
@@ -76,7 +76,7 @@ describe('Configuration Actions', () => {
     })
 
     // call method
-    setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
+    SetBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
     await configurationStore.loadConfiguration(env)
     expect(sessionStorage.getItem('VUE_ROUTER_BASE')).toBe('/business/CP1234567/')
     expect(sessionStorage.getItem('BASE_URL')).toBe('http://localhost/business/CP1234567/')
@@ -100,7 +100,7 @@ describe('Configuration Actions', () => {
 
       // call method
       const pathnameComponents = window.location.pathname.split('/')
-      setBaseRouteAndBusinessId(pathnameComponents[2], '/business/', window.location.origin)
+      SetBaseRouteAndBusinessId(pathnameComponents[2], '/business/', window.location.origin)
 
       // verify data
       expect(sessionStorage.getItem('BUSINESS_ID')).toBe(test.expected)
@@ -109,7 +109,7 @@ describe('Configuration Actions', () => {
 
   it('throws an error on invalid id', () => {
     expect(() => {
-      setBaseRouteAndBusinessId('/business/ZZ1234567', '/business/', window.location.origin)
+      SetBaseRouteAndBusinessId('/business/ZZ1234567', '/business/', window.location.origin)
     }).toThrow('Missing or invalid Business Id.')
   })
 

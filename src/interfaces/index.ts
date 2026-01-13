@@ -12,7 +12,6 @@ export type { AlterationIF, ContactPointIF, NameTranslationIF, ShareStructureIF,
   ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
 
 export * from './officer-interface' // must come before other interfaces that use it
-export * from './account-information'
 export * from './address-interfaces'
 export * from './affiliation-invitation-interface'
 export * from './agm-ext-eval-interface'
@@ -25,7 +24,6 @@ export * from './component-interface'
 export * from './configuration-state-interface'
 export * from './correction-filing-interface'
 export * from './current-account-interface'
-export * from './current-user-interface'
 export * from './digitalCredentials-interface'
 export * from './director-interface'
 export * from './dissolution-confirmation-interface'
@@ -49,3 +47,4 @@ export * from './steps-interface'
 export * from './table-header-interface'
 export * from './todo-item-interface'
 export * from './todo-list-interface'
+export * from './user-info-interface'
