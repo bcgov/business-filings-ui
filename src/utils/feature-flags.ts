@@ -8,6 +8,7 @@ declare const window: any
  * NB: Uses "entity-ui" project (per LD client id in config).
  */
 const defaultFlagSet: LDFlagSet = {
+  'enable-backdated-cod': false,
   'banner-text': '', // by default, there is no banner text
   'businesses-to-manage-in-colin': [],
   'enable-digital-credentials': false,
