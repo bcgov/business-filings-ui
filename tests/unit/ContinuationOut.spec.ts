@@ -9,7 +9,7 @@ import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
 import { BusinessNameForeign, EffectiveDate, Certify, ForeignJurisdiction } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
-import { LegalServices } from '@/services'
+import { BusinessServices } from '@/services'
 import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
@@ -42,8 +42,8 @@ describe('Continuation Out view', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
     rootStore.filingData = []
     rootStore.setAuthorizedActions(BusinessRegistryStaffActions)
@@ -195,13 +195,13 @@ describe('Continuation Out view', () => {
 
   it('saves draft continuation out properly', async () => {
     // mock "has pending tasks" legal service
-    vi.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
+    vi.spyOn(BusinessServices, 'hasPendingTasks').mockImplementation((): any => {
       return Promise.resolve(false)
     })
 
     // mock "create filing" legal service
     // (garbage response data - we aren't testing that)
-    vi.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
+    vi.spyOn(BusinessServices, 'createFiling').mockImplementation((): any => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
@@ -255,7 +255,7 @@ describe('Continuation Out view', () => {
 
   it('resumes draft continuation out properly', async () => {
     // mock "fetch filing" legal service
-    vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+    vi.spyOn(BusinessServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve({
         business: {
           identifier: 'CP1234567',

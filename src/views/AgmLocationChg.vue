@@ -300,7 +300,7 @@ import { Certify, DetailComment, TransactionalFolioNumber } from '@/components/c
 import { AuthErrorDialog, ConfirmDialog, PaymentErrorDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
-import { LegalServices } from '@/services'
+import { BusinessServices } from '@/services'
 import { SaveErrorReasons, AuthorizedActions } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, UserInfoIF } from '@/interfaces'
@@ -558,7 +558,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
 
     // if this is a new filing, ensure there are no pending tasks
     if (this.filingId === 0) {
-      const hasPendingTasks = await LegalServices.hasPendingTasks(this.getIdentifier)
+      const hasPendingTasks = await BusinessServices.hasPendingTasks(this.getIdentifier)
         .catch(() => {
           this.saveErrors = [{ error: 'Unable to check server for pending tasks.' }]
           throw new Error()
@@ -605,10 +605,10 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
       let ret
       if (this.filingId > 0) {
         // we have a filing id, so update an existing filing
-        ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
+        ret = await BusinessServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
       } else {
         // filing id is 0, so create a new filing
-        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
+        ret = await BusinessServices.createFiling(this.getIdentifier, filing, isDraft)
       }
       return ret
     } catch (error: any) {

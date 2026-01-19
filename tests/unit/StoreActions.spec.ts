@@ -1,4 +1,4 @@
-import LegalServices from '@/services/legal-services'
+import BusinessServices from '@/services/business-services'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore } from '@/stores'
 import { useRootStore } from '@/stores/rootStore'
@@ -26,13 +26,13 @@ describe('Business Actions', () => {
         name: 'dissolution'
       }
     }
-    vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+    vi.spyOn(BusinessServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve(sampleStateFiling)
     })
 
     // call the action and verify the data in the store
     await rootStore.loadStateFiling()
-    expect(LegalServices.fetchFiling).toHaveBeenCalled()
+    expect(BusinessServices.fetchFiling).toHaveBeenCalled()
     expect(rootStore.stateFiling.business.identifier).toBe('BC0871273')
     expect(rootStore.stateFiling.dissolution.dissolutionDate).toBe('2023-01-13')
     expect(rootStore.stateFiling.header.name).toBe('dissolution')
@@ -55,13 +55,13 @@ describe('Business Actions', () => {
         name: 'consentContinuationOut'
       }
     }
-    vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+    vi.spyOn(BusinessServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve(sampleStateFiling)
     })
 
     // call the action and verify the data in the store
     await rootStore.loadStateFiling()
-    expect(LegalServices.fetchFiling).toHaveBeenCalled()
+    expect(BusinessServices.fetchFiling).toHaveBeenCalled()
     expect(rootStore.stateFiling.business.identifier).toBe('BC0871273')
     expect(rootStore.stateFiling.consentContinuationOut.expiry).toBe('2023-12-31')
     expect(rootStore.stateFiling.header.name).toBe('consentContinuationOut')

@@ -1,5 +1,5 @@
 import { ApiFilingIF, CommentIF, DocumentIF, FilingHistoryListStateIF } from '@/interfaces'
-import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
+import { BusinessServices, DateUtilities, EnumUtilities } from '@/services'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { defineStore } from 'pinia'
 import { useBusinessStore } from './businessStore'
@@ -172,7 +172,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
     loadFilings (id: string): Promise<any> {
       // need to return a promise
       return new Promise((resolve, reject) => {
-        LegalServices.fetchFilings(id)
+        BusinessServices.fetchFilings(id)
           .then(filings => {
             this.setFilings(filings)
             // return the filings list
@@ -201,7 +201,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
     async loadComments (filing: ApiFilingIF): Promise<void> {
       try {
         // fetch comments array from API
-        const comments = await LegalServices.fetchComments(filing.commentsLink)
+        const comments = await BusinessServices.fetchComments(filing.commentsLink)
         // flatten and sort the comments
         filing.comments = flattenAndSortComments(comments)
       } catch (error) {
@@ -233,7 +233,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       const businessStore = useBusinessStore()
       try {
         // fetch documents object from API
-        const documents = await LegalServices.fetchDocuments(filing.documentsLink)
+        const documents = await BusinessServices.fetchDocuments(filing.documentsLink)
         // load each type of document
         filing.documents = []
         // Get identifier and if current user is staff then store in local variables

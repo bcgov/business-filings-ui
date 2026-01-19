@@ -43,7 +43,7 @@ export interface RootStateIF {
   recordsAddress: OfficeAddressIF
   registeredAddress: OfficeAddressIF
   transactionalFolioNumber: string
-  // *** FUTURE: declare a type for pendingsList
+  // FUTURE: declare a type for pendingsList
   pendingsList: Array<any> // pendings list from bootstrap filing
   tasks: Array<ApiTaskIF> // "tasks" list from API (or bootstrap filing)
   userInfo: UserInfoIF // from auth db

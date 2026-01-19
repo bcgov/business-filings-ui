@@ -92,7 +92,7 @@ import { BusinessAuthErrorDialog, ConfirmDissolutionDialog, DownloadErrorDialog,
   NameRequestInvalidDialog, NotInGoodStandingDialog } from '@/components/dialogs'
 import { ConfigJson } from '@/resources'
 import { BreadcrumbMixin, CommonMixin, DateMixin, DirectorMixin, FilingMixin, NameRequestMixin } from '@/mixins'
-import { AuthServices, EnumUtilities, LegalServices } from '@/services'
+import { AuthServices, BusinessServices, EnumUtilities } from '@/services'
 import { ApiFilingIF, ApiTaskIF, DocumentIF, NameRequestIF, OfficeAddressIF, PartyIF, TaskTodoIF, UserInfoIF }
   from '@/interfaces'
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
@@ -366,13 +366,13 @@ export default class App extends Mixins(
         this.nameRequestInvalidType = null // reset for new fetches
 
         // fetch the bootstrap filing and store the bootstrap item
-        const response = await LegalServices.fetchBootstrapFiling(this.tempRegNumber)
+        const response = await BusinessServices.fetchBootstrapFiling(this.tempRegNumber)
         this.storeBootstrapItem(response)
 
         // if it is a todo or a pending filing, and it has a NR, load it
         // (this is to display the NR details in the Todo List/Pending List)
         if ((this.isBootstrapTodo || this.isBootstrapPending) && this.localNrNumber) {
-          const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
+          const nr = await BusinessServices.fetchNameRequest(this.localNrNumber)
           this.storeNrData(nr, response)
         }
 
@@ -387,7 +387,7 @@ export default class App extends Mixins(
   /** Fetches and stores authorized actions (aka permissions). */
   private async loadAuthorizedActions (): Promise<void> {
     // NB: will throw if API error
-    const authorizedActions = await LegalServices.fetchAuthorizedActions()
+    const authorizedActions = await BusinessServices.fetchAuthorizedActions()
     // verify we have _some_ authorized actions
     if (!Array.isArray(authorizedActions) || authorizedActions.length < 1) {
       throw new Error('Invalid or missing authorized actions')
@@ -412,9 +412,9 @@ export default class App extends Mixins(
       // FUTURE: all of these should be store actions
       AuthServices.fetchEntityInfo(this.businessId),
       this.loadBusinessInfo(),
-      LegalServices.fetchTasks(this.businessId),
+      BusinessServices.fetchTasks(this.businessId),
       this.loadFilings(this.businessId || this.tempRegNumber),
-      LegalServices.fetchParties(this.businessId)
+      BusinessServices.fetchParties(this.businessId)
     ])
 
     if (!data || data.length !== 5) throw new Error('Incomplete business data')
@@ -434,7 +434,7 @@ export default class App extends Mixins(
   async fetchStoreAddressData ():Promise<void> {
     let hasBAError = false
     const data = await Promise.resolve(
-      LegalServices.fetchAddresses(this.businessId)
+      BusinessServices.fetchAddresses(this.businessId)
     ).catch(error => {
       if (error.response.status === 404 &&
         error.response.config.url.includes('addresses') &&
@@ -760,7 +760,7 @@ export default class App extends Mixins(
   /** Creates a draft filing and navigates to the Create UI to file a company dissolution filing. */
   async dissolveCompany (): Promise<void> {
     const dissolutionFiling = this.buildDissolutionFiling()
-    const draftDissolution = await LegalServices.createFiling(this.getIdentifier, dissolutionFiling, true)
+    const draftDissolution = await BusinessServices.createFiling(this.getIdentifier, dissolutionFiling, true)
     const draftDissolutionId = +draftDissolution?.header?.filingId
 
     if (!draftDissolution || isNaN(draftDissolutionId)) {
@@ -799,7 +799,7 @@ export default class App extends Mixins(
       filename: `${this.businessId} Summary - ${this.getCurrentDate}.pdf`,
       link: `businesses/${this.businessId}/documents/summary`
     }
-    await LegalServices.fetchDocument(summaryDocument).catch(error => {
+    await BusinessServices.fetchDocument(summaryDocument).catch(error => {
       // eslint-disable-next-line no-console
       console.log('fetchDocument() error =', error)
       this.downloadErrorDialog = true

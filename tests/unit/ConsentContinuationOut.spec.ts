@@ -11,7 +11,7 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, 
 import { Certify, ForeignJurisdiction, TransactionalFolioNumber } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
-import { LegalServices } from '@/services'
+import { BusinessServices } from '@/services'
 import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
@@ -46,8 +46,8 @@ describe('Consent to Continuation Out view', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
     rootStore.filingData = []
     rootStore.setAuthorizedActions(BusinessRegistryStaffActions)
@@ -176,13 +176,13 @@ describe('Consent to Continuation Out view', () => {
 
   it('saves draft consent to continuation out properly', async () => {
     // mock "has pending tasks" legal service
-    vi.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
+    vi.spyOn(BusinessServices, 'hasPendingTasks').mockImplementation((): any => {
       return Promise.resolve(false)
     })
 
     // mock "create filing" legal service
     // (garbage response data - we aren't testing that)
-    vi.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
+    vi.spyOn(BusinessServices, 'createFiling').mockImplementation((): any => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
@@ -230,7 +230,7 @@ describe('Consent to Continuation Out view', () => {
 
   it('resumes draft consent to continuation out properly with FAS staff payment', async () => {
     // mock "fetch filing" legal service
-    vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+    vi.spyOn(BusinessServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve({
         business: {
           identifier: 'CP1234567',
@@ -301,9 +301,9 @@ describe('Consent to Continue Out for general user and IAs only', () => {
 
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_AUTH_WEB_URL': 'https://auth-web.url/',
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
 
     // set necessary session variables
@@ -324,13 +324,13 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('https://legal-api.url/v2/businesses/BC0007291/tasks')
+      .withArgs('https://business-api-gw.url/v2/businesses/BC0007291/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save and file" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('https://legal-api.url/v2/businesses/BC0007291/filings')
+      .withArgs('https://business-api-gw.url/v2/businesses/BC0007291/filings')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -404,13 +404,13 @@ describe('Consent to Continue Out for general user and IAs only', () => {
 
   it('saves draft consent to continuation out properly', async () => {
     // mock "has pending tasks" legal service
-    vi.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
+    vi.spyOn(BusinessServices, 'hasPendingTasks').mockImplementation((): any => {
       return Promise.resolve(false)
     })
 
     // mock "create filing" legal service
     // (garbage response data - we aren't testing that)
-    vi.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
+    vi.spyOn(BusinessServices, 'createFiling').mockImplementation((): any => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
@@ -505,7 +505,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
+    const payURL = 'https://auth-web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()

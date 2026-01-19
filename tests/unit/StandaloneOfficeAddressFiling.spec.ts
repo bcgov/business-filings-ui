@@ -63,8 +63,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
     rootStore.setAuthorizedActions(PublicUserActions)
   })
@@ -286,8 +286,8 @@ describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff p
   beforeAll(() => {
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -298,7 +298,7 @@ describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff p
     businessStore.setLegalType(CorpTypeCd.COOP)
 
     // mock "fetch a draft filing" endpoint
-    sinon.stub(axios, 'get').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+    sinon.stub(axios, 'get').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data: {
           filing: {
@@ -365,8 +365,8 @@ describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff 
   beforeAll(() => {
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -377,7 +377,7 @@ describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff 
     businessStore.setLegalType(CorpTypeCd.COOP)
 
     // mock "fetch a draft filing" endpoint
-    sinon.stub(axios, 'get').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+    sinon.stub(axios, 'get').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data: {
           filing: {
@@ -448,8 +448,8 @@ describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staf
   beforeAll(() => {
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -460,7 +460,7 @@ describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staf
     businessStore.setLegalType(CorpTypeCd.COOP)
 
     // mock "fetch a draft filing" endpoint
-    sinon.stub(axios, 'get').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+    sinon.stub(axios, 'get').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data: {
           filing: {
@@ -525,8 +525,8 @@ describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => 
   beforeAll(() => {
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -537,7 +537,7 @@ describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => 
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     // mock "fetch a draft filing" endpoint
-    sinon.stub(axios, 'get').withArgs('https://legal-api.url/v2/businesses/BC0007291/filings/123')
+    sinon.stub(axios, 'get').withArgs('https://business-api-gw.url/v2/businesses/BC0007291/filings/123')
       .returns(new Promise(resolve => resolve({
         data: {
           filing: {
@@ -607,9 +607,9 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_AUTH_WEB_URL': 'https://auth-web.url/',
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -626,7 +626,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     const sinonAxiosGet = sinon.stub(axios, 'get')
 
     // mock "fetch a draft filing" endpoint
-    sinonAxiosGet.withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+    sinonAxiosGet.withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -658,7 +658,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
         }
       })))
 
-    sinonAxiosGet.withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
+    sinonAxiosGet.withArgs('https://business-api-gw.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
@@ -680,7 +680,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
       })))
 
     // mock "save and file" endpoint
-    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings')
+    sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -714,7 +714,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
       })))
 
     // mock "update and file" endpoint
-    sinon.stub(axios, 'put').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+    sinon.stub(axios, 'put').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -809,7 +809,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
+    const payURL = 'https://auth-web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
@@ -963,9 +963,9 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_AUTH_WEB_URL': 'https://auth-web.url/',
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -982,7 +982,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     const sinonAxiosGet = sinon.stub(axios, 'get')
 
     // mock "fetch a draft filing" endpoint
-    sinonAxiosGet.withArgs('https://legal-api.url/v2/businesses/BC0007291/filings/123')
+    sinonAxiosGet.withArgs('https://business-api-gw.url/v2/businesses/BC0007291/filings/123')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1018,7 +1018,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
         }
       })))
 
-    sinonAxiosGet.withArgs('https://legal-api.url/v2/businesses/BC0007291/tasks')
+    sinonAxiosGet.withArgs('https://business-api-gw.url/v2/businesses/BC0007291/tasks')
       .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
@@ -1040,7 +1040,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
       })))
 
     // mock "save and file" endpoint
-    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/BC0007291/filings')
+    sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/BC0007291/filings')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1078,7 +1078,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
       })))
 
     // mock "update and file" endpoint
-    sinon.stub(axios, 'put').withArgs('https://legal-api.url/v2/businesses/BC0007291/filings/123')
+    sinon.stub(axios, 'put').withArgs('https://business-api-gw.url/v2/businesses/BC0007291/filings/123')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1177,7 +1177,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
+    const payURL = 'https://auth-web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
@@ -1268,8 +1268,8 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
 
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -1284,7 +1284,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
     businessStore.setLegalType(CorpTypeCd.COOP)
 
     // mock "save draft" endpoint
-    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings?draft=true')
+    sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings?draft=true')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1311,7 +1311,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
         }
       })))
 
-    sinon.stub(axios, 'get').withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
+    sinon.stub(axios, 'get').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
@@ -1413,8 +1413,8 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
 
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -1429,7 +1429,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     // mock "save draft" endpoint
-    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/BC0007291/filings?draft=true')
+    sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/BC0007291/filings?draft=true')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1464,7 +1464,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
         }
       })))
 
-    sinon.stub(axios, 'get').withArgs('https://legal-api.url/v2/businesses/BC0007291/tasks')
+    sinon.stub(axios, 'get').withArgs('https://business-api-gw.url/v2/businesses/BC0007291/tasks')
       .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
@@ -1564,8 +1564,8 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
   beforeAll(() => {
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -1578,11 +1578,11 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
+      .withArgs('https://business-api-gw.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint
-    spy = sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings?draft=true')
+    spy = sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings?draft=true')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1661,8 +1661,8 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
   beforeAll(() => {
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -1675,11 +1675,11 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('https://legal-api.url/v2/businesses/BC0007291/tasks')
+      .withArgs('https://business-api-gw.url/v2/businesses/BC0007291/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint
-    spy = sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/BC0007291/filings?draft=true')
+    spy = sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/BC0007291/filings?draft=true')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1767,8 +1767,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
 
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -1786,12 +1786,12 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinonAxiosGet
-      .withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
+      .withArgs('https://business-api-gw.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "fetch a draft filing" endpoint
     sinonAxiosGet
-      .withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+      .withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1858,7 +1858,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
       }
     })
     p1.catch(() => {})
-    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings').returns(p1)
+    sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
     const p2 = Promise.reject({
@@ -1895,7 +1895,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
       }
     })
     p2.catch(() => {})
-    sinon.stub(axios, 'put').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123').returns(p2)
+    sinon.stub(axios, 'put').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123').returns(p2)
   })
 
   afterEach(() => {
@@ -2015,8 +2015,8 @@ describe('Standalone Office Address Filing - payment required error', () => {
 
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -2062,18 +2062,18 @@ describe('Standalone Office Address Filing - payment required error', () => {
       }
     })
     p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
-    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings').returns(p1)
+    sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings').returns(p1)
   })
 
   it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
     const get = sinon.stub(axios, 'get')
 
     rootStore.setAuthorizedActions(PublicUserActions)
 
-    get.withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
+    get.withArgs('https://business-api-gw.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     const localVue = createLocalVue()

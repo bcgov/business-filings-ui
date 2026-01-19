@@ -3,7 +3,7 @@ import { AuthorizedActions, CorpTypeCd, FilingStatus, FilingSubTypes } from '@/e
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, IsoDatePacific, OfficeAddressIF, PartyIF,
   RootStateIF, StateFilingIF, TodoListResourceIF, UserInfoIF } from '@/interfaces'
-import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
+import { BusinessServices, DateUtilities, EnumUtilities } from '@/services'
 
 import { useBusinessStore } from './businessStore'
 import { useFilingHistoryListStore } from './filingHistoryListStore'
@@ -521,7 +521,7 @@ export const useRootStore = defineStore('root', {
           return
         }
 
-        LegalServices.fetchFiling(stateFilingUrl)
+        BusinessServices.fetchFiling(stateFilingUrl)
           .then(filing => {
             // set data to store
             this.setStateFiling(filing)

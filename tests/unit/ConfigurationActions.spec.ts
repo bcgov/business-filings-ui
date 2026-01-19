@@ -24,10 +24,8 @@ describe('Configuration Actions', () => {
     VUE_APP_BUSINESS_FILING_LD_CLIENT_ID: 'business filing ld client id',
     VUE_APP_BUSINESS_REGISTRY_URL: 'business registry dashboard url',
     VUE_APP_DASHBOARD_URL: 'dashboard url',
-    VUE_APP_LEGAL_API_URL: 'legal api url',
-    VUE_APP_LEGAL_API_VERSION_2: '/legal api version 2',
-    // VUE_APP_BUSINESS_API_GW_URL: 'business api gw url',
-    // VUE_APP_BUSINESS_API_VERSION_2: '/business api version 2',
+    VUE_APP_BUSINESS_API_GW_URL: 'business api gw url',
+    VUE_APP_BUSINESS_API_VERSION_2: '/business api version 2',
     VUE_APP_PAY_API_URL: 'pay api url',
     VUE_APP_PAY_API_GW_URL: 'pay api gw url',
     VUE_APP_PAY_API_VERSION: '/pay api version',
@@ -59,7 +57,7 @@ describe('Configuration Actions', () => {
     expect(configurationStore.getEditUrl).toBe('business edit url')
     expect(configurationStore.getBusinessFilingLdClientId).toBe('business filing ld client id')
     expect(configurationStore.getCorporateOnlineUrl).toBe('corporate online url')
-    expect(configurationStore.getLegalApiUrl).toBe('legal api url/legal api version 2/')
+    expect(configurationStore.getBusinessApiGwUrl).toBe('business api gw url/business api version 2/')
     expect(configurationStore.getPayApiUrl).toBe('pay api url/pay api version/')
     expect(configurationStore.getPayApiGwUrl).toBe('pay api gw url/pay api version/')
     expect(configurationStore.getRegHomeUrl).toBe('registry home url')
@@ -113,11 +111,12 @@ describe('Configuration Actions', () => {
     }).toThrow('Missing or invalid Business Id.')
   })
 
-  it('sessions variables correctly set for the SBC header', async () => {
+  it('sessions variables correctly set for sbc-common-components', async () => {
     configurationStore.loadConfiguration(env)
     expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
     expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
     expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
     expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
+    expect(sessionStorage.getItem('PAY_API_URL')).toBe('pay api url/pay api version')
   })
 })

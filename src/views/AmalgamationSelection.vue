@@ -150,7 +150,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { AmalgamationTypes, CorrectNameOptions, FilingTypes } from '@bcrs-shared-components/enums'
 import { AmlRoles, AmlTypes } from '@/enums'
-import { LegalServices } from '@/services'
+import { BusinessServices } from '@/services'
 import { GetCurrentAccount, Navigate } from '@/utils'
 import { TechnicalErrorDialog } from '@/components/dialogs'
 import { CommonMixin } from '@/mixins'
@@ -333,7 +333,7 @@ export default class AmalgamationSelection extends Mixins(CommonMixin) {
 
     // create the draft business record
     // (throws an exception on error, which startAmalgamation() will handle)
-    const filing = await LegalServices.createDraftBusiness(draftAmalgamationApplication)
+    const filing = await BusinessServices.createDraftBusiness(draftAmalgamationApplication)
 
     // validate and return the identifier
     const identifier = filing?.business?.identifier as string

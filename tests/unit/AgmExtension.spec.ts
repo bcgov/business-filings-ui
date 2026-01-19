@@ -8,7 +8,7 @@ import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { CorpTypeCd } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
-import { LegalServices } from '@/services'
+import { BusinessServices } from '@/services'
 import flushPromises from 'flush-promises'
 import * as utils from '@/utils'
 
@@ -206,10 +206,10 @@ describe('AGM Extension view', () => {
     expect(wrapper.vm.$route.name).toBe('agm-extension')
 
     // mock hasPendingTasks()
-    LegalServices.hasPendingTasks = vi.fn().mockResolvedValue(false)
+    BusinessServices.hasPendingTasks = vi.fn().mockResolvedValue(false)
 
     // mock createFiling()
-    LegalServices.createFiling = vi.fn().mockResolvedValue({
+    BusinessServices.createFiling = vi.fn().mockResolvedValue({
       agmExtension: {},
       business: {},
       header: {
@@ -239,8 +239,8 @@ describe('AGM Extension view', () => {
     // wait for save to complete and everything to update
     await flushPromises()
 
-    // verify legal services method was called
-    expect(LegalServices.createFiling).toHaveBeenCalled()
+    // verify business services method was called
+    expect(BusinessServices.createFiling).toHaveBeenCalled()
 
     // verify payload (filing JSON)
     const data = {
@@ -277,7 +277,7 @@ describe('AGM Extension view', () => {
         isTransactionalFolioNumber: false
       }
     }
-    expect(LegalServices.createFiling).toHaveBeenCalledWith('BC1234567', data, false)
+    expect(BusinessServices.createFiling).toHaveBeenCalledWith('BC1234567', data, false)
 
     // verify navigate to the new Dashboard URL
     const expectedUrl = '/BC1234567?filing_id=123'
@@ -290,10 +290,10 @@ describe('AGM Extension view', () => {
     rootStore.setAuthorizedActions(PublicUserActions)
 
     // mock hasPendingTasks()
-    LegalServices.hasPendingTasks = vi.fn().mockResolvedValue(false)
+    BusinessServices.hasPendingTasks = vi.fn().mockResolvedValue(false)
 
     // mock createFiling()
-    LegalServices.createFiling = vi.fn().mockResolvedValue({
+    BusinessServices.createFiling = vi.fn().mockResolvedValue({
       agmExtension: {},
       business: {},
       header: {
