@@ -143,7 +143,7 @@ import QrcodeVue from 'qrcode.vue'
 import { DigitalCredentialTypes, Routes } from '@/enums'
 import { AllowedActionsIF, DigitalCredentialIF, WalletConnectionIF } from '@/interfaces'
 import { CommonMixin } from '@/mixins'
-import { LegalServices } from '@/services'
+import { BusinessServices } from '@/services'
 import { useBusinessStore } from '@/stores'
 import CredentialsWebSocket from '@/components/DigitalCredentials/CredentialsWebSocket.vue'
 import ConfirmCredentialsTermsOfUseDialog
@@ -196,7 +196,7 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
 
   async beforeRouteEnter (to, from, next): Promise<void> {
     next(async (_this) => {
-      const { data } = await LegalServices.fetchCredentials(_this.getIdentifier)
+      const { data } = await BusinessServices.fetchCredentials(_this.getIdentifier)
       const issuedCredentials = data?.issuedCredentials
 
       if (issuedCredentials?.length) {
@@ -227,7 +227,7 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
 
   async handleGenerateNewQRCode (): Promise<void> {
     this.showLoadingContainer = true
-    await LegalServices.removeCredentialConnection(this.getIdentifier, this.connection.connectionId)
+    await BusinessServices.removeCredentialConnection(this.getIdentifier, this.connection.connectionId)
     await this.setupConnection()
   }
 
@@ -236,12 +236,12 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
   }
 
   async addOutOfBandInvitation (): Promise<void> {
-    const { data: connection } = await LegalServices.createCredentialOutOfBandInvitation(this.getIdentifier)
+    const { data: connection } = await BusinessServices.createCredentialOutOfBandInvitation(this.getIdentifier)
     this.connection = connection || null
   }
 
   async getConnection (): Promise<void> {
-    const { data } = await LegalServices.fetchCredentialConnections(this.getIdentifier)
+    const { data } = await BusinessServices.fetchCredentialConnections(this.getIdentifier)
     this.connection = data?.connections?.[0] || null
   }
 
@@ -256,7 +256,7 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
   }
 
   async attestConnection (): Promise<void> {
-    await LegalServices.attestCredentialConnection(this.getIdentifier, this.connection.connectionId)
+    await BusinessServices.attestCredentialConnection(this.getIdentifier, this.connection.connectionId)
   }
 
   async conditionalIssueCredential (): Promise<void> {
@@ -309,7 +309,7 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
   }
 
   async issueCredential (preconditionsResolved?: { selfAttestedRoles: string[] }): Promise<void> {
-    const { data: issuedCredential } = await LegalServices.sendCredentialOffer(
+    const { data: issuedCredential } = await BusinessServices.sendCredentialOffer(
       this.getIdentifier,
       this.credentialTypes.BUSINESS,
       preconditionsResolved
@@ -362,12 +362,12 @@ export default class CredentialsStepper extends Mixins(CommonMixin) {
   }
 
   async removeCredential (identifier: string, credentialId: string): Promise<void> {
-    await LegalServices.removeCredential(identifier, credentialId)
+    await BusinessServices.removeCredential(identifier, credentialId)
     this.issuedCredential = null
   }
 
   async removeConnection (identifier: string, connectionId: string): Promise<void> {
-    await LegalServices.removeCredentialConnection(identifier, connectionId)
+    await BusinessServices.removeCredentialConnection(identifier, connectionId)
     this.connection = null
   }
 

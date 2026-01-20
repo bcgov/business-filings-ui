@@ -1,6 +1,5 @@
 import { ConfigurationStateIF } from '@/interfaces'
 import { defineStore } from 'pinia'
-import { GetFeatureFlag } from '@/utils'
 
 export const useConfigurationStore = defineStore('configuration', {
   state: (): ConfigurationStateIF => ({
@@ -56,12 +55,13 @@ export const useConfigurationStore = defineStore('configuration', {
       return state.configuration?.VUE_APP_BUSINESS_EDIT_URL
     },
 
-    /** Returns Legal API URL or Business API GW URL depending on FF. */
-    getLegalApiUrl (state: ConfigurationStateIF): string {
-      const configuration = state.configuration
-      return GetFeatureFlag('use-business-api-gw-url')
-        ? configuration.VUE_APP_BUSINESS_API_GW_URL + configuration.VUE_APP_BUSINESS_API_VERSION_2 + '/'
-        : configuration.VUE_APP_LEGAL_API_URL + configuration.VUE_APP_LEGAL_API_VERSION_2 + '/'
+    getBusinessApiGwUrl (state: ConfigurationStateIF): string {
+      const businessApiGwUrl = state.configuration?.VUE_APP_BUSINESS_API_GW_URL
+      const businessApiVersion2 = state.configuration?.VUE_APP_BUSINESS_API_VERSION_2
+      if (businessApiGwUrl && businessApiVersion2) {
+        return businessApiGwUrl + businessApiVersion2 + '/'
+      }
+      return ''
     },
 
     getAuthApiUrl (state: ConfigurationStateIF): string {
@@ -125,6 +125,7 @@ export const useConfigurationStore = defineStore('configuration', {
       sessionStorage.setItem('REGISTRY_HOME_URL', data.VUE_APP_REGISTRY_HOME_URL)
       sessionStorage.setItem('AUTH_API_URL', data.VUE_APP_AUTH_API_URL + data.VUE_APP_AUTH_API_VERSION + '/')
       sessionStorage.setItem('STATUS_API_URL', data.VUE_APP_STATUS_API_URL + data.VUE_APP_STATUS_API_VERSION)
+      sessionStorage.setItem('PAY_API_URL', data.VUE_APP_PAY_API_URL + data.VUE_APP_PAY_API_VERSION)
 
       const hotjarId: string = data.VUE_APP_HOTJAR_ID;
       (<any>window).hotjarId = hotjarId

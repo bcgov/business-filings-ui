@@ -4,8 +4,9 @@ import Vuelidate from 'vuelidate'
 import { mount, Wrapper } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
-import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
+import CodDate from '@/components/StandaloneDirectorChange/CodDate.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import * as FeatureFlags from '@/utils/feature-flags'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -19,6 +20,13 @@ setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 const filingHistoryListStore = useFilingHistoryListStore()
 const rootStore = useRootStore()
+
+// mock the entire module
+// it's the only way to override any exported function
+vi.mock('@/utils/feature-flags', () => {
+  // we just care about this one function
+  return { GetFeatureFlag: vi.fn() }
+})
 
 describe('COD Date - Coops', () => {
   let wrapper: Wrapper<CodDate>
@@ -174,34 +182,51 @@ describe('COD Date - Coops', () => {
 })
 
 describe('COD Date - Benefit Companies', () => {
-  let wrapper: Wrapper<CodDate>
-  let vm: any
+  function setFeatureFlag (val: any) {
+    // return the value we want for the test
+    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockReturnValue(val)
+  }
 
-  beforeEach(() => {
+  beforeAll(() => {
     // init store
-    rootStore.currentDate = '2019-07-15'
+    rootStore.currentDate = '2026-01-14'
     businessStore.setFoundingDate('2018-03-01T12:00:00')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-
-    wrapper = mount(CodDate, { vuetify })
-    vm = wrapper.vm
   })
 
-  afterEach(() => {
+  it('sets Min Date to the last COD date if COD filings exist - FF disabled', () => {
+    setFeatureFlag(false)
+    businessStore.setLastDirectorChangeDate('2019-03-01') // last COD date
+
+    const wrapper = mount(CodDate, { vuetify })
+    const vm = wrapper.vm
+
+    expect(vm.minDate).toBe('2019-03-01') // last COD date
+
     wrapper.destroy()
   })
 
-  it('sets BCOMP Min Date to the last COD date if COD filings exist', () => {
-    // set Last COD Filing Date and verify new Min Date
-    businessStore.setLastDirectorChangeDate('2019-03-01')
-    expect(vm.minDate).toBe('2019-03-01')
+  // will be used in future commit
+  it.skip('sets Min Date to the last COD date if COD filings exist - FF enabled', () => {
+    setFeatureFlag(true)
+    businessStore.setLastDirectorChangeDate('2019-03-01') // last COD date
 
-    // cleanup
-    filingHistoryListStore.setFilings([])
+    const wrapper = mount(CodDate, { vuetify })
+    const vm = wrapper.vm
+
+    expect(vm.minDate).toBe('2018-03-01') // founding date
+
+    wrapper.destroy()
   })
 
-  it('sets BCOMP Min Date to entity founding date if no filings are present', () => {
-    businessStore.setLastDirectorChangeDate(null)
-    expect(vm.minDate).toBe('2018-03-01')
+  it('sets Min Date to entity founding date if no filings are present', () => {
+    businessStore.setLastDirectorChangeDate(null) // no COD filings
+
+    const wrapper = mount(CodDate, { vuetify })
+    const vm = wrapper.vm
+
+    expect(vm.minDate).toBe('2018-03-01') // founding date
+
+    wrapper.destroy()
   })
 })

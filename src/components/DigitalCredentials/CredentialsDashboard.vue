@@ -82,7 +82,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { useBusinessStore } from '@/stores'
 import { Getter } from 'pinia-class'
 import { DigitalCredentialIF } from '@/interfaces'
-import { LegalServices } from '@/services'
+import { BusinessServices } from '@/services'
 import CredentialsInfo from '@/components/DigitalCredentials/CredentialsInfo.vue'
 import CredentialsLanding from '@/components/DigitalCredentials/CredentialsLanding.vue'
 import CredentialsTable from '@/components/DigitalCredentials/CredentialsTable.vue'
@@ -124,7 +124,7 @@ export default class CredentialsDashboard extends Vue {
   }
 
   async getCredentials (): Promise<void> {
-    const { data } = await LegalServices.fetchCredentials(this.getIdentifier)
+    const { data } = await BusinessServices.fetchCredentials(this.getIdentifier)
     this.issuedCredentials = data?.issuedCredentials || []
   }
 
@@ -152,7 +152,7 @@ export default class CredentialsDashboard extends Vue {
     this.showLoadingContainer = true
     let revokeCredential = this.issuedCredential.isRevoked ? {} : null
     if (this.issuedCredential.isIssued && !this.issuedCredential.isRevoked) {
-      revokeCredential = await LegalServices.revokeCredential(this.getIdentifier, this.issuedCredential.credentialId)
+      revokeCredential = await BusinessServices.revokeCredential(this.getIdentifier, this.issuedCredential.credentialId)
     }
 
     this.hideConfirmRevokeCredentialDialog()
@@ -170,12 +170,12 @@ export default class CredentialsDashboard extends Vue {
     let revokedCredential = !this.issuedCredential.isIssued || this.issuedCredential.isRevoked ? {} : null
     if (this.issuedCredential.isIssued && !this.issuedCredential.isRevoked) {
       revokedCredential =
-        await LegalServices.revokeCredential(this.getIdentifier, this.issuedCredential.credentialId, true)
+        await BusinessServices.revokeCredential(this.getIdentifier, this.issuedCredential.credentialId, true)
     }
     const removedCredential =
-      await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
+      await BusinessServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
     const removedConnection =
-      await LegalServices.removeActiveCredentialConnection(this.getIdentifier)
+      await BusinessServices.removeActiveCredentialConnection(this.getIdentifier)
 
     this.hideConfirmReplaceCredentialDialog()
     if (!(revokedCredential && removedCredential && removedConnection)) {

@@ -35,8 +35,8 @@ describe('OfficeAddresses as a COOP', () => {
   beforeAll(() => {
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
     businessStore.setLegalType(CorpTypeCd.COOP)
     businessStore.setIdentifier('CP0000841')
@@ -48,7 +48,7 @@ describe('OfficeAddresses as a COOP', () => {
 
     // mock GET addresses
     sinonAxiosGet
-      .withArgs('https://legal-api.url/v2/businesses/CP0000841/addresses?date=2020-11-16')
+      .withArgs('https://business-api-gw.url/v2/businesses/CP0000841/addresses?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {
@@ -126,7 +126,7 @@ describe('OfficeAddresses as a COOP', () => {
 
     // mock GET addresses
     sinonAxiosGet
-      .withArgs('https://legal-api.url/v2/businesses/CP0000841/addresses?date=2020-11-16')
+      .withArgs('https://business-api-gw.url/v2/businesses/CP0000841/addresses?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {
@@ -216,7 +216,7 @@ describe('OfficeAddresses as a BCOMP', () => {
 
     // mock GET addresses
     sinonAxiosGet
-      .withArgs('https://legal-api.url/v2/businesses/BC1218881/addresses?date=2020-11-16')
+      .withArgs('https://business-api-gw.url/v2/businesses/BC1218881/addresses?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {
@@ -333,7 +333,7 @@ describe('OfficeAddresses as a BCOMP', () => {
 
     // mock GET addresses
     sinonAxiosGet
-      .withArgs('https://legal-api.url/v2/businesses/BC1218881/addresses?date=2020-11-16')
+      .withArgs('https://business-api-gw.url/v2/businesses/BC1218881/addresses?date=2020-11-16')
       .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {

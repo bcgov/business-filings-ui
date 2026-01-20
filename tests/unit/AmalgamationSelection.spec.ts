@@ -7,7 +7,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { LegalServices } from '@/services'
+import { BusinessServices } from '@/services'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -81,7 +81,7 @@ describe('AmalgamationSelection', () => {
   })
 
   it('start regular long-form button clicked', async () => {
-    const createFiling = vi.spyOn((LegalServices as any), 'createDraftBusiness')
+    const createFiling = vi.spyOn((BusinessServices as any), 'createDraftBusiness')
     const button = wrapper.find('#regular-long-form-btn')
     await button.trigger('click')
 
@@ -89,7 +89,7 @@ describe('AmalgamationSelection', () => {
   })
 
   it('start horizontal short-form button clicked', async () => {
-    const createFiling = vi.spyOn((LegalServices as any), 'createDraftBusiness')
+    const createFiling = vi.spyOn((BusinessServices as any), 'createDraftBusiness')
     const button = wrapper.find('#horizontal-short-form-btn')
     await button.trigger('click')
 
@@ -97,7 +97,7 @@ describe('AmalgamationSelection', () => {
   })
 
   it('start vertical short-form button clicked', async () => {
-    const createFiling = vi.spyOn((LegalServices as any), 'createDraftBusiness')
+    const createFiling = vi.spyOn((BusinessServices as any), 'createDraftBusiness')
     const button = wrapper.find('#vertical-short-form-btn')
     await button.trigger('click')
 

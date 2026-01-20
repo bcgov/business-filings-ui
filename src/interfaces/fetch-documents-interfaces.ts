@@ -6,7 +6,7 @@ export interface LegalFilingIF {
   [name: string]: string // link to fetch it
 }
 
-/** Response object from LegalServices.fetchDocuments(). */
+/** Response object from BusinessServices.fetchDocuments(). */
 export interface FetchDocumentsIF {
   // contains any number of arbitrarily-named submission level outputs
   // or an array named "legalFilings"

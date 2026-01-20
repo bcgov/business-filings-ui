@@ -38,7 +38,7 @@ describe('Court Order View', () => {
 
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+      'VUE_APP_AUTH_WEB_URL': 'https://auth-web.url/'
     })
 
     // set necessary session variables
@@ -181,7 +181,7 @@ describe('Court Order View User', () => {
 
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+      'VUE_APP_AUTH_WEB_URL': 'https://auth-web.url/'
     })
 
     // set necessary session variables
@@ -208,7 +208,7 @@ describe('Court Order View User', () => {
       shallowMount(CourtOrder, {
         mocks: { $route, $router }
       })
-    } catch (error) {
+    } catch (error: any) {
       errorThrown = true
       expect(error.message).toBe('This is a Staff only Filing.')
     }

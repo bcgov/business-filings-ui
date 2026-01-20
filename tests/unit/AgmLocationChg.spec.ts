@@ -43,9 +43,9 @@ describe('AGM Location Chg view', () => {
 
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_AUTH_WEB_URL': 'https://auth-web.url/',
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
 
     // set necessary session variables
@@ -66,13 +66,13 @@ describe('AGM Location Chg view', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('https://legal-api.url/v2/businesses/BC0007291/tasks')
+      .withArgs('https://business-api-gw.url/v2/businesses/BC0007291/tasks')
       .returns(Promise.resolve({ data: { tasks: [] } }))
 
     // mock "save and file" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('https://legal-api.url/v2/businesses/BC0007291/filings')
+      .withArgs('https://business-api-gw.url/v2/businesses/BC0007291/filings')
       .returns(Promise.resolve({
         data: {
           filing: {
@@ -229,7 +229,7 @@ describe('AGM Location Chg view', () => {
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
+    const payURL = 'https://auth-web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()

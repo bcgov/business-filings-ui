@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
-import LegalServices from '@/services/legal-services'
+import BusinessServices from '@/services/business-services'
 import { useConfigurationStore } from '@/stores/configurationStore'
 
 // mock some window.URL functions that are not defined in Vitest
@@ -10,7 +10,7 @@ window.URL.revokeObjectURL = vi.fn()
 setActivePinia(createPinia())
 const configurationStore = useConfigurationStore()
 
-describe('Legal Services', () => {
+describe('Business Services', () => {
   let get: any
   let post: any
   let put: any
@@ -21,8 +21,8 @@ describe('Legal Services', () => {
     put = sinon.stub(axios, 'put')
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -37,11 +37,11 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('https://legal-api.url/v2/businesses/CP1234567')
+    get.withArgs('https://business-api-gw.url/v2/businesses/CP1234567')
       .returns(new Promise(resolve => resolve({ data: { business: BUSINESS_INFO } })))
 
     // call method
-    const entityInfo = await LegalServices.fetchBusiness('CP1234567')
+    const entityInfo = await BusinessServices.fetchBusiness('CP1234567')
 
     // verify data
     expect(entityInfo).toEqual(BUSINESS_INFO)
@@ -55,11 +55,11 @@ describe('Legal Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('https://legal-api.url/v2/businesses/CP1234567/tasks')
+    get.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: TASKS } })))
 
     // call method
-    const tasks = await LegalServices.fetchTasks('CP1234567')
+    const tasks = await BusinessServices.fetchTasks('CP1234567')
 
     // verify data
     expect(tasks).toEqual({ data: { tasks: TASKS } })
@@ -73,11 +73,11 @@ describe('Legal Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('https://legal-api.url/v2/businesses/CP1234567/filings')
+    get.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/filings')
       .returns(new Promise(resolve => resolve({ data: { filings: FILINGS } })))
 
     // call method
-    const filings = await LegalServices.fetchFilings('CP1234567')
+    const filings = await BusinessServices.fetchFilings('CP1234567')
 
     // verify data
     expect(filings).toEqual(FILINGS)
@@ -96,11 +96,11 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('https://legal-api.url/v2/businesses/CP1234567/addresses')
+    get.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/addresses')
       .returns(new Promise(resolve => resolve({ data: ADDRESSES })))
 
     // call method
-    const addresses = await LegalServices.fetchAddresses('CP1234567')
+    const addresses = await BusinessServices.fetchAddresses('CP1234567')
 
     // verify data
     expect(addresses).toEqual({ data: ADDRESSES })
@@ -114,11 +114,11 @@ describe('Legal Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('https://legal-api.url/v2/businesses/CP1234567/parties?role=Director')
+    get.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/parties?role=Director')
       .returns(new Promise(resolve => resolve({ data: DIRECTORS })))
 
     // call method
-    const directors = await LegalServices.fetchParties('CP1234567', 'Director' as any)
+    const directors = await BusinessServices.fetchParties('CP1234567', 'Director' as any)
 
     // verify data
     expect(directors).toEqual({ data: DIRECTORS })
@@ -130,11 +130,11 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('https://legal-api.url/v2/businesses/T1234567/filings')
+    get.withArgs('https://business-api-gw.url/v2/businesses/T1234567/filings')
       .returns(new Promise(resolve => resolve({ data: IA })))
 
     // call method
-    const ia = await LegalServices.fetchBootstrapFiling('T1234567')
+    const ia = await BusinessServices.fetchBootstrapFiling('T1234567')
 
     // verify data
     expect(ia).toEqual(IA)
@@ -146,11 +146,11 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('https://legal-api.url/v2/nameRequests/NR1234567/validate?phone=&email=')
+    get.withArgs('https://business-api-gw.url/v2/nameRequests/NR1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({ data: NR })))
 
     // call method
-    const nr = await LegalServices.fetchNameRequest('NR1234567')
+    const nr = await BusinessServices.fetchNameRequest('NR1234567')
 
     // verify data
     expect(nr).toEqual(NR)
@@ -167,7 +167,7 @@ describe('Legal Services', () => {
       .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method
-    const filing = await LegalServices.fetchFiling(endpoint)
+    const filing = await BusinessServices.fetchFiling(endpoint)
 
     // verify data
     expect(filing).toEqual(FILING)
@@ -179,11 +179,11 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    post.withArgs('https://legal-api.url/v2/businesses/CP1234567/filings?draft=true')
+    post.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/filings?draft=true')
       .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method
-    const response = await LegalServices.createFiling('CP1234567', FILING, true)
+    const response = await BusinessServices.createFiling('CP1234567', FILING, true)
 
     // verify data
     expect(response).toEqual(FILING)
@@ -195,11 +195,11 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    put.withArgs('https://legal-api.url/v2/businesses/CP1234567/filings/1234?draft=true')
+    put.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/filings/1234?draft=true')
       .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method
-    const response = await LegalServices.updateFiling('CP1234567', FILING, 1234, true)
+    const response = await BusinessServices.updateFiling('CP1234567', FILING, 1234, true)
 
     // verify data
     expect(response).toEqual(FILING)
@@ -217,7 +217,7 @@ describe('Legal Services', () => {
       .returns(new Promise(resolve => resolve({ data: { comments: COMMENTS } })))
 
     // call method
-    const response = await LegalServices.fetchComments('COMMENTS_URL')
+    const response = await BusinessServices.fetchComments('COMMENTS_URL')
 
     // verify data
     expect(response).toEqual(COMMENTS)
@@ -239,7 +239,7 @@ describe('Legal Services', () => {
       .returns(new Promise(resolve => resolve({ data: { documents: DOCUMENTS } })))
 
     // call method
-    const response = await LegalServices.fetchDocuments(URL)
+    const response = await BusinessServices.fetchDocuments(URL)
 
     // verify data
     expect(response).toEqual(DOCUMENTS)
@@ -261,7 +261,7 @@ describe('Legal Services', () => {
     }
 
     // call method
-    const response = await LegalServices.fetchDocument(document)
+    const response = await BusinessServices.fetchDocument(document)
 
     // verify data
     expect(response).toEqual({ data: PDF })

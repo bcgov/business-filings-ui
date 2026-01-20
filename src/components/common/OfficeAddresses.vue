@@ -264,7 +264,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
   // @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isBaseCompany!: boolean
-  @Getter(useConfigurationStore) getLegalApiUrl!: string
+  @Getter(useConfigurationStore) getBusinessApiGwUrl!: string
 
   /** Effective date for fetching office addresses. */
   asOfDate: string
@@ -335,7 +335,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         }
       } as RegRecAddressesIF
 
-      const url = `${this.getLegalApiUrl}businesses/${this.getIdentifier}/addresses?date=${this.asOfDate}`
+      const url = `${this.getBusinessApiGwUrl}businesses/${this.getIdentifier}/addresses?date=${this.asOfDate}`
       await axios.get(url).then(response => {
         // registered office is required for all companies
         const registeredOffice = response?.data?.registeredOffice

@@ -4,16 +4,15 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
-import { useBusinessStore, useConfigurationStore } from '@/stores'
+import { useBusinessStore } from '@/stores'
 import { Getter } from 'pinia-class'
 import { WalletConnectionIF, DigitalCredentialIF } from '@/interfaces'
 import { Observable, Subscription, interval, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
-import { LegalServices } from '@/services'
+import { BusinessServices } from '@/services'
 
 @Component
 export default class CredentialsWebSocket extends Vue {
-  @Getter(useConfigurationStore) getLegalApiUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
 
   @Prop({ default: null }) readonly connection!: WalletConnectionIF
@@ -30,7 +29,7 @@ export default class CredentialsWebSocket extends Vue {
     this.connection$ =
       interval(1000)
         .pipe(
-          switchMap(() => LegalServices.fetchCredentialConnections(this.getIdentifier)),
+          switchMap(() => BusinessServices.fetchCredentialConnections(this.getIdentifier)),
           map(({ data }) => data?.connections[0] || null),
           catchError(() => of(null))
         )
@@ -38,7 +37,7 @@ export default class CredentialsWebSocket extends Vue {
     this.issuedCredential$ =
       interval(1000)
         .pipe(
-          switchMap(() => LegalServices.fetchCredentials(this.getIdentifier)),
+          switchMap(() => BusinessServices.fetchCredentials(this.getIdentifier)),
           map(({ data }) => data?.issuedCredentials[0] || null),
           catchError(() => of(null))
         )

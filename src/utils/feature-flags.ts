@@ -8,25 +8,18 @@ declare const window: any
  * NB: Uses "entity-ui" project (per LD client id in config).
  */
 const defaultFlagSet: LDFlagSet = {
+  'enable-backdated-cod': false,
   'banner-text': '', // by default, there is no banner text
   'businesses-to-manage-in-colin': [],
   'enable-digital-credentials': false,
   'enable-legal-name-fix': false,
-  'show-alert-phone-numbers-firm': false,
-  'supported-agm-extension-entities': [],
-  'supported-agm-location-chg-entities': [],
-  'supported-amalgamation-entities': [],
-  'supported-amalgamation-out-entities': [],
-  'supported-ar-correction-entities': [],
-  'supported-business-summary-entities': [],
-  'supported-consent-amalgamation-out-entities': [],
-  'supported-consent-continuation-out-entities': [],
-  'supported-continuation-out-entities': [],
-  'supported-correction-entities': [],
-  'supported-dissolution-entities': [],
-  'supported-put-back-on-entities': [],
-  'supported-restoration-entities': [],
-  'use-business-api-gw-url': false
+  'supported-agm-extension-entities': [], // FUTURE: code should check this
+  'supported-agm-location-chg-entities': [], // FUTURE: code should check this
+  'supported-amalgamation-entities': [], // FUTURE: code should check this
+  'supported-amalgamation-out-entities': [], // FUTURE: code should check this
+  'supported-consent-amalgamation-out-entities': [], // FUTURE: code should check this
+  'supported-consent-continuation-out-entities': [], // FUTURE: code should check this
+  'supported-continuation-out-entities': [] // FUTURE: code should check this
 }
 
 /**

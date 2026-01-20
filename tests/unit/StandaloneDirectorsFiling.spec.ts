@@ -6,7 +6,7 @@ import Vuelidate from 'vuelidate'
 import sinon from 'sinon'
 import { createLocalVue, shallowMount, mount, Wrapper } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
-import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
+import CodDate from '@/components/StandaloneDirectorChange/CodDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import { Certify, TransactionalFolioNumber } from '@/components/common'
 import axios from '@/axios-auth'
@@ -349,8 +349,8 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
   beforeAll(() => {
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
   beforeEach(() => {
@@ -360,7 +360,7 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
     rootStore.currentDate = '2019-07-15'
 
     // mock "fetch a draft filing" endpoint
-    sinon.stub(axios, 'get').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+    sinon.stub(axios, 'get').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -443,8 +443,8 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
   beforeAll(() => {
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -455,7 +455,7 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
     rootStore.currentDate = '2019-07-15'
 
     // mock "fetch a draft filing" endpoint
-    sinon.stub(axios, 'get').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+    sinon.stub(axios, 'get').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -542,8 +542,8 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
   beforeAll(() => {
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -554,7 +554,7 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
     rootStore.currentDate = '2019-07-15'
 
     // mock "fetch a draft filing" endpoint
-    sinon.stub(axios, 'get').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+    sinon.stub(axios, 'get').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -641,9 +641,9 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/',
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_AUTH_WEB_URL': 'https://auth-web.url/',
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
 
     // set necessary session variables
@@ -665,7 +665,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     const get = sinon.stub(axios, 'get')
 
     // mock "fetch a draft filing" endpoint
-    get.withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+    get.withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -693,7 +693,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       })))
 
     // mock "fetch tasks" endpoint
-    get.withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
+    get.withArgs('https://business-api-gw.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -716,7 +716,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       })))
 
     // mock "save and file" endpoint
-    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings')
+    sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -746,7 +746,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       })))
 
     // mock "update and file" endpoint
-    sinon.stub(axios, 'put').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+    sinon.stub(axios, 'put').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -841,7 +841,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
+    const payURL = 'https://auth-web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
 
     expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
@@ -879,7 +879,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       certifyFormValid: true,
       folioNumberValid: true
     })
-    rootStore.setFilingData([{ filingTypeCode: FilingCodes.DIRECTOR_CHANGE_OT,
+    rootStore.setFilingData([{ filingTypeCode: FilingCodes.DIRECTOR_CHANGE_BC,
       entityType: CorpTypeCd.BENEFIT_COMPANY } as any])
 
     // make sure a fee is required
@@ -898,6 +898,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // click the File & Pay button and wait for async methods to finish
     await button.trigger('click')
+    await flushPromises() // wait for save to complete and everything to update
 
     // verify v-tooltip text
     // FUTURE: Tool tip is outside the wrapper. Have yet to find out how to get hold of that.
@@ -907,7 +908,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
+    const payURL = 'https://auth-web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
 
     expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
@@ -995,8 +996,8 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
   beforeAll(() => {
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -1007,7 +1008,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     rootStore.currentDate = '2019-07-15'
 
     // mock "save and file" endpoint
-    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings')
+    sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1036,7 +1037,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
       })))
 
     // mock "fetch tasks" endpoint
-    sinon.stub(axios, 'get').withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
+    sinon.stub(axios, 'get').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
@@ -1145,8 +1146,8 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
 
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -1162,7 +1163,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     businessStore.setFoundingDate('2000-01-01T00:00:00')
 
     // mock "save draft" endpoint
-    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings?draft=true')
+    sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings?draft=true')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1190,7 +1191,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
       })))
 
     // mock "fetch tasks" endpoint
-    sinon.stub(axios, 'get').withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
+    sinon.stub(axios, 'get').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
@@ -1311,8 +1312,8 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
   beforeAll(() => {
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -1325,11 +1326,11 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
+      .withArgs('https://business-api-gw.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint - garbage response data, we aren't testing that
-    spy = sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings?draft=true')
+    spy = sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings?draft=true')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1474,8 +1475,8 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
 
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -1492,7 +1493,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
     const get = sinon.stub(axios, 'get')
 
     // mock "fetch a draft filing" endpoint
-    get.withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123')
+    get.withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123')
       .returns(new Promise(resolve => resolve({
         data:
         {
@@ -1520,7 +1521,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       })))
 
     // mock "fetch tasks" endpoint
-    get.withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
+    get.withArgs('https://business-api-gw.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
@@ -1577,7 +1578,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       }
     })
     p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
-    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings').returns(p1)
+    sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
     const p2 = Promise.reject({
@@ -1615,7 +1616,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       }
     })
     p2.catch(() => {}) // pre-empt "unhandled promise rejection" warning
-    sinon.stub(axios, 'put').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings/123').returns(p2)
+    sinon.stub(axios, 'put').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings/123').returns(p2)
   })
 
   afterEach(() => {
@@ -1709,8 +1710,8 @@ describe('Standalone Directors Filing - payment required error', () => {
 
     // set configurations
     configurationStore.setConfiguration({
-      'VUE_APP_LEGAL_API_URL': 'https://legal-api.url/',
-      'VUE_APP_LEGAL_API_VERSION_2': 'v2'
+      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
 
@@ -1757,18 +1758,18 @@ describe('Standalone Directors Filing - payment required error', () => {
       }
     })
     p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
-    sinon.stub(axios, 'post').withArgs('https://legal-api.url/v2/businesses/CP0001191/filings').returns(p1)
+    sinon.stub(axios, 'post').withArgs('https://business-api-gw.url/v2/businesses/CP0001191/filings').returns(p1)
   })
 
   it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
     rootStore.setAuthorizedActions(PublicUserActions)
 
     const get = sinon.stub(axios, 'get')
 
-    get.withArgs('https://legal-api.url/v2/businesses/CP0001191/tasks')
+    get.withArgs('https://business-api-gw.url/v2/businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     const $route = { query: { filingId: 0 } } // new filing id

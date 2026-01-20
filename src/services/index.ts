@@ -1,5 +1,5 @@
 export { default as AuthServices } from './auth-services'
+export { default as BusinessServices } from './business-services'
 export { default as DateUtilities } from './date-utilities'
 export { default as EnumUtilities } from './enum-utilities'
-export { default as LegalServices } from './legal-services'
 export { default as PayServices } from './pay-services'

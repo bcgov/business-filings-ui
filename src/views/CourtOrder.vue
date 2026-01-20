@@ -236,7 +236,7 @@ import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { ConfirmDialogType, FormIF, StaffPaymentIF, UserInfoIF } from '@/interfaces'
 import { AuthorizedActions, EffectOfOrderTypes, PageSizes } from '@/enums'
 import { FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
-import { EnumUtilities, LegalServices } from '@/services'
+import { BusinessServices, EnumUtilities } from '@/services'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment/'
@@ -596,7 +596,7 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     }
 
     let success = false
-    await LegalServices.createFiling(this.getIdentifier, filing, false)
+    await BusinessServices.createFiling(this.getIdentifier, filing, false)
       .then(() => {
         success = true
       })

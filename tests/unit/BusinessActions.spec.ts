@@ -1,4 +1,4 @@
-import LegalServices from '@/services/legal-services'
+import BusinessServices from '@/services/business-services'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useRootStore } from '@/stores'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
@@ -21,13 +21,13 @@ describe('Business Actions', () => {
       legalType: 'BC',
       stateFiling: 'dummy_url'
     }
-    vi.spyOn(LegalServices, 'fetchBusiness').mockImplementation((): any => {
+    vi.spyOn(BusinessServices, 'fetchBusiness').mockImplementation((): any => {
       return Promise.resolve(sampleBusinessInfo)
     })
 
     // call the action and verify the data in the store
     await businessStore.loadBusinessInfo()
-    expect(LegalServices.fetchBusiness).toHaveBeenCalled()
+    expect(BusinessServices.fetchBusiness).toHaveBeenCalled()
     expect(businessStore.getIdentifier).toBe('BC1234567')
     expect(businessStore.getLegalType).toBe('BC')
     expect(businessStore.getStateFilingUrl).toBe('dummy_url')

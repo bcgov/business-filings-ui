@@ -307,7 +307,7 @@ import { Certify, ForeignJurisdiction, TransactionalFolioNumber } from '@/compon
 import { AuthErrorDialog, ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { EnumUtilities, LegalServices } from '@/services'
+import { BusinessServices, EnumUtilities } from '@/services'
 import { AuthorizedActions, EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, StaffPaymentIF, UserInfoIF } from '@/interfaces'
@@ -344,7 +344,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useRootStore) getFolioNumber!: string
-  @Getter(useConfigurationStore) getLegalApiUrl!: string
+  @Getter(useConfigurationStore) getBusinessApiGwUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getTransactionalFolioNumber!: string
@@ -505,8 +505,8 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
   /** Fetches the draft consent filing. */
   async fetchDraftFiling (): Promise<void> {
-    const url = `${this.getLegalApiUrl}businesses/${this.getIdentifier}/filings/${this.filingId}`
-    await LegalServices.fetchFiling(url).then(filing => {
+    const url = `${this.getBusinessApiGwUrl}businesses/${this.getIdentifier}/filings/${this.filingId}`
+    await BusinessServices.fetchFiling(url).then(filing => {
       // verify data
       if (!filing) throw new Error('Missing filing')
       if (!filing.header) throw new Error('Missing header')
@@ -751,7 +751,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
     // if this is a new filing, ensure there are no pending tasks
     if (this.filingId === 0) {
-      const hasPendingTasks = await LegalServices.hasPendingTasks(this.getIdentifier)
+      const hasPendingTasks = await BusinessServices.hasPendingTasks(this.getIdentifier)
         .catch(() => {
           this.saveErrors = [{ error: 'Unable to check server for pending tasks.' }]
           throw new Error()
@@ -832,10 +832,10 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       let ret
       if (this.filingId > 0) {
         // we have a filing id, so update an existing filing
-        ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
+        ret = await BusinessServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
       } else {
         // filing id is 0, so create a new filing
-        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
+        ret = await BusinessServices.createFiling(this.getIdentifier, filing, isDraft)
       }
       return ret
     } catch (error: any) {

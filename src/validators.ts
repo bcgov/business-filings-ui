@@ -1,5 +1,5 @@
 //
-// These are validator functions used by CODDate.vue and EffectiveDate.vue.
+// These are validator functions used by CodDate.vue and EffectiveDate.vue.
 //
 
 /**

@@ -16,8 +16,6 @@ export interface ConfigurationStateIF {
     VUE_APP_CORPORATE_ONLINE_URL: string,
     VUE_APP_DASHBOARD_URL: string,
     VUE_APP_HOTJAR_ID: string
-    VUE_APP_LEGAL_API_URL: string
-    VUE_APP_LEGAL_API_VERSION_2: string
     VUE_APP_PAY_API_URL: string
     VUE_APP_PAY_API_GW_URL: string
     VUE_APP_PAY_API_VERSION: string

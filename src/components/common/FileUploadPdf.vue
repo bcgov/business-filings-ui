@@ -20,7 +20,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { PageSizes, PAGE_SIZE_DICT } from '@/enums'
 import { PdfInfoIF } from '@/interfaces'
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf'
-import { LegalServices } from '@/services'
+import { BusinessServices } from '@/services'
 
 @Component({})
 export default class FileUploadPdf extends Vue {
@@ -245,10 +245,10 @@ export default class FileUploadPdf extends Vue {
   async uploadFile (file: File): Promise<string> {
     try {
       // NB: will throw on API error
-      const psu = await LegalServices.getPresignedUrl(file.name)
+      const psu = await BusinessServices.getPresignedUrl(file.name)
 
       // NB: will throw on API error
-      const res = await LegalServices.uploadToUrl(psu.preSignedUrl, file, psu.key,
+      const res = await BusinessServices.uploadToUrl(psu.preSignedUrl, file, psu.key,
         this.userId)
 
       // check if successful
