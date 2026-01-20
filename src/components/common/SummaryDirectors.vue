@@ -25,7 +25,7 @@
               <div class="director-status">
                 <v-scale-transition>
                   <v-chip
-                    v-show="isNew(director) && !director.cessationDate"
+                    v-show="isNew(director) && !isCeased(director)"
                     x-small
                     label
                     color="blue"
@@ -46,7 +46,7 @@
                 </v-scale-transition>
                 <v-scale-transition>
                   <v-chip
-                    v-show="isNew(director) && director.cessationDate"
+                    v-show="isNew(director) && isCeased(director)"
                     x-small
                     label
                     color="blue lighten-2"
@@ -108,6 +108,7 @@
                     <div class="director_dates__date">
                       {{ director.appointmentDate }}
                     </div>
+                    <!-- always show cessation date, even if it's in the future -->
                     <div v-if="director.cessationDate">
                       Ceased
                     </div>
@@ -147,7 +148,7 @@
             :id="'director-' + director.id"
             :key="index"
             class="director-list-item"
-            :class="{ 'remove' : !isActive(director) || !isActionable(director)}"
+            :class="{ 'remove' : isCeased(director) || !isActionable(director)}"
           >
             <div class="meta-container">
               <label>
@@ -157,7 +158,7 @@
                 <div class="director-status">
                   <v-scale-transition>
                     <v-chip
-                      v-show="isNew(director) && !director.cessationDate"
+                      v-show="isNew(director)"
                       x-small
                       label
                       color="blue"
@@ -168,23 +169,12 @@
                   </v-scale-transition>
                   <v-scale-transition>
                     <v-chip
-                      v-show="!isActive(director) || !isActionable(director)"
+                      v-show="isCeased(director) || !isActionable(director)"
                       x-small
                       label
                       text-color="rgba(0,0,0,.38)"
                     >
                       Ceased
-                    </v-chip>
-                  </v-scale-transition>
-                  <v-scale-transition>
-                    <v-chip
-                      v-show="isNew(director) && director.cessationDate"
-                      x-small
-                      label
-                      color="blue lighten-2"
-                      text-color="white"
-                    >
-                      Appointed and Ceased
                     </v-chip>
                   </v-scale-transition>
                   <v-scale-transition>
@@ -218,7 +208,7 @@
                     <div class="address">
                       <BaseAddress
                         :address="director.deliveryAddress"
-                        :isInactive="!isActive(director) || !isActionable(director)"
+                        :isInactive="isCeased(director) || !isActionable(director)"
                       />
                     </div>
                     <div
@@ -231,13 +221,14 @@
                       <BaseAddress
                         v-else
                         :address="director.mailingAddress"
-                        :isInactive="!isActive(director) || !isActionable(director)"
+                        :isInactive="isCeased(director) || !isActionable(director)"
                       />
                     </div>
                     <div class="director_dates">
                       <div class="director_dates__date">
                         {{ director.appointmentDate }}
                       </div>
+                      <!-- always shows cessation date, even if it's in the future -->
                       <div v-if="director.cessationDate">
                         Ceased
                       </div>
@@ -299,13 +290,21 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
   }
 
   /**
-   * Local helper to check whether a director was appointed (ie, added) in this filing.
+   * Local helper to check whether a director was appointed in this filing.
    * @param director The director to check.
    * @returns True if director was appointed.
    */
   isNew (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(Actions.APPOINTED)
-    return director.actions && (director.actions.indexOf(Actions.APPOINTED) >= 0)
+    return director.actions?.includes(Actions.APPOINTED) || false
+  }
+
+  /**
+   * Local helper to check whether a director was ceased in this filing.
+   * @param director The director to check.
+   * @returns True if director was ceased.
+   */
+  isCeased (director: DirectorIF): boolean {
+    return director.actions?.includes(Actions.CEASED) || false
   }
 
   /**
@@ -314,8 +313,7 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
    * @returns True if director had their address changed.
    */
   isAddressChanged (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(Actions.ADDRESSCHANGED)
-    return director.actions && (director.actions.indexOf(Actions.ADDRESSCHANGED) >= 0)
+    return director.actions?.includes(Actions.ADDRESSCHANGED) || false
   }
 
   /**
@@ -326,16 +324,6 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
   isNameChanged (director: DirectorIF): boolean {
     // return director.actions && director.actions.includes(Actions.NAMECHANGED)
     return director.actions && (director.actions.indexOf(Actions.NAMECHANGED) >= 0)
-  }
-
-  /**
-   * Local helper to check whether a director is active (ie, not ceased) in this filing.
-   * @param director The director to check.
-   * @returns True if director is active.
-   */
-  isActive (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(Actions.CEASED)
-    return director.actions && (director.actions.indexOf(Actions.CEASED) < 0)
   }
 
   /**

@@ -1,44 +1,5 @@
 <template>
   <div id="directors">
-    <!-- delete new director - confirmation popup -->
-    <v-dialog
-      v-model="showPopup"
-      content-class="delete-confirm-dialog"
-      width="30rem"
-      attach="#directors"
-    >
-      <v-card>
-        <v-card-text>
-          Are you sure you want to remove
-          <span
-            v-if="activeDirectorToDelete"
-            class="font-weight-bold"
-          >
-            <span>{{ activeDirectorToDelete.officer.firstName }} </span>
-            <span>{{ activeDirectorToDelete.officer.middleInitial }} </span>
-            <span>{{ activeDirectorToDelete.officer.lastName }}</span>
-          </span>
-          from your Directors list?
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            @click="deleteDirector(activeDirectorToDelete.id)"
-          >
-            Remove
-          </v-btn>
-          <v-btn
-            color="default"
-            @click="showPopup = false; activeDirectorToDelete = null"
-          >
-            Cancel
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
     <v-expand-transition>
       <div
         v-if="componentEnabled"
@@ -194,7 +155,7 @@
           :key="index"
           class="director-list-item"
           :class="{
-            'remove': !isActive(dir) || !isActionable(dir),
+            'remove': isCeased(dir) || !isActionable(dir),
             'invalid-section': legalNameError(index)
           }"
         >
@@ -206,7 +167,7 @@
               <div class="director-status">
                 <v-scale-transition>
                   <v-chip
-                    v-show="isNew(dir) && !dir.cessationDate"
+                    v-show="isNew(dir)"
                     x-small
                     label
                     color="blue"
@@ -217,23 +178,12 @@
                 </v-scale-transition>
                 <v-scale-transition>
                   <v-chip
-                    v-show="!isActive(dir) || !isActionable(dir)"
+                    v-show="isCeased(dir) || !isActionable(dir)"
                     x-small
                     label
                     text-color="rgba(0,0,0,.38)"
                   >
                     Ceased
-                  </v-chip>
-                </v-scale-transition>
-                <v-scale-transition>
-                  <v-chip
-                    v-show="isNew(dir) && dir.cessationDate"
-                    x-small
-                    label
-                    color="blue lighten-2"
-                    text-color="white"
-                  >
-                    Appointed and Ceased
                   </v-chip>
                 </v-scale-transition>
                 <v-scale-transition>
@@ -270,7 +220,7 @@
                   <div class="address">
                     <BaseAddress
                       :address="dir.deliveryAddress"
-                      :isInactive="!isActive(dir) || !isActionable(dir)"
+                      :isInactive="isCeased(dir) || !isActionable(dir)"
                     />
                   </div>
 
@@ -284,7 +234,7 @@
                     <BaseAddress
                       v-else
                       :address="dir.mailingAddress"
-                      :isInactive="!isActive(dir) || !isActionable(dir)"
+                      :isInactive="isCeased(dir) || !isActionable(dir)"
                     />
                   </div>
 
@@ -292,6 +242,7 @@
                     <div class="director_dates__date">
                       {{ dir.appointmentDate }}
                     </div>
+                    <!-- always show cessation date, even if it's in the future -->
                     <div v-if="dir.cessationDate">
                       Ceased
                     </div>
@@ -330,12 +281,12 @@
                         :disabled="!componentEnabled || directorEditInProgress"
                         @click="ceaseDirector(dir, index)"
                       >
-                        <v-icon small>{{ isActive(dir) ? 'mdi-close':'mdi-undo' }}</v-icon>
-                        <span>{{ isActive(dir) ? 'Cease':'Undo' }}</span>
+                        <v-icon small>{{ !isCeased(dir) ? 'mdi-close':'mdi-undo' }}</v-icon>
+                        <span>{{ !isCeased(dir) ? 'Cease':'Undo' }}</span>
                       </v-btn>
 
                       <!-- more actions menu -->
-                      <span v-show="isActive(dir)">
+                      <span v-show="!isCeased(dir)">
                         <v-menu
                           offset-y
                           :disabled="!componentEnabled || directorEditInProgress"
@@ -362,31 +313,6 @@
                       </span>
                     </span>
                   </div>
-
-                  <!-- standalone Cease date picker -->
-                  <v-date-picker
-                    v-show="activeIndexCustomCease === index"
-                    v-model="cessationDateTemp"
-                    class="standalone__cessation-date__datepicker"
-                    no-title
-                    :min="earliestStandaloneCeaseDateToSet(dir)"
-                    :max="getCurrentDate"
-                  >
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="activeIndexCustomCease = null"
-                    >
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="ceaseDirector(dir, index)"
-                    >
-                      OK
-                    </v-btn>
-                  </v-date-picker>
                 </div>
               </v-expand-transition>
 
@@ -659,11 +585,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   directorEditInProgress = false
   directorPreEdit = null // officer before edit
   showNewDirectorForm = false
-  showPopup = false
   activeIndex = -1
-  activeIndexCustomCease = -1
-  activeDirectorToDelete: DirectorIF = null
-  cessationDateTemp: string = null
   isEditingDirector = false
   messageIndex = -1
 
@@ -838,14 +760,14 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
 
   /**
    * Fetches the list of directors on As Of Date from the Legal API.
-   * See also LegalServices.fetchParties().
+   * See also BusinessServices.fetchParties().
    */
   // FUTURE: this API call should be in the parent component or some mixin/service
   async fetchDirectors (): Promise<void> {
     if (this.getIdentifier && this.asOfDate) {
       const url = `${this.getBusinessApiGwUrl}businesses/${this.getIdentifier}/directors?date=${this.asOfDate}`
       await axios.get(url).then(response => {
-        if (response?.data?.directors) {
+        if (Array.isArray(response?.data?.directors)) {
           const directors = response.data.directors as DirectorIF[]
 
           this.original = directors.sort(this.fieldSorter(['lastName', 'firstName', 'middleName']))
@@ -912,7 +834,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    **/
   @Watch('directors', { deep: true })
   onDirectorsChanged (): void {
-    // fill working addresses from parent
+    // fill working directors from parent
     // NB: object assignment is OK here
     this.allDirectors = this.directors
   }
@@ -945,16 +867,6 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.resetBaseAddressKey()
   }
 
-  // REMOVED UNTIL FUTURE RELEASE
-  // /**
-  //  * Local helper to show the Delete Director confirmation popup.
-  //  * @param director The director object to delete.
-  //  */
-  // showDeleteDirectorConfirmation (director): void {
-  //   this.showPopup = true
-  //   this.activeDirectorToDelete = director
-  // }
-
   /**
    * Local helper to delete a director.
    * @param id The id of the director to delete
@@ -964,8 +876,6 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.allDirectors = newList
 
     this.activeIndex = null
-    this.showPopup = false
-    this.activeDirectorToDelete = null
     this.directorEditInProgress = false
   }
 
@@ -1008,8 +918,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
         prevLastName: this.newDirector.officer.lastName
       },
       deliveryAddress: { ...this.inProgressDelivAddress },
-      appointmentDate: this.asOfDate, // when implemented: this.newDirector.appointmentDate,
-      cessationDate: null // when implemented: this.newDirector.cessationDate
+      appointmentDate: this.asOfDate,
+      cessationDate: null
     }
 
     // Add the mailing address property if the entity is a BEN/BC/CC/ULC or CBEN/C/CCC/CUL
@@ -1017,7 +927,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
       director.mailingAddress = { ...this.inProgressMailAddress }
     }
 
-    // if there is also a cease date on this new director, add the ceased action
+    // if this director is ceased (as of "as of" date), add the ceased action
     if (this.newDirector.cessationDate !== null && this.newDirector.cessationDate !== undefined) {
       this.addAction(director, Actions.CEASED)
     }
@@ -1032,21 +942,17 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     // if this is a Cease, apply a fee
     // otherwise it's just undoing a cease or undoing a new director, so remove fee
     this.messageIndex = index
-    director.isFeeApplied = this.isActive(director)
+    director.isFeeApplied = !this.isCeased(director)
 
-    // reverse "ceased" action
+    // flip "ceased" action
     this.toggleAction(director, Actions.CEASED)
 
     // either set or undo cessation date
     if (!director.cessationDate) {
-      director.cessationDate = this.cessationDateTemp || this.asOfDate
+      director.cessationDate = this.asOfDate
     } else {
       director.cessationDate = null
     }
-
-    // close standalone cessation date picker and reset date
-    this.cessationDateTemp = null
-    this.activeIndexCustomCease = null
   }
 
   /**
@@ -1061,20 +967,6 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.directorEditInProgress = true
     this.activeIndex = index
     this.messageIndex = index
-  }
-
-  /**
-   * Local helper to edit a director's dates.
-   * @param index The index of the director to edit.
-   */
-  editDirectorDates (index: number): void {
-    this.editFormShowHide = {
-      showAddress: false,
-      showName: false,
-      showDates: true
-    }
-
-    this.editDirector(index)
   }
 
   /**
@@ -1155,7 +1047,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
       }
 
       /* COMPARE changes to original director data, for existing directors */
-      if (director.actions.indexOf(Actions.APPOINTED) < 0) {
+      if (!this.isNew(director)) {
         // check whether either address has changed
         if (!isEqual(origDirector.deliveryAddress, director.deliveryAddress) ||
             !isEqual(origDirector.mailingAddress, director.mailingAddress)) {
@@ -1211,7 +1103,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
       if (this.isNew(dir)) {
         dir.appointmentDate = newDate
       }
-      if (!this.isActive(dir)) {
+      if (this.isCeased(dir)) {
         dir.cessationDate = newDate
       }
     })
@@ -1271,19 +1163,6 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   }
 
   /**
-   * Local helper to get the earliest standalone cease data for the specified director.
-   * @param director The director to check.
-   * @returns The date.
-   */
-  earliestStandaloneCeaseDateToSet (director: DirectorIF): string {
-    if (this.compareYyyyMmDd(director.appointmentDate, this.earliestDateToSet, '>')) {
-      return director.appointmentDate
-    } else {
-      return this.earliestDateToSet
-    }
-  }
-
-  /**
    * Local helper to add or remove an action from a director's actions list.
    * @param director The director to change.
    * @param val The action value to add or remove.
@@ -1292,7 +1171,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     // if director has specified action (eg, CEASED) then remove it, otherwise add it
     const index = director.actions.indexOf(val)
     if (index >= 0) director.actions.splice(index)
-    else director.actions.push(val)
+    else director.actions?.push(val)
   }
 
   /**
@@ -1301,7 +1180,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @param val The action value to add.
    */
   addAction (director: DirectorIF, val: Actions): void {
-    if (director.actions.indexOf(val) < 0) director.actions.push(val)
+    if (director.actions?.indexOf(val) < 0) director.actions.push(val)
   }
 
   /**
@@ -1310,51 +1189,49 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @param val The action value to remove.
    */
   removeAction (director: DirectorIF, val: Actions): void {
-    director.actions = director.actions.filter(action => action !== val)
+    director.actions = director.actions?.filter(action => action !== val)
   }
 
   /**
-   * Local helper to check if a director was added in this filing.
+   * Local helper to check whether a director was appointed in this filing.
    * @param director The director to check.
-   * @returns Whether the director was appointed.
+   * @returns True if director was appointed.
    */
   isNew (director: DirectorIF): boolean {
-    // helper function - was the director added in this filing?
-    return (director.actions.indexOf(Actions.APPOINTED) >= 0)
+    return director.actions?.includes(Actions.APPOINTED)
   }
 
   /**
-   * Local helper to check if a director has the name changed.
+   * Local helper to check whether a director was ceased in this filing.
    * @param director The director to check.
-   * @returns Whether the director has had the name changed.
+   * @returns True if director was ceased.
+   */
+  isCeased (director: DirectorIF): boolean {
+    return director.actions?.includes(Actions.CEASED)
+  }
+
+  /**
+   * Local helper to check whether a director had their name changed.
+   * @param director The director to check.
+   * @returns True if director had their name changed.
    */
   isNameChanged (director: DirectorIF): boolean {
-    return (director.actions.indexOf(Actions.NAMECHANGED) >= 0)
+    return director.actions?.includes(Actions.NAMECHANGED)
   }
 
   /**
-   * Local helper to check if a director has the address changed.
+   * Local helper to check whether a director had their address changed.
    * @param director The director to check.
-   * @returns Whether the director has had the address changed.
+   * @returns True if director had their address changed.
    */
   isAddressChanged (director: DirectorIF): boolean {
-    return (director.actions.indexOf(Actions.ADDRESSCHANGED) >= 0)
+    return director.actions?.includes(Actions.ADDRESSCHANGED)
   }
 
   /**
-   * Local helper to check if a director is active in this filing.
+   * Local helper to check whether a director is actionable.
    * @param director The director to check.
-   * @returns Whether the director is active (ie, not ceased).
-   */
-  isActive (director: DirectorIF): boolean {
-    // helper function - is the director active, ie: not ceased?
-    return (director.actions.indexOf(Actions.CEASED) < 0)
-  }
-
-  /**
-   * Local helper to check if a director is actionable.
-   * @param director The director to check.
-   * @returns Whether the director is actionable.
+   * @returns True if director is actionable.
    */
   isActionable (director: DirectorIF): boolean {
     return (director.isDirectorActionable !== undefined) ? director.isDirectorActionable : true
@@ -1388,10 +1265,11 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.emitcomplianceDialogMsg()
   }
 
+  // *** does this have to be updated?
   @Watch('asOfDate', { immediate: true })
-  onAsOfDateChanged (newVal: string, oldVal: string): void {
+  onAsOfDateChanged (newDate: string, oldDate: string): void {
     // update the appointment/cessation dates for applicable directors
-    this.updateChangedDirectorDates(newVal, oldVal)
+    this.updateChangedDirectorDates(newDate, oldDate)
   }
 
   /** Emits an event containing the earliest director change date. */

@@ -64,6 +64,7 @@ import { isNotNull, isValidFormat, isValidCodDate } from '@/validators'
 import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
 import { useBusinessStore, useRootStore } from '@/stores'
+import { GetFeatureFlag } from '@/utils'
 
 @Component({
   validations: {
@@ -102,8 +103,15 @@ export default class CodDate extends Mixins(DateMixin) {
     let date: string = null
 
     if (this.isBaseCompany) {
-      // For BEN/BC/CC/ULC and CBEN/C/CCC/CUL, use the last COD filing in filing history.
-      date = (this.getLastDirectorChangeDate || this.dateToYyyyMmDd(this.getFoundingDate))
+      if (GetFeatureFlag('enable-backdated-cod')) {
+        // Corp director changes can be backdated all the way back to the founding date
+        // -- even before other CODs.
+        date = this.dateToYyyyMmDd(this.getFoundingDate)
+      } else {
+        // Corp director changes can go back to the last COD filing in filing history, or
+        // the founding date if there are no previous CODs.
+        date = (this.getLastDirectorChangeDate || this.dateToYyyyMmDd(this.getFoundingDate))
+      }
     } else if (this.getLastDirectorChangeDate || this.getLastAnnualReportDate) {
       // For Coops, use the latest of the following dates:
       // - the last COD filing in filing history

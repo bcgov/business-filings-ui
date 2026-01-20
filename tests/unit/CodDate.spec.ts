@@ -207,7 +207,7 @@ describe('COD Date - Benefit Companies', () => {
   })
 
   // will be used in future commit
-  it.skip('sets Min Date to the last COD date if COD filings exist - FF enabled', () => {
+  it('sets Min Date to the last COD date if COD filings exist - FF enabled', () => {
     setFeatureFlag(true)
     businessStore.setLastDirectorChangeDate('2019-03-01') // last COD date
 

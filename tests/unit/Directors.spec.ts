@@ -232,9 +232,9 @@ describe('Directors as a COOP', () => {
 
     // verify directors are active (initial state)
     // ("Cease" button indicates this is an active director)
-    expect(vm.isActive(vm.allDirectors[0])).toBe(true)
-    expect(vm.isActive(vm.allDirectors[1])).toBe(true)
-    expect(vm.isActive(vm.allDirectors[2])).toBe(true)
+    expect(vm.isCeased(vm.allDirectors[0])).toBe(false)
+    expect(vm.isCeased(vm.allDirectors[1])).toBe(false)
+    expect(vm.isCeased(vm.allDirectors[2])).toBe(false)
   })
 
   it('disables buttons/actions when instructed by parent component', async () => {
@@ -790,9 +790,9 @@ describe('Directors as a BCOMP', () => {
 
     // verify directors are active (initial state)
     // ("Cease" button indicates this is an active director)
-    expect(vm.isActive(vm.allDirectors[0])).toBe(true)
-    expect(vm.isActive(vm.allDirectors[1])).toBe(true)
-    expect(vm.isActive(vm.allDirectors[2])).toBe(true)
+    expect(vm.isCeased(vm.allDirectors[0])).toBe(false)
+    expect(vm.isCeased(vm.allDirectors[1])).toBe(false)
+    expect(vm.isCeased(vm.allDirectors[2])).toBe(false)
   })
 
   it('disables buttons/actions when instructed by parent component', async () => {
