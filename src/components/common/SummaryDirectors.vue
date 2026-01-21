@@ -319,8 +319,7 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
    * @returns True if director had their name changed.
    */
   isNameChanged (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(Actions.NAMECHANGED)
-    return director.actions && (director.actions.indexOf(Actions.NAMECHANGED) >= 0)
+    return director.actions?.includes(Actions.NAMECHANGED) || false
   }
 }
 </script>

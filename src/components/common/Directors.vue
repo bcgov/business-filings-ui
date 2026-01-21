@@ -1171,7 +1171,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     // if director has specified action (eg, CEASED) then remove it, otherwise add it
     const index = director.actions.indexOf(val)
     if (index >= 0) director.actions.splice(index)
-    else director.actions?.push(val)
+    else director.actions.push(val)
   }
 
   /**
@@ -1180,7 +1180,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @param val The action value to add.
    */
   addAction (director: DirectorIF, val: Actions): void {
-    if (director.actions?.indexOf(val) < 0) director.actions.push(val)
+    if (director.actions.indexOf(val) < 0) director.actions.push(val)
   }
 
   /**
@@ -1265,7 +1265,6 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.emitcomplianceDialogMsg()
   }
 
-  // *** does this have to be updated?
   @Watch('asOfDate', { immediate: true })
   onAsOfDateChanged (newDate: string, oldDate: string): void {
     // update the appointment/cessation dates for applicable directors
