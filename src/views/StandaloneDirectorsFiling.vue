@@ -389,7 +389,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
-import { IsAuthorized, Navigate } from '@/utils'
+import { IsAuthorized, GetFeatureFlag, Navigate } from '@/utils'
 import CodDate from '@/components/StandaloneDirectorChange/CodDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
@@ -398,9 +398,9 @@ import { AuthErrorDialog, ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, R
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { BusinessServices } from '@/services'
-import { AuthorizedActions, SaveErrorReasons } from '@/enums'
+import { Actions, AuthorizedActions, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, DirectorIF, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
@@ -436,6 +436,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getFolioNumber!: string
   @Getter(useRootStore) getTransactionalFolioNumber!: string
+  // @Getter(useBusinessStore) isBaseCompany!: boolean
 
   // variables
   authErrorDialog = false
@@ -652,9 +653,9 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
       }
 
       // restore Change of Directors data
-      const changeOfDirectors = filing.changeOfDirectors
+      const changeOfDirectors = filing.changeOfDirectors // may be undefined
       if (changeOfDirectors) {
-        if (changeOfDirectors.directors?.length > 0) {
+        if (Array.isArray(changeOfDirectors.directors)) {
           this.updatedDirectors = changeOfDirectors.directors
           // NB: filing data will be set by director paid/free events
         } else {
@@ -978,7 +979,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
     })
   }
 
-  hasAction (director, action): boolean {
+  hasAction (director: DirectorIF, action: Actions): boolean {
     return (director.actions.indexOf(action) >= 0)
   }
 
@@ -1061,7 +1062,14 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
     // fetch original directors with new date
     this.isFetching = true
     if (!this.isVitestRunning) {
-      await this.$refs.directorsComponent.getOrigDirectors(this.codDate, false)
+      if (this.isBaseCompany && GetFeatureFlag('enable-backdated-cod')) {
+        // reload working data to show correct directors for as-of date
+        // we only support a single as-of date for new/ceased directors per filing
+        await this.$refs.directorsComponent.getOrigDirectors(this.codDate, true)
+      } else {
+        // overwrite working data to support dynamic as-of date
+        await this.$refs.directorsComponent.getOrigDirectors(this.codDate, false)
+      }
     }
     this.isFetching = false
   }

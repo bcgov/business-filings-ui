@@ -1,7 +1,7 @@
 <template>
   <div id="summary-directors">
     <v-card flat>
-      <!-- Current Director List -->
+      <!-- Current Directors List -->
       <ul class="list director-list">
         <v-subheader class="director-header">
           <span>Names</span>
@@ -15,7 +15,7 @@
           :id="'director-' + director.id"
           :key="index"
           class="director-list-item"
-          :class="{ 'remove' : !isActionable(director)}"
+          :class="{ 'ceased' : isFutureCeased(director)}"
         >
           <div class="meta-container">
             <label>
@@ -25,7 +25,7 @@
               <div class="director-status">
                 <v-scale-transition>
                   <v-chip
-                    v-show="isNew(director) && !director.cessationDate"
+                    v-show="isNew(director)"
                     x-small
                     label
                     color="blue"
@@ -36,23 +36,12 @@
                 </v-scale-transition>
                 <v-scale-transition>
                   <v-chip
-                    v-show="!isActionable(director)"
+                    v-show="isFutureCeased(director)"
                     x-small
                     label
                     text-color="rgba(0,0,0,.38)"
                   >
                     Ceased
-                  </v-chip>
-                </v-scale-transition>
-                <v-scale-transition>
-                  <v-chip
-                    v-show="isNew(director) && director.cessationDate"
-                    x-small
-                    label
-                    color="blue lighten-2"
-                    text-color="white"
-                  >
-                    Appointed and Ceased
                   </v-chip>
                 </v-scale-transition>
                 <v-scale-transition>
@@ -86,7 +75,7 @@
                   <div class="address">
                     <BaseAddress
                       :address="director.deliveryAddress"
-                      :isInactive="!isActionable(director)"
+                      :isInactive="isFutureCeased(director)"
                     />
                   </div>
 
@@ -100,7 +89,7 @@
                     <BaseAddress
                       v-else
                       :address="director.mailingAddress"
-                      :isInactive="!isActionable(director)"
+                      :isInactive="isFutureCeased(director)"
                     />
                   </div>
 
@@ -108,12 +97,12 @@
                     <div class="director_dates__date">
                       {{ director.appointmentDate }}
                     </div>
-                    <div v-if="director.cessationDate">
+                    <template v-if="isFutureCeased(director)">
                       Ceased
-                    </div>
-                    <div class="director_dates__date">
-                      {{ director.cessationDate }}
-                    </div>
+                      <div class="director_dates__date">
+                        {{ director.cessationDate }}
+                      </div>
+                    </template>
                   </div>
                 </div>
               </v-expand-transition>
@@ -147,7 +136,7 @@
             :id="'director-' + director.id"
             :key="index"
             class="director-list-item"
-            :class="{ 'remove' : !isActive(director) || !isActionable(director)}"
+            :class="{ 'ceased' : isCeased(director)}"
           >
             <div class="meta-container">
               <label>
@@ -157,7 +146,7 @@
                 <div class="director-status">
                   <v-scale-transition>
                     <v-chip
-                      v-show="isNew(director) && !director.cessationDate"
+                      v-show="isNew(director)"
                       x-small
                       label
                       color="blue"
@@ -168,23 +157,12 @@
                   </v-scale-transition>
                   <v-scale-transition>
                     <v-chip
-                      v-show="!isActive(director) || !isActionable(director)"
+                      v-show="isCeased(director)"
                       x-small
                       label
                       text-color="rgba(0,0,0,.38)"
                     >
                       Ceased
-                    </v-chip>
-                  </v-scale-transition>
-                  <v-scale-transition>
-                    <v-chip
-                      v-show="isNew(director) && director.cessationDate"
-                      x-small
-                      label
-                      color="blue lighten-2"
-                      text-color="white"
-                    >
-                      Appointed and Ceased
                     </v-chip>
                   </v-scale-transition>
                   <v-scale-transition>
@@ -218,7 +196,7 @@
                     <div class="address">
                       <BaseAddress
                         :address="director.deliveryAddress"
-                        :isInactive="!isActive(director) || !isActionable(director)"
+                        :isInactive="true"
                       />
                     </div>
                     <div
@@ -231,16 +209,14 @@
                       <BaseAddress
                         v-else
                         :address="director.mailingAddress"
-                        :isInactive="!isActive(director) || !isActionable(director)"
+                        :isInactive="true"
                       />
                     </div>
                     <div class="director_dates">
                       <div class="director_dates__date">
                         {{ director.appointmentDate }}
                       </div>
-                      <div v-if="director.cessationDate">
-                        Ceased
-                      </div>
+                      Ceased
                       <div class="director_dates__date">
                         {{ director.cessationDate }}
                       </div>
@@ -285,9 +261,11 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
     * - "directorsCeased" will contain ceased directors
     */
   @Watch('directors', { deep: true, immediate: true })
-  onDirectorsChanged (val: Array<DirectorIF>): void {
-    this.directorSummary = val.filter(d => !d.actions || !d.actions.includes(Actions.CEASED))
-    this.directorsCeased = val.filter(d => d.actions && d.actions.includes(Actions.CEASED))
+  onDirectorsChanged (): void {
+    // NOTE: CEASED action only exists if director was ceased in this filing.
+    // This means future-ceased directors will appear in current directors list.
+    this.directorSummary = this.directors.filter(dir => !this.isCeased(dir))
+    this.directorsCeased = this.directors.filter(dir => this.isCeased(dir))
   }
 
   /**
@@ -299,23 +277,40 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
   }
 
   /**
-   * Local helper to check whether a director was appointed (ie, added) in this filing.
+   * Local helper to check whether a director was appointed in this filing.
    * @param director The director to check.
    * @returns True if director was appointed.
    */
   isNew (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(Actions.APPOINTED)
-    return director.actions && (director.actions.indexOf(Actions.APPOINTED) >= 0)
+    return director.actions?.includes(Actions.APPOINTED) || false
   }
 
+  /**
+   * Local helper to check whether a director was ceased in this filing.
+   * @param director The director to check.
+   * @returns True if director was ceased.
+   */
+  isCeased (director: DirectorIF): boolean {
+    return director.actions?.includes(Actions.CEASED) || false
+  }
+
+  /**
+   * Local helper to check whether a director is future-ceased. In this case, they have
+   * a cessation date but do not have the CEASED action (which is only assigned if they
+   * were ceased in this filing).
+   * @param director The director to check.
+   * @returns True if director is future-ceased.
+   */
+  isFutureCeased (director: DirectorIF): boolean {
+    return !!director.cessationDate
+  }
   /**
    * Local helper to check whether a director had their address changed.
    * @param director The director to check.
    * @returns True if director had their address changed.
    */
   isAddressChanged (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(Actions.ADDRESSCHANGED)
-    return director.actions && (director.actions.indexOf(Actions.ADDRESSCHANGED) >= 0)
+    return director.actions?.includes(Actions.ADDRESSCHANGED) || false
   }
 
   /**
@@ -324,27 +319,7 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
    * @returns True if director had their name changed.
    */
   isNameChanged (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(Actions.NAMECHANGED)
-    return director.actions && (director.actions.indexOf(Actions.NAMECHANGED) >= 0)
-  }
-
-  /**
-   * Local helper to check whether a director is active (ie, not ceased) in this filing.
-   * @param director The director to check.
-   * @returns True if director is active.
-   */
-  isActive (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(Actions.CEASED)
-    return director.actions && (director.actions.indexOf(Actions.CEASED) < 0)
-  }
-
-  /**
-   * Local helper to check whether a director is actionable.
-   * @param director The director to check.
-   * @returns True if director is actionable.
-   */
-  isActionable (director: DirectorIF): boolean {
-    return (director.isDirectorActionable !== undefined) ? director.isDirectorActionable : true
+    return director.actions?.includes(Actions.NAMECHANGED) || false
   }
 }
 </script>
@@ -443,7 +418,7 @@ ul {
   font-weight: 700;
 }
 
-.remove, .remove .director-info {
+.ceased, .ceased .director-info {
   color: $gray5 !important;
 }
 
