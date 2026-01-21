@@ -15,7 +15,7 @@
           :id="'director-' + director.id"
           :key="index"
           class="director-list-item"
-          :class="{ 'remove' : !isActionable(director)}"
+          :class="{ 'ceased' : !isActionable(director)}"
         >
           <div class="meta-container">
             <label>
@@ -276,9 +276,9 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
     * - "directorsCeased" will contain ceased directors
     */
   @Watch('directors', { deep: true, immediate: true })
-  onDirectorsChanged (val: Array<DirectorIF>): void {
-    this.directorSummary = val.filter(d => !d.actions || !d.actions.includes(Actions.CEASED))
-    this.directorsCeased = val.filter(d => d.actions && d.actions.includes(Actions.CEASED))
+  onDirectorsChanged (): void {
+    this.directorSummary = this.directors.filter(dir => !this.isCeased(dir))
+    this.directorsCeased = this.directors.filter(dir => this.isCeased(dir))
   }
 
   /**
@@ -431,7 +431,7 @@ ul {
   font-weight: 700;
 }
 
-.remove, .remove .director-info {
+.ceased, .ceased .director-info {
   color: $gray5 !important;
 }
 

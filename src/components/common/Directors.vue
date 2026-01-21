@@ -155,7 +155,7 @@
           :key="index"
           class="director-list-item"
           :class="{
-            'remove': isCeased(dir) || !isActionable(dir),
+            'ceased': isCeased(dir) || !isActionable(dir),
             'invalid-section': legalNameError(index)
           }"
         >
@@ -1198,7 +1198,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @returns True if director was appointed.
    */
   isNew (director: DirectorIF): boolean {
-    return director.actions?.includes(Actions.APPOINTED)
+    return director.actions?.includes(Actions.APPOINTED) || false
   }
 
   /**
@@ -1207,7 +1207,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @returns True if director was ceased.
    */
   isCeased (director: DirectorIF): boolean {
-    return director.actions?.includes(Actions.CEASED)
+    return director.actions?.includes(Actions.CEASED) || false
   }
 
   /**
@@ -1216,7 +1216,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @returns True if director had their name changed.
    */
   isNameChanged (director: DirectorIF): boolean {
-    return director.actions?.includes(Actions.NAMECHANGED)
+    return director.actions?.includes(Actions.NAMECHANGED) || false
   }
 
   /**
@@ -1225,7 +1225,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @returns True if director had their address changed.
    */
   isAddressChanged (director: DirectorIF): boolean {
-    return director.actions?.includes(Actions.ADDRESSCHANGED)
+    return director.actions?.includes(Actions.ADDRESSCHANGED) || false
   }
 
   /**
@@ -1488,7 +1488,7 @@ ul {
   font-weight: 700;
 }
 
-.remove, .remove .director-info {
+.ceased, .ceased .director-info {
   color: $gray5 !important;
 }
 
