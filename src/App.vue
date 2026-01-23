@@ -283,11 +283,16 @@ export default class App extends Mixins(
     const isAuthenticated = !!sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
     if (!isAuthenticated) return
 
-    // wait up to 5 seconds for account id to become available
-    // if not found, some things may fail, but proceed anyway
+    // wait up to 5 sec for current account to be synced (typically by SbcHeader)
+    // if not found or matched, some things may fail, but proceed anyway
     if (!this.isVitestRunning) {
+      const routeAccountId = +this.$route.query.accountid || 0
       for (let i = 0; i < 50; i++) {
-        if (GetCurrentAccount()?.id) break
+        const currentAccount = GetCurrentAccount()
+        // if there's no route account id, check for account to be set
+        if (!routeAccountId && !!currentAccount) break
+        // check for current account id to match route account id
+        if (currentAccount?.id === routeAccountId) break
         await Sleep(100)
       }
     }
@@ -791,7 +796,8 @@ export default class App extends Mixins(
       await this.fetchData()
     }
   }
-  /** Request and Download Business Summary Document. */
+
+  /** Requests and downloads Business Summary document. */
   async downloadBusinessSummary (): Promise<void> {
     this.setFetchingDataSpinner(true)
     const summaryDocument: DocumentIF = {
@@ -806,7 +812,8 @@ export default class App extends Mixins(
     })
     this.setFetchingDataSpinner(false)
   }
-  /** Direct to Digital Credentials. **/
+
+  /** Go to Digital Credentials route. **/
   viewAddDigitalCredentials (): void {
     this.$router.push({ name: Routes.DIGITAL_CREDENTIALS })
   }
