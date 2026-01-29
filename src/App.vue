@@ -50,16 +50,25 @@
     <!-- Alert banner -->
     <v-alert
       v-if="bannerText"
+      id="alert-banner"
+      class="pa-0 ma-0"
       tile
-      dense
-      class="mb-0"
-      color="#fb8c00"
     >
-      <div
-        class="text-center color-white"
-        v-html="bannerText"
-      />
+      <div class="container d-flex align-center py-3">
+        <v-icon
+          class="color-dk-text"
+          size="28px"
+        >
+          mdi-information
+        </v-icon>
+
+        <span
+          class="color-dk-text dark-gray-links font-14 pl-2"
+          v-html="bannerText"
+        />
+      </div>
     </v-alert>
+
     <div class="app-body">
       <!-- only show pages while signing in or once the data is loaded -->
       <main v-if="isSigninRoute || dataLoaded">
@@ -821,6 +830,8 @@ export default class App extends Mixins(
 </script>
 
 <style lang="scss">
+@import "@/assets/styles/theme.scss";
+
 .loading-container.grayed-out {
   // these are the same styles as dialog overlay:
   opacity: 0.46;
@@ -828,7 +839,12 @@ export default class App extends Mixins(
   border-color: rgb(33, 33, 33); // grey darken-4
 }
 
-.color-white {
-  color: white;
+#alert-banner {
+  background-color: $BCgovGold5;
+  border-color: $BCgovGold5;
+
+  .dark-gray-links a {
+    color: $gray9 !important;
+  }
 }
 </style>
