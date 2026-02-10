@@ -12,6 +12,7 @@ import { BusinessConfigCp } from '@/resources/CP'
 import { click } from '../click'
 import { setValue } from '../setValue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -501,11 +502,13 @@ describe('Directors as a COOP (no sync)', () => {
     // Find and check the legal name confirmation checkbox
     await wrapper.find('.legal-name-checkbox input').setChecked(true)
 
-    vm.$refs.baseAddressEdit = [{ $refs: { addressForm: { validate: () => true } } }]
-    vm.$refs.mailAddressEdit = [{ $refs: { addressForm: { validate: () => true } } }]
+    vm.$refs.baseAddressEdit = [{ validate: () => Promise.resolve(true) }]
+    vm.$refs.mailAddressEdit = [{ validate: () => Promise.resolve(true) }]
 
     // Click Done btn and update the directors name
     await wrapper.findAll('.done-edit-btn').at(0).trigger('click')
+
+    await flushPromises()
 
     // Re Open the edit director
     await vm.editDirectorName(0)
@@ -535,11 +538,13 @@ describe('Directors as a COOP (no sync)', () => {
     // Find and check the legal name confirmation checkbox
     await wrapper.find('.legal-name-checkbox input').setChecked(true)
 
-    vm.$refs.baseAddressEdit = [{ $refs: { addressForm: { validate: () => true } } }]
-    vm.$refs.mailAddressEdit = [{ $refs: { addressForm: { validate: () => true } } }]
+    vm.$refs.baseAddressEdit = [{ validate: () => Promise.resolve(true) }]
+    vm.$refs.mailAddressEdit = [{ validate: () => Promise.resolve(true) }]
 
     // Click Done btn and update the directors name
     await wrapper.findAll('.done-edit-btn').at(0).trigger('click')
+
+    await flushPromises()
 
     // Verify Updated Data in the directors list
     expect(vm.allDirectors[0].officer.firstName).toEqual('Steve')

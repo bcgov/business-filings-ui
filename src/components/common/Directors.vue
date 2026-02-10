@@ -517,7 +517,7 @@ import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { WarningPopover } from '@/components/common/'
 import { CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
 import { Actions } from '@/enums'
-import { FormIF, AddressIF, DirectorIF, EmptyDirector, ComponentIF, AlertMessageIF } from '@/interfaces'
+import { FormIF, AddressIF, DirectorIF, EmptyDirector, AlertMessageIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 const REGISTRIES_FORM_BASE_URL =
@@ -537,13 +537,13 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   $refs!: Vue['$refs'] & {
     // form and components to appoint a new director:
     newDirectorForm: FormIF,
-    baseAddressNew: ComponentIF,
-    mailAddressNew: ComponentIF,
+    baseAddressNew: BaseAddress,
+    mailAddressNew: BaseAddress,
     // form and components to edit an existing director:
     // (there is only 1 at a time but it's still an array)
     editDirectorForm: FormIF[],
-    baseAddressEdit: ComponentIF[],
-    mailAddressEdit: ComponentIF[]
+    baseAddressEdit: BaseAddress[],
+    mailAddressEdit: BaseAddress[]
   }
 
   /** Indicates whether this component should be enabled or not. */
@@ -855,9 +855,9 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   cancelNewDirector (): void {
     this.showNewDirectorForm = false
     this.$refs.newDirectorForm.reset()
-    this.$refs.baseAddressNew.$refs.addressForm.reset()
+    this.$refs.baseAddressNew.reset()
     if (this.$refs.mailAddressNew) {
-      this.$refs.mailAddressNew.$refs.addressForm.reset()
+      this.$refs.mailAddressNew.reset()
     }
 
     // set form to initial director data again
@@ -880,11 +880,11 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   }
 
   /** Local helper to validate the new director form. */
-  validateNewDirectorForm (): void {
+  async validateNewDirectorForm (): Promise<void> {
     var mainFormIsValid = this.$refs.newDirectorForm.validate()
-    var addressFormIsValid = this.$refs.baseAddressNew.$refs.addressForm.validate()
+    var addressFormIsValid = await this.$refs.baseAddressNew.validate()
     if (this.$refs.mailAddressNew) {
-      var mailAddressFormIsValid = this.$refs.mailAddressNew.$refs.addressForm.validate()
+      var mailAddressFormIsValid = await this.$refs.mailAddressNew.validate()
       if (mainFormIsValid && addressFormIsValid && mailAddressFormIsValid) {
         this.pushNewDirectorData()
         this.cancelNewDirector()
@@ -1004,7 +1004,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @param index The index of the director to save.
    * @param id The id of the director to save.
    */
-  saveEditDirector (index: number, id: number): void {
+  async saveEditDirector (index: number, id: number): Promise<void> {
     // get current director (object reference)
     const director = this.allDirectors[index]
     const origDirector = this.original.find(d => d.id === id)
@@ -1017,10 +1017,10 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     }
 
     let mainFormIsValid = this.$refs.editDirectorForm[0].validate()
-    let addressFormIsValid = this.$refs.baseAddressEdit[0].$refs.addressForm.validate() as boolean
+    let addressFormIsValid = await this.$refs.baseAddressEdit[0].validate()
 
     if (this.$refs.mailAddressEdit && this.$refs.mailAddressEdit[0]) {
-      let mailAddressFormIsValid = this.$refs.mailAddressEdit[0].$refs.addressForm.validate() as boolean
+      let mailAddressFormIsValid = await this.$refs.mailAddressEdit[0].validate()
       if (!mailAddressFormIsValid) {
         addressFormIsValid = mailAddressFormIsValid
       }
