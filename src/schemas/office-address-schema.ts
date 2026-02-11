@@ -1,6 +1,6 @@
 import { required, maxLength } from 'vuelidate/lib/validators'
 import { noLeadingTrailingSpaces, requiredNoWhitespace } from './validators'
-import { isValidPostalCode } from '@bcrs-shared-components/validators'
+import { isRequiredPostalCode, isValidPostalCode } from '@bcrs-shared-components/validators'
 
 // The Address schema containing Vuelidate rules.
 // NB: This should match the subject JSON schema.
@@ -31,7 +31,7 @@ export const officeAddressSchema = {
     isBC: (val) => (val === 'BC')
   },
   postalCode: {
-    required,
+    isRequiredPostalCode,
     maxLength: maxLength(15),
     requiredNoWhitespace,
     isValidPostalCode
