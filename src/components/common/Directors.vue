@@ -1009,7 +1009,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     const director = this.allDirectors[index]
     const origDirector = this.original.find(d => d.id === id)
 
-    if (!origDirector) {
+    if (!origDirector && !this.isNew(director)) {
       // eslint-disable-next-line no-console
       console.log('saveEditDirector() could not find original director with id =', id)
       this.cancelEditDirector()
