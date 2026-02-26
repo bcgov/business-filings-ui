@@ -451,6 +451,23 @@ describe('Directors as a COOP (no sync)', () => {
     expect(vm.allDirectors[0].officer.firstName).toBe('Steve')
   })
 
+  it('blocks save for existing director name change without legal name confirmation', async () => {
+    await vm.editDirectorName(0)
+    await setValue(vm, '.edit-director__first-name input', 'Steve')
+    expect(vm.allDirectors[0].officer.firstName).toBe('Steve')
+
+    // mock refs but do NOT check legalNameConfirmed
+    vm.$refs.baseAddressEdit = [{ validate: () => Promise.resolve(true) }]
+    vm.$refs.mailAddressEdit = [{ validate: () => Promise.resolve(true) }]
+
+    await wrapper.findAll('.done-edit-btn').at(0).trigger('click')
+    await flushPromises()
+
+    // edit form should still be open (save was blocked)
+    expect(vm.activeIndex).toBe(0)
+    expect(vm.showErrors).toBe(true)
+  })
+
   it('restores the directors name to its original value when the Cancel Edit Btn is clicked', async () => {
     // Open the edit director
     await vm.editDirectorName(0)
@@ -1142,7 +1159,6 @@ describe('Appoint New Director tests', () => {
     vm.inProgressDelivAddress = address('updated-street')
     vm.$refs.editDirectorForm = [{ validate: () => true }]
     vm.$refs.baseAddressEdit = [{ validate: () => Promise.resolve(true) }]
-    vm.legalNameConfirmed = true
     await vm.saveEditDirector(0, vm.allDirectors[0].id)
     await flushPromises()
 
