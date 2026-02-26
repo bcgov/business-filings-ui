@@ -1405,10 +1405,6 @@ ul {
   }
 }
 
-:deep(.legal-name-checkbox-error .v-label) {
-  color: $app-red !important;
-}
-
 @media (min-width: 768px) {
   .meta-container {
     flex-flow: row nowrap;
@@ -1570,6 +1566,10 @@ ul {
 
 :deep(.legal-name-checkbox .v-label) {
   color: $gray9 !important;
+}
+
+:deep(.legal-name-checkbox-error .v-label) {
+  color: $app-red !important;
 }
 
 </style>

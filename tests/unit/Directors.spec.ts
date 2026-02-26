@@ -1153,9 +1153,12 @@ describe('Appoint New Director tests', () => {
     vm.pushNewDirectorData()
     await Vue.nextTick()
 
-    // open edit, simulate BaseAddress emitting an updated address, and save
+    // open edit and verify legal name confirmation is hidden for new directors
     vm.editDirector(0)
     await Vue.nextTick()
+    expect(wrapper.find('#legal-name-confirmation').isVisible()).toBe(false)
+
+    // simulate BaseAddress emitting an updated address, and save
     vm.inProgressDelivAddress = address('updated-street')
     vm.$refs.editDirectorForm = [{ validate: () => true }]
     vm.$refs.baseAddressEdit = [{ validate: () => Promise.resolve(true) }]
