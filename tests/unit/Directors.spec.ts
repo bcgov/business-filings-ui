@@ -1118,9 +1118,60 @@ describe('Appoint New Director tests', () => {
   // it('can appoint a new director', () => {
   // })
 
-  // FUTURE
-  // it('can edit a new director', () => {
-  // })
+  it('can edit a newly appointed director\'s address', async () => {
+    const address = (street: string) => ({
+      streetAddress: street,
+      streetAddressAdditional: '',
+      addressCity: 'city',
+      addressCountry: 'CA',
+      postalCode: 'V8V 8V8',
+      addressRegion: 'BC',
+      deliveryInstructions: ''
+    })
+
+    // appoint a new director
+    vm.inProgressDelivAddress = address('initial-street')
+    vm.newDirector.officer.firstName = 'New'
+    vm.newDirector.officer.lastName = 'Director'
+    vm.pushNewDirectorData()
+    await Vue.nextTick()
+
+    // open edit, simulate BaseAddress emitting an updated address, and save
+    vm.editDirector(0)
+    await Vue.nextTick()
+    vm.inProgressDelivAddress = address('updated-street')
+    vm.$refs.editDirectorForm = [{ validate: () => true }]
+    vm.$refs.baseAddressEdit = [{ validate: () => Promise.resolve(true) }]
+    vm.legalNameConfirmed = true
+    await vm.saveEditDirector(0, vm.allDirectors[0].id)
+    await flushPromises()
+
+    expect(vm.allDirectors[0].deliveryAddress.streetAddress).toBe('updated-street')
+  })
+
+  it('cancels edit for an existing director not found in original list', async () => {
+    // add a non-new director that is NOT in this.original (unexpected state)
+    vm.allDirectors.unshift({
+      actions: [],
+      id: 999,
+      isDirectorActionable: true,
+      officer: { firstName: 'Ghost', lastName: 'Director' },
+      deliveryAddress: { streetAddress: 'ghost-street',
+        streetAddressAdditional: '',
+        addressCity: 'city',
+        addressCountry: 'CA',
+        postalCode: 'G0G 0G0',
+        addressRegion: 'BC',
+        deliveryInstructions: '' }
+    })
+
+    // attempt to save — should bail out because director is not new and not in original
+    await vm.saveEditDirector(0, 999)
+    await flushPromises()
+
+    expect(vm.allDirectors[0].deliveryAddress.streetAddress).toBe('ghost-street')
+    expect(vm.activeIndex).toBe(-1)
+  })
 
   // FUTURE
   // it('can remove a new director', () => {
