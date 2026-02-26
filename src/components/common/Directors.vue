@@ -353,7 +353,7 @@
                     />
                   </div>
                   <div
-                    v-show="editFormShowHide.showName"
+                    v-show="editFormShowHide.showName && !isNew(dir)"
                     id="legal-name-confirmation"
                     class="form__row mb-6"
                   >
@@ -1026,10 +1026,11 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
       }
     }
 
-    // Legal name confirmation checkbox
-    this.showErrors = this.editFormShowHide.showName && !this.legalNameConfirmed
+    // Legal name confirmation is only required for existing directors when editing their name
+    const needsNameConfirmation = this.editFormShowHide.showName && !this.isNew(director)
+    this.showErrors = needsNameConfirmation && !this.legalNameConfirmed
 
-    if (mainFormIsValid && addressFormIsValid && (!this.editFormShowHide.showName || this.legalNameConfirmed)) {
+    if (mainFormIsValid && addressFormIsValid && (!needsNameConfirmation || this.legalNameConfirmed)) {
       // save data from BaseAddress component
       // - only save address if a change was made, ie there is an in-progress address from the component
       if (!Object.values(this.inProgressDelivAddress).every(el => el === undefined)) {
@@ -1404,10 +1405,6 @@ ul {
   }
 }
 
-:deep(.legal-name-checkbox-error .v-label) {
-  color: $app-red !important;
-}
-
 @media (min-width: 768px) {
   .meta-container {
     flex-flow: row nowrap;
@@ -1569,6 +1566,11 @@ ul {
 
 :deep(.legal-name-checkbox .v-label) {
   color: $gray9 !important;
+}
+
+:deep(.legal-name-checkbox-error .v-label),
+:deep(.legal-name-checkbox-error .v-icon) {
+  color: $app-red !important;
 }
 
 </style>
