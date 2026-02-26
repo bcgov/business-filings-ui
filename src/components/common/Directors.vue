@@ -1568,7 +1568,8 @@ ul {
   color: $gray9 !important;
 }
 
-:deep(.legal-name-checkbox-error .v-label) {
+:deep(.legal-name-checkbox-error .v-label),
+:deep(.legal-name-checkbox-error .v-icon) {
   color: $app-red !important;
 }
 
