@@ -11,10 +11,17 @@ on:
         required: true
         type: choice
         options:
-        - dev
-        - test
-        - sandbox
-        - prod
+          - "dev"
+          - "test"
+          - "sandbox"
+          - "prod"
+      redeploy:
+        description: "Redeploy Application"
+        required: true
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 jobs:
   business-filings-ui-cd:
