@@ -13,8 +13,7 @@
     "lint:fix": "eslint . --ext js,ts,vue --fix src",
     "test": "vitest run",
     "test:unit": "vitest run",
-    "test:watch": "vitest watch",
-    "test:coverage": "vitest run --coverage"
+    "test:watch": "vitest watch"
   },
   "dependencies": {
     "@babel/compat-data": "^7.21.5",

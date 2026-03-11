@@ -43,7 +43,7 @@ describe('Configuration Actions', () => {
     // vaults launchdarkly
     VUE_APP_BUSINESS_FILING_LD_CLIENT_ID: 'business filing ld client id',
 
-    // vauls keycloak
+    // vaults keycloak
     VUE_APP_KEYCLOAK_AUTH_URL: 'keycloak url',
     VUE_APP_KEYCLOAK_REALM: 'keycloak realm',
     VUE_APP_KEYCLOAK_CLIENTID: 'keycloak clientid'
@@ -62,14 +62,12 @@ describe('Configuration Actions', () => {
     await configurationStore.loadConfiguration(env)
     expect(configurationStore.getAddressCompleteKey).toBe('address complete key')
     expect(configurationStore.getAuthApiUrl).toBe('auth api url/auth api version/')
-    expect(configurationStore.getAuthApiUrl).toBe('auth api url/auth api version/')
     expect(configurationStore.getAuthWebUrl).toBe('auth web url')
     expect(configurationStore.getCreateUrl).toBe('business create url')
     expect(configurationStore.getEditUrl).toBe('business edit url')
     expect(configurationStore.getBusinessFilingLdClientId).toBe('business filing ld client id')
     expect(configurationStore.getCorporateOnlineUrl).toBe('corporate online url')
     expect(configurationStore.getBusinessApiUrl).toBe('business api url/business api version 2/')
-    expect(configurationStore.getPayApiUrl).toBe('pay api url/pay api version/')
     expect(configurationStore.getPayApiUrl).toBe('pay api url/pay api version/')
     expect(configurationStore.getRegHomeUrl).toBe('registry home url')
     expect(configurationStore.getSiteminderLogoutUrl).toBe('siteminder logout url')
@@ -122,11 +120,12 @@ describe('Configuration Actions', () => {
     }).toThrow('Missing or invalid Business Id.')
   })
 
-  it('sessions variables correctly set for sbc-common-components', async () => {
+  it('correctly sets session variables', async () => {
     configurationStore.loadConfiguration(env)
-    expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
     expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
+    expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
     expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
+    expect(sessionStorage.getItem('BUSINESS_API_URL')).toBe('business api url/business api version 2/')
     expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
     expect(sessionStorage.getItem('PAY_API_URL')).toBe('pay api url/pay api version')
   })
