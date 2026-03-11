@@ -96,6 +96,7 @@ export default class BusinessServices {
   static async fetchParties (businessId: string, role: Roles = null): Promise<AxiosResponse> {
     let url = `${this.businessApiUrl}businesses/${businessId}/parties`
     if (role) url += `?role=${role}`
+    console.log('*** fetchParties() url =', url)
     return axios.get(url)
   }
 

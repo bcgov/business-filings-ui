@@ -387,6 +387,7 @@ export default class App extends Mixins(
       this.loadFilings(this.businessId || this.tempRegNumber),
       BusinessServices.fetchParties(this.businessId)
     ])
+    console.log('*** parties =', data[4])
 
     if (!data || data.length !== 5) throw new Error('Incomplete business data')
 

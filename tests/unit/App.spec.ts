@@ -594,7 +594,8 @@ describe('App as a BCOMP', () => {
             taxId: '123456789',
             identifier: 'BC0007291',
             foundingDate: '2000-07-13T00:00:00+00:00',
-            legalType: 'BEN'
+            legalType: 'BEN',
+            stateFiling: null
           }
         }
       })))
