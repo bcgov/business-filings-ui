@@ -1,19 +1,9 @@
 import { Component } from 'vue-property-decorator'
 import DateMixin from './date-mixin'
 import { Action, Getter } from 'pinia-class'
-import {
-  CorrectionFilingIF,
-  DissolutionFilingIF,
-  FilingDataIF,
-  OfficeAddressIF,
-  RestorationFilingIF
-} from '@/interfaces'
-import {
-  CorpTypeCd,
-  CorrectionTypes,
-  FilingSubTypes
-} from '@/enums'
-import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
+import { FilingDataIF } from '@/interfaces'
+import { CorpTypeCd } from '@/enums'
+import { FilingCodes } from '@bcrs-shared-components/enums'
 import { useBusinessStore, useRootStore } from '@/stores'
 
 /**
@@ -23,15 +13,8 @@ import { useBusinessStore, useRootStore } from '@/stores'
 export default class FilingMixin extends DateMixin {
   @Action(useRootStore) setFilingData!: (x: any) => void
 
-  @Getter(useBusinessStore) entityName!: string
   @Getter(useRootStore) filingData!: Array<FilingDataIF>
-  @Getter(useRootStore) getBusinessAddress!: OfficeAddressIF
-  @Getter(useRootStore) getCurrentDate!: string
-  @Getter(useBusinessStore) getFoundingDate!: Date
-  @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
-  @Getter(useRootStore) getRegisteredOfficeAddress!: OfficeAddressIF
-  @Getter(useBusinessStore) getStartDate!: string
 
   /**
    * Adds/removes filing code and/or sets flags in the Filing Data object.
@@ -82,98 +65,5 @@ export default class FilingMixin extends DateMixin {
    */
   hasFilingCode (filingCode: FilingCodes): boolean {
     return !!this.filingData.find(o => o.filingTypeCode === filingCode)
-  }
-
-  /**
-   * Builds a Correction filing body.
-   * @param correctedFiling the filing to correct
-   * @param correctedType the correction type
-   * @returns the filing body
-   */
-  buildCorrectionFiling (correctedFiling: any, correctionType: CorrectionTypes): CorrectionFilingIF {
-    const submittedDate = new Date(correctedFiling.submittedDate)
-    const correctionFiling: CorrectionFilingIF = {
-      header: {
-        date: this.getCurrentDate,
-        name: FilingTypes.CORRECTION
-      },
-      business: {
-        identifier: this.getIdentifier,
-        legalName: this.entityName, // may be undefined
-        legalType: this.getLegalType
-      },
-      correction: {
-        comment: '',
-        correctedFilingDate: this.dateToYyyyMmDd(submittedDate),
-        correctedFilingId: correctedFiling.filingId,
-        correctedFilingType: correctedFiling.name,
-        type: correctionType
-      }
-    }
-
-    return correctionFiling
-  }
-
-  /**
-   * Builds a Dissolution filing body.
-   * @returns the filing body
-   */
-  buildDissolutionFiling (): DissolutionFilingIF {
-    const dissolutionFiling: DissolutionFilingIF = {
-      header: {
-        date: this.getCurrentDate,
-        name: FilingTypes.DISSOLUTION
-      },
-      business: {
-        foundingDate: this.dateToApi(this.getFoundingDate),
-        identifier: this.getIdentifier,
-        legalName: this.entityName,
-        legalType: this.getLegalType,
-        startDate: this.getStartDate
-
-      },
-      dissolution: {
-        custodialOffice: this.getRegisteredOfficeAddress,
-        // FUTURE: apply type dynamically when we have dissolution variations
-        dissolutionType: FilingSubTypes.DISSOLUTION_VOLUNTARY
-      }
-    }
-
-    // Conditionally add the entity-specific sections.
-    switch (this.getLegalType) {
-      case CorpTypeCd.SOLE_PROP:
-      case CorpTypeCd.PARTNERSHIP:
-        dissolutionFiling.dissolution = {
-          ...dissolutionFiling.dissolution,
-          custodialOffice: this.getBusinessAddress || null
-        }
-        break
-    }
-
-    return dissolutionFiling
-  }
-
-  /**
-   * Builds a Restoration filing body.
-   * @param restorationType The type of restoration. May be null.
-   * @returns the filing body
-   */
-  buildRestorationFiling (restorationType: FilingSubTypes): RestorationFilingIF {
-    const restoration: RestorationFilingIF = {
-      header: {
-        date: this.getCurrentDate,
-        name: FilingTypes.RESTORATION
-      },
-      business: {
-        foundingDate: this.dateToApi(this.getFoundingDate),
-        identifier: this.getIdentifier,
-        legalName: this.entityName,
-        legalType: this.getLegalType
-      },
-      restoration: {
-        type: restorationType
-      }
-    }
-    return restoration
   }
 }

@@ -8,10 +8,10 @@ import { UserInfoIF } from '@/interfaces'
  * Class that provides integration with the Auth API.
  */
 export default class AuthServices {
-  /** The Auth API Gateway URL. */
-  static get authApiGwUrl (): string {
+  /** The Auth API URL. */
+  static get authApiUrl (): string {
     const configStore = useConfigurationStore()
-    return configStore.getAuthApiGwUrl
+    return configStore.getAuthApiUrl
   }
 
   /**
@@ -19,7 +19,7 @@ export default class AuthServices {
    * @returns the user info object
    */
   static async fetchUserInfo (): Promise<UserInfoIF> {
-    const url = `${this.authApiGwUrl}users/@me`
+    const url = `${this.authApiUrl}users/@me`
     return axios.get(url)
       .then(response => {
         const data = response?.data
@@ -36,7 +36,7 @@ export default class AuthServices {
    * @returns the axios response
    */
   static async fetchEntityInfo (businessId: string): Promise<AxiosResponse> {
-    const url = `${this.authApiGwUrl}entities/${businessId}`
+    const url = `${this.authApiUrl}entities/${businessId}`
     return axios.get(url)
   }
 
@@ -47,7 +47,7 @@ export default class AuthServices {
    * @returns the axios response
    */
   static async fetchAffiliationInvitations (businessId: string, orgId: number) {
-    const url = `${this.authApiGwUrl}affiliationInvitations`
+    const url = `${this.authApiUrl}affiliationInvitations`
     return axios.get(url, { params: { toOrgId: orgId, businessIdentifier: businessId, statuses: 'PENDING' } })
   }
 
@@ -63,7 +63,7 @@ export default class AuthServices {
     const action = isAuthorized ? 'accept' : 'refuse'
     const authorizePath = `affiliationInvitations/${affiliationInvitationId}/authorization/${action}`
 
-    const url = this.authApiGwUrl + authorizePath
+    const url = this.authApiUrl + authorizePath
 
     return axios.patch(url)
   }

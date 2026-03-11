@@ -42,7 +42,7 @@ describe('Continuation Out view', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     configurationStore.setConfiguration({
-      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_URL': 'https://business-api.url/',
       'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
     rootStore.filingData = []

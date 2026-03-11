@@ -228,16 +228,20 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin, FilingM
     certifyRef: Certify
   }
 
-  @Action(useRootStore) setTransactionalFolioNumber!: (x: string) => void
-
   @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useRootStore) getFolioNumber!: string
-  @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+
+  @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useBusinessStore) isGoodStanding!: boolean
+
+  @Getter(useFilingHistoryListStore) getTotalAgmExtensionDuration!: (year: number) => number;
+
+  @Action(useRootStore) setTransactionalFolioNumber!: (x: string) => void
+  @Getter(useRootStore) getCurrentDate!: string
+  @Getter(useRootStore) getFolioNumber!: string
   @Getter(useRootStore) getTransactionalFolioNumber!: string
   @Getter(useRootStore) getUserInfo!: UserInfoIF
-  @Getter(useBusinessStore) isGoodStanding!: boolean
-  @Getter(useFilingHistoryListStore) getTotalAgmExtensionDuration!: (year: number) => number;
 
   // enum for template
   readonly FilingCodes = FilingCodes

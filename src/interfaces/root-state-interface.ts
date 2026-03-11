@@ -35,7 +35,6 @@ export interface RootStateIF {
   // other global data
   businessAddress: OfficeAddressIF
   configObject: any
-  fetchingDataSpinner: boolean
   startingAmalgamationSpinner: boolean
   filingData: Array<FilingDataIF>
   nameRequest: any

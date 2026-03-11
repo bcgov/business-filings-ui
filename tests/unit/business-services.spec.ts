@@ -21,7 +21,7 @@ describe('Business Services', () => {
     put = sinon.stub(axios, 'put')
     // init store
     configurationStore.setConfiguration({
-      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_URL': 'https://business-api.url/',
       'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
   })
@@ -37,7 +37,7 @@ describe('Business Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('https://business-api-gw.url/v2/businesses/CP1234567')
+    get.withArgs('https://business-api.url/v2/businesses/CP1234567')
       .returns(new Promise(resolve => resolve({ data: { business: BUSINESS_INFO } })))
 
     // call method
@@ -55,7 +55,7 @@ describe('Business Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/tasks')
+    get.withArgs('https://business-api.url/v2/businesses/CP1234567/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: TASKS } })))
 
     // call method
@@ -73,7 +73,7 @@ describe('Business Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/filings')
+    get.withArgs('https://business-api.url/v2/businesses/CP1234567/filings')
       .returns(new Promise(resolve => resolve({ data: { filings: FILINGS } })))
 
     // call method
@@ -96,7 +96,7 @@ describe('Business Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/addresses')
+    get.withArgs('https://business-api.url/v2/businesses/CP1234567/addresses')
       .returns(new Promise(resolve => resolve({ data: ADDRESSES })))
 
     // call method
@@ -114,7 +114,7 @@ describe('Business Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/parties?role=Director')
+    get.withArgs('https://business-api.url/v2/businesses/CP1234567/parties?role=Director')
       .returns(new Promise(resolve => resolve({ data: DIRECTORS })))
 
     // call method
@@ -130,7 +130,7 @@ describe('Business Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('https://business-api-gw.url/v2/businesses/T1234567/filings')
+    get.withArgs('https://business-api.url/v2/businesses/T1234567/filings')
       .returns(new Promise(resolve => resolve({ data: IA })))
 
     // call method
@@ -146,7 +146,7 @@ describe('Business Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('https://business-api-gw.url/v2/nameRequests/NR1234567/validate?phone=&email=')
+    get.withArgs('https://business-api.url/v2/nameRequests/NR1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({ data: NR })))
 
     // call method
@@ -179,7 +179,7 @@ describe('Business Services', () => {
     }
 
     // mock endpoint
-    post.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/filings?draft=true')
+    post.withArgs('https://business-api.url/v2/businesses/CP1234567/filings?draft=true')
       .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method
@@ -195,7 +195,7 @@ describe('Business Services', () => {
     }
 
     // mock endpoint
-    put.withArgs('https://business-api-gw.url/v2/businesses/CP1234567/filings/1234?draft=true')
+    put.withArgs('https://business-api.url/v2/businesses/CP1234567/filings/1234?draft=true')
       .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method

@@ -285,14 +285,11 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   @Prop({ default: false }) readonly courtOrderNumberRequired!: boolean
 
   // Global getters
-  // @Getter(useRootStore) getCurrentDate!: string
-  // @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useRootStore) getCurrentDate!: string
+  @Getter(useBusinessStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getLegalName!: string
   // @Getter(useBusinessStore) getLegalType!: CorpTypeCd
-  // @Getter(useBusinessStore) getIdentifier!: string
-  @Getter(useBusinessStore) isAdminFrozen!: boolean
-  @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useRootStore) getBusinessEmail!: string
+  @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getUserInfo!: UserInfoIF
 

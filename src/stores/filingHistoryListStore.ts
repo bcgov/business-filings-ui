@@ -9,11 +9,8 @@ import { AuthorizedActions } from '@/enums'
 export const useFilingHistoryListStore = defineStore('filingHistoryList', {
   state: (): FilingHistoryListStateIF => ({
     currentFiling: null,
-    downloadErrorDialog: false,
-    fileCorrectionDialog: false,
     filings: [],
     loadingAll: false,
-    loadCorrectionDialog: false,
     loadingOne: false,
     loadingOneIndex: -1,
     panel: null
@@ -145,10 +142,6 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
 
     setLoadingAll (val: boolean) {
       this.loadingAll = val
-    },
-
-    setLoadCorrectionDialog (val: boolean) {
-      this.loadCorrectionDialog = val
     },
 
     setLoadingOne (val: boolean) {

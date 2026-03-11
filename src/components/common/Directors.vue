@@ -560,12 +560,12 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   @Getter(useBusinessStore) isEntityCoop!: boolean
   @Getter(useBusinessStore) isEntityFirm!: boolean
   @Getter(useRootStore) getCurrentDate!: string
-  @Getter(useRootStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getFoundingDate!: Date
   // @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
-  @Getter(useConfigurationStore) getBusinessApiGwUrl!: string
+  @Getter(useConfigurationStore) getBusinessApiUrl!: string
 
   /** Effective date for fetching and appointing/ceasing directors. */
   asOfDate: string = null
@@ -765,7 +765,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   // FUTURE: this API call should be in the parent component or some mixin/service
   async fetchDirectors (): Promise<void> {
     if (this.getIdentifier && this.asOfDate) {
-      const url = `${this.getBusinessApiGwUrl}businesses/${this.getIdentifier}/directors?date=${this.asOfDate}`
+      const url = `${this.getBusinessApiUrl}businesses/${this.getIdentifier}/directors?date=${this.asOfDate}`
       await axios.get(url).then(response => {
         if (Array.isArray(response?.data?.directors)) {
           const directors = response.data.directors as DirectorIF[]
