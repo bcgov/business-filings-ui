@@ -1,7 +1,7 @@
 import { Component } from 'vue-property-decorator'
 import DateMixin from './date-mixin'
 import { Action, Getter } from 'pinia-class'
-import { FilingDataIF } from '@/interfaces'
+import { FilingDataIF, OfficeAddressIF } from '@/interfaces'
 import { CorpTypeCd } from '@/enums'
 import { FilingCodes } from '@bcrs-shared-components/enums'
 import { useBusinessStore, useRootStore } from '@/stores'
@@ -14,7 +14,15 @@ export default class FilingMixin extends DateMixin {
   @Action(useRootStore) setFilingData!: (x: any) => void
 
   @Getter(useRootStore) filingData!: Array<FilingDataIF>
+  @Getter(useRootStore) getBusinessAddress!: OfficeAddressIF // used by other components
+  @Getter(useRootStore) getCurrentDate!: string // used by other components
+  @Getter(useRootStore) getRegisteredOfficeAddress!: OfficeAddressIF // used by other components
+
+  @Getter(useBusinessStore) entityName!: string // used by other components
+  @Getter(useBusinessStore) getFoundingDate!: Date // used by other components
+  @Getter(useBusinessStore) getIdentifier!: string // used by other components
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
+  @Getter(useBusinessStore) getStartDate!: string // used by other components
 
   /**
    * Adds/removes filing code and/or sets flags in the Filing Data object.

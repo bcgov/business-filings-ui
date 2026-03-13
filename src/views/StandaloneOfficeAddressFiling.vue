@@ -304,6 +304,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   @Getter(useConfigurationStore) getPayApiUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isEntityCoop!: boolean
+  // @Getter(useRootStore) getCurrentDate!: string
   @Getter(useRootStore) getFolioNumber!: string
   @Getter(useRootStore) getTransactionalFolioNumber!: string
 
