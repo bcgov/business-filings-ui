@@ -4,12 +4,6 @@
     class="app-container theme--light"
   >
     <!-- Dialogs -->
-    <DownloadErrorDialog
-      :dialog="downloadErrorDialog"
-      attach="#app"
-      @close="downloadErrorDialog=false"
-    />
-
     <BusinessAuthErrorDialog
       :dialog="businessAuthErrorDialog"
       attach="#app"
@@ -17,7 +11,7 @@
       @retry="onClickRetry(true)"
     />
 
-    <fetchErrorDialog
+    <FetchErrorDialog
       :dialog="fetchErrorDialog"
       attach="#app"
       @exit="onClickExit()"
@@ -32,19 +26,6 @@
       @retry="onClickRetry()"
     />
 
-    <ConfirmDissolutionDialog
-      :dialog="confirmDissolutionDialog"
-      attach="#app"
-      @close="confirmDissolutionDialog = false"
-      @proceed="dissolveCompany()"
-    />
-
-    <NotInGoodStandingDialog
-      :dialog="notInGoodStandingDialog"
-      :message="nigsMessage"
-      attach="#app"
-      @close="notInGoodStandingDialog = false"
-    />
     <SbcHeader />
 
     <!-- Alert banner -->
@@ -73,13 +54,7 @@
       <!-- only show pages while signing in or once the data is loaded -->
       <main v-if="isSigninRoute || dataLoaded">
         <Breadcrumb :breadcrumbs="breadcrumbs" />
-        <EntityInfo
-          v-if="!isAmalgamationSelectionRoute"
-          @confirmDissolution="confirmDissolutionDialog = true"
-          @notInGoodStanding="nigsMessage = $event; notInGoodStandingDialog = true"
-          @downloadBusinessSummary="downloadBusinessSummary()"
-          @viewAddDigitalCredentials="viewAddDigitalCredentials()"
-        />
+        <EntityInfo v-if="!isAmalgamationSelectionRoute" />
         <router-view />
       </main>
     </div>
@@ -97,30 +72,25 @@ import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
 import EntityInfo from '@/components/EntityInfo.vue'
-import { BusinessAuthErrorDialog, ConfirmDissolutionDialog, DownloadErrorDialog, FetchErrorDialog,
-  NameRequestInvalidDialog, NotInGoodStandingDialog } from '@/components/dialogs'
+import { BusinessAuthErrorDialog, FetchErrorDialog, NameRequestInvalidDialog } from '@/components/dialogs'
 import { ConfigJson } from '@/resources'
 import { BreadcrumbMixin, CommonMixin, DateMixin, DirectorMixin, FilingMixin, NameRequestMixin } from '@/mixins'
 import { AuthServices, BusinessServices, EnumUtilities } from '@/services'
-import { ApiFilingIF, ApiTaskIF, DocumentIF, NameRequestIF, OfficeAddressIF, PartyIF, TaskTodoIF, UserInfoIF }
-  from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, NameRequestIF, OfficeAddressIF, PartyIF, TaskTodoIF, UserInfoIF } from '@/interfaces'
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
-import { AuthorizationRoles, AuthorizedActions, FilingStatus, NameRequestStates, NigsMessage, Routes } from '@/enums'
+import { AuthorizationRoles, AuthorizedActions, FilingStatus, NameRequestStates, Routes } from '@/enums'
 import { CorpTypeCd, GetCorpFullDescription, GetCorpNumberedDescription }
   from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 
 @Component({
   components: {
     Breadcrumb,
-    ConfirmDissolutionDialog,
-    DownloadErrorDialog,
     BusinessAuthErrorDialog,
     FetchErrorDialog,
     NameRequestInvalidDialog,
-    NotInGoodStandingDialog,
     SbcHeader,
     SbcFooter,
     EntityInfo
@@ -136,15 +106,11 @@ export default class App extends Mixins(
 ) {
   // local variables
   authRoles = [] as Array<AuthorizationRoles>
-  confirmDissolutionDialog = false
-  downloadErrorDialog = false
   dataLoaded = false
   businessAuthErrorDialog = false
   fetchErrorDialog = false
   nameRequestInvalidDialog = false
   nameRequestInvalidType = null as NameRequestStates
-  notInGoodStandingDialog = false
-  nigsMessage = null as NigsMessage
   localNrNumber = null as string
 
   /** Currently supported entity types in Filings UI. */
@@ -172,19 +138,11 @@ export default class App extends Mixins(
   @Action(useBusinessStore) setIdentifier!: (x: string) => Promise<void>
   @Action(useBusinessStore) setFoundingDate!: (x: string) => Promise<void>
 
-  // configuration store references
-  @Getter(useConfigurationStore) getAuthApiGwUrl!: string
-  @Getter(useConfigurationStore) getCreateUrl!: string
-  @Getter(useConfigurationStore) getBusinessRegistryDashboardUrl!: string
-
   // root store references
   @Getter(useRootStore) getUserInfo!: UserInfoIF
-  @Getter(useRootStore) isAuthorizationStatus!: boolean
   @Getter(useRootStore) isBootstrapFiling!: boolean
   @Getter(useRootStore) isBootstrapPending!: boolean
   @Getter(useRootStore) isBootstrapTodo!: boolean
-  @Getter(useRootStore) showFetchingDataSpinner!: boolean
-  @Getter(useRootStore) showStartingAmalgamationSpinner!: boolean
 
   @Action(useRootStore) loadStateFiling!: () => Promise<void>
   @Action(useRootStore) setAuthorizedActions!: (x: Array<AuthorizedActions>) => void
@@ -198,7 +156,6 @@ export default class App extends Mixins(
   @Action(useRootStore) setCorpTypeCd!: (x: CorpTypeCd) => void
   @Action(useRootStore) setCurrentDate!: (x: string) => void
   @Action(useRootStore) setCurrentJsDate!: (x: Date) => void
-  @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
   @Action(useRootStore) setFolioNumber!: (x: string) => void
   @Action(useRootStore) setNameRequest!: (x: any) => void
   @Action(useRootStore) setParties!: (x: Array<PartyIF>) => void
@@ -771,20 +728,6 @@ export default class App extends Mixins(
     this.setConfigObject(configObject)
   }
 
-  /** Creates a draft filing and navigates to the Create UI to file a company dissolution filing. */
-  async dissolveCompany (): Promise<void> {
-    const dissolutionFiling = this.buildDissolutionFiling()
-    const draftDissolution = await BusinessServices.createFiling(this.getIdentifier, dissolutionFiling, true)
-    const draftDissolutionId = +draftDissolution?.header?.filingId
-
-    if (!draftDissolution || isNaN(draftDissolutionId)) {
-      throw new Error('Invalid API response')
-    }
-
-    const url = `${this.getCreateUrl}define-dissolution?id=${this.getIdentifier}`
-    Navigate(url)
-  }
-
   /** Handles Exit click event from dialogs. */
   onClickExit (): void {
     Navigate(this.getBusinessRegistryUrl)
@@ -804,27 +747,6 @@ export default class App extends Mixins(
       this.nameRequestInvalidDialog = false
       await this.fetchData()
     }
-  }
-
-  /** Requests and downloads Business Summary document. */
-  async downloadBusinessSummary (): Promise<void> {
-    this.setFetchingDataSpinner(true)
-    const summaryDocument: DocumentIF = {
-      title: 'Summary',
-      filename: `${this.businessId} Summary - ${this.getCurrentDate}.pdf`,
-      link: `businesses/${this.businessId}/documents/summary`
-    }
-    await BusinessServices.fetchDocument(summaryDocument).catch(error => {
-      // eslint-disable-next-line no-console
-      console.log('fetchDocument() error =', error)
-      this.downloadErrorDialog = true
-    })
-    this.setFetchingDataSpinner(false)
-  }
-
-  /** Go to Digital Credentials route. **/
-  viewAddDigitalCredentials (): void {
-    this.$router.push({ name: Routes.DIGITAL_CREDENTIALS })
   }
 }
 </script>

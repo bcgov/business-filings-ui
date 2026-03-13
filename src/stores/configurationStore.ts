@@ -55,39 +55,29 @@ export const useConfigurationStore = defineStore('configuration', {
       return state.configuration?.VUE_APP_BUSINESS_EDIT_URL
     },
 
-    getBusinessApiGwUrl (state: ConfigurationStateIF): string {
-      const businessApiGwUrl = state.configuration?.VUE_APP_BUSINESS_API_GW_URL
+    getBusinessApiUrl (state: ConfigurationStateIF): string {
+      const businessApiUrl = state.configuration?.VUE_APP_BUSINESS_API_URL
       const businessApiVersion2 = state.configuration?.VUE_APP_BUSINESS_API_VERSION_2
-      if (businessApiGwUrl && businessApiVersion2) {
-        return businessApiGwUrl + businessApiVersion2 + '/'
+      if (businessApiUrl && businessApiVersion2) {
+        return businessApiUrl + businessApiVersion2 + '/'
       }
       return ''
     },
 
     getAuthApiUrl (state: ConfigurationStateIF): string {
-      if (state.configuration?.VUE_APP_AUTH_API_URL && state.configuration?.VUE_APP_AUTH_API_VERSION) {
-        return state.configuration.VUE_APP_AUTH_API_URL + state.configuration.VUE_APP_AUTH_API_VERSION + '/'
-      }
-      return ''
-    },
-
-    getAuthApiGwUrl (state: ConfigurationStateIF): string {
-      if (state.configuration?.VUE_APP_AUTH_API_GW_URL && state.configuration?.VUE_APP_AUTH_API_VERSION) {
-        return state.configuration.VUE_APP_AUTH_API_GW_URL + state.configuration.VUE_APP_AUTH_API_VERSION + '/'
+      const authApiUrl = state.configuration?.VUE_APP_AUTH_API_URL
+      const authApiVersion = state.configuration?.VUE_APP_AUTH_API_VERSION
+      if (authApiUrl && authApiVersion) {
+        return authApiUrl + authApiVersion + '/'
       }
       return ''
     },
 
     getPayApiUrl (state: ConfigurationStateIF): string {
-      if (state.configuration?.VUE_APP_PAY_API_URL && state.configuration?.VUE_APP_PAY_API_VERSION) {
-        return state.configuration.VUE_APP_PAY_API_URL + state.configuration.VUE_APP_PAY_API_VERSION + '/'
-      }
-      return ''
-    },
-
-    getPayApiGwUrl (state: ConfigurationStateIF): string {
-      if (state.configuration?.VUE_APP_PAY_API_GW_URL && state.configuration?.VUE_APP_PAY_API_VERSION) {
-        return state.configuration.VUE_APP_PAY_API_GW_URL + state.configuration.VUE_APP_PAY_API_VERSION + '/'
+      const payApiUrl = state.configuration?.VUE_APP_PAY_API_URL
+      const payApiVersion = state.configuration?.VUE_APP_PAY_API_VERSION
+      if (payApiUrl && payApiVersion) {
+        return payApiUrl + payApiVersion + '/'
       }
       return ''
     },
@@ -120,10 +110,12 @@ export const useConfigurationStore = defineStore('configuration', {
     },
 
     setSessionVariables (data: any) {
-      // The following four session variables are used by SBC Header (a SBC common component):
+      // NB: some session variables are needed by SBC common components
       sessionStorage.setItem('AUTH_WEB_URL', data.VUE_APP_AUTH_WEB_URL)
       sessionStorage.setItem('REGISTRY_HOME_URL', data.VUE_APP_REGISTRY_HOME_URL)
       sessionStorage.setItem('AUTH_API_URL', data.VUE_APP_AUTH_API_URL + data.VUE_APP_AUTH_API_VERSION + '/')
+      // eslint-disable-next-line max-len
+      sessionStorage.setItem('BUSINESS_API_URL', data.VUE_APP_BUSINESS_API_URL + data.VUE_APP_BUSINESS_API_VERSION_2 + '/')
       sessionStorage.setItem('STATUS_API_URL', data.VUE_APP_STATUS_API_URL + data.VUE_APP_STATUS_API_VERSION)
       sessionStorage.setItem('PAY_API_URL', data.VUE_APP_PAY_API_URL + data.VUE_APP_PAY_API_VERSION)
 

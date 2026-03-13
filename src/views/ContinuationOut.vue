@@ -342,7 +342,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
-  @Getter(useConfigurationStore) getBusinessApiGwUrl!: string
+  @Getter(useConfigurationStore) getBusinessApiUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
 
@@ -494,7 +494,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
 
   /** Fetches the draft continuation out filing. */
   async fetchDraftFiling (): Promise<void> {
-    const url = `${this.getBusinessApiGwUrl}businesses/${this.getIdentifier}/filings/${this.filingId}`
+    const url = `${this.getBusinessApiUrl}businesses/${this.getIdentifier}/filings/${this.filingId}`
     await BusinessServices.fetchFiling(url).then(filing => {
       // verify data
       if (!filing) throw new Error('Missing filing')

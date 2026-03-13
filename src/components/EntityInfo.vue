@@ -32,11 +32,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Vue } from 'vue-property-decorator'
-import { NigsMessage } from '@/enums'
+import { Component, Vue } from 'vue-property-decorator'
 import EntityDefinitions from './EntityInfo/EntityDefinitions.vue'
 import EntityHeader from './EntityInfo/EntityHeader.vue'
-import { Routes, DCRoutes } from '@/enums/routes'
 
 @Component({
   components: {
@@ -50,48 +48,10 @@ export default class EntityInfo extends Vue {
     return sessionStorage.getItem('BUSINESS_ID')
   }
 
-  /** Is True if this is on local filing pages. */
-  get isInLocalFilingPage (): boolean {
-    return (
-      this.$route?.name === Routes.AGM_EXTENSION ||
-      this.$route?.name === Routes.AGM_LOCATION_CHANGE ||
-      this.$route?.name === Routes.AMALGAMATION_OUT ||
-      this.$route?.name === Routes.ANNUAL_REPORT ||
-      this.$route?.name === Routes.CONSENT_AMALGAMATION_OUT ||
-      this.$route?.name === Routes.CONSENT_CONTINUATION_OUT ||
-      this.$route?.name === Routes.COURT_ORDER ||
-      this.$route?.name === Routes.CONTINUATION_OUT ||
-      this.$route?.name === Routes.NOTICE_OF_WITHDRAWAL ||
-      this.$route?.name === Routes.STANDALONE_ADDRESSES ||
-      this.$route?.name === Routes.STANDALONE_DIRECTORS
-    )
-  }
-
-  get isDCRoute (): boolean {
-    return this.$route.matched.some(route => route.path.includes(DCRoutes.DIGITAL_CREDENTIALS))
-  }
-
   /** The Temporary Registration Number string (may be null). */
   get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
-
-  /** Emits an event to confirm dissolution. */
-  @Emit('confirmDissolution')
-  emitConfirmDissolution (): void {}
-
-  /** Emits an event to download the business summary. */
-  @Emit('downloadBusinessSummary')
-  emitDownloadBusinessSummary (): void {}
-
-  /** Emits an event to indicate business is not in good standing. */
-  @Emit('notInGoodStanding')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitNotInGoodStanding (message: NigsMessage): void {}
-
-  /** Emits an event to view / add digital credentials. */
-  @Emit('viewAddDigitalCredentials')
-  emitViewAddDigitalCredentials (): void {}
 }
 
 </script>

@@ -10,29 +10,40 @@ describe('Configuration Actions', () => {
   const configurationStore = useConfigurationStore()
 
   // create environment variable object for testing
+  // see also vaults and env files
   const env = {
     BASE_URL: '/business/',
+
     VUE_APP_PATH: '/business',
+
+    // vaults canadapost
     VUE_APP_ADDRESS_COMPLETE_KEY: 'address complete key',
-    VUE_APP_AUTH_API_URL: 'auth api url',
-    VUE_APP_AUTH_API_GW_URL: 'auth api gw url',
-    VUE_APP_AUTH_API_VERSION: '/auth api version',
+
+    // vaults web-url
+    VUE_APP_REGISTRY_HOME_URL: 'registry home url',
     VUE_APP_AUTH_WEB_URL: 'auth web url',
     VUE_APP_CORPORATE_ONLINE_URL: 'corporate online url',
+    VUE_APP_DASHBOARD_URL: 'dashboard url',
+    VUE_APP_SITEMINDER_LOGOUT_URL: 'siteminder logout url',
     VUE_APP_BUSINESS_CREATE_URL: 'business create url',
     VUE_APP_BUSINESS_EDIT_URL: 'business edit url',
-    VUE_APP_BUSINESS_FILING_LD_CLIENT_ID: 'business filing ld client id',
+    VUE_APP_BUSINESS_DASH_URL: 'business dash url',
     VUE_APP_BUSINESS_REGISTRY_URL: 'business registry dashboard url',
-    VUE_APP_DASHBOARD_URL: 'dashboard url',
-    VUE_APP_BUSINESS_API_GW_URL: 'business api gw url',
+
+    // vaults API
+    VUE_APP_AUTH_API_URL: 'auth api url',
+    VUE_APP_AUTH_API_VERSION: '/auth api version',
+    VUE_APP_BUSINESS_API_URL: 'business api url',
     VUE_APP_BUSINESS_API_VERSION_2: '/business api version 2',
     VUE_APP_PAY_API_URL: 'pay api url',
-    VUE_APP_PAY_API_GW_URL: 'pay api gw url',
     VUE_APP_PAY_API_VERSION: '/pay api version',
-    VUE_APP_REGISTRY_HOME_URL: 'registry home url',
-    VUE_APP_SITEMINDER_LOGOUT_URL: 'siteminder logout url',
     VUE_APP_STATUS_API_URL: 'status api url',
     VUE_APP_STATUS_API_VERSION: '/status api version',
+
+    // vaults launchdarkly
+    VUE_APP_BUSINESS_FILING_LD_CLIENT_ID: 'business filing ld client id',
+
+    // vaults keycloak
     VUE_APP_KEYCLOAK_AUTH_URL: 'keycloak url',
     VUE_APP_KEYCLOAK_REALM: 'keycloak realm',
     VUE_APP_KEYCLOAK_CLIENTID: 'keycloak clientid'
@@ -51,15 +62,13 @@ describe('Configuration Actions', () => {
     await configurationStore.loadConfiguration(env)
     expect(configurationStore.getAddressCompleteKey).toBe('address complete key')
     expect(configurationStore.getAuthApiUrl).toBe('auth api url/auth api version/')
-    expect(configurationStore.getAuthApiGwUrl).toBe('auth api gw url/auth api version/')
     expect(configurationStore.getAuthWebUrl).toBe('auth web url')
     expect(configurationStore.getCreateUrl).toBe('business create url')
     expect(configurationStore.getEditUrl).toBe('business edit url')
     expect(configurationStore.getBusinessFilingLdClientId).toBe('business filing ld client id')
     expect(configurationStore.getCorporateOnlineUrl).toBe('corporate online url')
-    expect(configurationStore.getBusinessApiGwUrl).toBe('business api gw url/business api version 2/')
+    expect(configurationStore.getBusinessApiUrl).toBe('business api url/business api version 2/')
     expect(configurationStore.getPayApiUrl).toBe('pay api url/pay api version/')
-    expect(configurationStore.getPayApiGwUrl).toBe('pay api gw url/pay api version/')
     expect(configurationStore.getRegHomeUrl).toBe('registry home url')
     expect(configurationStore.getSiteminderLogoutUrl).toBe('siteminder logout url')
     expect(configurationStore.getStatusApiUrl).toBe('status api url/status api version')
@@ -111,11 +120,12 @@ describe('Configuration Actions', () => {
     }).toThrow('Missing or invalid Business Id.')
   })
 
-  it('sessions variables correctly set for sbc-common-components', async () => {
+  it('correctly sets session variables', async () => {
     configurationStore.loadConfiguration(env)
-    expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
     expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
+    expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
     expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
+    expect(sessionStorage.getItem('BUSINESS_API_URL')).toBe('business api url/business api version 2/')
     expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
     expect(sessionStorage.getItem('PAY_API_URL')).toBe('pay api url/pay api version')
   })

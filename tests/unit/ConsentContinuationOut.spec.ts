@@ -46,7 +46,7 @@ describe('Consent to Continuation Out view', () => {
     businessStore.setIdentifier('CP1234567')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
     configurationStore.setConfiguration({
-      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_URL': 'https://business-api.url/',
       'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
     rootStore.filingData = []
@@ -302,7 +302,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     // set configurations
     configurationStore.setConfiguration({
       'VUE_APP_AUTH_WEB_URL': 'https://auth-web.url/',
-      'VUE_APP_BUSINESS_API_GW_URL': 'https://business-api-gw.url/',
+      'VUE_APP_BUSINESS_API_URL': 'https://business-api.url/',
       'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
     })
 
@@ -324,13 +324,13 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('https://business-api-gw.url/v2/businesses/BC0007291/tasks')
+      .withArgs('https://business-api.url/v2/businesses/BC0007291/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save and file" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('https://business-api-gw.url/v2/businesses/BC0007291/filings')
+      .withArgs('https://business-api.url/v2/businesses/BC0007291/filings')
       .returns(
         new Promise(resolve =>
           resolve({

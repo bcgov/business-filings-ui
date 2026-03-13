@@ -9,7 +9,7 @@ import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import { InitLdClient, Navigate, SetBaseRouteAndBusinessId, Sleep } from '@/utils'
 import { getVueRouter } from '@/router'
-import { getPiniaStore, getVuexStore, useConfigurationStore } from '@/stores'
+import { getPiniaStore, useConfigurationStore } from '@/stores'
 import '@/assets/styles/base.scss'
 import '@/assets/styles/layout.scss'
 import '@/assets/styles/overrides.scss'
@@ -25,7 +25,6 @@ Vue.use(Vuelidate)
 Vue.use(Affix)
 Vue.use(Vue2Filters) // needed by SbcFeeSummary
 
-const store = getVuexStore()
 const pinia = getPiniaStore()
 
 // This is needed to fix "getActivePinia was called with no active Pinia" error.
@@ -99,7 +98,6 @@ async function start () {
       }
     }),
     router,
-    store,
     pinia,
     render: h => h(App)
   }).$mount('#app')

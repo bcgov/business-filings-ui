@@ -299,11 +299,12 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   @Action(useRootStore) setTransactionalFolioNumber!: (x: string) => void
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useConfigurationStore) getBusinessApiGwUrl!: string
+  @Getter(useConfigurationStore) getBusinessApiUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   // @Getter(useBusinessStore) isBaseCompany!: boolean
   @Getter(useBusinessStore) isEntityCoop!: boolean
+  // @Getter(useRootStore) getCurrentDate!: string
   @Getter(useRootStore) getFolioNumber!: string
   @Getter(useRootStore) getTransactionalFolioNumber!: string
 
@@ -460,7 +461,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
   }
 
   async fetchDraftFiling (): Promise<void> {
-    const url = `${this.getBusinessApiGwUrl}businesses/${this.getIdentifier}/filings/${this.filingId}`
+    const url = `${this.getBusinessApiUrl}businesses/${this.getIdentifier}/filings/${this.filingId}`
     await BusinessServices.fetchFiling(url).then(filing => {
       // verify data
       if (!filing) throw new Error('Missing filing')

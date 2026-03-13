@@ -23,7 +23,6 @@ export const useRootStore = defineStore('root', {
     folioNumber: null,
     businessAddress: null,
     configObject: null,
-    fetchingDataSpinner: false,
     startingAmalgamationSpinner: false,
     filingData: [],
     nameRequest: null,
@@ -231,11 +230,6 @@ export const useRootStore = defineStore('root', {
       return (state.nameRequest)
     },
 
-    /** Whether to show the Fetching Data spinner. */
-    showFetchingDataSpinner (state: RootStateIF): boolean {
-      return state.fetchingDataSpinner
-    },
-
     /** Whether to show the Starting Amalgamation spinner. */
     showStartingAmalgamationSpinner (state: RootStateIF): boolean {
       return state.startingAmalgamationSpinner
@@ -408,10 +402,6 @@ export const useRootStore = defineStore('root', {
   },
 
   actions: {
-    setFetchingDataSpinner (val: boolean) {
-      this.fetchingDataSpinner = val
-    },
-
     setStartingAmalgamationSpinner (val: boolean) {
       this.startingAmalgamationSpinner = val
     },

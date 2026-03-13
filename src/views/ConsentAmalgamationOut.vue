@@ -343,7 +343,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
-  @Getter(useConfigurationStore) getBusinessApiGwUrl!: string
+  @Getter(useConfigurationStore) getBusinessApiUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useRootStore) getFolioNumber!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
@@ -505,7 +505,7 @@ export default class ConsentAmalgamationOut extends Mixins(CommonMixin, DateMixi
 
   /** Fetches the draft consent filing. */
   async fetchDraftFiling (): Promise<void> {
-    const url = `${this.getBusinessApiGwUrl}businesses/${this.getIdentifier}/filings/${this.filingId}`
+    const url = `${this.getBusinessApiUrl}businesses/${this.getIdentifier}/filings/${this.filingId}`
     await BusinessServices.fetchFiling(url).then(filing => {
       // verify data
       if (!filing) throw new Error('Missing filing')

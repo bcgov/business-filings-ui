@@ -1,4 +1,5 @@
 import { CurrentAccountIF } from '@/interfaces'
+import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 /**
  * Gets the current account object from session storage.
@@ -6,6 +7,6 @@ import { CurrentAccountIF } from '@/interfaces'
  * @remarks This isn't set right away - see await in App.vue::mounted().
  */
 export function GetCurrentAccount (): CurrentAccountIF {
-  const currentAccount = sessionStorage.getItem('CURRENT_ACCOUNT')
+  const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
   return currentAccount ? JSON.parse(currentAccount) : null
 }

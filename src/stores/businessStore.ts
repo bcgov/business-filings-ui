@@ -394,6 +394,20 @@ export const useBusinessStore = defineStore('business', {
      * @param context the Vuex context (passed in automatically)
      */
     loadBusinessInfo (): Promise<any> {
+      /**
+       * Replaces old Business API URL with new Business API URL.
+       * @example
+       * Change:
+       * https://business-api-dev-475224072965.northamerica-northeast1.run.app/api/v2/businesses/...
+       * To:
+       * https://test.api.connect.gov.bc.ca/business-dev/api/v2/businesses/...
+       */
+      function fixOldUrl (url: string): string {
+        const businessApiOldUrl = import.meta.env.VUE_APP_BUSINESS_API_OLD_URL
+        const businessApiNewUrl = import.meta.env.VUE_APP_BUSINESS_API_URL
+        return url?.replace(businessApiOldUrl, businessApiNewUrl) || null
+      }
+
       // need to return a promise because action is called via dispatch
       return new Promise((resolve, reject) => {
         const businessId = sessionStorage.getItem('BUSINESS_ID')
@@ -406,6 +420,8 @@ export const useBusinessStore = defineStore('business', {
 
         BusinessServices.fetchBusiness(businessId)
           .then(businessInfo => {
+            // fix state filing URL
+            businessInfo.stateFiling = fixOldUrl(businessInfo.stateFiling)
             // set data to store
             this.setBusinessInfo(businessInfo)
             // return the business info object
