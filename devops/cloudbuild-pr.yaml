@@ -1,6 +1,6 @@
 steps:
   # install / setup ci
-  - name: node:20.5.1
+  - name: node:24
     entrypoint: npm
     args: ['install']
 
@@ -13,7 +13,7 @@ steps:
   #
   # Generate the static site
   #
-  - name: node:20.5.1
+  - name: node:24
     entrypoint: npm
     env:
       - 'VUE_APP_AUTH_API_KEY=$_VUE_APP_AUTH_API_KEY'
