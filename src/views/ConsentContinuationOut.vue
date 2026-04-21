@@ -155,19 +155,20 @@
 
             <!-- Certify -->
             <section>
-              <header>
-                <h2>Certify</h2>
-                <p
-                  v-if="isBaseCompany"
-                  class="grey-text"
-                >
-                  Certify your authorization to complete and submit this application. The name of the person submitting
-                  this filing will be displayed in the history of filings for this {{ displayName() }}.
+              <header v-if="isBaseCompany">
+                <h2>
+                  Authorization
+                </h2>
+                <p class="grey-text">
+                  Confirm your authorization to complete and submit this application. The name of the person
+                  submitting this filing will be displayed in the history of filings for this {{ displayName() }}.
                 </p>
-                <p
-                  v-else
-                  class="grey-text"
-                >
+              </header>
+              <header v-else>
+                <h2>
+                  Certify
+                </h2>
+                <p class="grey-text">
                   Enter the legal name of the person authorized to complete and submit this filing.
                 </p>
               </header>

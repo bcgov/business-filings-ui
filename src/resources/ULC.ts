@@ -40,11 +40,11 @@ export const BusinessConfigUlc = {
     },
     {
       feeCode: FilingCodes.CONSENT_AMALGAMATION_OUT,
-      confirmationType: 'CERTIFY'
+      confirmationType: 'CONFIRM'
     },
     {
       feeCode: FilingCodes.CONSENT_CONTINUATION_OUT,
-      confirmationType: 'CERTIFY'
+      confirmationType: 'CONFIRM'
     },
     {
       feeCode: FilingCodes.CONTINUATION_OUT,
