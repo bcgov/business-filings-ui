@@ -1557,7 +1557,107 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 5 - Data (BCOMP)', () => {
+describe('Standalone Office Address Filing - Part 5 - Data', () => {
+  let wrapper: Wrapper<Vue>
+  let vm: any
+  let spy
+
+  beforeAll(() => {
+    // init store
+    configurationStore.setConfiguration({
+      'VUE_APP_BUSINESS_API_URL': 'https://business-api.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
+    })
+  })
+
+  beforeEach(() => {
+    // init store
+    businessStore.setIdentifier('CP0001191')
+    businessStore.setLegalName('Legal Name - CP0001191')
+    businessStore.setLegalType(CorpTypeCd.COOP)
+
+    // mock "get tasks" endpoint - needed for hasPendingTasks()
+    sinon
+      .stub(axios, 'get')
+      .withArgs('https://business-api.url/v2/businesses/CP0001191/tasks')
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+
+    // mock "save draft" endpoint
+    spy = sinon.stub(axios, 'post').withArgs('https://business-api.url/v2/businesses/CP0001191/filings?draft=true')
+      .returns(new Promise(resolve => resolve({
+        data:
+        {
+          'filing': {
+            'changeOfAddress': {
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': {},
+                  'mailingAddress': {}
+                }
+              }
+            },
+            'business': {
+            },
+            'header': {
+              'filingId': 123,
+              'certifiedBY': 'Full Name'
+            }
+          }
+        }
+      })))
+
+    // create local Vue and mock router
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'standalone-addresses', query: { filingId: '0' } }) // new filing id
+
+    wrapper = shallowMount(StandaloneOfficeAddressFiling, { localVue, router, vuetify })
+    vm = wrapper.vm
+
+    // stub address data
+    vm.updatedAddresses = {
+      registeredOffice: {
+        deliveryAddress: {},
+        mailingAddress: {}
+      }
+    }
+
+    // make sure form is validated
+    vm.addressesFormValid = true
+    vm.certifyFormValid = true
+    vm.folioNumberValid = true
+    vm.officeModifiedEventHandler(true)
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('includes certification data in the header', async () => {
+    // click the Save button
+    // await wrapper.find('#coa-save-btn').trigger('click')
+    // work-around because click trigger isn't working
+    vm.certifiedBy = 'Full Name'
+    await Vue.nextTick()
+    await vm.onClickSave()
+
+    const payload = spy.args[0][1]
+
+    // basic tests to pass ensuring structure of payload is as expected
+    expect(payload.filing).toBeDefined()
+    expect(payload.filing.changeOfAddress).toBeDefined()
+    expect(payload.filing.header).toBeDefined()
+
+    expect(payload.filing.header.certifiedBy).toBeDefined()
+    expect(payload.filing.header.email).toBeDefined()
+
+    expect(payload.filing.header.routingSlipNumber).toBeUndefined() // normally not saved
+  })
+})
+
+describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy

@@ -1517,7 +1517,8 @@ describe('Annual Report - Part 5 - Data', () => {
                 annualReport: {},
                 business: {},
                 header: {
-                  filingId: 123
+                  filingId: 123,
+                  certifiedBy: 'Full Name'
                 }
               }
             }
@@ -1689,6 +1690,27 @@ describe('Annual Report - Part 5 - Data', () => {
 
     const names = payload.filing.annualReport.directors.map(el => el.officer.firstName)
     expect(names).not.toContain('Ceased')
+  })
+
+  it('includes certification data in the header', async () => {
+    // click the Save button
+    // await wrapper.find('#ar-save-btn').trigger('click')
+    // work-around because click trigger isn't working
+    vm.certifiedBy = 'Full Name'
+    await Vue.nextTick()
+
+    await vm.onClickSave()
+    const payload = spy.args[0][1]
+
+    // basic tests to pass ensuring structure of payload is as expected
+    expect(payload.filing).toBeDefined()
+    expect(payload.filing.annualReport).toBeDefined()
+    expect(payload.filing.header).toBeDefined()
+
+    expect(payload.filing.header.certifiedBy).toBeDefined()
+    expect(payload.filing.header.email).toBeDefined()
+
+    expect(payload.filing.header.routingSlipNumber).toBeUndefined() // normally not saved
   })
 
   it('includes the AR Date for the current filing year', async () => {

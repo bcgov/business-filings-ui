@@ -1330,6 +1330,7 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
     // init store
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalName('Legal Name - CP0001191')
+    businessStore.setLegalType(CorpTypeCd.COOP)
     rootStore.currentDate = '2019-07-15'
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
@@ -1350,7 +1351,8 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
             'business': {
             },
             'header': {
-              'filingId': 123
+              'filingId': 123,
+              'email': 'test@example.com'
             }
           }
         }
@@ -1454,6 +1456,26 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
     expect(firstNames).toContain('Unchanged')
     expect(firstNames).toContain('Appointed')
     expect(firstNames).toContain('Ceased')
+  })
+
+  it('Includes certification data in the header', async () => {
+    // click the Save button
+    // await wrapper.find('#cod-save-btn').trigger('click')
+    // work-around because click trigger isn't working
+    vm.certifiedBy = 'Full Name'
+    await Vue.nextTick()
+
+    await vm.onClickSave()
+
+    const payload = spy.args[0][1]
+
+    // basic tests to pass ensuring structure of payload is as expected
+    expect(payload.filing).toBeDefined()
+    expect(payload.filing.changeOfDirectors).toBeDefined()
+    expect(payload.filing.header).toBeDefined()
+
+    expect(payload.filing.header.certifiedBy).toBeDefined()
+    expect(payload.filing.header.email).toBeDefined()
   })
 })
 
