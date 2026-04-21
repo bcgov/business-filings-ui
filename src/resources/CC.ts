@@ -13,17 +13,17 @@ export const BusinessConfigCc = {
     {
       feeCode: FilingCodes.ADDRESS_CHANGE_BC,
       displayName: 'Change Of Address',
-      confirmationType: 'CONFIRM'
+      authorizationMode: 'confirm'
     },
     {
       feeCode: FilingCodes.ANNUAL_REPORT_BC,
       displayName: 'Annual Report',
-      confirmationType: 'CONFIRM'
+      authorizationMode: 'confirm'
     },
     {
       feeCode: FilingCodes.DIRECTOR_CHANGE_BC,
       displayName: 'Change Of Directors',
-      confirmationType: 'CONFIRM',
+      authorizationMode: 'confirm',
       warnings: {
         minDirectors: {
           count: 3,
@@ -36,35 +36,35 @@ export const BusinessConfigCc = {
     },
     {
       feeCode: FilingCodes.AMALGAMATION_OUT,
-      confirmationType: 'CERTIFY'
+      authorizationMode: 'certify'
     },
     {
       feeCode: FilingCodes.CONSENT_AMALGAMATION_OUT,
-      confirmationType: 'CONFIRM'
+      authorizationMode: 'confirm'
     },
     {
       feeCode: FilingCodes.CONSENT_CONTINUATION_OUT,
-      confirmationType: 'CONFIRM'
+      authorizationMode: 'confirm'
     },
     {
       feeCode: FilingCodes.CONTINUATION_OUT,
       displayName: 'Continuation Out',
-      confirmationType: 'CERTIFY'
+      authorizationMode: 'certify'
     },
     {
       feeCode: FilingCodes.AGM_EXTENSION,
       displayName: 'AGM Extension',
-      confirmationType: 'CONFIRM'
+      authorizationMode: 'confirm'
     },
     {
       feeCode: FilingCodes.AGM_LOCATION_CHANGE,
       displayName: 'AGM Location Change',
-      confirmationType: 'CONFIRM'
+      authorizationMode: 'confirm'
     },
     {
       feeCode: FilingCodes.NOTICE_OF_WITHDRAWAL,
       displayName: 'Notice of Withdrawal',
-      confirmationType: 'CONFIRM'
+      authorizationMode: 'confirm'
     }
   ],
   obligations: {

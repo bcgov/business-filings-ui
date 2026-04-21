@@ -216,14 +216,14 @@ describe('Certify - Firms/Coops variant (showLegalName: true)', () => {
       expect(statement.text()).toContain('I certify that the information provided is correct')
     })
 
-    it('shows corporate confirm statement with confirmationType=CONFIRM', () => {
+    it('shows corporate confirm statement with authorizationMode=confirm', () => {
       const wrapper: Wrapper<Certify> = mount(Certify, {
         vuetify,
         propsData: {
           currentDate: defaultDate,
           isCertified: false,
           showLegalName: false,
-          confirmationType: 'CONFIRM'
+          authorizationMode: 'confirm'
         }
       })
       const statement: Wrapper<Vue> = wrapper.find(statementSelector)

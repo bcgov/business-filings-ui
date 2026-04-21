@@ -13,7 +13,7 @@
           class="title-label"
         >Legal Name</label>
         <label
-          v-else-if="confirmationType === 'CONFIRM'"
+          v-else-if="authorizationMode === 'confirm'"
           class="title-label"
         >Confirm Authorization</label>
         <label
@@ -60,7 +60,7 @@
             </div>
             <!-- Corporation Variant with Confirm -->
             <div
-              v-else-if="confirmationType === 'CONFIRM'"
+              v-else-if="authorizationMode === 'confirm'"
               class="certify-stmt"
             >
               I confirm that the information provided is correct and that I am authorized to submit this filing
@@ -132,9 +132,9 @@ export default class Certify extends Vue {
 
   @Prop({ default: true }) readonly showLegalName!: boolean
 
-  /** Confirmation type for corporation filings. When showLegalName is false, determines whether to show
+  /** Authorization mode for corporation filings. When showLegalName is false, determines whether to show
    * "confirm" or "certify" in the checkbox statement. */
-  @Prop({ default: 'CERTIFY' }) readonly confirmationType!: 'CONFIRM' | 'CERTIFY'
+  @Prop({ default: 'certify' }) readonly authorizationMode!: 'confirm' | 'certify'
 
   // local properties
   certifyName = ''

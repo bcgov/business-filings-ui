@@ -32,14 +32,14 @@ export default class ResourceLookupMixin extends Vue {
     /**
      * Returns confirmation type using the configuration lookup object.
      * @param feeCode the filing fee code
-     * @returns the confirmation type for the current filing flow ('CONFIRM' or 'CERTIFY'), defaults to 'CERTIFY'
+     * @returns the confirmation type for the current filing flow ('confirm' or 'certify'), defaults to 'certify'
      */
-    confirmationType (feeCode: string): string {
+    authorizationMode (feeCode: string): string {
       const flow = this.configObject?.flows?.find(x => x.feeCode === feeCode)
-      if (flow?.confirmationType) {
-        return flow.confirmationType
+      if (flow?.authorizationMode) {
+        return flow.authorizationMode
       }
-      return 'CERTIFY'
+      return 'certify'
     }
 
     /**

@@ -299,7 +299,7 @@
                     :entityDisplay="displayName()"
                     :message="certifyText(feeCode)"
                     :showLegalName="!isBaseCompany"
-                    :confirmationType="confirmationType(feeCode)"
+                    :authorizationMode="authorizationMode(feeCode)"
                     @valid="certifyFormValid=$event"
                   />
                 </section>

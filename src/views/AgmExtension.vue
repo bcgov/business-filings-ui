@@ -119,7 +119,7 @@
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.AGM_EXTENSION)"
                   :showLegalName="!isBaseCompany"
-                  :confirmationType="confirmationType(FilingCodes.AGM_EXTENSION)"
+                  :authorizationMode="authorizationMode(FilingCodes.AGM_EXTENSION)"
                   @valid="certifyFormValid=$event"
                 />
               </div>

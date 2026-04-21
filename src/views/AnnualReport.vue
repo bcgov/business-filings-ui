@@ -295,7 +295,7 @@
                 :entityDisplay="displayName()"
                 :message="certifyMessage"
                 :showLegalName="!isBaseCompany"
-                :confirmationType="confirmationTypeMessage"
+                :authorizationMode="confirmationTypeMessage"
                 @valid="certifyFormValid=$event"
               />
             </section>
@@ -598,9 +598,9 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
 
   get confirmationTypeMessage (): string {
     if (this.isBaseCompany) {
-      return this.confirmationType(FilingCodes.ANNUAL_REPORT_BC)
+      return this.authorizationMode(FilingCodes.ANNUAL_REPORT_BC)
     }
-    return this.confirmationType(FilingCodes.ANNUAL_REPORT_OT)
+    return this.authorizationMode(FilingCodes.ANNUAL_REPORT_OT)
   }
 
   /** The Base URL string. */

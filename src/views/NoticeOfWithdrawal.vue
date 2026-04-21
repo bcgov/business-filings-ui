@@ -141,7 +141,7 @@
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.NOTICE_OF_WITHDRAWAL)"
                   :showLegalName="!isBaseCompany"
-                  :confirmationType="confirmationType(FilingCodes.NOTICE_OF_WITHDRAWAL)"
+                  :authorizationMode="authorizationMode(FilingCodes.NOTICE_OF_WITHDRAWAL)"
                   @valid="certifyFormValid=$event"
                 />
               </div>

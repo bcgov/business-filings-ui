@@ -225,7 +225,7 @@
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.AGM_LOCATION_CHANGE)"
                   :showLegalName="!isBaseCompany"
-                  :confirmationType="confirmationType(FilingCodes.AGM_LOCATION_CHANGE)"
+                  :authorizationMode="authorizationMode(FilingCodes.AGM_LOCATION_CHANGE)"
                   @valid="certifyFormValid=$event"
                 />
               </div>
