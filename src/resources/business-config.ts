@@ -16,6 +16,7 @@ export class Flow {
   feeCode: FilingCodes
   displayName: string
   certifyText?: string
+  authorizationMode?: 'confirm' | 'certify'
 }
 
 export class Business {

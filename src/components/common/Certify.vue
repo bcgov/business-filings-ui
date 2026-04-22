@@ -8,18 +8,24 @@
         cols="12"
         sm="3"
       >
-        <label
+        <div
           v-if="showLegalName"
           class="title-label"
-        >Legal Name</label>
-        <label
+        >
+          Legal Name
+        </div>
+        <div
           v-else-if="authorizationMode === 'confirm'"
           class="title-label"
-        >Confirm Authorization</label>
-        <label
+        >
+          Confirm Authorization
+        </div>
+        <div
           v-else
           class="title-label"
-        >Certify</label>
+        >
+          Certify
+        </div>
       </v-col>
       <v-col
         cols="12"

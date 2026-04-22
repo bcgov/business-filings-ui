@@ -1600,7 +1600,7 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
             },
             'header': {
               'filingId': 123,
-              'certifiedBY': 'Full Name'
+              'certifiedBy': 'Full Name'
             }
           }
         }

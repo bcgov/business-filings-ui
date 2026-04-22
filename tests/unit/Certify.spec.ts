@@ -178,58 +178,58 @@ describe('Certify - Firms/Coops variant (showLegalName: true)', () => {
     // The last "update:isCertified" event should indicate that the checkbox is checked.
     expect(getLastEvent(wrapper, 'update:isCertified')).toBe(true)
   })
+})
 
-  describe('Certify - Corporation variant (showLegalName: false)', () => {
-    it('is valid when just isCertified is true', () => {
-      const wrapper: Wrapper<Certify> = createComponent(undefined, true, defaultDate, false)
+describe('Certify - Corporation variant (showLegalName: false)', () => {
+  it('is valid when just isCertified is true', () => {
+    const wrapper: Wrapper<Certify> = createComponent(undefined, true, defaultDate, false)
 
-      // The last "valid" event should indicate that the form is valid.
-      expect(getLastEvent(wrapper, 'valid')).toBe(true)
+    // The last "valid" event should indicate that the form is valid.
+    expect(getLastEvent(wrapper, 'valid')).toBe(true)
+  })
+
+  it('is invalid when isCertified is false', () => {
+    const wrapper: Wrapper<Certify> = createComponent(undefined, false, defaultDate, false)
+
+    // The last "valid" event should indicate that the form is invalid.
+    expect(getLastEvent(wrapper, 'valid')).toBe(false)
+  })
+
+  it('is valid when isCertified is true and certifiedBy is empty', () => {
+    const wrapper: Wrapper<Certify> = createComponent('', true, defaultDate, false)
+
+    // The last "valid" event should indicate that the form is valid.
+    expect(getLastEvent(wrapper, 'valid')).toBe(true)
+  })
+
+  it('is valid when isCertified is true and certifiedBy contains whitespace', () => {
+    const wrapper: Wrapper<Certify> = createComponent('   ', true, defaultDate, false)
+
+    // The last "valid" event should indicate that the form is valid.
+    expect(getLastEvent(wrapper, 'valid')).toBe(true)
+  })
+
+  it('shows corporate certify statement', () => {
+    const wrapper: Wrapper<Certify> = createComponent(undefined, false, defaultDate, false)
+    const statement: Wrapper<Vue> = wrapper.find(statementSelector)
+
+    // The text should contain the corporate statement.
+    expect(statement.text()).toContain('I certify that the information provided is correct')
+  })
+
+  it('shows corporate confirm statement with authorizationMode=confirm', () => {
+    const wrapper: Wrapper<Certify> = mount(Certify, {
+      vuetify,
+      propsData: {
+        currentDate: defaultDate,
+        isCertified: false,
+        showLegalName: false,
+        authorizationMode: 'confirm'
+      }
     })
+    const statement: Wrapper<Vue> = wrapper.find(statementSelector)
 
-    it('is invalid when isCertified is false', () => {
-      const wrapper: Wrapper<Certify> = createComponent(undefined, false, defaultDate, false)
-
-      // The last "valid" event should indicate that the form is invalid.
-      expect(getLastEvent(wrapper, 'valid')).toBe(false)
-    })
-
-    it('is valid when isCertified is true and certifiedBy is empty', () => {
-      const wrapper: Wrapper<Certify> = createComponent('', true, defaultDate, false)
-
-      // The last "valid" event should indicate that the form is valid.
-      expect(getLastEvent(wrapper, 'valid')).toBe(true)
-    })
-
-    it('is valid when isCertified is true and certifiedBy contains whitespace', () => {
-      const wrapper: Wrapper<Certify> = createComponent('   ', true, defaultDate, false)
-
-      // The last "valid" event should indicate that the form is valid.
-      expect(getLastEvent(wrapper, 'valid')).toBe(true)
-    })
-
-    it('shows corporate certify statement', () => {
-      const wrapper: Wrapper<Certify> = createComponent(undefined, false, defaultDate, false)
-      const statement: Wrapper<Vue> = wrapper.find(statementSelector)
-
-      // The text should contain the corporate statement.
-      expect(statement.text()).toContain('I certify that the information provided is correct')
-    })
-
-    it('shows corporate confirm statement with authorizationMode=confirm', () => {
-      const wrapper: Wrapper<Certify> = mount(Certify, {
-        vuetify,
-        propsData: {
-          currentDate: defaultDate,
-          isCertified: false,
-          showLegalName: false,
-          authorizationMode: 'confirm'
-        }
-      })
-      const statement: Wrapper<Vue> = wrapper.find(statementSelector)
-
-      // The text should contain the confirm statement.
-      expect(statement.text()).toContain('I confirm that the information provided is correct')
-    })
+    // The text should contain the confirm statement.
+    expect(statement.text()).toContain('I confirm that the information provided is correct')
   })
 })
