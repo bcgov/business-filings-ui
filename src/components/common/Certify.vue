@@ -9,22 +9,9 @@
         sm="3"
       >
         <div
-          v-if="showLegalName"
           class="title-label"
         >
-          Legal Name
-        </div>
-        <div
-          v-else-if="authorizationMode === 'confirm'"
-          class="title-label"
-        >
-          Confirm Authorization
-        </div>
-        <div
-          v-else
-          class="title-label"
-        >
-          Certify
+          {{ certifyTitle }}
         </div>
       </v-col>
       <v-col
@@ -54,31 +41,23 @@
               v-if="showLegalName && IsAuthorized(AuthorizedActions.THIRD_PARTY_CERTIFY_STMT)"
               class="certify-stmt"
             >
-              <strong>{{ trimmedCertifiedBy || "[Legal Name]" }}</strong> certifies that they have relevant
-              knowledge of the {{ entityDisplay || "business" }} and are authorized to make this filing.
+              <strong>{{ displayName }}</strong> certifies that they have relevant
+              knowledge of the {{ displayEntity }} and are authorized to make this filing.
             </div>
             <div
               v-else-if="showLegalName"
               class="certify-stmt"
             >
-              I, <strong>{{ trimmedCertifiedBy || "[Legal Name]" }}</strong>, certify that I have relevant
-              knowledge of the {{ entityDisplay || "business" }} and I am authorized to make this filing.
+              I, <strong>{{ displayName }}</strong>, certify that I have relevant
+              knowledge of the {{ displayEntity }} and I am authorized to make this filing.
             </div>
-            <!-- Corporation Variant with Confirm -->
-            <div
-              v-else-if="authorizationMode === 'confirm'"
-              class="certify-stmt"
-            >
-              I confirm that the information provided is correct and that I am authorized to submit this filing
-              on behalf of the {{ entityDisplay || "business" }}.
-            </div>
-            <!-- Corporation Variant with Certify -->
+            <!-- Corporation Variant with Authorization Statement -->
             <div
               v-else
               class="certify-stmt"
             >
-              I certify that the information provided is correct and that I am authorized to submit this filing
-              on behalf of the {{ entityDisplay || "business" }}.
+              I {{ authorizationMode }} that the information provided is correct and that I am authorized to submit
+              this filing on behalf of the {{ displayEntity }}.
             </div>
           </template>
         </v-checkbox>
@@ -164,6 +143,25 @@ export default class Certify extends Vue {
     // remove repeated inline whitespace, and leading/trailing whitespace
     return this.certifiedBy && this.certifiedBy.replace(/\s+/g, ' ').trim()
   }
+
+  /** The certify title text */
+  get certifyTitle (): string {
+    if (this.showLegalName) return 'Legal Name'
+    if (this.authorizationMode === 'confirm') return 'Confirm Authorization'
+    return 'Certify'
+  }
+
+  /** The name to display. */
+  get displayName (): string {
+    return this.trimmedCertifiedBy || '[Legal Name]'
+  }
+
+  /** The entity type to display. */
+  get displayEntity (): string {
+    return this.entityDisplay || 'business'
+  }
+
+  /**  */
 
   /** Validate business name field */
   @Watch('validateForm')
