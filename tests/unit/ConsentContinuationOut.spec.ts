@@ -392,6 +392,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(false) // staff only
     expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
+    expect(wrapper.findComponent(DocumentDelivery).props('editableCompletingParty')).toBe(true)
     expect(wrapper.findComponent(ForeignJurisdiction).exists()).toBe(true)
     expect(wrapper.findComponent(PaymentErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
