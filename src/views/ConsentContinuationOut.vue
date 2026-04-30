@@ -14,7 +14,7 @@
 
     <PaymentErrorDialog
       attach="#consent-continuation-out"
-      filingName="Consent to Continuation Out"
+      filingName="Consent to Continue Out"
       :dialog="paymentErrorDialog"
       :errors="saveErrors"
       :warnings="saveWarnings"
@@ -29,7 +29,7 @@
 
     <SaveErrorDialog
       attach="#consent-continuation-out"
-      filingName="Consent to Continuation Out"
+      filingName="Consent to Continue Out"
       :dialog="!!saveErrorReason"
       :disableRetry="busySaving"
       :errors="saveErrors"
@@ -81,7 +81,7 @@
             <!-- Page Title -->
             <header>
               <h1 id="consent-header">
-                Six-Month Consent to Continue Out
+                Consent to Continue Out
               </h1>
             </header>
 
@@ -407,7 +407,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   totalFee = 0
   dataLoaded = false
   loadingMessage = ''
-  filingId = 0 // id of this consent to continuation out filing
+  filingId = 0 // id of this Consent to Continue Out filing
   savedFiling: any = null // filing during save
   saving = false // true only when saving
   savingResuming = false // true only when saving and resuming
@@ -488,9 +488,9 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     await this.$nextTick()
 
     if (this.filingId > 0) {
-      this.loadingMessage = 'Resuming Your Consent to Continuation Out'
+      this.loadingMessage = 'Resuming Your Consent to Continue Out'
     } else {
-      this.loadingMessage = 'Preparing Your Consent to Continuation Out'
+      this.loadingMessage = 'Preparing Your Consent to Continue Out'
     }
 
     // fetch draft (which may overwrite some properties)
