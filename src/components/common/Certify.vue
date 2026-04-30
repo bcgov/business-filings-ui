@@ -1,5 +1,8 @@
 <template>
-  <v-card flat>
+  <v-card
+    flat
+    :class="{ 'prevent-red-text': !showLegalName }"
+  >
     <v-row
       no-gutters
       class="pl-4 pr-4 pt-4"
@@ -12,6 +15,12 @@
           class="title-label"
         >
           {{ certifyTitle }}
+        </div>
+        <div
+          v-if="showCheckboxError"
+          class="error-text mt-1"
+        >
+          Check this box to continue
         </div>
       </v-col>
       <v-col
@@ -32,7 +41,10 @@
         />
         <v-checkbox
           ref="checkboxRef"
+          class="mt-0 pa-5 bg-gray"
+          hide-details
           :value="isCertified"
+          :error="showCheckboxError"
           @change="emitIsCertified($event)"
         >
           <template #label>
@@ -61,7 +73,7 @@
             </div>
           </template>
         </v-checkbox>
-        <p class="certify-clause signature-date">
+        <p class="certify-clause signature-date mt-4">
           <strong>Date:</strong> {{ formattedCurrentDate || '[unknown]' }}
         </p>
         <p
@@ -161,6 +173,11 @@ export default class Certify extends Vue {
     return this.entityDisplay || 'business'
   }
 
+  /** Whether to show the checkbox error message. */
+  get showCheckboxError (): boolean {
+    return !this.showLegalName && this.validateForm && !this.isCertified
+  }
+
   /**  */
 
   /** Validate business name field */
@@ -223,7 +240,7 @@ export default class Certify extends Vue {
 }
 
 .certify-clause {
-  padding-left: 2rem;
+  padding-left: 0;
   color: black;
   font-size: $px-14;
 }
@@ -247,6 +264,15 @@ export default class Certify extends Vue {
   .v-icon {
     margin-top: -1.25rem;
   }
+}
+
+.error-text {
+  color: $app-red;
+  margin-top: 0.25rem;
+}
+
+.bg-gray {
+  background-color: $gray1;
 }
 
 // vertically align the ripple circle with the check box

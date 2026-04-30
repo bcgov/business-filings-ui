@@ -142,6 +142,7 @@
                   :message="certifyText(FilingCodes.NOTICE_OF_WITHDRAWAL)"
                   :showLegalName="!isBaseCompany"
                   :authorizationMode="authorizationMode(FilingCodes.NOTICE_OF_WITHDRAWAL)"
+                  :validateForm="showErrors"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -806,7 +807,7 @@ export default class NoticeOfWithdrawal extends Mixins(CommonMixin, DateMixin, F
       color: $gray7;
     }
 
-    .invalid-certify {
+    .invalid-certify:not(.prevent-red-text) {
       .certify-stmt, .title-label {
         color: $app-red;
       }
