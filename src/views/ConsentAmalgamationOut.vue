@@ -186,6 +186,7 @@
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                   :showLegalName="!isBaseCompany"
                   :authorizationMode="authorizationMode(FilingCodes.CONSENT_AMALGAMATION_OUT)"
+                  :validateForm="showErrors"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -1067,7 +1068,7 @@ h2 {
     color: $gray7;
   }
 
-  .invalid-certify {
+  .invalid-certify:not(.prevent-red-text) {
     .certify-stmt, .title-label {
       color: $app-red;
     }

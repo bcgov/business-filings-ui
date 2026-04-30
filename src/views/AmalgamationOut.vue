@@ -232,6 +232,7 @@
                   :message="certifyText(FilingCodes.AMALGAMATION_OUT)"
                   :showLegalName="!isBaseCompany"
                   :authorizationMode="authorizationMode(FilingCodes.AMALGAMATION_OUT)"
+                  :validateForm="showErrors"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -1056,7 +1057,7 @@ h2 {
     color: $gray7;
   }
 
-  .invalid-component {
+  .invalid-component:not(.prevent-red-text) {
     .certify-stmt, .title-label {
       color: $app-red;
     }

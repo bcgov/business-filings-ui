@@ -120,6 +120,7 @@
                   :message="certifyText(FilingCodes.AGM_EXTENSION)"
                   :showLegalName="!isBaseCompany"
                   :authorizationMode="authorizationMode(FilingCodes.AGM_EXTENSION)"
+                  :validateForm="showErrors"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -655,7 +656,7 @@ h2 {
     color: $gray7;
   }
 
-  .invalid-certify {
+  .invalid-certify:not(.prevent-red-text) {
     .certify-stmt, .title-label {
       color: $app-red;
     }
