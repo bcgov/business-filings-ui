@@ -128,7 +128,7 @@
                   class="py-8 px-5"
                 >
                   <DocumentDelivery
-                    :editableCompletingParty="IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY)"
+                    :editableCompletingParty="true"
                     :contactValue="getBusinessEmail"
                     contactLabel="Business Office"
                     :documentOptionalEmail="documentOptionalEmail"
