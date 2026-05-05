@@ -236,13 +236,13 @@ export default class Certify extends Vue {
   padding-bottom: 0.5rem;
   padding-top: 1rem;
   line-height: 1.2rem;
-  font-size: $px-14;
+  font-size: $px-16;
 }
 
 .certify-clause {
   padding-left: 0;
   color: black;
-  font-size: $px-14;
+  font-size: $px-16;
 }
 
 .signature-date {
@@ -251,13 +251,14 @@ export default class Certify extends Vue {
 
 .certify-stmt {
   display: inline;
-  font-size: $px-14;
+  font-size: $px-16;
   color: black;
 }
 
 .title-label {
   color: $gray9;
   font-weight: bold;
+  font-size: $px-16;
 }
 
 .v-input--checkbox::v-deep {
