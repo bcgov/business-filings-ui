@@ -241,7 +241,7 @@ export default class Certify extends Vue {
 
 .certify-clause {
   padding-left: 0;
-  color: black;
+  color: $gray7;
   font-size: $px-16;
 }
 
@@ -252,7 +252,7 @@ export default class Certify extends Vue {
 .certify-stmt {
   display: inline;
   font-size: $px-16;
-  color: black;
+  color: $gray7;
 }
 
 .title-label {
