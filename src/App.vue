@@ -339,6 +339,7 @@ export default class App extends Mixins(
         // fetch the bootstrap filing and store the bootstrap item
         const response = await BusinessServices.fetchBootstrapFiling(this.tempRegNumber)
         this.storeBootstrapItem(response)
+        this.storeConfigObject()
 
         // if it is a todo or a pending filing, and it has a NR, load it
         // (this is to display the NR details in the Todo List/Pending List)
