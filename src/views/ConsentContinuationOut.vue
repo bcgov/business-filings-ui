@@ -81,7 +81,7 @@
             <!-- Page Title -->
             <header>
               <h1 id="consent-header">
-                Six-Month Consent to Continue Out
+                Consent to Continue Out
               </h1>
             </header>
 
