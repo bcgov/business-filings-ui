@@ -12,7 +12,7 @@ export const officeAddressSchema = {
     requiredNoWhitespace
   },
   streetAddressAdditional: {
-    maxLength: maxLength(50),
+    maxLength: maxLength(105),
     noLeadingTrailingSpaces
   },
   addressCity: {
