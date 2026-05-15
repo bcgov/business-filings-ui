@@ -127,7 +127,6 @@ export interface ApiFilingIF {
 
     // dissolution filings only
     dissolution?: {
-      custodialOffice?: any // FUTURE: use a proper address type here
       dissolutionDate: IsoDatePacific
       dissolutionType: FilingSubTypes
     }
