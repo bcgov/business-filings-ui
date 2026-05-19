@@ -8,6 +8,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore } from '@/stores'
 import { OfficeAddresses } from '@/components/common'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { verifyAddressValidation } from 'tests/unit/utils'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -425,6 +426,16 @@ describe('OfficeAddresses as a BCOMP', () => {
     const wrapper = mount(OfficeAddresses, { vuetify, propsData: { componentEnabled: true } })
 
     expect(wrapper.find('#reg-off-addr-change-btn').attributes('disabled')).toBeUndefined()
+  })
+
+  it('validates address as expected', async () => {
+    const wrapper = mount(OfficeAddresses, { vuetify, propsData: { componentEnabled: true } })
+
+    // verify max len validation
+    await wrapper.find('button#reg-off-addr-change-btn').trigger('click')
+    const address = wrapper.find('#office-addresses li.registered-delivery-address div.base-address')
+    expect(address.exists()).toBe(true)
+    await verifyAddressValidation(address)
   })
 
   it('has no Change button when component is disabled', () => {

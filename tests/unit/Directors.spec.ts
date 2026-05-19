@@ -13,6 +13,7 @@ import { click } from '../click'
 import { setValue } from '../setValue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import flushPromises from 'flush-promises'
+import { verifyAddressValidation } from 'tests/unit/utils'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -902,6 +903,15 @@ describe('Directors as a BCOMP', () => {
 
     // check that director object does not have the 'CEASED' action
     expect(vm.allDirectors.filter(el => el.id === 1)[0].actions).not.toContain('ceased')
+  })
+
+  it('validates a director\'s address', async () => {
+    // Currently just checking max len
+    const addNewBtn = wrapper.find('button.new-director-btn')
+    await addNewBtn.trigger('click')
+    const address = wrapper.find('div.base-address')
+    expect(address.exists()).toBe(true)
+    await verifyAddressValidation(address)
   })
 
   // FUTURE: implement this
