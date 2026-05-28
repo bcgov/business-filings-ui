@@ -79,6 +79,7 @@
                       ref="baseAddressNew"
                       :key="baseAddressKey"
                       :editing="true"
+                      :require-latin1="true"
                       :schema="directorAddressSchema"
                       @update:address="updateDeliveryAddress"
                     />
@@ -100,6 +101,7 @@
                           ref="mailAddressNew"
                           :key="mailAddressKey"
                           :editing="true"
+                          :require-latin1="true"
                           :schema="directorAddressSchema"
                           @update:address="updateMailingAddress"
                         />
@@ -398,6 +400,7 @@
                         :key="activeIndex"
                         :address="dir.deliveryAddress"
                         :editing="true"
+                        :require-latin1="true"
                         :schema="directorAddressSchema"
                         @update:address="updateDeliveryAddress"
                       />
@@ -420,6 +423,7 @@
                             :key="activeIndex"
                             :address="dir.mailingAddress"
                             :editing="true"
+                            :require-latin1="true"
                             :schema="directorAddressSchema"
                             @update:address="updateMailingAddress"
                           />
