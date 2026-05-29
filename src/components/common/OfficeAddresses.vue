@@ -28,6 +28,7 @@
                   v-else
                   :address="deliveryAddress"
                   :editing="showAddressForm"
+                  :require-latin1="true"
                   :schema="officeAddressSchema"
                   @update:address="updateBaseAddress(deliveryAddress, $event)"
                   @valid="deliveryAddressValid=$event"
@@ -96,6 +97,7 @@
                   v-if="!showAddressForm || !inheritDeliveryAddress"
                   :address="mailingAddress"
                   :editing="showAddressForm"
+                  :require-latin1="true"
                   :schema="officeAddressSchema"
                   @update:address="updateBaseAddress(mailingAddress, $event)"
                   @valid="mailingAddressValid=$event"
@@ -137,6 +139,7 @@
                     <delivery-address
                       :address="recDeliveryAddress"
                       :editing="showAddressForm"
+                      :require-latin1="true"
                       :schema="officeAddressSchema"
                       @update:address="updateBaseAddress(recDeliveryAddress, $event)"
                       @valid="recDeliveryAddressValid=$event"
@@ -176,6 +179,7 @@
                       v-if="!showAddressForm || !inheritRecDeliveryAddress"
                       :address="recMailingAddress"
                       :editing="showAddressForm"
+                      :require-latin1="true"
                       :schema="officeAddressSchema"
                       @update:address="updateBaseAddress(recMailingAddress, $event)"
                       @valid="recMailingAddressValid=$event"
