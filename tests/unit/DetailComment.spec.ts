@@ -48,6 +48,50 @@ describe('DetailComment', () => {
     wrapper.destroy()
   })
 
+  it('reports invalid when empty and not optional (default)', () => {
+    const wrapper = shallowMount(DetailComment,
+      {
+        vuetify
+      })
+
+    // empty + required => invalid
+    expect(wrapper.emitted('valid').pop()[0]).toEqual(false)
+
+    wrapper.destroy()
+  })
+
+  it('reports valid when empty and optional', () => {
+    const wrapper = shallowMount(DetailComment,
+      {
+        propsData: {
+          optional: true
+        },
+        vuetify
+      })
+
+    // empty + optional => valid
+    expect(wrapper.emitted('valid').pop()[0]).toEqual(true)
+
+    wrapper.destroy()
+  })
+
+  it('reports invalid when value exceeds the max length (even when optional)', () => {
+    const wrapper = shallowMount(DetailComment,
+      {
+        propsData: {
+          optional: true,
+          maxLength: 5,
+          value: 'too long'
+        },
+        vuetify
+      })
+
+    // over max length => invalid regardless of optional
+    expect(wrapper.emitted('valid').pop()[0]).toEqual(false)
+
+    wrapper.destroy()
+  })
+
   it('emits valid event when value prop is changed', async () => {
     const wrapper = shallowMount(DetailComment,
       {
