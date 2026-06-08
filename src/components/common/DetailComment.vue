@@ -51,7 +51,7 @@ export default class DetailComment extends Vue {
   @Prop({ default: 'Detail is required.' }) readonly textRequiredErrorMsg!: string
 
   /** Whether the field is optional (ie, an empty value is valid). */
-  @Prop({ default: false }) readonly optional!: boolean
+  @Prop({ type: Boolean, default: false }) readonly optional!: boolean
 
   /** Number of rows the textarea starts at (it auto-grows beyond this as the user types). */
   @Prop({ default: 5 }) readonly rows!: number
