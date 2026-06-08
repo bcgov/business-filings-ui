@@ -154,6 +154,46 @@
               </div>
             </section>
 
+            <!-- Detail -->
+            <section>
+              <header>
+                <h2>Detail</h2>
+              </header>
+              <div
+                id="detail-section"
+                :class="{ 'invalid-section': !detailValid && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
+                  <v-row no-gutters>
+                    <v-col
+                      cols="12"
+                      sm="3"
+                      class="pr-4"
+                    >
+                      <strong :class="{ 'app-red': !detailValid && showErrors }">Detail</strong>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="9"
+                    >
+                      <DetailComment
+                        v-model="detail"
+                        placeholder="Add a Detail that will appear on the ledger for this business (Optional)"
+                        :maxLength="1900"
+                        :rows="1"
+                        optional
+                        :validateForm="showErrors"
+                        @valid="detailValid=$event"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </div>
+            </section>
+
             <!-- Certify -->
             <section>
               <header>
@@ -317,7 +357,7 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { IsAuthorized, Navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { BusinessNameForeign, Certify, EffectiveDate, ForeignJurisdiction } from '@/components/common'
+import { BusinessNameForeign, Certify, DetailComment, EffectiveDate, ForeignJurisdiction } from '@/components/common'
 import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -335,6 +375,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     Certify,
     ConfirmDialog,
     CourtOrderPoa,
+    DetailComment,
     DocumentDelivery,
     EffectiveDate,
     ForeignJurisdiction,
@@ -380,6 +421,10 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
   initialBusinessName = ''
   businessName = ''
   businessNameValid = false
+
+  // variables for DetailComment component
+  detail = ''
+  detailValid = true
 
   // variables for Certify component
   certifiedBy = ''
@@ -429,7 +474,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
   get isPageValid (): boolean {
     return (this.effectiveDateValid && this.certifyFormValid &&
       this.foreignJurisdictionValid && this.businessNameValid &&
-      this.documentDeliveryValid && this.courtOrderValid)
+      this.detailValid && this.documentDeliveryValid && this.courtOrderValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -504,19 +549,24 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     window.onbeforeunload = null
   }
 
+  /** Verifies the draft continuation out filing. NB: throws on invalid data. */
+  verifyDraftFiling (filing: any): void {
+    if (!filing) throw new Error('Missing filing')
+    if (!filing.header) throw new Error('Missing header')
+    if (!filing.business) throw new Error('Missing business')
+    if (!filing.continuationOut) throw new Error('Missing continuation out object')
+    if (filing.header.name !== FilingTypes.CONTINUATION_OUT) throw new Error('Invalid filing type')
+    if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
+    if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
+    if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
+  }
+
   /** Fetches the draft continuation out filing. */
   async fetchDraftFiling (): Promise<void> {
     const url = `${this.getBusinessApiUrl}businesses/${this.getIdentifier}/filings/${this.filingId}`
     await BusinessServices.fetchFiling(url).then(filing => {
       // verify data
-      if (!filing) throw new Error('Missing filing')
-      if (!filing.header) throw new Error('Missing header')
-      if (!filing.business) throw new Error('Missing business')
-      if (!filing.continuationOut) throw new Error('Missing continuation out object')
-      if (filing.header.name !== FilingTypes.CONTINUATION_OUT) throw new Error('Invalid filing type')
-      if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-      if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-      if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
+      this.verifyDraftFiling(filing)
 
       // load Certified By (but not Date)
       this.certifiedBy = filing.header.certifiedBy
@@ -543,6 +593,11 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
       const legalName = filing.continuationOut.legalName
       if (legalName) {
         this.initialBusinessName = legalName
+      }
+
+      const details = filing.continuationOut.details
+      if (details) {
+        this.detail = details
       }
 
       if (filing.header.documentOptionalEmail) {
@@ -773,6 +828,10 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
       }
     }
 
+    if (this.detail !== '') {
+      data[FilingTypes.CONTINUATION_OUT].details = this.detail
+    }
+
     if (this.fileNumber !== '') {
       data[FilingTypes.CONTINUATION_OUT].courtOrder = {
         fileNumber: this.fileNumber,
@@ -883,6 +942,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     'effective-date-section',
     'jurisdiction-information-section',
     'business-information-section',
+    'detail-section',
     'document-delivery-section',
     'certify-form-section',
     'court-order-section'
@@ -894,6 +954,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
       effectiveDate: this.effectiveDateValid,
       foreignJurisdiction: this.foreignJurisdictionValid,
       businessInformation: this.businessNameValid,
+      detail: this.detailValid,
       documentDelivery: this.documentDeliveryValid,
       certifyForm: this.certifyFormValid,
       courtOrder: this.courtOrderValid
@@ -902,6 +963,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
 
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
+  @Watch('detail')
   @Watch('documentDeliveryValid')
   onHaveChanges (): void {
     this.haveChanges = true

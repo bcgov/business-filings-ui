@@ -9,7 +9,7 @@
       class="pt-2"
       filled
       auto-grow
-      rows="5"
+      :rows="rows"
       persistent-hint
       :counter="maxLength"
       :rules="rules"
@@ -50,14 +50,20 @@ export default class DetailComment extends Vue {
   /** Text is required error message. */
   @Prop({ default: 'Detail is required.' }) readonly textRequiredErrorMsg!: string
 
+  /** Whether the field is optional (ie, an empty value is valid). */
+  @Prop({ default: false }) readonly optional!: boolean
+
+  /** Number of rows the textarea starts at (it auto-grows beyond this as the user types). */
+  @Prop({ default: 5 }) readonly rows!: number
+
   detailedComment = ''
 
   /** Array of validations rules for the textarea. */
   get rules (): Array<(val) => boolean | string> {
     // include whitespace in maximum length check
     return [
-      val => (val && val.trim().length > 0) || this.textRequiredErrorMsg,
-      val => (val && val.length <= this.maxLength) || 'Maximum characters exceeded.'
+      val => this.optional || (val && val.trim().length > 0) || this.textRequiredErrorMsg,
+      val => !val || val.length <= this.maxLength || 'Maximum characters exceeded.'
     ]
   }
 
@@ -85,7 +91,7 @@ export default class DetailComment extends Vue {
   /** Validate business name field */
   @Watch('validateForm')
   validateBusinessName (): void {
-    if (this.validateForm && !this.detailedComment) {
+    if (this.validateForm && !this.optional && !this.detailedComment) {
       this.$refs.textarea.validate()
       this.$refs.textarea.error = true
     }
