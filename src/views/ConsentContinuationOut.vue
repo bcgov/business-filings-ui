@@ -88,7 +88,10 @@
             <!-- Detail -->
             <section>
               <header>
-                <h2>Detail</h2>
+                <h2>Ledger Detail</h2>
+                <p class="grey-text">
+                  Enter a detail that will appear on the ledger for this business
+                </p>
               </header>
               <div
                 id="detail-section"
