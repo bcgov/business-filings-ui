@@ -85,6 +85,46 @@
               </h1>
             </header>
 
+            <!-- Detail -->
+            <section>
+              <header>
+                <h2>Detail</h2>
+              </header>
+              <div
+                id="detail-section"
+                :class="{ 'invalid-section': !detailValid && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
+                  <v-row no-gutters>
+                    <v-col
+                      cols="12"
+                      sm="3"
+                      class="pr-4"
+                    >
+                      <strong :class="{ 'app-red': !detailValid && showErrors }">Detail</strong>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="9"
+                    >
+                      <DetailComment
+                        v-model="detail"
+                        placeholder="Add a Detail that will appear on the ledger for this business (Optional)"
+                        :maxLength="1900"
+                        :rows="1"
+                        optional
+                        :validateForm="showErrors"
+                        @valid="detailValid=$event"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </div>
+            </section>
+
             <!-- Jurisdiction Information -->
             <section>
               <header>
@@ -317,7 +357,7 @@ import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { IsAuthorized, Navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, ForeignJurisdiction, TransactionalFolioNumber } from '@/components/common'
+import { Certify, DetailComment, ForeignJurisdiction, TransactionalFolioNumber } from '@/components/common'
 import { AuthErrorDialog, ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -335,6 +375,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     Certify,
     ConfirmDialog,
     CourtOrderPoa,
+    DetailComment,
     DocumentDelivery,
     ForeignJurisdiction,
     PaymentErrorDialog,
@@ -378,6 +419,10 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   fileNumber = ''
   hasPlanOfArrangement = false
   courtOrderValid = true
+
+  // variables for DetailComment component
+  detail = ''
+  detailValid = true
 
   // variables for Foreign Jurisdiction component
   draftCountry = ''
@@ -433,6 +478,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   get isPageValid (): boolean {
     return (
       this.certifyFormValid &&
+      this.detailValid &&
       this.foreignJurisdictionValid &&
       this.documentDeliveryValid &&
       this.courtOrderValid &&
@@ -575,6 +621,11 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       if (foreignJurisdiction) {
         this.draftCountry = foreignJurisdiction.country
         this.draftRegion = foreignJurisdiction.region
+      }
+
+      const details = filing.consentContinuationOut.details
+      if (details) {
+        this.detail = details
       }
 
       if (filing.header.documentOptionalEmail) {
@@ -835,6 +886,10 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       }
     }
 
+    if (this.detail !== '') {
+      data.consentContinuationOut.details = this.detail
+    }
+
     if (this.fileNumber !== '') {
       data.consentContinuationOut.courtOrder = {
         fileNumber: this.fileNumber,
@@ -956,6 +1011,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
+    'detail-section',
     'foreign-jurisdiction-section',
     'document-delivery-section',
     'certify-form-section',
@@ -966,6 +1022,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   /** Object of valid flags. Must match validComponents. */
   get validFlags (): object {
     return {
+      detail: this.detailValid,
       foreignJurisdiction: this.foreignJurisdictionValid,
       documentDelivery: this.documentDeliveryValid,
       certifyForm: this.certifyFormValid,
@@ -976,6 +1033,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
+  @Watch('detail')
   @Watch('documentDeliveryValid')
   @Watch('foreignJurisdictionValid')
   @Watch('folioNumberValid')

@@ -203,6 +203,7 @@ describe('Consent to Continuation Out view', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
+        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
@@ -266,6 +267,7 @@ describe('Consent to Continuation Out view', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
+        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
@@ -432,6 +434,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
+        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
@@ -468,6 +471,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
+        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
