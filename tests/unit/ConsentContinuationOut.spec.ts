@@ -171,6 +171,15 @@ describe('Consent to Continuation Out view', () => {
     vm.folioNumberValid = false
     expect(vm.isPageValid).toBe(false)
 
+    // verify "validated" - invalid Detail form
+    vm.certifyFormValid = true
+    vm.courtOrderValid = true
+    vm.documentDeliveryValid = true
+    vm.foreignJurisdictionValid = true
+    vm.folioNumberValid = true
+    vm.detailValid = false
+    expect(vm.isPageValid).toBe(false)
+
     wrapper.destroy()
   })
 
@@ -203,6 +212,7 @@ describe('Consent to Continuation Out view', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
+        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
@@ -223,6 +233,103 @@ describe('Consent to Continuation Out view', () => {
 
     // verify that detail comment from Legal API is not null
     expect(vm.savedFiling.consentContinuationOut.details).toBe('test')
+
+    vi.restoreAllMocks()
+    wrapper.destroy()
+  })
+
+  it('includes the ledger detail in the consent to continuation out filing', async () => {
+    // mock "has pending tasks" legal service
+    vi.spyOn(BusinessServices, 'hasPendingTasks').mockImplementation((): any => {
+      return Promise.resolve(false)
+    })
+
+    // mock "create filing" legal service and capture the filing payload
+    let filingArg: any = null
+    vi.spyOn(BusinessServices, 'createFiling').mockImplementation((...args: any[]): any => {
+      filingArg = args[1] // (businessId, filing, isDraft)
+      return Promise.resolve({ business: {}, header: { filingId: 789 }, consentContinuationOut: {} })
+    })
+
+    // mock $route
+    const $route = { query: { filingId: '0' } }
+
+    // create local Vue and mock router
+    createLocalVue().use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'consent-continuation-out' })
+
+    const wrapper = shallowMount(ConsentContinuationOut, {
+      router,
+      stubs: {
+        CourtOrderPoa: true,
+        DetailComment: true,
+        DocumentDelivery: true,
+        Certify: true,
+        ForeignJurisdiction: true,
+        SbcFeeSummary: true
+      },
+      mocks: { $route }
+    })
+    const vm: any = wrapper.vm
+
+    // wait for fetch to complete
+    await flushPromises()
+
+    // set a ledger detail and save
+    vm.detail = 'My ledger detail'
+    await vm.onClickSave()
+
+    // verify the detail was included in the built filing payload
+    expect(filingArg.consentContinuationOut.details).toBe('My ledger detail')
+
+    vi.restoreAllMocks()
+    wrapper.destroy()
+  })
+
+  it('omits the ledger detail from the filing when it is empty', async () => {
+    // mock "has pending tasks" legal service
+    vi.spyOn(BusinessServices, 'hasPendingTasks').mockImplementation((): any => {
+      return Promise.resolve(false)
+    })
+
+    // mock "create filing" legal service and capture the filing payload
+    let filingArg: any = null
+    vi.spyOn(BusinessServices, 'createFiling').mockImplementation((...args: any[]): any => {
+      filingArg = args[1] // (businessId, filing, isDraft)
+      return Promise.resolve({ business: {}, header: { filingId: 789 }, consentContinuationOut: {} })
+    })
+
+    // mock $route
+    const $route = { query: { filingId: '0' } }
+
+    // create local Vue and mock router
+    createLocalVue().use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'consent-continuation-out' })
+
+    const wrapper = shallowMount(ConsentContinuationOut, {
+      router,
+      stubs: {
+        CourtOrderPoa: true,
+        DetailComment: true,
+        DocumentDelivery: true,
+        Certify: true,
+        ForeignJurisdiction: true,
+        SbcFeeSummary: true
+      },
+      mocks: { $route }
+    })
+    const vm: any = wrapper.vm
+
+    // wait for fetch to complete
+    await flushPromises()
+
+    // leave detail empty and save
+    await vm.onClickSave()
+
+    // verify the (optional) detail is not included when empty
+    expect(filingArg.consentContinuationOut.details).toBeUndefined()
 
     vi.restoreAllMocks()
     wrapper.destroy()
@@ -266,6 +373,7 @@ describe('Consent to Continuation Out view', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
+        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
@@ -282,7 +390,8 @@ describe('Consent to Continuation Out view', () => {
     expect(vm.staffPaymentData.option).toBe(1) // FAS
     expect(vm.staffPaymentData.routingSlipNumber).toBe('123456789')
     expect(vm.staffPaymentData.isPriority).toBe(true)
-    // NB: line 1 (default comment) should be removed
+    // ledger detail is loaded as-is (no default-comment prefix for this filing)
+    expect(vm.detail).toBe('Line 1\nLine 2\nLine 3')
     expect(vm.draftCountry).toBe('CA')
     expect(vm.draftRegion).toBe('AB')
 
@@ -432,6 +541,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
+        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
@@ -468,6 +578,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
       router,
       stubs: {
         CourtOrderPoa: true,
+        DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
         ForeignJurisdiction: true,
