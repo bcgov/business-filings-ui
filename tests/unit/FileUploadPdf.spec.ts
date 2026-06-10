@@ -197,4 +197,98 @@ describe('FileUploadPdf component', () => {
 
     wrapper.destroy()
   })
+
+  // --- multi-file mode (maxFiles > 1) ---
+
+  it('renders the Add a Document button in multi-file mode', () => {
+    const wrapper = mount(FileUploadPdf, {
+      propsData: { maxFiles: 5, userId: 'user-1' },
+      vuetify
+    })
+
+    // shows the multi-file UI, not the single-file input
+    expect(wrapper.find('#add-document-button').exists()).toBe(true)
+    expect(wrapper.find('.file-upload-pdf').exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('validate() is invalid when required with no documents (multi-file)', () => {
+    const wrapper = mount(FileUploadPdf, {
+      propsData: { maxFiles: 5, isRequired: true, userId: 'user-1' },
+      vuetify
+    })
+    const vm: any = wrapper.vm
+
+    expect(vm.validate()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('validate() is valid when optional with no documents (multi-file)', () => {
+    const wrapper = mount(FileUploadPdf, {
+      propsData: { maxFiles: 5, isRequired: false, userId: 'user-1' },
+      vuetify
+    })
+    const vm: any = wrapper.vm
+
+    expect(vm.validate()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('adds an uploaded document to the list and emits files/fileKeys (multi-file)', async () => {
+    const wrapper = mount(FileUploadPdf, {
+      propsData: { maxFiles: 5, userId: 'user-1' },
+      vuetify
+    })
+    const vm: any = wrapper.vm
+
+    // bypass the PDF validation and upload (covered by single-file tests / services)
+    vi.spyOn(vm, 'validateFile').mockResolvedValue(true)
+    vi.spyOn(vm, 'uploadFile').mockResolvedValue('test-key')
+
+    await vm.onAddFile(oneMBFile)
+
+    expect(vm.documents.length).toBe(1)
+    expect(wrapper.emitted('update:files').pop()[0]).toEqual([oneMBFile])
+    expect(wrapper.emitted('update:fileKeys').pop()[0]).toEqual(['test-key'])
+
+    wrapper.destroy()
+  })
+
+  it('does not add beyond maxFiles (multi-file)', async () => {
+    const wrapper = mount(FileUploadPdf, {
+      propsData: { maxFiles: 1, userId: 'user-1' },
+      vuetify
+    })
+    const vm: any = wrapper.vm
+
+    // NB: maxFiles=1 still renders single-file mode, so force multi-file state directly
+    vm.documents = [{ fileName: 'a.pdf', file: oneMBFile, fileKey: 'k1' }]
+    // attempt to add when already at the max
+    await vm.onAddFile(oneMBFile)
+
+    expect(vm.documents.length).toBe(1)
+    expect(vm.errorMessages[0]).toBe('Maximum 1 files')
+
+    wrapper.destroy()
+  })
+
+  it('removeFile removes a document and emits the updated arrays (multi-file)', () => {
+    const wrapper = mount(FileUploadPdf, {
+      propsData: { maxFiles: 5, userId: 'user-1' },
+      vuetify
+    })
+    const vm: any = wrapper.vm
+
+    vm.documents = [{ fileName: 'a.pdf', file: oneMBFile, fileKey: 'k1' }]
+    vm.removeFile(0)
+
+    expect(vm.documents.length).toBe(0)
+    expect(wrapper.emitted('update:fileKeys').pop()[0]).toEqual([])
+    expect(wrapper.emitted('update:files').pop()[0]).toEqual([])
+
+    wrapper.destroy()
+  })
 })

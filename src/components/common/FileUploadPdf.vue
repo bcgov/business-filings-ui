@@ -1,5 +1,10 @@
 <template>
+  <!--
+    Single-file mode (default, maxFiles <= 1).
+    NB: unchanged from the original component - existing consumers (eg, CourtOrder) rely on this.
+  -->
   <v-file-input
+    v-if="!isMultiple"
     :key="count"
     class="file-upload-pdf"
     dense
@@ -13,6 +18,68 @@
     :error-messages="errorMessages"
     @change="onChange($event)"
   />
+
+  <!-- Multi-file mode (maxFiles > 1). -->
+  <div
+    v-else
+    class="file-upload-pdf-multiple"
+  >
+    <ul
+      v-if="documents.length"
+      class="documents-list pl-0 mb-3"
+    >
+      <li
+        v-for="(doc, index) in documents"
+        :key="index"
+        class="d-flex align-center py-1"
+      >
+        <v-icon
+          small
+          class="mr-2"
+        >
+          mdi-paperclip
+        </v-icon>
+        <span class="document-name">{{ doc.fileName }}</span>
+        <v-btn
+          icon
+          small
+          class="ml-2 remove-document-button"
+          @click="removeFile(index)"
+        >
+          <v-icon small>
+            mdi-delete
+          </v-icon>
+        </v-btn>
+      </li>
+    </ul>
+
+    <!-- hidden picker, triggered by the Add-a-Document button -->
+    <v-file-input
+      v-show="false"
+      :key="count"
+      ref="picker"
+      accept=".pdf"
+      @change="onAddFile($event)"
+    />
+
+    <v-btn
+      id="add-document-button"
+      outlined
+      color="primary"
+      :disabled="documents.length >= maxFiles"
+      @click="openFileDialog"
+    >
+      <v-icon>mdi-plus</v-icon>
+      <span>Add a Document</span>
+    </v-btn>
+
+    <p
+      v-if="errorMessages.length"
+      class="error--text mb-0 mt-2"
+    >
+      {{ errorMessages[0] }}
+    </p>
+  </div>
 </template>
 
 <script lang="ts">
@@ -24,6 +91,11 @@ import { BusinessServices } from '@/services'
 
 @Component({})
 export default class FileUploadPdf extends Vue {
+  // Refs
+  $refs!: {
+    picker: any
+  }
+
   @Prop({ default: null }) readonly customErrorMSg!: string
   @Prop({ default: null }) readonly file!: File
   @Prop({ default: null }) readonly fileKey!: string
@@ -32,13 +104,30 @@ export default class FileUploadPdf extends Vue {
   @Prop({ default: null }) readonly pageSize!: PageSizes
   @Prop({ required: true }) readonly userId!: string
 
+  /** Maximum number of files. When > 1, the component runs in multi-file mode. */
+  @Prop({ default: 1 }) readonly maxFiles!: number
+
+  /** (Multi-file mode) the uploaded File objects (use with .sync). */
+  @Prop({ default: () => [] }) readonly files!: File[]
+
+  /** (Multi-file mode) the uploaded file keys (use with .sync). */
+  @Prop({ default: () => [] }) readonly fileKeys!: string[]
+
   /** Component key, used to force it to re-render. */
   count = 0
 
   /** Custom errors messages, use to put component into manual error mode. */
   errorMessages = [] as Array<string>
 
+  /** (Multi-file mode) the list of uploaded documents. */
+  documents: Array<{ fileName: string, file: File, fileKey: string }> = []
+
   pdfjsLib: any
+
+  /** Whether the component runs in multi-file mode. */
+  get isMultiple (): boolean {
+    return this.maxFiles > 1
+  }
 
   async created () {
     /**
@@ -47,10 +136,27 @@ export default class FileUploadPdf extends Vue {
      */
     this.pdfjsLib = pdfjs
     this.pdfjsLib.GlobalWorkerOptions.workerSrc = await import('pdfjs-dist/legacy/build/pdf.worker.entry')
+
+    // (multi-file mode) initialize the list from props (eg, on first render)
+    if (this.isMultiple && this.files.length) {
+      this.documents = this.files.map((file, i) => ({
+        fileName: file?.name || '',
+        file,
+        fileKey: this.fileKeys[i] || null
+      }))
+    }
   }
 
   /** Clears data and local state. */
   public reset (): void {
+    if (this.isMultiple) {
+      this.documents = []
+      this.emitDocuments()
+      this.errorMessages = []
+      this.count++
+      return
+    }
+
     // update parent
     this.updateFile(null)
     this.updateFileKey(null)
@@ -74,6 +180,16 @@ export default class FileUploadPdf extends Vue {
   public validate (): boolean {
     // force re-render to clear file input
     this.count++
+
+    // (multi-file mode) valid if not required, or if at least one file was uploaded
+    if (this.isMultiple) {
+      if (this.isRequired && this.documents.length === 0) {
+        this.errorMessages = [this.customErrorMSg || 'At least one file is required']
+        return false
+      }
+      this.errorMessages = []
+      return true
+    }
 
     // Logic is as follows:
     // if (no file) and (required) => error
@@ -138,6 +254,51 @@ export default class FileUploadPdf extends Vue {
 
     // if we get this far then everything succeeded
     this.errorMessages = []
+  }
+
+  /** (Multi-file mode) Opens the file picker dialog. */
+  openFileDialog (): void {
+    const input = this.$refs.picker?.$el?.querySelector('input')
+    input?.click()
+  }
+
+  /** (Multi-file mode) Validates and uploads a newly selected file, then adds it to the list. */
+  async onAddFile (file: File): Promise<void> {
+    if (!file) return
+
+    if (this.documents.length >= this.maxFiles) {
+      this.errorMessages = [`Maximum ${this.maxFiles} files`]
+      return
+    }
+
+    // validate the file
+    this.errorMessages = ['Processing...']
+    const validFile = await this.validateFile(file)
+    if (!validFile) { this.count++; return }
+
+    // upload the file
+    this.errorMessages = ['Uploading...']
+    const fileKey = await this.uploadFile(file)
+    if (!fileKey) { this.count++; return }
+
+    // add to the list and inform parent
+    this.documents.push({ fileName: file.name, file, fileKey })
+    this.emitDocuments()
+    this.errorMessages = []
+    this.count++ // clear the picker for the next file
+  }
+
+  /** (Multi-file mode) Removes a file from the list. */
+  removeFile (index: number): void {
+    this.documents.splice(index, 1)
+    this.emitDocuments()
+    this.errorMessages = []
+  }
+
+  /** (Multi-file mode) Emits the current files and file keys to the parent. */
+  emitDocuments (): void {
+    this.updateFiles(this.documents.map(d => d.file))
+    this.updateFileKeys(this.documents.map(d => d.fileKey))
   }
 
   /**
@@ -269,6 +430,14 @@ export default class FileUploadPdf extends Vue {
   @Emit('update:fileKey')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   updateFileKey (fileKey: string): void {}
+
+  @Emit('update:files')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  updateFiles (files: File[]): void {}
+
+  @Emit('update:fileKeys')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  updateFileKeys (fileKeys: string[]): void {}
 }
 </script>
 
@@ -300,6 +469,16 @@ export default class FileUploadPdf extends Vue {
   // less whitespace when file input is invalid
   .v-text-field__details {
     margin-bottom: -2px !important;
+  }
+}
+
+// Multi-file mode
+.documents-list {
+  list-style: none;
+
+  .document-name {
+    color: $gray9;
+    font-size: $px-14;
   }
 }
 </style>
