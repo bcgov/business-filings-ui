@@ -131,6 +131,7 @@ describe('Continuation Out view', () => {
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.detailCommentValid = true
+    vm.documentUploadValid = true
     vm.documentDeliveryValid = true
     vm.effectiveDateValid = true
     vm.foreignJurisdictionValid = true
@@ -141,6 +142,7 @@ describe('Continuation Out view', () => {
     vm.certifyFormValid = false
     vm.courtOrderValid = true
     vm.detailCommentValid = true
+    vm.documentUploadValid = true
     vm.documentDeliveryValid = true
     vm.effectiveDateValid = true
     vm.foreignJurisdictionValid = true
@@ -151,6 +153,18 @@ describe('Continuation Out view', () => {
     vm.certifyFormValid = true
     vm.courtOrderValid = false
     vm.detailCommentValid = true
+    vm.documentUploadValid = true
+    vm.documentDeliveryValid = true
+    vm.effectiveDateValid = true
+    vm.foreignJurisdictionValid = true
+    expect(!!vm.isPageValid).toBe(false)
+
+    // verify "validated" - invalid Document Upload form
+    vm.businessNameValid = true
+    vm.certifyFormValid = true
+    vm.courtOrderValid = true
+    vm.detailCommentValid = true
+    vm.documentUploadValid = false
     vm.documentDeliveryValid = true
     vm.effectiveDateValid = true
     vm.foreignJurisdictionValid = true
@@ -161,6 +175,7 @@ describe('Continuation Out view', () => {
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.detailCommentValid = true
+    vm.documentUploadValid = true
     vm.documentDeliveryValid = false
     vm.effectiveDateValid = true
     vm.foreignJurisdictionValid = true
@@ -171,6 +186,7 @@ describe('Continuation Out view', () => {
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.detailCommentValid = true
+    vm.documentUploadValid = true
     vm.documentDeliveryValid = true
     vm.effectiveDateValid = true
     vm.foreignJurisdictionValid = false
@@ -182,6 +198,7 @@ describe('Continuation Out view', () => {
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.detailCommentValid = true
+    vm.documentUploadValid = true
     vm.documentDeliveryValid = true
     vm.effectiveDateValid = false
     vm.foreignJurisdictionValid = true
@@ -193,6 +210,7 @@ describe('Continuation Out view', () => {
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.detailCommentValid = true
+    vm.documentUploadValid = true
     vm.documentDeliveryValid = true
     vm.effectiveDateValid = true
     vm.foreignJurisdictionValid = true
@@ -241,6 +259,7 @@ describe('Continuation Out view', () => {
         DocumentDelivery: true,
         Certify: true,
         EffectiveDate: true,
+        FileUploadPdf: true,
         ForeignJurisdiction: true,
         SbcFeeSummary: true
       },
@@ -305,6 +324,7 @@ describe('Continuation Out view', () => {
         DocumentDelivery: true,
         Certify: true,
         EffectiveDate: true,
+        FileUploadPdf: true,
         ForeignJurisdiction: true,
         SbcFeeSummary: true
       },

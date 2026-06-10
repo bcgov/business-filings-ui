@@ -126,30 +126,51 @@
               </div>
             </section>
 
-            <!-- Documents Delivery -->
+            <!-- Documents Upload -->
             <section>
               <header>
-                <h2>Documents Delivery</h2>
-                <p class="grey-text">
-                  Copies of the continue out documents will be sent to the email addresses listed below.
-                </p>
+                <h2>Documents Upload</h2>
               </header>
               <div
-                id="document-delivery-section"
-                :class="{ 'invalid-section': !documentDeliveryValid && showErrors }"
+                id="document-upload-section"
+                :class="{ 'invalid-section': !documentUploadValid && showErrors }"
               >
                 <v-card
                   flat
                   class="py-8 px-5"
                 >
-                  <DocumentDelivery
-                    :editableCompletingParty="IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY)"
-                    :contactValue="getBusinessEmail"
-                    contactLabel="Business Office"
-                    :documentOptionalEmail="documentOptionalEmail"
-                    @update:optionalEmail="documentOptionalEmail=$event"
-                    @valid="documentDeliveryValid=$event"
-                  />
+                  <v-row no-gutters>
+                    <v-col
+                      cols="12"
+                      sm="3"
+                      class="pr-4"
+                    >
+                      <strong :class="{ 'app-red': !documentUploadValid && showErrors }">Upload a File</strong>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="9"
+                    >
+                      <p class="mb-1 grey-text">
+                        Upload any supporting documents confirming this continuation out.
+                      </p>
+                      <ul class="ml-2 mb-4 grey-text">
+                        <li>Use a white background and a legible font with contrasting font colour</li>
+                        <li>PDF file type (maximum {{ MAX_FILE_SIZE }} MB file size)</li>
+                        <li>Maximum {{ MAX_FILES }} files</li>
+                      </ul>
+                      <FileUploadPdf
+                        ref="fileUploadRef"
+                        :maxFiles="MAX_FILES"
+                        :files.sync="files"
+                        :fileKeys.sync="fileKeys"
+                        :isRequired="true"
+                        :maxSize="MAX_FILE_SIZE"
+                        :pageSize="PageSizes.LETTER_PORTRAIT"
+                        :userId="getUserInfo?.keycloakGuid"
+                      />
+                    </v-col>
+                  </v-row>
                 </v-card>
               </div>
             </section>
@@ -190,6 +211,34 @@
                       />
                     </v-col>
                   </v-row>
+                </v-card>
+              </div>
+            </section>
+
+            <!-- Documents Delivery -->
+            <section>
+              <header>
+                <h2>Documents Delivery</h2>
+                <p class="grey-text">
+                  Copies of the continue out documents will be sent to the email addresses listed below.
+                </p>
+              </header>
+              <div
+                id="document-delivery-section"
+                :class="{ 'invalid-section': !documentDeliveryValid && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
+                  <DocumentDelivery
+                    :editableCompletingParty="IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY)"
+                    :contactValue="getBusinessEmail"
+                    contactLabel="Business Office"
+                    :documentOptionalEmail="documentOptionalEmail"
+                    @update:optionalEmail="documentOptionalEmail=$event"
+                    @valid="documentDeliveryValid=$event"
+                  />
                 </v-card>
               </div>
             </section>
@@ -357,14 +406,15 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { IsAuthorized, Navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { BusinessNameForeign, Certify, DetailComment, EffectiveDate, ForeignJurisdiction } from '@/components/common'
+import { BusinessNameForeign, Certify, DetailComment, EffectiveDate, FileUploadPdf, ForeignJurisdiction }
+  from '@/components/common'
 import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { BusinessServices, EnumUtilities } from '@/services'
-import { AuthorizedActions, EffectOfOrderTypes, FilingStatus, SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, EffectOfOrderTypes, FilingStatus, PageSizes, SaveErrorReasons } from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
-import { ConfirmDialogType } from '@/interfaces'
+import { ConfirmDialogType, UserInfoIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -378,6 +428,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     DetailComment,
     DocumentDelivery,
     EffectiveDate,
+    FileUploadPdf,
     ForeignJurisdiction,
     ResumeErrorDialog,
     SaveErrorDialog,
@@ -391,6 +442,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     confirm: ConfirmDialogType,
     certifyRef: Certify,
     effectiveDateRef: EffectiveDate,
+    fileUploadRef: FileUploadPdf,
     foreignJurisdictionRef: ForeignJurisdiction,
   }
 
@@ -399,6 +451,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
   @Getter(useConfigurationStore) getBusinessApiUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) getUserInfo!: UserInfoIF
 
   // enum for template
   readonly FilingCodes = FilingCodes
@@ -421,6 +474,14 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
   initialBusinessName = ''
   businessName = ''
   businessNameValid = false
+
+  // variables for FileUploadPdf component (multi-file mode)
+  readonly MAX_FILE_SIZE = 30 // in MB
+  readonly MAX_FILES = 5
+  readonly PageSizes = PageSizes
+  files: File[] = [] // uploaded document file objects
+  fileKeys: string[] = [] // uploaded document file keys
+  documentUploadValid = false
 
   // variables for DetailComment component
   detail = ''
@@ -474,7 +535,8 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
   get isPageValid (): boolean {
     return (this.effectiveDateValid && this.certifyFormValid &&
       this.foreignJurisdictionValid && this.businessNameValid &&
-      this.detailValid && this.documentDeliveryValid && this.courtOrderValid)
+      this.documentUploadValid && this.detailValid &&
+      this.documentDeliveryValid && this.courtOrderValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -600,6 +662,9 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
         this.detail = details
       }
 
+      // NB: uploaded documents are not restored on draft resume (the File objects cannot be
+      // reconstructed from the stored file keys), so the user must re-add them. FUTURE: support this.
+
       if (filing.header.documentOptionalEmail) {
         this.documentOptionalEmail = filing.header.documentOptionalEmail
       }
@@ -708,6 +773,11 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
       if (!this.certifyFormValid && !this.isBaseCompany) {
         // Show error message of legal name text field if invalid (not applicable for corporations)
         this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
+      }
+
+      if (!this.documentUploadValid) {
+        // show the file upload component's error (eg, "File is required")
+        this.$refs.fileUploadRef.validate()
       }
 
       await this.validateAndScroll(this.validFlags, this.validComponents)
@@ -828,6 +898,15 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
       }
     }
 
+    if (this.fileKeys.length > 0) {
+      data[FilingTypes.CONTINUATION_OUT].documents = this.files.map((file, i) => ({
+        fileKey: this.fileKeys[i],
+        fileName: file.name,
+        fileLastModified: file.lastModified,
+        fileSize: file.size
+      }))
+    }
+
     if (this.detail !== '') {
       data[FilingTypes.CONTINUATION_OUT].details = this.detail
     }
@@ -942,6 +1021,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     'effective-date-section',
     'jurisdiction-information-section',
     'business-information-section',
+    'document-upload-section',
     'detail-section',
     'document-delivery-section',
     'certify-form-section',
@@ -954,6 +1034,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
       effectiveDate: this.effectiveDateValid,
       foreignJurisdiction: this.foreignJurisdictionValid,
       businessInformation: this.businessNameValid,
+      documentUpload: this.documentUploadValid,
       detail: this.detailValid,
       documentDelivery: this.documentDeliveryValid,
       certifyForm: this.certifyFormValid,
@@ -961,10 +1042,17 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     }
   }
 
+  /** Updates document upload validity (valid once at least one document has been uploaded). */
+  @Watch('fileKeys')
+  onFileKeysChanged (): void {
+    this.documentUploadValid = this.fileKeys.length > 0
+  }
+
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
   @Watch('detail')
   @Watch('documentDeliveryValid')
+  @Watch('files')
   onHaveChanges (): void {
     this.haveChanges = true
   }
