@@ -79,6 +79,23 @@ describe('Consent to Continuation Out view', () => {
     wrapper.destroy()
   })
 
+  it('shows the Detail section for staff users', async () => {
+    const $route = { query: { filingId: '0' } }
+
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const $router = mockRouter.mock()
+
+    const wrapper = shallowMount(ConsentContinuationOut, { mocks: { $route, $router } })
+    wrapper.vm.$data.dataLoaded = true
+    await Vue.nextTick()
+
+    // staff users (STAFF_FILINGS) see the Detail section
+    expect(wrapper.find('#detail-section').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
   it('sets filing data properly', async () => {
     const $route = { query: { filingId: '0' } }
 
@@ -508,6 +525,23 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(StaffPaymentDialog).exists()).toBe(true)
     expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('hides the Detail section for non-staff users', async () => {
+    const $route = { query: { filingId: '0' } }
+
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const $router = mockRouter.mock()
+
+    const wrapper = shallowMount(ConsentContinuationOut, { mocks: { $route, $router } })
+    wrapper.vm.$data.dataLoaded = true
+    await Vue.nextTick()
+
+    // general users / IAs (no STAFF_FILINGS) do not see the Detail section
+    expect(wrapper.find('#detail-section').exists()).toBe(false)
 
     wrapper.destroy()
   })

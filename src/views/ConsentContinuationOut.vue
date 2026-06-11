@@ -85,8 +85,8 @@
               </h1>
             </header>
 
-            <!-- Detail -->
-            <section>
+            <!-- Detail (staff only) -->
+            <section v-if="IsAuthorized(AuthorizedActions.STAFF_FILINGS)">
               <header>
                 <h2>Ledger Detail</h2>
                 <p class="grey-text">
@@ -113,6 +113,9 @@
                       cols="12"
                       sm="9"
                     >
+                      <b class="mb-1 grey-text">
+                        Six-Month Consent to Continue Out Detail
+                      </b>
                       <DetailComment
                         v-model="detail"
                         placeholder="Add a Detail that will appear on the ledger for this business (Optional)"
