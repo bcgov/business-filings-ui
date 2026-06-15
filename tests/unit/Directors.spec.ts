@@ -1402,3 +1402,147 @@ describe('Edit Directors - Legal Name Correction Information', () => {
     })
   })
 })
+
+describe('Directors as a COOP - isDirectorActionable with cessationDate', () => {
+  let wrapper: Wrapper<Directors>
+  let vm: any
+
+  beforeAll(() => {
+    businessStore.setIdentifier('CP0001191')
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    businessStore.setFoundingDate('2018-03-01T00:00:00')
+    configurationStore.setConfiguration({
+      'VUE_APP_BUSINESS_API_URL': 'https://business-api.url/',
+      'VUE_APP_BUSINESS_API_VERSION_2': 'v2'
+    })
+    rootStore.configObject = BusinessConfigCp
+  })
+
+  beforeEach(async () => {
+    sinon.stub(axios, 'get')
+      .withArgs('https://business-api.url/v2/businesses/CP0001191/directors?date=2020-11-16')
+      .returns(new Promise(resolve => resolve({
+        data: {
+          directors: [
+            {
+              // no cessationDate — always active
+              officer: {
+                firstName: 'Gary',
+                lastName: 'Griffin'
+              },
+              deliveryAddress: {
+                streetAddress: 'street-2',
+                streetAddressAdditional: '',
+                addressCity: 'city-2',
+                addressCountry: 'CA',
+                postalCode: 'CAN ADA',
+                addressRegion: 'BC',
+                deliveryInstructions: ''
+              },
+              role: 'director',
+              cessationDate: null
+            },
+            {
+              // cessationDate before asOfDate
+              officer: {
+                firstName: 'Peter',
+                lastName: 'Parker'
+              },
+              deliveryAddress: {
+                streetAddress: 'street-3',
+                streetAddressAdditional: '',
+                addressCity: 'city-3',
+                addressCountry: 'CA',
+                postalCode: 'CAN ADA',
+                addressRegion: 'BC',
+                deliveryInstructions: ''
+              },
+              role: 'director',
+              cessationDate: '2020-06-15'
+            },
+            {
+              // cessationDate after asOfDate
+              officer: {
+                firstName: 'Sam',
+                middleInitial: 'S',
+                lastName: 'Swanson'
+              },
+              deliveryAddress: {
+                streetAddress: 'street-1',
+                streetAddressAdditional: 'additional-1',
+                addressCity: 'city-1',
+                addressCountry: 'UK',
+                postalCode: 'UKU KUK',
+                addressRegion: 'Scotland',
+                deliveryInstructions: 'go to the loch'
+              },
+              role: 'director',
+              cessationDate: '2021-06-16'
+            },
+            {
+              // cessationDate equal to asOfDate
+              officer: {
+                firstName: 'Bobby',
+                lastName: 'Burns'
+              },
+              deliveryAddress: {
+                streetAddress: 'street-4',
+                streetAddressAdditional: '',
+                addressCity: 'city-4',
+                addressCountry: 'CA',
+                postalCode: 'CAN ADA',
+                addressRegion: 'BC',
+                deliveryInstructions: ''
+              },
+              role: 'director',
+              cessationDate: '2020-11-16'
+            }
+          ]
+        }
+      })))
+
+    wrapper = mount(Directors, { vuetify })
+    vm = wrapper.vm
+    await vm.getOrigDirectors('2020-11-16', true)
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('sets isDirectorActionable=true for director with no cessationDate', () => {
+    const director = vm.allDirectors.find(d => d.officer.firstName === 'Gary')
+    expect(director.isDirectorActionable).toBe(true)
+  })
+
+  it('sets isDirectorActionable=false for director with cessationDate before asOfDate', () => {
+    const director = vm.allDirectors.find(d => d.officer.firstName === 'Peter')
+    expect(director.isDirectorActionable).toBe(false)
+  })
+
+  it('sets isDirectorActionable=true for director with cessationDate after asOfDate', () => {
+    const director = vm.allDirectors.find(d => d.officer.firstName === 'Sam')
+    expect(director.isDirectorActionable).toBe(true)
+  })
+
+  it('sets isDirectorActionable=false for director with cessationDate equal to asOfDate (boundary)', () => {
+    const director = vm.allDirectors.find(d => d.officer.firstName === 'Bobby')
+    expect(director.isDirectorActionable).toBe(false)
+  })
+
+  it('does not show Ceased chip for director with cessationDate after asOfDate', () => {
+    const director = vm.allDirectors.find(d => d.officer.firstName === 'Sam')
+    expect(vm.isCeased(director)).toBe(false)
+    expect(vm.isActionable(director)).toBe(true)
+    const listItem = wrapper.find(`#director-${director.id}`)
+    expect(listItem.find('.director-status .v-chip').attributes('style')).toContain('display: none')
+  })
+
+  it('shows ceased styling for director with cessationDate before asOfDate', () => {
+    const director = vm.allDirectors.find(d => d.officer.firstName === 'Peter')
+    expect(vm.isActionable(director)).toBe(false)
+    const listItem = wrapper.find(`#director-${director.id}`)
+    expect(listItem.classes()).toContain('ceased')
+  })
+})

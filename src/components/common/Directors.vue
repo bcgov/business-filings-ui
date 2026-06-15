@@ -756,7 +756,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
           this.original.forEach((director, i) => {
             director.id = i + 1
             director.isFeeApplied = (director.isFeeApplied !== undefined) ? director.isFeeApplied : false
-            director.isDirectorActionable = !director.cessationDate
+            director.isDirectorActionable = !director.cessationDate || director.cessationDate > this.asOfDate
             director.actions = []
 
             // if there is no officer middle initial field, add it with blank data

@@ -1586,7 +1586,7 @@ describe('Annual Report - Part 5 - Data', () => {
             addressRegion: 'BC'
           },
           appointmentDate: '2019-01-01',
-          cessationDate: '2019-03-25',
+          cessationDate: '2017-06-15',
           actions: ['ceased']
         }
       ]
@@ -1690,6 +1690,62 @@ describe('Annual Report - Part 5 - Data', () => {
 
     const names = payload.filing.annualReport.directors.map(el => el.officer.firstName)
     expect(names).not.toContain('Ceased')
+  })
+
+  it('includes future-ceased directors in AR filing data', async () => {
+  // add a director whose cessationDate is after asOfDate
+    const directors = [...vm.updatedDirectors]
+    directors.push({
+      officer: {
+        firstName: 'Future',
+        lastName: 'lastname'
+      },
+      deliveryAddress: {
+        streetAddress: 'a1',
+        addressCity: 'city',
+        addressCountry: 'country',
+        postalCode: 'H0H0H0',
+        addressRegion: 'BC'
+      },
+      appointmentDate: '2017-01-01',
+      cessationDate: '2018-06-15',
+      actions: []
+    })
+    await wrapper.setData({ updatedDirectors: directors })
+
+    await vm.onClickSave()
+
+    const payload = spy.args[0][1]
+    const names = payload.filing.annualReport.directors.map(el => el.officer.firstName)
+    expect(names).toContain('Future')
+  })
+
+  it('excludes directors whose cessationDate equals asOfDate from AR filing data', async () => {
+  // add a director whose cessationDate equals asOfDate
+    const directors = [...vm.updatedDirectors]
+    directors.push({
+      officer: {
+        firstName: 'Boundary',
+        lastName: 'lastname'
+      },
+      deliveryAddress: {
+        streetAddress: 'a1',
+        addressCity: 'city',
+        addressCountry: 'country',
+        postalCode: 'H0H0H0',
+        addressRegion: 'BC'
+      },
+      appointmentDate: '2017-01-01',
+      cessationDate: '2017-12-31',
+      actions: ['ceased']
+    })
+    await wrapper.setData({ updatedDirectors: directors })
+
+    await vm.onClickSave()
+
+    const payload = spy.args[0][1]
+    const names = payload.filing.annualReport.directors.map(el => el.officer.firstName)
+    expect(names).not.toContain('Boundary')
   })
 
   it('includes certification data in the header', async () => {
