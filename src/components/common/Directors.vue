@@ -244,11 +244,14 @@
                     <div class="director_dates__date">
                       {{ dir.appointmentDate }}
                     </div>
-                    <!-- always show cessation date, even if it's in the future -->
-                    <div v-if="dir.cessationDate">
+                    <!-- always show cessation date for corporations, even if it's in the future -->
+                    <div v-if="dir.cessationDate && !isEntityCoop">
                       Ceased
                     </div>
-                    <div class="director_dates__date">
+                    <div
+                      v-if="!isEntityCoop"
+                      class="director_dates__date"
+                    >
                       {{ dir.cessationDate }}
                     </div>
                   </div>
@@ -756,7 +759,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
           this.original.forEach((director, i) => {
             director.id = i + 1
             director.isFeeApplied = (director.isFeeApplied !== undefined) ? director.isFeeApplied : false
-            director.isDirectorActionable = !director.cessationDate
+            director.isDirectorActionable = !director.cessationDate || director.cessationDate > this.asOfDate
             director.actions = []
 
             // if there is no officer middle initial field, add it with blank data

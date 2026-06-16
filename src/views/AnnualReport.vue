@@ -1153,7 +1153,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
           offices: {
             registeredOffice: this.updatedAddresses.registeredOffice
           },
-          directors: this.updatedDirectors.filter(el => el.cessationDate === null)
+          directors: this.updatedDirectors.filter(el => !el.cessationDate || el.cessationDate > this.asOfDate)
         }
       }
     }
@@ -1344,7 +1344,8 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     this.isFetching = true
     if (!this.isVitestRunning) {
       await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, false)
-      await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, false)
+      const updateWorkingDirectors = (this.filingId === 0)
+      await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, updateWorkingDirectors)
     }
     this.isFetching = false
   }
