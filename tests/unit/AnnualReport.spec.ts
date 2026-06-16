@@ -1585,7 +1585,7 @@ describe('Annual Report - Part 5 - Data', () => {
             postalCode: 'H0H0H0',
             addressRegion: 'BC'
           },
-          appointmentDate: '2019-01-01',
+          appointmentDate: '2017-01-01',
           cessationDate: '2017-06-15',
           actions: ['ceased']
         }

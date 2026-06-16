@@ -1153,7 +1153,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
           offices: {
             registeredOffice: this.updatedAddresses.registeredOffice
           },
-          directors: this.updatedDirectors.filter(el => el.cessationDate === null || el.cessationDate > this.asOfDate)
+          directors: this.updatedDirectors.filter(el => !el.cessationDate || el.cessationDate > this.asOfDate)
         }
       }
     }
