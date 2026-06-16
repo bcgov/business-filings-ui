@@ -244,11 +244,11 @@
                     <div class="director_dates__date">
                       {{ dir.appointmentDate }}
                     </div>
-                    <!-- always show cessation date, even if it's in the future -->
-                    <div v-if="dir.cessationDate">
+                    <!-- always show cessation date for corporations, even if it's in the future -->
+                    <div v-if="dir.cessationDate && !isEntityCoop">
                       Ceased
                     </div>
-                    <div class="director_dates__date">
+                    <div v-if="!isEntityCoop" class="director_dates__date">
                       {{ dir.cessationDate }}
                     </div>
                   </div>
