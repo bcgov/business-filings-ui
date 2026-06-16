@@ -248,7 +248,10 @@
                     <div v-if="dir.cessationDate && !isEntityCoop">
                       Ceased
                     </div>
-                    <div v-if="!isEntityCoop" class="director_dates__date">
+                    <div
+                      v-if="!isEntityCoop"
+                      class="director_dates__date"
+                    >
                       {{ dir.cessationDate }}
                     </div>
                   </div>
