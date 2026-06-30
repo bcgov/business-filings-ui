@@ -88,10 +88,8 @@
             <!-- Detail (staff only) -->
             <section v-if="IsAuthorized(AuthorizedActions.STAFF_FILINGS)">
               <header>
-                <h2>Ledger Detail</h2>
-                <p class="grey-text">
-                  Enter a detail that will appear on the ledger for this business
-                </p>
+                <h2>Filing Detail</h2>
+
               </header>
               <div
                 id="detail-section"
@@ -107,18 +105,16 @@
                       sm="3"
                       class="pr-4"
                     >
-                      <strong :class="{ 'app-red': !detailValid && showErrors }">Detail</strong>
+                      <strong :class="{ 'app-red': !detailValid && showErrors }">Consent to Continue Out Detail</strong>
                     </v-col>
                     <v-col
                       cols="12"
                       sm="9"
                     >
-                      <b class="mb-1 grey-text">
-                        Six-Month Consent to Continue Out Detail
-                      </b>
+
                       <DetailComment
                         v-model="detail"
-                        placeholder="Add a Detail that will appear on the ledger for this business (Optional)"
+                        placeholder="Add a filing detail that will appear on the ledger for this business (Optional)"
                         :maxLength="1900"
                         :rows="1"
                         optional
