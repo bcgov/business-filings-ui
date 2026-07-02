@@ -93,8 +93,8 @@
                         {{ defaultComment }}
                       </p>
                       <DetailComment
-                        v-model="detailComment"
                         ref="detailCommentRef"
+                        v-model="detailComment"
                         class="pt-2"
                         placeholder="Add a Detail that will appear on the ledger for this entity."
                         :maxLength="maxDetailCommentLength"
