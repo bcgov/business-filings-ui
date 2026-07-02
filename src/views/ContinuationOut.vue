@@ -178,7 +178,7 @@
             <!-- Detail -->
             <section>
               <header>
-                <h2>Detail</h2>
+                <h2>Filing Detail</h2>
               </header>
               <div
                 id="detail-section"
@@ -194,18 +194,15 @@
                       sm="3"
                       class="pr-4"
                     >
-                      <strong :class="{ 'app-red': !detailValid && showErrors }">Detail</strong>
+                      <strong :class="{ 'app-red': !detailValid && showErrors }">Continuation Out Detail</strong>
                     </v-col>
                     <v-col
                       cols="12"
                       sm="9"
                     >
-                      <b class="mb-1 grey-text">
-                        Continuation Out Detail
-                      </b>
                       <DetailComment
                         v-model="detail"
-                        placeholder="Add a Detail that will appear on the ledger for this business (Optional)"
+                        placeholder="Add a filing detail that will appear on the ledger for this business (Optional)"
                         :maxLength="1900"
                         :rows="1"
                         optional

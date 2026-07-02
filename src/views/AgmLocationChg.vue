@@ -132,6 +132,7 @@
                       >
                         <DetailComment
                           v-model="reason"
+                          class="pt-2"
                           :class="{ 'invalid-component': !reasonValid && showErrors }"
                           placeholder="Reason"
                           maxLength="2000"
