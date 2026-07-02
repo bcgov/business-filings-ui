@@ -6,7 +6,7 @@
     <v-textarea
       id="detail-comment-textarea"
       ref="textarea"
-      class="pt-2"
+      class=""
       filled
       auto-grow
       :rows="rows"

@@ -93,6 +93,7 @@
                         {{ defaultComment }}
                       </p>
                       <DetailComment
+                        class="pt-2"
                         ref="detailCommentRef"
                         v-model="detailComment"
                         placeholder="Add a Detail that will appear on the ledger for this entity."
