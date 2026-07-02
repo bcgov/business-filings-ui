@@ -93,9 +93,9 @@
                         {{ defaultComment }}
                       </p>
                       <DetailComment
+                        v-model="detailComment"
                         class="pt-2"
                         ref="detailCommentRef"
-                        v-model="detailComment"
                         placeholder="Add a Detail that will appear on the ledger for this entity."
                         :maxLength="maxDetailCommentLength"
                         @valid="detailCommentValid=$event"
