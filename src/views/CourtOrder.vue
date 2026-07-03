@@ -539,8 +539,9 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
     const filing: any = {
       header: {
         name: this.name,
-        date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-        certifiedBy: ''
+        date: this.getCurrentDate // NB: API will reassign this date according to its clock
+        // NB: certifiedBy is optional and omitted here (no Certify component in this staff-only filing);
+        // sending '' fails the schema's non-empty pattern (\S). See bcgov/entity#34057, #32771.
       },
       business: {
         identifier: this.getIdentifier,
