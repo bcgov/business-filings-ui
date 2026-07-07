@@ -76,6 +76,7 @@
                   class="pt-6 px-4"
                   :initialEffectiveDate="initialEffectiveDate"
                   :validateForm="showErrors"
+                  effectiveDateLabel="Effective Date"
                   @update:effectiveDate="effectiveDate=$event"
                   @valid="effectiveDateValid=$event"
                 />
@@ -1096,7 +1097,7 @@ h1 {
 }
 
 h2 {
-  margin-bottom: 0.25rem;
+  margin-bottom: 1rem;
   margin-top: 3rem;
   font-size: 1.125rem;
 }

@@ -55,7 +55,7 @@
         </span>
 
         <span
-          v-if="isAuthorizedToContinueOut"
+          v-if="isAuthorizedToContinueOut && !isOnConsentContinuationOutPage"
           id="authorized-to-continue-out"
         >
           <v-chip
@@ -109,6 +109,7 @@ import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp
 import { FilingNames } from '@bcrs-shared-components/enums'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import { ApiFilingIF, ApiTaskIF } from '@/interfaces'
+import { Routes } from '@/enums'
 
 @Component({})
 export default class EntityHeader extends Vue {
@@ -134,6 +135,11 @@ export default class EntityHeader extends Vue {
   @Getter(useRootStore) isContinuationInPending!: boolean
   @Getter(useRootStore) isContinuationInTodo!: boolean
   @Getter(useRootStore) isInLimitedRestoration!: boolean
+
+  /** Returns true when the user is inside the Consent to Continue Out filing form. */
+  get isOnConsentContinuationOutPage (): boolean {
+    return this.$route.name === Routes.CONSENT_CONTINUATION_OUT
+  }
 
   /** The business description. */
   get businessDescription (): string {
