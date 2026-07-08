@@ -131,7 +131,9 @@
             <section>
               <header>
                 <h2>Jurisdiction Information</h2>
-                <p class="grey-text">Enter the Jurisdiction you will be Continuing Out to.</p>
+                <p class="grey-text">
+                  Enter the Jurisdiction you will be Continuing Out to.
+                </p>
               </header>
               <div
                 id="foreign-jurisdiction-section"
