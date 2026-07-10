@@ -110,7 +110,6 @@
                       cols="12"
                       sm="9"
                     >
-
                       <DetailComment
                         v-model="detail"
                         placeholder="Add a filing detail that will appear on the ledger for this business (Optional)"
