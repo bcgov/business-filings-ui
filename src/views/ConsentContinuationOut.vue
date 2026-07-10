@@ -87,9 +87,8 @@
 
             <!-- Detail (staff only) -->
             <section v-if="IsAuthorized(AuthorizedActions.STAFF_FILINGS)">
-              <header>
+              <header class="pb-4">
                 <h2>Filing Detail</h2>
-
               </header>
               <div
                 id="detail-section"
