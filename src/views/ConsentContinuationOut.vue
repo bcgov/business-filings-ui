@@ -87,9 +87,8 @@
 
             <!-- Detail (staff only) -->
             <section v-if="IsAuthorized(AuthorizedActions.STAFF_FILINGS)">
-              <header>
+              <header class="pb-4">
                 <h2>Filing Detail</h2>
-
               </header>
               <div
                 id="detail-section"
@@ -111,7 +110,6 @@
                       cols="12"
                       sm="9"
                     >
-
                       <DetailComment
                         v-model="detail"
                         placeholder="Add a filing detail that will appear on the ledger for this business (Optional)"
@@ -131,6 +129,9 @@
             <section>
               <header>
                 <h2>Jurisdiction Information</h2>
+                <p class="grey-text">
+                  Enter the Jurisdiction you will be Continuing Out to.
+                </p>
               </header>
               <div
                 id="foreign-jurisdiction-section"

@@ -8,7 +8,7 @@
         cols="12"
         sm="3"
       >
-        <label class="title-label">Business Name in the Foreign Jurisdiction</label>
+        <label class="title-label">Business Name in the New Jurisdiction</label>
       </v-col>
       <v-col
         cols="12"
@@ -18,9 +18,9 @@
           id="business-name-text-field"
           ref="textarea"
           filled
-          label="Business Name in the Foreign Jurisdiction"
+          label="Business Name in the New Jurisdiction"
           :value="draftBusinessName"
-          :rules="[ v => !!v || 'A Business Name in the Foreign Jurisdiction is required.']"
+          :rules="[ v => !!v || 'A Business Name in the New Jurisdiction is required.']"
           @input="emitBusinessName($event)"
         />
       </v-col>
