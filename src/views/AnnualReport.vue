@@ -1162,13 +1162,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       annualReport = {
         [FilingTypes.ANNUAL_REPORT]: {
           annualReportDate: this.asOfDate,
-          nextARDate: this.nextARDate, // used by BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
-          // NB: there was an enrichment ticket to populate offices and directors here
-          offices: {
-            registeredOffice: this.originalAddresses.registeredOffice,
-            recordsOffice: this.originalAddresses.recordsOffice
-          },
-          directors: this.originalDirectors
+          nextARDate: this.nextARDate // used by BEN/BC/CC/ULC and CBEN/C/CCC/CUL only
         }
       }
     }

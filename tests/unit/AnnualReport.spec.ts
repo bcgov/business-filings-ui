@@ -1927,9 +1927,8 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
     expect(payload.filing).toBeDefined()
     expect(payload.filing.annualReport).toBeDefined()
 
-    expect(payload.filing.annualReport.directors).toBeDefined()
-    expect(payload.filing.annualReport.offices.registeredOffice).toBeDefined()
-    expect(payload.filing.annualReport.offices.recordsOffice).toBeDefined()
+    expect(payload.filing.annualReport.directors).not.toBeDefined()
+    expect(payload.filing.annualReport.offices).not.toBeDefined()
   })
 
   it('includes authorization data in the header', async () => {
