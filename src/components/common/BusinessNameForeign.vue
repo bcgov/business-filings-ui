@@ -52,6 +52,7 @@ export default class BusinessNameForeign extends Vue {
     this.emitBusinessName(this.businessName)
     // inform parent of initial validity
     this.emitValid(!!this.trimmedBusinessName)
+    this.setValidationState()
   }
 
   /** The trimmed Business Name string (may be ''). */
@@ -63,10 +64,19 @@ export default class BusinessNameForeign extends Vue {
   /** Validate business name field */
   @Watch('validateForm')
   validateBusinessName (): void {
-    if (this.validateForm && !this.businessName) {
-      this.$refs.textarea.validate()
-      this.$refs.textarea.error = true
+    if (this.validateForm) {
+      this.$nextTick(() => {
+        this.setValidationState()
+      })
     }
+  }
+
+  private setValidationState (): void {
+    const textField = this.$refs.textarea
+    if (!textField) return
+
+    textField.validate()
+    textField.error = !this.trimmedBusinessName
   }
 
   /** Emits an event to update the business name. */
@@ -74,7 +84,9 @@ export default class BusinessNameForeign extends Vue {
   emitBusinessName (businessName: string): string {
     // remove repeated inline whitespace, and leading/trailing whitespace
     businessName = businessName?.replace(/\s+/g, ' ').trim()
+    this.businessName = businessName
     this.emitValid(!!businessName)
+    this.setValidationState()
     return businessName
   }
 

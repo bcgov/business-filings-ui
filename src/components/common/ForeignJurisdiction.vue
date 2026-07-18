@@ -9,6 +9,12 @@
         sm="3"
       >
         <label class="title-label">Jurisdiction</label>
+        <p
+          v-if="showAuthorizationError"
+          class="app-red"
+        >
+          Check this box to continue
+        </p>
       </v-col>
       <v-col
         cols="12"
@@ -84,6 +90,9 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
 
   /** Prompt the validations. Used for global validations. */
   @Prop({ default: false }) readonly validateForm!: boolean
+
+  /** Show the authorization error message. */
+  @Prop({ default: false }) readonly showAuthorizationError!: boolean
 
   selectedCountryCode = ''
   selectedRegionName = ''
@@ -187,10 +196,19 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   async onCountrychanged (): Promise<void> {
     if (this.validateForm) {
       await this.$nextTick()
-      if (this.selectedCountryCode === 'CA' || this.selectedCountryCode === 'US') {
-        this.$refs.regionSelectRef.validate()
-        this.$refs.regionSelectRef.error = true
-      }
+      this.setRegionValidationState()
+    }
+  }
+
+  private setRegionValidationState (): void {
+    const regionSelect = this.$refs.regionSelectRef
+    if (!regionSelect) return
+
+    if (this.selectedCountryCode === 'CA' || this.selectedCountryCode === 'US') {
+      regionSelect.validate()
+      regionSelect.error = !this.selectedRegionName
+    } else {
+      regionSelect.error = false
     }
   }
 
@@ -218,6 +236,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
     if (this.selectedRegionName) {
       this.emitValid(true)
     }
+    this.setRegionValidationState()
     const region = this.canadaUsaRegions.find(region => region.name === this.selectedRegionName)
     return region?.short
   }
