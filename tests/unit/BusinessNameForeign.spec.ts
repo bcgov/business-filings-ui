@@ -69,4 +69,27 @@ describe('BusinessNameForeign', () => {
     expect(wrapper.emitted('valid').pop()[0]).toBe(true)
     wrapper.destroy()
   })
+
+  it('clears the error once a valid business name is entered after validation has been triggered', async () => {
+    const wrapper = mount(BusinessNameForeign,
+      {
+        vuetify,
+        propsData: {
+          draftBusinessName: ''
+        }
+      })
+    const vm: any = wrapper.vm
+
+    await wrapper.setProps({ validateForm: true })
+    await Vue.nextTick()
+
+    expect(vm.$refs.textarea.error).toBe(true)
+
+    const input = wrapper.find('#business-name-text-field')
+    await input.setValue('South Shore Toys LTD.')
+    await Vue.nextTick()
+
+    expect(vm.$refs.textarea.error).toBe(false)
+    wrapper.destroy()
+  })
 })

@@ -210,6 +210,26 @@ describe('ForeignJurisdiction', () => {
     wrapper.destroy()
   })
 
+  it('does not mark the region invalid when a draft region is restored and validation is triggered', async () => {
+    const wrapper = mount(ForeignJurisdiction,
+      {
+        vuetify,
+        propsData: {
+          draftCountry: 'CA',
+          draftRegion: 'ON',
+          validateForm: true
+        }
+      })
+    const vm: any = wrapper.vm
+
+    await Vue.nextTick()
+
+    expect(vm.selectedCountryCode).toEqual('CA')
+    expect(vm.selectedRegionName).toEqual('Ontario')
+    expect(vm.$refs.regionSelectRef.error).toBe(false)
+    wrapper.destroy()
+  })
+
   it('draft country with BC as region', async () => {
     const wrapper = mount(ForeignJurisdiction,
       {

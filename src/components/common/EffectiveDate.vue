@@ -9,6 +9,12 @@
         sm="3"
       >
         <label class="title-label">{{ effectiveDateLabel }}</label>
+        <p
+          v-if="showAuthorizationError"
+          class="app-red"
+        >
+          Check this box to continue
+        </p>
       </v-col>
       <v-col
         cols="12"
@@ -79,9 +85,10 @@ export default class EffectiveDate extends Mixins(DateMixin) {
 
   // Prop passed into this component.
   @Prop({ default: '' }) readonly initialEffectiveDate!: string
-  @Prop({ default: 'Effective Date of Continuation Out' }) readonly effectiveDateLabel!: string
+  @Prop({ default: 'Effective Date' }) readonly effectiveDateLabel!: string
   @Prop({ default: 'Date of Continuation Out' }) readonly dateLabel!: string
   @Prop({ default: 'A Date of Continuation Out is required.' }) readonly dateRequiredMsg!: string
+  @Prop({ default: false }) readonly showAuthorizationError!: boolean
   /** Prompt the validations. Used for global validations. */
   @Prop({ default: false }) readonly validateForm!: boolean
 
@@ -178,8 +185,12 @@ export default class EffectiveDate extends Mixins(DateMixin) {
   @Watch('validateForm')
   validateDateField (): void {
     if (this.validateForm && !this.dateFormatted) {
-      this.$refs.textarea.validate()
-      this.$refs.textarea.error = true
+      this.$nextTick(() => {
+        if (this.$refs && this.$refs.textarea) {
+          this.$refs.textarea.validate()
+          this.$refs.textarea.error = true
+        }
+      })
     }
   }
 

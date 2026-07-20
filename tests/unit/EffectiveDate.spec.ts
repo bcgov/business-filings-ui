@@ -51,6 +51,29 @@ describe('EffectiveDate', () => {
     expect(vm.menu).toEqual(false)
   })
 
+  it('clears the error once a valid date is entered after validation has been triggered', async () => {
+    const wrapper = mount(EffectiveDate,
+      {
+        vuetify,
+        propsData: {
+          initialEffectiveDate: ''
+        }
+      })
+    const vm: any = wrapper.vm
+
+    await wrapper.setProps({ validateForm: true })
+    await Vue.nextTick()
+
+    expect(vm.$refs.textarea.error).toBe(true)
+
+    const input = wrapper.find('#date-text-field')
+    await input.setValue('2023/06/10')
+    await Vue.nextTick()
+
+    expect(vm.$refs.textarea.error).toBe(false)
+    wrapper.destroy()
+  })
+
   it('emit correct events when a new date is selected', async () => {
     const wrapper = mount(EffectiveDate,
       {

@@ -61,25 +61,75 @@
               </h1>
             </header>
 
+            <!-- Expired Consent to Continue Out Warning -->
+            <v-alert
+              v-if="isConsentExpired"
+              type="warning"
+              outlined
+              icon="mdi-alert"
+              class="expired-consent-alert"
+            >
+              <p class="alertMsg">
+                <strong>Expired Consent to Continue Out:</strong> The consent to Continue Out you have chosen
+                is expired. Manager Approval is required to submit this Continuation Out.
+              </p>
+            </v-alert>
+
             <!-- Effective Date of Continuation -->
             <section>
               <header>
-                <h2>Effective Date of Continuation</h2>
+                <h2>Effective Date of Continuation Out</h2>
               </header>
               <div
                 id="effective-date-section"
-                :class="{ 'invalid-section': !effectiveDateValid && showErrors }"
+                :class="{ 'invalid-section': (!effectiveDateValid || !dateAuthorizationValid) && showErrors }"
               >
-                <EffectiveDate
-                  ref="effectiveDateRef"
-                  :class="{ 'invalid-component': !effectiveDateValid && showErrors }"
-                  class="pt-6 px-4"
-                  :initialEffectiveDate="initialEffectiveDate"
-                  :validateForm="showErrors"
-                  effectiveDateLabel="Effective Date"
-                  @update:effectiveDate="effectiveDate=$event"
-                  @valid="effectiveDateValid=$event"
-                />
+                <v-card flat>
+                  <EffectiveDate
+                    ref="effectiveDateRef"
+                    :class="{ 'invalid-component': !effectiveDateValid && showErrors }"
+                    class="pt-6 px-4"
+                    :initialEffectiveDate="initialEffectiveDate"
+                    :validateForm="showErrors"
+                    :showAuthorizationError="!dateAuthorizationValid && showErrors"
+                    @update:effectiveDate="effectiveDate=$event"
+                    @valid="effectiveDateValid=$event"
+                  />
+
+                  <v-row
+                    v-if="showDateAuthorization"
+                    no-gutters
+                    class="px-4"
+                  >
+                    <v-col
+                      cols="12"
+                      sm="3"
+                    />
+                    <v-col
+                      cols="12"
+                      sm="8"
+                    >
+                      <v-alert
+                        type="warning"
+                        text
+                        icon="mdi-alert"
+                        class="mismatch-alert"
+                      >
+                        <span class="alertMsg">
+                          This date does not match the dates in the Consent to Continue Out and requires manager
+                          approval.
+                        </span>
+                      </v-alert>
+                      <v-checkbox
+                        v-model="dateAuthorizationCheckbox"
+                        :error="!dateAuthorizationValid && showErrors"
+                        class="checkbox-error"
+                        hide-details
+                        label="I have manager approval for this Continuation Out effective date"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card>
               </div>
             </section>
 
@@ -90,19 +140,60 @@
               </header>
               <div
                 id="jurisdiction-information-section"
-                :class="{ 'invalid-section': !foreignJurisdictionValid && showErrors }"
+                :class="{ 'invalid-section':
+                  (!foreignJurisdictionValid || !jurisdictionAuthorizationValid) && showErrors }"
               >
-                <ForeignJurisdiction
-                  ref="foreignJurisdictionRef"
-                  :class="{ 'invalid-component': !foreignJurisdictionValid && showErrors }"
-                  class="pt-6 px-4"
-                  :draftCountry="initialCountry"
-                  :draftRegion="initialRegion"
-                  :validateForm="showErrors"
-                  @update:country="selectedCountry=$event"
-                  @update:region="selectedRegion=$event"
-                  @valid="foreignJurisdictionValid=$event"
-                />
+                <v-card flat>
+                  <ForeignJurisdiction
+                    ref="foreignJurisdictionRef"
+                    :class="{ 'invalid-component': !foreignJurisdictionValid && showErrors }"
+                    class="pt-6 px-4"
+                    :draftCountry="initialCountry"
+                    :draftRegion="initialRegion"
+                    :validateForm="showErrors"
+                    :showAuthorizationError="!jurisdictionAuthorizationValid && showErrors"
+                    @update:country="selectedCountry=$event"
+                    @update:region="selectedRegion=$event"
+                    @valid="foreignJurisdictionValid=$event"
+                  />
+
+                  <!-- shown when selected jurisdiction doesn't match the consent filing's jurisdiction -->
+                  <v-row
+                    v-if="showJurisdictionAuthorization"
+                    no-gutters
+                    class="px-4"
+                  >
+                    <v-col
+                      cols="12"
+                      sm="3"
+                    />
+                    <v-col
+                      cols="12"
+                      sm="8"
+                    >
+                      <v-alert
+                        v-if="showJurisdictionAuthorization"
+                        type="warning"
+                        text
+                        icon="mdi-alert"
+                        class="mismatch-alert"
+                      >
+                        <span class="alertMsg">
+                          This jurisdiction does not match the jurisdiction in the Consent to Continue Out and
+                          requires manager approval.
+                        </span>
+                      </v-alert>
+                      <v-checkbox
+                        v-if="showJurisdictionAuthorization"
+                        v-model="jurisdictionAuthorizationCheckbox"
+                        :error="!jurisdictionAuthorizationValid && showErrors"
+                        class="checkbox-error"
+                        hide-details
+                        label="I have manager approval for this Continuation Out jurisdiction"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card>
               </div>
             </section>
 
@@ -502,6 +593,20 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
   documentDeliveryValid = true
   documentOptionalEmail = ''
 
+  // variables for the source Consent to Continue Out filing (used to prepopulate
+  // jurisdiction and to validate the effective date/jurisdiction against its consent)
+  consentContinuationOutFilingId = 0
+  isConsentExpired = false
+  consentValidFromDate = ''
+  consentValidToDate = ''
+  consentJurisdictionCountry = ''
+  consentJurisdictionRegion = ''
+
+  // variables for manager-approval authorization checkboxes (required when the
+  // effective date or jurisdiction don't match the Consent to Continue Out filing)
+  dateAuthorizationCheckbox = false
+  jurisdictionAuthorizationCheckbox = false
+
   // variables for displaying dialogs
   resumeErrorDialog = false
   saveErrorReason: SaveErrorReasons = null
@@ -532,12 +637,53 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     return sessionStorage.getItem('BASE_URL')
   }
 
+  /** True if the effective date doesn't fall within the consent filing's valid date range. */
+  get isDateMismatch (): boolean {
+    if (!this.effectiveDate || !this.consentValidFromDate || !this.consentValidToDate) {
+      return false
+    }
+
+    return (this.effectiveDate < this.consentValidFromDate || this.effectiveDate > this.consentValidToDate)
+  }
+
+  /** True if the selected jurisdiction doesn't match the consent filing's jurisdiction. */
+  get isJurisdictionMismatch (): boolean {
+    if (!this.selectedCountry || !this.consentJurisdictionCountry) {
+      return false
+    }
+    if (this.selectedCountry !== this.consentJurisdictionCountry) {
+      return true
+    }
+    return !!this.consentJurisdictionRegion && this.selectedRegion !== this.consentJurisdictionRegion
+  }
+
+  /** True if the date authorization alert should be shown. */
+  get showDateAuthorization (): boolean {
+    return this.isDateMismatch
+  }
+
+  /** True if the jurisdiction authorization alert should be shown. */
+  get showJurisdictionAuthorization (): boolean {
+    return this.isJurisdictionMismatch
+  }
+
+  /** True if date authorization isn't required, or is required and checked. */
+  get dateAuthorizationValid (): boolean {
+    return !this.showDateAuthorization || this.dateAuthorizationCheckbox
+  }
+
+  /** True if jurisdiction authorization isn't required, or is required and checked. */
+  get jurisdictionAuthorizationValid (): boolean {
+    return !this.showJurisdictionAuthorization || this.jurisdictionAuthorizationCheckbox
+  }
+
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
     return (this.effectiveDateValid && this.certifyFormValid &&
       this.foreignJurisdictionValid && this.businessNameValid &&
       this.documentUploadValid && this.detailValid &&
-      this.documentDeliveryValid && this.courtOrderValid)
+      this.documentDeliveryValid && this.courtOrderValid &&
+      this.dateAuthorizationValid && this.jurisdictionAuthorizationValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -576,6 +722,9 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     // otherwise it's a draft filing
     this.filingId = +this.$route.query.filingId // number or NaN
 
+    // id of the Consent to Continue Out filing that authorized this Continuation Out
+    this.consentContinuationOutFilingId = +this.$route.query.consentContinuationOutFilingId || 0
+
     // if required data isn't set, go back to dashboard
     if (isNaN(this.filingId)) {
       this.navigateToBusinessDashboard(this.getIdentifier)
@@ -597,6 +746,9 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     // fetch draft (which may overwrite some properties)
     if (this.filingId > 0) {
       await this.fetchDraftFiling()
+    } else if (this.consentContinuationOutFilingId > 0) {
+      // only prepopulate from the consent filing on a fresh filing
+      await this.fetchConsentContinuationOutFiling()
     }
 
     this.dataLoaded = true
@@ -673,6 +825,49 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
       // eslint-disable-next-line no-console
       console.log('fetchDraftFiling() error =', error)
       this.resumeErrorDialog = true
+    })
+  }
+
+  /**
+   * Fetches the source Consent to Continue Out filing to prepopulate jurisdiction and to
+   * determine the valid effective-date range.
+   */
+  async fetchConsentContinuationOutFiling (): Promise<void> {
+    const businessUrl = `${this.getBusinessApiUrl}businesses/${this.getIdentifier}`
+    const url = `${businessUrl}/filings/${this.consentContinuationOutFilingId}`
+    await BusinessServices.fetchFiling(url).then(filing => {
+      const consentData = filing?.consentContinuationOut
+      const header = filing?.header
+
+      if (!consentData || !header) {
+        // eslint-disable-next-line no-console
+        console.log('fetchConsentContinuationOutFiling(): missing consentContinuationOut data')
+        return
+      }
+
+      const foreignJurisdiction = consentData.foreignJurisdiction
+      if (foreignJurisdiction?.country) {
+        this.initialCountry = foreignJurisdiction.country
+        this.consentJurisdictionCountry = foreignJurisdiction.country
+        if (foreignJurisdiction.region) {
+          this.initialRegion = foreignJurisdiction.region
+          this.consentJurisdictionRegion = foreignJurisdiction.region
+        }
+      }
+
+      if (header.effectiveDate) {
+        const effectiveDate = this.apiToYyyyMmDd(header.effectiveDate)
+        this.consentValidFromDate = effectiveDate
+
+        const expiryDateObj = this.yyyyMmDdToDate(effectiveDate)
+        expiryDateObj.setMonth(expiryDateObj.getMonth() + 6)
+        this.consentValidToDate = this.apiToYyyyMmDd(this.dateToApi(expiryDateObj))
+
+        this.isConsentExpired = (this.consentValidToDate < this.getCurrentDate)
+      }
+    }).catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('fetchConsentContinuationOutFiling() error =', error)
     })
   }
 
@@ -1032,8 +1227,8 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
   /** Object of valid flags. Must match validComponents. */
   get validFlags (): object {
     return {
-      effectiveDate: this.effectiveDateValid,
-      foreignJurisdiction: this.foreignJurisdictionValid,
+      effectiveDate: this.effectiveDateValid && this.dateAuthorizationValid,
+      foreignJurisdiction: this.foreignJurisdictionValid && this.jurisdictionAuthorizationValid,
       businessInformation: this.businessNameValid,
       documentUpload: this.documentUploadValid,
       detail: this.detailValid,
@@ -1049,11 +1244,24 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     this.documentUploadValid = this.fileKeys.length > 0
   }
 
+  @Watch('effectiveDate')
+  onEffectiveDateChanged (): void {
+    this.dateAuthorizationCheckbox = false
+  }
+
+  @Watch('selectedCountry')
+  @Watch('selectedRegion')
+  onJurisdictionChanged (): void {
+    this.jurisdictionAuthorizationCheckbox = false
+  }
+
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
   @Watch('detail')
   @Watch('documentDeliveryValid')
   @Watch('files')
+  @Watch('dateAuthorizationCheckbox')
+  @Watch('jurisdictionAuthorizationCheckbox')
   onHaveChanges (): void {
     this.haveChanges = true
   }
@@ -1120,6 +1328,12 @@ h2 {
   }
 }
 
+.alertMsg {
+  font-size: $px-14;
+  color: $gray7;
+  margin-bottom: 0;
+}
+
 // Fix font size and color to stay consistent.
 :deep() {
   #document-delivery, #court-order-label, #poa-label {
@@ -1133,6 +1347,46 @@ h2 {
   .invalid-component:not(.prevent-red-text) {
     .certify-stmt, .title-label {
       color: $app-red;
+    }
+  }
+
+  .expired-consent-alert.v-alert {
+    background-color: $BCgovGold0 !important;
+    border-radius: 0 !important;
+    padding: 22px 30px !important;
+
+    .v-icon {
+      font-size: 18px;
+    }
+
+    .v-alert__icon {
+      margin-right: 8px;
+    }
+  }
+
+  .mismatch-alert.v-alert {
+    background-color: #FAF9F8 !important;
+    border: none !important;
+    padding: 22px 30px !important;
+
+    &::before {
+      opacity: 0 !important;
+    }
+
+    .v-icon {
+      font-size: 18px;
+    }
+
+    .v-alert__icon {
+      margin-right: 8px;
+    }
+  }
+
+  .checkbox-error {
+    margin-bottom: 2rem;
+
+    label.v-label.error--text {
+      color: $gray7 !important;
     }
   }
 }

@@ -218,6 +218,38 @@ describe('Continuation Out view', () => {
     wrapper.destroy()
   })
 
+  it('requires authorization checks before the page is considered valid when mismatches are present', async () => {
+    const $route = { query: { filingId: '0' } }
+    const $router = mockRouter.mock()
+
+    const wrapper = shallowMount(ContinuationOut, { mocks: { $route, $router } })
+    const vm: any = wrapper.vm
+
+    vm.businessNameValid = true
+    vm.certifyFormValid = true
+    vm.courtOrderValid = true
+    vm.detailValid = true
+    vm.documentUploadValid = true
+    vm.documentDeliveryValid = true
+    vm.effectiveDateValid = true
+    vm.foreignJurisdictionValid = true
+    vm.consentValidFromDate = '2023-01-01'
+    vm.consentValidToDate = '2023-06-30'
+    vm.effectiveDate = '2023-07-01'
+    vm.selectedCountry = 'CA'
+    vm.consentJurisdictionCountry = 'US'
+    vm.selectedRegion = 'ON'
+    vm.consentJurisdictionRegion = 'NY'
+
+    expect(vm.isPageValid).toBe(false)
+
+    vm.dateAuthorizationCheckbox = true
+    vm.jurisdictionAuthorizationCheckbox = true
+    expect(vm.isPageValid).toBe(true)
+
+    wrapper.destroy()
+  })
+
   it('saves draft continuation out properly', async () => {
     // mock "has pending tasks" legal service
     vi.spyOn(BusinessServices, 'hasPendingTasks').mockImplementation((): any => {
@@ -341,6 +373,55 @@ describe('Continuation Out view', () => {
     expect(vm.initialBusinessName).toBe('North Shore Toys LTD.')
     expect(vm.initialCountry).toBe('CA')
     expect(vm.initialRegion).toBe('AB')
+
+    wrapper.destroy()
+  })
+
+  it('pre-populates jurisdiction and consent date range from a consent continuation out filing', async () => {
+    vi.spyOn(BusinessServices, 'fetchFiling').mockImplementation((): any => {
+      return Promise.resolve({
+        consentContinuationOut: {
+          foreignJurisdiction: {
+            country: 'US',
+            region: 'NY'
+          }
+        },
+        header: {
+          effectiveDate: '2024-01-10T08:00:00+00:00'
+        }
+      })
+    })
+
+    const $route = { query: { filingId: '0', consentContinuationOutFilingId: '123546' } }
+    createLocalVue().use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'continuation-out' })
+
+    const wrapper = shallowMount(ContinuationOut, {
+      router,
+      stubs: {
+        BusinessNameForeign: true,
+        CourtOrderPoa: true,
+        DetailComment: true,
+        DocumentDelivery: true,
+        Certify: true,
+        EffectiveDate: true,
+        FileUploadPdf: true,
+        ForeignJurisdiction: true,
+        SbcFeeSummary: true
+      },
+      mocks: { $route }
+    })
+    const vm: any = wrapper.vm
+
+    await flushPromises()
+
+    expect(vm.initialCountry).toBe('US')
+    expect(vm.initialRegion).toBe('NY')
+    expect(vm.consentJurisdictionCountry).toBe('US')
+    expect(vm.consentJurisdictionRegion).toBe('NY')
+    expect(vm.consentValidFromDate).toBe('2024-01-10')
+    expect(vm.showJurisdictionAuthorization).toBe(false)
 
     wrapper.destroy()
   })
