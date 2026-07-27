@@ -2,6 +2,10 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
+import { BusinessServices } from '@/services'
+import { DocumentTypes } from '@/enums'
+import { FilingTypes } from '@bcrs-shared-components/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { waitForUpdate } from '../wait-for-update'
 import { vi } from 'vitest'
 
@@ -289,6 +293,53 @@ describe('FileUploadPdf component', () => {
     expect(wrapper.emitted('update:fileKeys').pop()[0]).toEqual([])
     expect(wrapper.emitted('update:files').pop()[0]).toEqual([])
 
+    wrapper.destroy()
+  })
+
+  it('uploadFile calls uploadDocument with the document properties and returns the key', async () => {
+    const uploadDocument = vi.spyOn(BusinessServices, 'uploadDocument').mockResolvedValue(
+      { key: 'CORP-DS0100001003', documentServiceId: 'DS0100001003' }
+    )
+
+    const wrapper = mount(FileUploadPdf, {
+      propsData: {
+        userId: 'user-1',
+        filingType: FilingTypes.COURT_ORDER,
+        entityType: CorpTypeCd.BC_COMPANY,
+        documentType: DocumentTypes.COURT_ORDER,
+        businessIdentifier: 'BC1234567',
+        filingId: 111
+      },
+      vuetify
+    })
+    const vm: any = wrapper.vm
+
+    const key = await vm.uploadFile(oneMBFile)
+
+    expect(uploadDocument).toHaveBeenCalledWith(oneMBFile, FilingTypes.COURT_ORDER,
+      CorpTypeCd.BC_COMPANY, DocumentTypes.COURT_ORDER, 'user-1', 'BC1234567', 111)
+    expect(key).toBe('CORP-DS0100001003')
+    expect(vm.errorMessages.length).toBe(0)
+
+    vi.restoreAllMocks()
+    wrapper.destroy()
+  })
+
+  it('uploadFile sets an error message and returns null when the upload fails', async () => {
+    vi.spyOn(BusinessServices, 'uploadDocument').mockRejectedValue(new Error('went wrong'))
+
+    const wrapper = mount(FileUploadPdf, {
+      propsData: { userId: 'user-1' },
+      vuetify
+    })
+    const vm: any = wrapper.vm
+
+    const key = await vm.uploadFile(oneMBFile)
+
+    expect(key).toBeNull()
+    expect(vm.errorMessages[0]).toBe('An error occurred while uploading. Please try again.')
+
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 })

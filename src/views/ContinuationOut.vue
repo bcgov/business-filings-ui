@@ -260,6 +260,11 @@
                         :maxSize="MAX_FILE_SIZE"
                         :pageSize="PageSizes.LETTER_PORTRAIT"
                         :userId="getUserInfo?.keycloakGuid"
+                        :filingType="FilingTypes.CONTINUATION_OUT"
+                        :entityType="getLegalType"
+                        :documentType="DocumentTypes.CONTINUATION_OUT"
+                        :businessIdentifier="getIdentifier"
+                        :filingId="filingId"
                       />
                     </v-col>
                   </v-row>
@@ -504,7 +509,8 @@ import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { BusinessServices, EnumUtilities } from '@/services'
-import { AuthorizedActions, EffectOfOrderTypes, FilingStatus, PageSizes, SaveErrorReasons } from '@/enums'
+import { AuthorizedActions, DocumentTypes, EffectOfOrderTypes, FilingStatus, PageSizes, SaveErrorReasons }
+  from '@/enums'
 import { FilingCodes, FilingTypes } from '@bcrs-shared-components/enums'
 import { ConfirmDialogType, UserInfoIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -571,6 +577,8 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
   readonly MAX_FILE_SIZE = 30 // in MB
   readonly MAX_FILES = 5
   readonly PageSizes = PageSizes
+  readonly FilingTypes = FilingTypes
+  readonly DocumentTypes = DocumentTypes
   files: File[] = [] // uploaded document file objects
   fileKeys: string[] = [] // uploaded document file keys
   documentUploadValid = false
