@@ -12,6 +12,7 @@ const defaultFlagSet: LDFlagSet = {
   'banner-text': '', // by default, there is no banner text
   'businesses-to-manage-in-colin': [],
   'enable-digital-credentials': false,
+  'enable-new-feature': '', // CSV of features to enable (eg, "drs-upload")
   'enable-legal-name-fix': false,
   'supported-agm-extension-entities': [], // FUTURE: code should check this
   'supported-agm-location-chg-entities': [], // FUTURE: code should check this

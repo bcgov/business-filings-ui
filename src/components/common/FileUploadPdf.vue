@@ -84,8 +84,10 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { PageSizes, PAGE_SIZE_DICT } from '@/enums'
+import { DocumentTypes, PageSizes, PAGE_SIZE_DICT } from '@/enums'
 import { PdfInfoIF } from '@/interfaces'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { FilingTypes } from '@bcrs-shared-components/enums'
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf'
 import { BusinessServices } from '@/services'
 
@@ -96,9 +98,14 @@ export default class FileUploadPdf extends Vue {
     picker: any
   }
 
+  @Prop({ default: null }) readonly businessIdentifier!: string
   @Prop({ default: null }) readonly customErrorMSg!: string
+  @Prop({ default: null }) readonly documentType!: DocumentTypes
+  @Prop({ default: null }) readonly entityType!: CorpTypeCd
   @Prop({ default: null }) readonly file!: File
   @Prop({ default: null }) readonly fileKey!: string
+  @Prop({ default: 0 }) readonly filingId!: number
+  @Prop({ default: null }) readonly filingType!: FilingTypes
   @Prop({ default: true }) readonly isRequired!: boolean
   @Prop({ default: 0 }) readonly maxSize!: number // in MB
   @Prop({ default: null }) readonly pageSize!: PageSizes
@@ -406,17 +413,9 @@ export default class FileUploadPdf extends Vue {
   async uploadFile (file: File): Promise<string> {
     try {
       // NB: will throw on API error
-      const psu = await BusinessServices.getPresignedUrl(file.name)
-
-      // NB: will throw on API error
-      const res = await BusinessServices.uploadToUrl(psu.preSignedUrl, file, psu.key,
-        this.userId)
-
-      // check if successful
-      if (res?.status === 200) {
-        return psu.key
-      }
-      throw new Error()
+      const doc = await BusinessServices.uploadDocument(file, this.filingType, this.entityType,
+        this.documentType, this.userId, this.businessIdentifier, this.filingId)
+      return doc.key
     } catch (err) {
       this.errorMessages = ['An error occurred while uploading. Please try again.']
       return null

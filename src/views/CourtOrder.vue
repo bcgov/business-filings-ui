@@ -101,6 +101,11 @@
                               :maxSize="MAX_FILE_SIZE"
                               :pageSize="PageSizes.LETTER_PORTRAIT"
                               :userId="getUserInfo?.keycloakGuid"
+                              :filingType="FilingTypes.COURT_ORDER"
+                              :entityType="getLegalType"
+                              :documentType="DocumentTypes.COURT_ORDER"
+                              :businessIdentifier="getIdentifier"
+                              :filingId="filingId"
                             />
                             <v-icon>mdi-plus</v-icon>
                             <span>Add a Document</span>
@@ -234,7 +239,7 @@ import { ConfirmDialog, ResumeErrorDialog } from '@/components/dialogs'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { ConfirmDialogType, FormIF, StaffPaymentIF, UserInfoIF } from '@/interfaces'
-import { AuthorizedActions, EffectOfOrderTypes, PageSizes } from '@/enums'
+import { AuthorizedActions, DocumentTypes, EffectOfOrderTypes, PageSizes } from '@/enums'
 import { FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { BusinessServices, EnumUtilities } from '@/services'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -268,6 +273,8 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   readonly AuthorizedActions = AuthorizedActions
   readonly IsAuthorized = IsAuthorized
   readonly FilingCodes = FilingCodes
+  readonly FilingTypes = FilingTypes
+  readonly DocumentTypes = DocumentTypes
 
   /** Prop to display the dialog. */
   @Prop({ required: true }) readonly dialog!: boolean
