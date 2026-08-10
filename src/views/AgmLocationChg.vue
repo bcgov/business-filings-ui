@@ -426,7 +426,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
     return rules
   }
 
-  get minAgmYear (): number {
+  get minAgmYear () : number {
     const today = new Date()
     const defaultMinYear = today.getFullYear() - 2
 
