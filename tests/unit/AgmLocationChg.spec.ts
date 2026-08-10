@@ -235,3 +235,77 @@ describe('AGM Location Chg view', () => {
     wrapper.destroy()
   })
 })
+
+describe('AGM year min/max boundaries', () => {
+  const mountComponent = () => {
+    const $route = { query: { filingId: '0' } }
+    return shallowMount(AgmLocationChg, { mocks: { $route }, vuetify })
+  }
+
+  const currentYear = new Date().getFullYear()
+  const lookbackFloor = currentYear - 2
+
+  it('uses the default 2-year lookback floor when founding date is older', () => {
+    businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
+
+    const wrapper = mountComponent()
+    const vm: any = wrapper.vm
+
+    // founding year (1971) is older than the lookback floor
+    expect(vm.minAgmYear).toBe(lookbackFloor)
+
+    wrapper.destroy()
+  })
+
+  it('uses the founding year as the floor when it is more recent than the default lookback window', () => {
+    const foundingYear = lookbackFloor + 1
+    businessStore.setFoundingDate(`${foundingYear}-06-01T00:00:00-00:00`)
+
+    const wrapper = mountComponent()
+    const vm: any = wrapper.vm
+
+    // founding year is later than the lookback floor
+    expect(vm.minAgmYear).toBe(foundingYear)
+
+    wrapper.destroy()
+  })
+
+  it('uses the founding year as the floor when the business was founded this year', () => {
+    businessStore.setFoundingDate(`${currentYear}-01-15T00:00:00-00:00`)
+
+    const wrapper = mountComponent()
+    const vm: any = wrapper.vm
+
+    expect(vm.minAgmYear).toBe(currentYear)
+
+    wrapper.destroy()
+  })
+
+  it('computes maxAgmYear as one year in the future regardless of founding date', () => {
+    businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
+
+    const wrapper = mountComponent()
+    const vm: any = wrapper.vm
+
+    expect(vm.maxAgmYear).toBe(currentYear + 1)
+
+    wrapper.destroy()
+  })
+
+  it('fails agmYearRules validation for a year before the founding date', () => {
+    const foundingYear = lookbackFloor + 1
+    businessStore.setFoundingDate(`${foundingYear}-06-01T00:00:00-00:00`)
+
+    const wrapper = mountComponent()
+    const vm: any = wrapper.vm
+
+    const rules = vm.agmYearRules
+    const belowFloorResult = rules[2](String(foundingYear - 1))
+    expect(belowFloorResult).toBe(`Must be on or after ${foundingYear}`)
+
+    const atFloorResult = rules[2](String(foundingYear))
+    expect(atFloorResult).toBe(true)
+
+    wrapper.destroy()
+  })
+})

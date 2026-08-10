@@ -426,9 +426,13 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin, Filin
     return rules
   }
 
-  get minAgmYear () : number {
+  get minAgmYear (): number {
     const today = new Date()
-    return (today.getFullYear() - 2)
+    const defaultMinYear = today.getFullYear() - 2
+
+    // AGM year can never be before the founding date of the business
+    const recognitionYear = this.getFoundingDate ? new Date(this.getFoundingDate).getFullYear() : defaultMinYear
+    return Math.max(defaultMinYear, recognitionYear)
   }
 
   get maxAgmYear () : number {
