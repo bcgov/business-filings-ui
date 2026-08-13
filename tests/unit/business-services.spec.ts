@@ -315,47 +315,15 @@ describe('Business Services', () => {
     vi.restoreAllMocks()
   })
 
-  it('uploads a document via Minio when the drs-upload feature is disabled', async () => {
+  it('does not upload when the drs-upload feature is disabled', async () => {
     vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockReturnValue('')
 
-    // mock presigned url + Minio upload responses
-    get.withArgs('https://business-api.url/v2/documents/court-order.pdf/signatures')
-      .resolves({
-        data: {
-          preSignedUrl: 'https://minio.url/court-order.pdf',
-          key: 'minio-key-123'
-        }
-      })
-    put.withArgs('https://minio.url/court-order.pdf')
-      .resolves({ status: 200 })
-
     const file = new File(['data'], 'court-order.pdf', { type: 'application/pdf' })
-    const doc = await BusinessServices.uploadDocument(file, FilingTypes.COURT_ORDER, CorpTypeCd.BC_COMPANY,
+    const result = await BusinessServices.uploadDocument(file, FilingTypes.COURT_ORDER, CorpTypeCd.BC_COMPANY,
       DocumentTypes.COURT_ORDER, 'keycloak-guid', 'BC1234567', 111)
 
-    expect(doc.key).toBe('minio-key-123')
-
-    vi.restoreAllMocks()
-  })
-
-  it('throws when the Minio document upload fails', async () => {
-    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockReturnValue('')
-
-    // mock presigned url response + Minio upload error
-    get.withArgs('https://business-api.url/v2/documents/court-order.pdf/signatures')
-      .resolves({
-        data: {
-          preSignedUrl: 'https://minio.url/court-order.pdf',
-          key: 'minio-key-123'
-        }
-      })
-    put.rejects(new Error('went wrong'))
-
-    const file = new File(['data'], 'court-order.pdf', { type: 'application/pdf' })
-    await expect(
-      BusinessServices.uploadDocument(file, FilingTypes.COURT_ORDER, CorpTypeCd.BC_COMPANY,
-        DocumentTypes.COURT_ORDER, 'keycloak-guid', 'BC1234567', 111)
-    ).rejects.toThrow()
+    expect(result).toBeUndefined()
+    expect(post.called).toBe(false)
 
     vi.restoreAllMocks()
   })
