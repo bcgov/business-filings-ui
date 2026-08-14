@@ -8,7 +8,6 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { StatusCodes } from 'http-status-codes'
 import { useConfigurationStore } from '@/stores/configurationStore'
-import { GetCurrentAccount } from '@/utils'
 
 /**
  * Class that provides integration with the Business API.
