@@ -3,7 +3,6 @@ import sinon from 'sinon'
 import axios from '@/axios-auth'
 import BusinessServices from '@/services/business-services'
 import { useConfigurationStore } from '@/stores/configurationStore'
-import * as FeatureFlags from '@/utils/feature-flags'
 import { DocumentTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
@@ -271,9 +270,7 @@ describe('Business Services', () => {
     expect(response).toEqual({ data: PDF })
   })
 
-  it('uploads a document to DRS when the drs-upload feature is enabled', async () => {
-    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockReturnValue('some-other-feature,drs-upload')
-
+  it('uploads a document to DRS', async () => {
     // mock DRS upload response
     post.withArgs('https://business-api.url/v2/documents/client/courtOrder/BC/court_order')
       .resolves({
@@ -301,8 +298,6 @@ describe('Business Services', () => {
   })
 
   it('throws when the DRS document upload fails', async () => {
-    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockReturnValue('drs-upload')
-
     // mock DRS upload error
     post.rejects(new Error('went wrong'))
 
@@ -311,19 +306,6 @@ describe('Business Services', () => {
       BusinessServices.uploadDocument(file, FilingTypes.COURT_ORDER, CorpTypeCd.BC_COMPANY,
         DocumentTypes.COURT_ORDER, 'keycloak-guid', 'BC1234567', 111)
     ).rejects.toThrow()
-
-    vi.restoreAllMocks()
-  })
-
-  it('does not upload when the drs-upload feature is disabled', async () => {
-    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockReturnValue('')
-
-    const file = new File(['data'], 'court-order.pdf', { type: 'application/pdf' })
-    const result = await BusinessServices.uploadDocument(file, FilingTypes.COURT_ORDER, CorpTypeCd.BC_COMPANY,
-      DocumentTypes.COURT_ORDER, 'keycloak-guid', 'BC1234567', 111)
-
-    expect(result).toBeUndefined()
-    expect(post.called).toBe(false)
 
     vi.restoreAllMocks()
   })

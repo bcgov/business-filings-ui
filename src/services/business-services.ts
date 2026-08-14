@@ -8,7 +8,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { StatusCodes } from 'http-status-codes'
 import { useConfigurationStore } from '@/stores/configurationStore'
-import { GetFeatureFlag } from '@/utils'
+import { GetCurrentAccount } from '@/utils'
 
 /**
  * Class that provides integration with the Business API.
@@ -337,21 +337,13 @@ export default class BusinessServices {
     })
   }
 
-  /** Whether the DRS (Document Record Service) upload flow is enabled. */
-  static get isDrsUploadEnabled (): boolean {
-    const enabledFeatures: string[] = (GetFeatureFlag('enable-new-feature') || '').split(',')
-    return enabledFeatures.includes('drs-upload')
-  }
-
   /**
-   * Uploads the specified document. When the DRS feature is enabled, this makes a single call
-   * to the Legal API client document endpoint (which stores the document in the Document Record
-   * Service). Otherwise it falls back to the legacy two-step Minio presigned-URL flow.
+   * Uploads the specified document to the Document Record Service (DRS).
    * @param file the file to upload (PDF)
    * @param filingType the filing type (eg, FilingTypes.COURT_ORDER)
    * @param entityType the entity type (eg, CorpTypeCd.BC_COMPANY)
    * @param documentType the document type (eg, DocumentTypes.COURT_ORDER)
-   * @param keycloakGuid the user's Keycloak GUID (legacy flow only)
+   * @param keycloakGuid the user's Keycloak GUID (unused, kept for API compatibility)
    * @param businessIdentifier the business identifier, if available
    * @param filingId the filing id, if available
    * @returns a promise to return the document upload object (throws on error)
@@ -365,27 +357,25 @@ export default class BusinessServices {
     businessIdentifier?: string,
     filingId?: number
   ): Promise<DocumentUploadIF> {
-    if (this.isDrsUploadEnabled) {
-      const url = `${this.businessApiUrl}documents/client/${filingType}/${entityType}/${documentType}`
+    const url = `${this.businessApiUrl}documents/client/${filingType}/${entityType}/${documentType}`
 
-      const config = {
-        headers: { 'Content-Type': 'application/pdf' },
-        params: {
-          filename: file.name,
-          businessIdentifier: businessIdentifier || undefined,
-          filingId: filingId || undefined
-        }
+    const config = {
+      headers: { 'Content-Type': 'application/pdf' },
+      params: {
+        filename: file.name,
+        businessIdentifier: businessIdentifier || undefined,
+        filingId: filingId || undefined
       }
-
-      return axios.post(url, file, config)
-        .then(response => {
-          const data = response?.data as DocumentUploadIF
-          if (!data?.key) {
-            throw new Error('Invalid API response')
-          }
-          return data
-        })
     }
+
+    return axios.post(url, file, config)
+      .then(response => {
+        const data = response?.data as DocumentUploadIF
+        if (!data?.key) {
+          throw new Error('Invalid API response')
+        }
+        return data
+      })
   }
 
   //
