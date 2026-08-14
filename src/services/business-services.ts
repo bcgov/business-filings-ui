@@ -1,14 +1,13 @@
 // Libraries
 import axios from '@/axios-auth'
 import { AxiosResponse } from 'axios'
-import { ApiBusinessIF, ApiFilingIF, CommentIF, DocumentIF, DocumentUploadIF, FetchDocumentsIF, PresignedUrlIF }
+import { ApiBusinessIF, ApiFilingIF, CommentIF, DocumentIF, DocumentUploadIF, FetchDocumentsIF }
   from '@/interfaces'
 import { AuthorizedActions, DigitalCredentialTypes, DocumentTypes, FilingStatus, Roles } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { StatusCodes } from 'http-status-codes'
 import { useConfigurationStore } from '@/stores/configurationStore'
-import { GetFeatureFlag } from '@/utils'
 
 /**
  * Class that provides integration with the Business API.
@@ -337,21 +336,13 @@ export default class BusinessServices {
     })
   }
 
-  /** Whether the DRS (Document Record Service) upload flow is enabled. */
-  static get isDrsUploadEnabled (): boolean {
-    const enabledFeatures: string[] = (GetFeatureFlag('enable-new-feature') || '').split(',')
-    return enabledFeatures.includes('drs-upload')
-  }
-
   /**
-   * Uploads the specified document. When the DRS feature is enabled, this makes a single call
-   * to the Legal API client document endpoint (which stores the document in the Document Record
-   * Service). Otherwise it falls back to the legacy two-step Minio presigned-URL flow.
+   * Uploads the specified document to the Document Record Service (DRS).
    * @param file the file to upload (PDF)
    * @param filingType the filing type (eg, FilingTypes.COURT_ORDER)
    * @param entityType the entity type (eg, CorpTypeCd.BC_COMPANY)
    * @param documentType the document type (eg, DocumentTypes.COURT_ORDER)
-   * @param keycloakGuid the user's Keycloak GUID (legacy flow only)
+   * @param keycloakGuid the user's Keycloak GUID (unused, kept for API compatibility)
    * @param businessIdentifier the business identifier, if available
    * @param filingId the filing id, if available
    * @returns a promise to return the document upload object (throws on error)
@@ -365,64 +356,25 @@ export default class BusinessServices {
     businessIdentifier?: string,
     filingId?: number
   ): Promise<DocumentUploadIF> {
-    if (this.isDrsUploadEnabled) {
-      const url = `${this.businessApiUrl}documents/client/${filingType}/${entityType}/${documentType}`
+    const url = `${this.businessApiUrl}documents/client/${filingType}/${entityType}/${documentType}`
 
-      const config = {
-        headers: { 'Content-Type': 'application/pdf' },
-        params: {
-          filename: file.name,
-          businessIdentifier: businessIdentifier || undefined,
-          filingId: filingId || undefined
+    const config = {
+      headers: { 'Content-Type': 'application/pdf' },
+      params: {
+        filename: file.name,
+        businessIdentifier: businessIdentifier || undefined,
+        filingId: filingId || undefined
+      }
+    }
+
+    return axios.post(url, file, config)
+      .then(response => {
+        const data = response?.data as DocumentUploadIF
+        if (!data?.key) {
+          throw new Error('Invalid API response')
         }
-      }
-
-      return axios.post(url, file, config)
-        .then(response => {
-          const data = response?.data as DocumentUploadIF
-          if (!data?.key) {
-            throw new Error('Invalid API response')
-          }
-          return data
-        })
-    } else {
-      // legacy Minio flow
-      const psu = await this.getPresignedUrl(file.name)
-      const res = await this.uploadToUrl(psu.preSignedUrl, file, psu.key, keycloakGuid)
-      if (!res || res.status !== StatusCodes.OK) {
-        throw new Error('Invalid API response')
-      }
-      return { key: psu.key }
-    }
-  }
-
-  /**
-   * Gets a pre-signed URL for the specified filename.
-   * @param filename the file name
-   * @returns the presigned url object
-   */
-  static async getPresignedUrl (fileName: string): Promise<PresignedUrlIF> {
-    const url = `${this.businessApiUrl}documents/${fileName}/signatures`
-    return axios.get(url)
-      .then(response => response?.data)
-  }
-
-  /**
-   * Uploads the specified file to the specified URL.
-   * @param url the URL to upload to
-   * @param file the file to upload
-   * @param key the file key
-   * @param userId the file user id
-   * @returns the axios response
-   */
-  static async uploadToUrl (url: string, file: File, key: string, userId: string): Promise<AxiosResponse> {
-    const headers = {
-      'Content-Type': file.type,
-      'x-amz-meta-userid': `${userId}`,
-      'x-amz-meta-key': `${key}`,
-      'Content-Disposition': `attachment; filename=${file.name}`
-    }
-    return axios.put(url, file, { headers, baseURL: this.businessApiUrl })
+        return data
+      })
   }
 
   //

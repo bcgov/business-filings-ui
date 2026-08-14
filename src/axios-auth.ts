@@ -16,11 +16,6 @@ instance.interceptors.request.use(
     const authApiUrl = import.meta.env.VUE_APP_AUTH_API_URL
     const payApiUrl = import.meta.env.VUE_APP_PAY_API_URL
 
-    // don't add common headers for Minio endpoint
-    if (request.url?.startsWith('https://minio')) {
-      return request
-    }
-
     // add headers only if Vitest isn't running as it breaks some tests
     if (import.meta.env.VITEST === undefined) {
       // add  headers common to all APIs
