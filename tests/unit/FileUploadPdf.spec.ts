@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { BusinessServices } from '@/services'
-import { DocumentTypes } from '@/enums'
+import { DocumentTypes, PageSizes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { waitForUpdate } from '../wait-for-update'
@@ -200,6 +200,202 @@ describe('FileUploadPdf component', () => {
     expect(wrapper.emitted('update:file').pop()[0]).toEqual(oneMBFile)
 
     wrapper.destroy()
+  })
+
+  describe('isPageSize', () => {
+    /**
+     * Replaces the real pdf.js library with a small mock containing
+     * the PDF document/pages needed for each isPageSize test.
+     */
+    function mockPdfDocument (vm: any, viewports: Array<{ width: number, height: number }>) {
+      const getPage = vi.fn().mockImplementation(async (pageNum: number) => ({
+        getViewport: vi.fn().mockReturnValue(viewports[pageNum - 1])
+      }))
+
+      const getDocument = vi.fn().mockReturnValue({
+        promise: Promise.resolve({
+          numPages: viewports.length,
+          getPage
+        })
+      })
+
+      vm.pdfjsLib = {
+        getDocument
+      }
+
+      return {
+        getDocument,
+        getPage
+      }
+    }
+
+    it('accepts a Letter-size portrait PDF', async () => {
+      const wrapper = mount(FileUploadPdf, {
+        vuetify
+      })
+
+      const vm: any = wrapper.vm
+
+      const { getDocument, getPage } = mockPdfDocument(vm, [
+        {
+          width: 612,
+          height: 792
+        }
+      ])
+
+      const file = new File(
+        [new ArrayBuffer(100)],
+        'letter-portrait.pdf',
+        { type: 'application/pdf' }
+      )
+
+      const result = await vm.isPageSize(file, PageSizes.LETTER_PORTRAIT)
+
+      expect(result).toBe(true)
+      expect(getDocument).toHaveBeenCalled()
+      expect(getPage).toHaveBeenCalledWith(1)
+
+      const page = await getPage.mock.results[0].value
+      expect(page.getViewport).toHaveBeenCalledWith({ scale: 1 })
+
+      wrapper.destroy()
+    })
+
+    it('accepts a Letter-size PDF whose MediaBox is landscape but is rotated to portrait', async () => {
+      const wrapper = mount(FileUploadPdf, {
+        vuetify
+      })
+
+      const vm: any = wrapper.vm
+
+      // The PDF is stored with a 792 x 612 point MediaBox (landscape),
+      // but /Rotate 270 makes the displayed page 612 x 792 (portrait).
+
+      const getPage = vi.fn().mockResolvedValue({
+        getViewport: vi.fn().mockReturnValue({
+          width: 612,
+          height: 792
+        })
+      })
+
+      const getDocument = vi.fn().mockReturnValue({
+        promise: Promise.resolve({
+          numPages: 1,
+          getPage
+        })
+      })
+
+      vm.pdfjsLib = {
+        getDocument
+      }
+
+      const file = new File(
+        [new ArrayBuffer(100)],
+        'letter-rotated.pdf',
+        { type: 'application/pdf' }
+      )
+
+      const result = await vm.isPageSize(file, PageSizes.LETTER_PORTRAIT)
+
+      expect(result).toBe(true)
+      expect(getDocument).toHaveBeenCalled()
+      expect(getPage).toHaveBeenCalledWith(1)
+
+      const page = await getPage.mock.results[0].value
+      expect(page.getViewport).toHaveBeenCalledWith({ scale: 1 })
+
+      wrapper.destroy()
+    })
+
+    it('accepts minor page-size rounding differences', async () => {
+      const wrapper = mount(FileUploadPdf, {
+        vuetify
+      })
+
+      const vm: any = wrapper.vm
+
+      const { getDocument } = mockPdfDocument(vm, [
+        {
+          // 612.5 / 72 = 8.5069 inches
+          // 792.5 / 72 = 11.0069 inches
+          // Both are within the 0.02-inch tolerance.
+          width: 612.5,
+          height: 792.5
+        }
+      ])
+
+      const file = new File(
+        [new ArrayBuffer(100)],
+        'letter-rounded.pdf',
+        { type: 'application/pdf' }
+      )
+
+      const result = await vm.isPageSize(file, PageSizes.LETTER_PORTRAIT)
+
+      expect(result).toBe(true)
+      expect(getDocument).toHaveBeenCalled()
+
+      wrapper.destroy()
+    })
+
+    it('rejects a PDF with an incorrect page size', async () => {
+      const wrapper = mount(FileUploadPdf, {
+        vuetify
+      })
+
+      const vm: any = wrapper.vm
+
+      mockPdfDocument(vm, [
+        {
+          width: 612,
+          height: 720
+        }
+      ])
+
+      const file = new File(
+        [new ArrayBuffer(100)],
+        'incorrect-size.pdf',
+        { type: 'application/pdf' }
+      )
+
+      const result = await vm.isPageSize(file, PageSizes.LETTER_PORTRAIT)
+
+      expect(result).toBe(false)
+
+      wrapper.destroy()
+    })
+
+    it('rejects when any page has an incorrect page size', async () => {
+      const wrapper = mount(FileUploadPdf, {
+        vuetify
+      })
+
+      const vm: any = wrapper.vm
+
+      const { getPage } = mockPdfDocument(vm, [
+        {
+          width: 612,
+          height: 792
+        },
+        {
+          width: 612,
+          height: 720
+        }
+      ])
+
+      const file = new File(
+        [new ArrayBuffer(100)],
+        'mixed-page-sizes.pdf',
+        { type: 'application/pdf' }
+      )
+
+      const result = await vm.isPageSize(file, PageSizes.LETTER_PORTRAIT)
+
+      expect(result).toBe(false)
+      expect(getPage).toHaveBeenCalledTimes(2)
+
+      wrapper.destroy()
+    })
   })
 
   // --- multi-file mode (maxFiles > 1) ---

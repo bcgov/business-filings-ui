@@ -384,6 +384,7 @@ export default class FileUploadPdf extends Vue {
   /**
    * Checks whether PDF file is using specified page size by checking
    * width and height of all pages. Throws an exception on invalid PDF.
+   * Uses the rotation-aware viewport.
    * @param file the file to check
    * @param pageSize page size to check for
    * @return whether file is expected page size
@@ -391,16 +392,20 @@ export default class FileUploadPdf extends Vue {
   async isPageSize (file: File, pageSize: PageSizes): Promise<boolean> {
     const pageSizeInfo = PAGE_SIZE_DICT[pageSize]
     const arrayBuffer = await file.arrayBuffer()
-    const data = new Uint8Array(arrayBuffer) // put it in a Uint8Array
+    const data = new Uint8Array(arrayBuffer)
     const document = await this.pdfjsLib.getDocument({ data }).promise
+
+    const EPSILON = 0.02 // tolerance in inches for minor producer rounding
+
     for (let pageNum = 1; pageNum <= document.numPages; pageNum++) {
       const page = await document.getPage(pageNum)
-      const [x, y, w, h] = page._pageInfo.view
-      const width = w - x
-      const height = h - y
+      const viewport = page.getViewport({ scale: 1 })
+      const widthInches = viewport.width / pageSizeInfo.pointsPerInch
+      const heightInches = viewport.height / pageSizeInfo.pointsPerInch
+
       const isValidPageSize =
-        (width / pageSizeInfo.pointsPerInch === pageSizeInfo.width) &&
-        (height / pageSizeInfo.pointsPerInch === pageSizeInfo.height)
+        (Math.abs(widthInches - pageSizeInfo.width) < EPSILON) &&
+        (Math.abs(heightInches - pageSizeInfo.height) < EPSILON)
       if (!isValidPageSize) return false
     }
     return true
