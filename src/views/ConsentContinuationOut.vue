@@ -196,23 +196,82 @@
               </div>
             </section>
 
+            <!-- Completing Party Confirmation -->
+            <section>
+              <header>
+                <h2>Completing Party Confirmation</h2>
+                <p class="grey-text">
+                  The following information must be completed and confirmed before submitting this filing.
+                </p>
+              </header>
+              <div
+                id="confirm-completion-party-section"
+                :class="{ 'invalid-section': !confirmCompletionPartyValid && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
+                  <v-row no-gutters>
+                    <v-col
+                      cols="12"
+                      sm="3"
+                      class="pr-4"
+                    >
+                      <strong :class="{ 'app-red': !confirmCompletionPartyValid && showErrors }">
+                        Confirm Completion
+                      </strong>
+                      <p
+                        v-if="!confirmCompletionPartyValid && showErrors"
+                        class="app-red mt-1"
+                        style="font-size: 0.875rem"
+                      >
+                        Check this box to continue
+                      </p>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="9"
+                    >
+                      <v-checkbox
+                        v-model="confirmCompletionParty"
+                        hide-details
+                        :rules="[v => !!v || '']"
+                        @change="confirmCompletionPartyValid = !!confirmCompletionParty"
+                      >
+                        <template #label>
+                          <span>
+                            I, <strong>{{ certifiedBy || getUserFullName }}</strong>, the completing party, confirm
+                            that the laws of the foreign jurisdiction to which the continued corporation will be
+                            subject provide, in effect, for the following:
+                            <ul class="mt-2 ml-4">
+                              <li>the property, rights and interest of the company continue to be the property, rights
+                                and interests of the continued corporation,</li>
+                              <li>the continued corporation continues to be liable for the obligations of the
+                                company,</li>
+                              <li>an existing cause of action, claim or liability to prosecution is unaffected,</li>
+                              <li>a legal proceeding being prosecuted or pending by or against the company may be
+                                prosecuted or its prosecution may be continued, as the case may be, by or against the
+                                continued corporation, and</li>
+                              <li>a conviction against, or a ruling, or judgment in favour of or against, the company
+                                may be enforced by or against the continued corporation.</li>
+                            </ul>
+                          </span>
+                        </template>
+                      </v-checkbox>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </div>
+            </section>
+
             <!-- Certify -->
             <section>
-              <header v-if="isBaseCompany">
-                <h2>
-                  Authorization
-                </h2>
+              <header>
+                <h2>Certify</h2>
                 <p class="grey-text">
                   Confirm your authorization to complete and submit this application. The name of the person
                   submitting this filing will be displayed in the history of filings for this {{ displayName() }}.
-                </p>
-              </header>
-              <header v-else>
-                <h2>
-                  Certify
-                </h2>
-                <p class="grey-text">
-                  Enter the legal name of the person authorized to complete and submit this filing.
                 </p>
               </header>
               <div
@@ -228,7 +287,6 @@
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                   :showLegalName="!isBaseCompany"
-                  :authorizationMode="authorizationMode(FilingCodes.CONSENT_CONTINUATION_OUT)"
                   :validateForm="showErrors"
                   @valid="certifyFormValid=$event"
                 />
@@ -418,6 +476,10 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   isCertified = false
   certifyFormValid = false
 
+  // variables for Completing Party Confirmation
+  confirmCompletionParty = false
+  confirmCompletionPartyValid = false
+
   // variables for Courder Order POA component
   fileNumber = ''
   hasPlanOfArrangement = false
@@ -480,6 +542,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
     return (
+      this.confirmCompletionPartyValid &&
       this.certifyFormValid &&
       this.detailValid &&
       this.foreignJurisdictionValid &&
@@ -487,6 +550,11 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       this.courtOrderValid &&
       this.folioNumberValid
     )
+  }
+
+  /** Returns the logged-in user's full name. */
+  get getUserFullName (): string {
+    return this.getUserInfo ? `${this.getUserInfo.firstname} ${this.getUserInfo.lastname}` : ''
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -549,9 +617,9 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
     this.dataLoaded = true
 
-    // Pre-populate the certified block with the logged in user's name if no permission for blank certificate
-    // Corporations do not have a certifiedBy field
-    if (!this.isBaseCompany && !IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo) {
+    // Pre-populate certifiedBy with the logged in user's name if no permission for blank certificate.
+    // Required for all entity types so the completing party name appears on the CCO report.
+    if (!IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo && !this.certifiedBy) {
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
@@ -629,6 +697,11 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       const details = filing.consentContinuationOut.details
       if (details) {
         this.detail = details
+      }
+
+      if (filing.consentContinuationOut.confirmCompletionParty) {
+        this.confirmCompletionParty = true
+        this.confirmCompletionPartyValid = true
       }
 
       if (filing.header.documentOptionalEmail) {
@@ -837,12 +910,11 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     const header: any = {
       header: {
         name: FilingTypes.CONSENT_CONTINUATION_OUT,
-        certifiedBy: this.isBaseCompany ? undefined : (this.certifiedBy || undefined),
+        certifiedBy: this.certifiedBy || undefined,
         email: this.getBusinessEmail || undefined,
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
         folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined,
-        isTransactionalFolioNumber: !!this.getTransactionalFolioNumber,
-        ...(this.isBaseCompany ? { authorizationReceived: this.isCertified } : {})
+        isTransactionalFolioNumber: !!this.getTransactionalFolioNumber
       }
     }
 
@@ -885,7 +957,8 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
         foreignJurisdiction: {
           country: this.selectedCountry,
           region: this.selectedRegion
-        }
+        },
+        confirmCompletionParty: this.confirmCompletionParty
       }
     }
 
@@ -1017,6 +1090,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     'detail-section',
     'foreign-jurisdiction-section',
     'document-delivery-section',
+    'confirm-completion-party-section',
     'certify-form-section',
     'court-order-section',
     'folio-number-section'
@@ -1028,12 +1102,14 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       detail: this.detailValid,
       foreignJurisdiction: this.foreignJurisdictionValid,
       documentDelivery: this.documentDeliveryValid,
+      confirmCompletionParty: this.confirmCompletionPartyValid,
       certifyForm: this.certifyFormValid,
       courtOrder: this.courtOrderValid,
       folioNumber: this.folioNumberValid
     }
   }
 
+  @Watch('confirmCompletionParty')
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
   @Watch('detail')
