@@ -219,12 +219,12 @@
                       sm="3"
                       class="pr-4"
                     >
-                      <strong :class="{ 'app-red': !isCertified && showErrors }">
+                      <div class="title-label">
                         Confirm
-                      </strong>
+                      </div>
                       <p
                         v-if="!isCertified && showErrors"
-                        class="app-red mt-1"
+                        class="mt-1"
                         style="font-size: 0.875rem"
                       >
                         Check this box to continue
@@ -234,28 +234,29 @@
                       cols="12"
                       sm="9"
                     >
-                      <!-- Staff name input -->
+                      <!-- Staff name input (above the checkbox) -->
                       <v-text-field
                         v-if="IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE)"
                         v-model="certifiedBy"
                         class="mb-4"
                         filled
-                        label="Legal name of completing party"
-                        placeholder="[Legal name of completing party]"
+                        placeholder="Legal name of completing party"
                         :rules="[v => !!v || '']"
                         :error="showErrors && !certifiedBy"
                       />
                       <v-checkbox
                         v-model="isCertified"
-                        class="mt-0 pt-0"
+                        class="mt-0 pa-5 bg-certify"
                         hide-details
                         :rules="[v => !!v || '']"
+                        :error="!isCertified && showErrors"
                       >
                         <template #label>
                           <span>
-                            I, <strong>{{ certifiedBy || getUserFullName }}</strong>, the completing party, confirm
-                            that the laws of the foreign jurisdiction to which the continued corporation will be
-                            subject provide, in effect, for the following:
+                            I, <strong>{{ certifiedBy || (IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE)
+                              ? '[Legal name of completing party]' : getUserFullName) }}</strong>,
+                            the completing party, confirm that the laws of the foreign jurisdiction to which the
+                            continued corporation will be subject provide, in effect, for the following:
                             <ul class="mt-2 ml-4">
                               <li class="mb-2">
                                 the property, rights and interest of the company continue to be the property, rights
@@ -1120,7 +1121,8 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       detail: this.detailValid,
       foreignJurisdiction: this.foreignJurisdictionValid,
       documentDelivery: this.documentDeliveryValid,
-      confirmCompletionParty: this.isCertified,
+      confirmCompletionParty: this.isCertified &&
+        (!IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) || !!this.certifiedBy),
       certifyForm: this.certifyFormValid,
       courtOrder: this.courtOrderValid,
       folioNumber: this.folioNumberValid
@@ -1214,6 +1216,16 @@ h2 {
   }
 }
 
+.bg-certify {
+  background-color: $gray1;
+}
+
+.title-label {
+  color: $gray9;
+  font-weight: bold;
+  font-size: $px-16;
+}
+
 // Fix font size and color to stay consistent.
 :deep() {
   #document-delivery, #court-order-label, #poa-label {
@@ -1222,6 +1234,25 @@ h2 {
 
   .certify-clause, .certify-stmt, .grey-text {
     color: $gray7;
+  }
+
+  #confirm-completion-party-section {
+    .v-input--checkbox {
+      align-items: flex-start;
+
+      .v-input__slot {
+        align-items: flex-start;
+      }
+
+      .v-input--selection-controls__input {
+        margin-top: 2px;
+      }
+
+      // Only the checkbox square turns red on error, not the label text
+      &.error--text .v-label {
+        color: $gray9 !important;
+      }
+    }
   }
 
   .invalid-certify:not(.prevent-red-text) {
