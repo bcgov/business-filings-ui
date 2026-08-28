@@ -206,7 +206,8 @@
               </header>
               <div
                 id="confirm-completion-party-section"
-                :class="{ 'invalid-section': !isCertified && showErrors }"
+                :class="{ 'invalid-section': (!isCertified ||
+                  (IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && !certifiedBy)) && showErrors }"
               >
                 <v-card
                   flat
@@ -240,10 +241,13 @@
                         class="mb-4"
                         filled
                         label="Legal name of completing party"
-                        :rules="showErrors ? [v => !!v || ''] : []"
+                        placeholder="[Legal name of completing party]"
+                        :rules="[v => !!v || '']"
+                        :error="showErrors && !certifiedBy"
                       />
                       <v-checkbox
                         v-model="isCertified"
+                        class="mt-0 pt-0"
                         hide-details
                         :rules="[v => !!v || '']"
                       >
@@ -253,16 +257,25 @@
                             that the laws of the foreign jurisdiction to which the continued corporation will be
                             subject provide, in effect, for the following:
                             <ul class="mt-2 ml-4">
-                              <li>the property, rights and interest of the company continue to be the property, rights
-                                and interests of the continued corporation,</li>
-                              <li>the continued corporation continues to be liable for the obligations of the
-                                company,</li>
-                              <li>an existing cause of action, claim or liability to prosecution is unaffected,</li>
-                              <li>a legal proceeding being prosecuted or pending by or against the company may be
+                              <li class="mb-2">
+                                the property, rights and interest of the company continue to be the property, rights
+                                and interests of the continued corporation,
+                              </li>
+                              <li class="mb-2">
+                                the continued corporation continues to be liable for the obligations of the company,
+                              </li>
+                              <li class="mb-2">
+                                an existing cause of action, claim or liability to prosecution is unaffected,
+                              </li>
+                              <li class="mb-2">
+                                a legal proceeding being prosecuted or pending by or against the company may be
                                 prosecuted or its prosecution may be continued, as the case may be, by or against the
-                                continued corporation, and</li>
-                              <li>a conviction against, or a ruling, or judgment in favour of or against, the company
-                                may be enforced by or against the continued corporation.</li>
+                                continued corporation, and
+                              </li>
+                              <li>
+                                a conviction against, or a ruling, or judgment in favour of or against, the company
+                                may be enforced by or against the continued corporation.
+                              </li>
                             </ul>
                           </span>
                         </template>
@@ -549,8 +562,10 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
+    const staffNameValid = !IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) || !!this.certifiedBy
     return (
       this.isCertified &&
+      staffNameValid &&
       this.certifyFormValid &&
       this.detailValid &&
       this.foreignJurisdictionValid &&
