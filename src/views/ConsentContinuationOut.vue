@@ -206,7 +206,7 @@
               </header>
               <div
                 id="confirm-completion-party-section"
-                :class="{ 'invalid-section': !confirmCompletionPartyValid && showErrors }"
+                :class="{ 'invalid-section': !isCertified && showErrors }"
               >
                 <v-card
                   flat
@@ -218,11 +218,11 @@
                       sm="3"
                       class="pr-4"
                     >
-                      <strong :class="{ 'app-red': !confirmCompletionPartyValid && showErrors }">
-                        Confirm Completion
+                      <strong :class="{ 'app-red': !isCertified && showErrors }">
+                        Confirm
                       </strong>
                       <p
-                        v-if="!confirmCompletionPartyValid && showErrors"
+                        v-if="!isCertified && showErrors"
                         class="app-red mt-1"
                         style="font-size: 0.875rem"
                       >
@@ -233,11 +233,19 @@
                       cols="12"
                       sm="9"
                     >
+                      <!-- Staff name input -->
+                      <v-text-field
+                        v-if="IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE)"
+                        v-model="certifiedBy"
+                        class="mb-4"
+                        filled
+                        label="Legal name of completing party"
+                        :rules="showErrors ? [v => !!v || ''] : []"
+                      />
                       <v-checkbox
-                        v-model="confirmCompletionParty"
+                        v-model="isCertified"
                         hide-details
                         :rules="[v => !!v || '']"
-                        @change="confirmCompletionPartyValid = !!confirmCompletionParty"
                       >
                         <template #label>
                           <span>
@@ -270,8 +278,8 @@
               <header>
                 <h2>Certify</h2>
                 <p class="grey-text">
-                  Confirm your authorization to complete and submit this application. The name of the person
-                  submitting this filing will be displayed in the history of filings for this {{ displayName() }}.
+                  Certify the completing party's authorization to complete and submit this filing. The name of the
+                  person submitting this filing will be displayed in the history of filings for this {{ displayName() }}.
                 </p>
               </header>
               <div
@@ -280,13 +288,13 @@
               >
                 <Certify
                   ref="certifyRef"
-                  :isCertified.sync="isCertified"
+                  :isCertified.sync="isCertifyChecked"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
                   :disableEdit="!IsAuthorized(AuthorizedActions.EDITABLE_CERTIFY_NAME)"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
-                  :showLegalName="!isBaseCompany"
+                  :showLegalName="false"
                   :validateForm="showErrors"
                   @valid="certifyFormValid=$event"
                 />
@@ -471,14 +479,13 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   readonly AuthorizedActions = AuthorizedActions
   readonly IsAuthorized = IsAuthorized
 
+  // variables for Completing Party Confirmation checkbox (maps to authorizationReceived)
+  isCertified = false
+
   // variables for Certify component
   certifiedBy = ''
-  isCertified = false
+  isCertifyChecked = false
   certifyFormValid = false
-
-  // variables for Completing Party Confirmation
-  confirmCompletionParty = false
-  confirmCompletionPartyValid = false
 
   // variables for Courder Order POA component
   fileNumber = ''
@@ -542,7 +549,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
     return (
-      this.confirmCompletionPartyValid &&
+      this.isCertified &&
       this.certifyFormValid &&
       this.detailValid &&
       this.foreignJurisdictionValid &&
@@ -552,7 +559,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     )
   }
 
-  /** Returns the logged-in user's full name. */
+  /** Returns the logged-in user's full name for non-staff users. */
   get getUserFullName (): string {
     return this.getUserInfo ? `${this.getUserInfo.firstname} ${this.getUserInfo.lastname}` : ''
   }
@@ -699,10 +706,6 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
         this.detail = details
       }
 
-      if (filing.consentContinuationOut.confirmCompletionParty) {
-        this.confirmCompletionParty = true
-        this.confirmCompletionPartyValid = true
-      }
 
       if (filing.header.documentOptionalEmail) {
         this.documentOptionalEmail = filing.header.documentOptionalEmail
@@ -914,7 +917,8 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
         email: this.getBusinessEmail || undefined,
         date: this.getCurrentDate, // NB: API will reassign this date according to its clock
         folioNumber: this.getTransactionalFolioNumber || this.getFolioNumber || undefined,
-        isTransactionalFolioNumber: !!this.getTransactionalFolioNumber
+        isTransactionalFolioNumber: !!this.getTransactionalFolioNumber,
+        ...(this.isBaseCompany ? { authorizationReceived: this.isCertified } : {})
       }
     }
 
@@ -957,8 +961,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
         foreignJurisdiction: {
           country: this.selectedCountry,
           region: this.selectedRegion
-        },
-        confirmCompletionParty: this.confirmCompletionParty
+        }
       }
     }
 
@@ -1102,14 +1105,15 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       detail: this.detailValid,
       foreignJurisdiction: this.foreignJurisdictionValid,
       documentDelivery: this.documentDeliveryValid,
-      confirmCompletionParty: this.confirmCompletionPartyValid,
+      confirmCompletionParty: this.isCertified,
       certifyForm: this.certifyFormValid,
       courtOrder: this.courtOrderValid,
       folioNumber: this.folioNumberValid
     }
   }
 
-  @Watch('confirmCompletionParty')
+  @Watch('isCertified')
+  @Watch('isCertifyChecked')
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
   @Watch('detail')
