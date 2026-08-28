@@ -278,8 +278,9 @@
               <header>
                 <h2>Certify</h2>
                 <p class="grey-text">
-                  Certify the completing party's authorization to complete and submit this filing. The name of the
-                  person submitting this filing will be displayed in the history of filings for this {{ displayName() }}.
+                  Certify the completing party's authorization to complete and submit this filing. The name of
+                  the person submitting this filing will be displayed in the history of filings for this
+                  {{ displayName() }}.
                 </p>
               </header>
               <div
@@ -705,7 +706,6 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       if (details) {
         this.detail = details
       }
-
 
       if (filing.header.documentOptionalEmail) {
         this.documentOptionalEmail = filing.header.documentOptionalEmail
