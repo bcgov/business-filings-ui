@@ -141,6 +141,7 @@ describe('Consent to Continuation Out view', () => {
     expect(!!vm.isPayRequired).toBe(true)
 
     // verify "validated" - all true
+    vm.confirmCompletionPartyValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.documentDeliveryValid = true
@@ -148,7 +149,17 @@ describe('Consent to Continuation Out view', () => {
     vm.folioNumberValid = true
     expect(vm.isPageValid).toBe(true)
 
+    // verify "validated" - invalid Confirm Completion Party
+    vm.confirmCompletionPartyValid = false
+    vm.certifyFormValid = true
+    vm.courtOrderValid = true
+    vm.documentDeliveryValid = true
+    vm.foreignJurisdictionValid = true
+    vm.folioNumberValid = true
+    expect(vm.isPageValid).toBe(false)
+
     // verify "validated" - invalid Certify form
+    vm.confirmCompletionPartyValid = true
     vm.certifyFormValid = false
     vm.courtOrderValid = true
     vm.documentDeliveryValid = true
@@ -157,6 +168,7 @@ describe('Consent to Continuation Out view', () => {
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Court Order form
+    vm.confirmCompletionPartyValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = false
     vm.documentDeliveryValid = true
@@ -165,6 +177,7 @@ describe('Consent to Continuation Out view', () => {
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Document Delivery form
+    vm.confirmCompletionPartyValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.documentDeliveryValid = false
@@ -173,6 +186,7 @@ describe('Consent to Continuation Out view', () => {
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Foreign Jurisdiction form
+    vm.confirmCompletionPartyValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.documentDeliveryValid = true
@@ -181,6 +195,7 @@ describe('Consent to Continuation Out view', () => {
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Transactional Folio Number form
+    vm.confirmCompletionPartyValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.documentDeliveryValid = true
@@ -189,6 +204,7 @@ describe('Consent to Continuation Out view', () => {
     expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Detail form
+    vm.confirmCompletionPartyValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.documentDeliveryValid = true
@@ -624,6 +640,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
 
     // make sure form is validated
     await wrapper.setData({
+      confirmCompletionPartyValid: true,
       documentDeliveryValid: true,
       certifyFormValid: true,
       courtOrderValid: true,
