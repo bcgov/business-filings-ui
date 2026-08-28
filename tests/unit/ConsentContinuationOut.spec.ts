@@ -96,6 +96,29 @@ describe('Consent to Continuation Out view', () => {
     wrapper.destroy()
   })
 
+  it('shows the Completing Party Confirmation section for staff with name field', async () => {
+    const $route = { query: { filingId: '0' } }
+
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const $router = mockRouter.mock()
+
+    const wrapper = shallowMount(ConsentContinuationOut, { mocks: { $route, $router } })
+    wrapper.vm.$data.dataLoaded = true
+    await Vue.nextTick()
+
+    // Completing Party Confirmation section is rendered
+    expect(wrapper.find('#confirm-completion-party-section').exists()).toBe(true)
+
+    // staff (BLANK_CERTIFY_STATE) sees the legal name text field in section 7
+    expect(wrapper.find('v-text-field-stub[label="Legal name of completing party"]').exists()).toBe(true)
+
+    // Certify section is also rendered
+    expect(wrapper.find('#certify-form-section').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
   it('sets filing data properly', async () => {
     const $route = { query: { filingId: '0' } }
 
@@ -142,6 +165,7 @@ describe('Consent to Continuation Out view', () => {
 
     // verify "validated" - all true
     vm.isCertified = true
+    vm.certifiedBy = 'Test Staff User' // required for staff (BLANK_CERTIFY_STATE)
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.documentDeliveryValid = true
@@ -558,6 +582,29 @@ describe('Consent to Continue Out for general user and IAs only', () => {
 
     // general users / IAs (no STAFF_FILINGS) do not see the Detail section
     expect(wrapper.find('#detail-section').exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('shows the Completing Party Confirmation section for non-staff without name field', async () => {
+    const $route = { query: { filingId: '0' } }
+
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const $router = mockRouter.mock()
+
+    const wrapper = shallowMount(ConsentContinuationOut, { mocks: { $route, $router } })
+    wrapper.vm.$data.dataLoaded = true
+    await Vue.nextTick()
+
+    // Completing Party Confirmation section is rendered for all users
+    expect(wrapper.find('#confirm-completion-party-section').exists()).toBe(true)
+
+    // non-staff (no BLANK_CERTIFY_STATE) do NOT see the legal name text field in section 7
+    expect(wrapper.find('v-text-field-stub[label="Legal name of completing party"]').exists()).toBe(false)
+
+    // Certify section is also rendered
+    expect(wrapper.find('#certify-form-section').exists()).toBe(true)
 
     wrapper.destroy()
   })
