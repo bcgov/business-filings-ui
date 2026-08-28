@@ -224,7 +224,7 @@
                       </div>
                       <p
                         v-if="!isCertified && showErrors"
-                        class="mt-1"
+                        class="app-red mt-1"
                         style="font-size: 0.875rem"
                       >
                         Check this box to continue
