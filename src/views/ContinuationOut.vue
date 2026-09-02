@@ -399,11 +399,13 @@
                       >
                         <template #label>
                           <span>
-                            I, <strong>{{ certifiedBy || (IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE)
-                              ? '[Legal name of completing party]' : getUserFullName) }}</strong>,
-                            the completing party, confirm that the laws of the foreign jurisdiction to which the
-                            continued corporation will be subject provide, in effect, for the following:
-                            <ul class="mt-2 ml-4">
+                            <p class="mb-3">
+                              I, <strong>{{ certifiedBy || (IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE)
+                                ? '[Legal name of completing party]' : getUserFullName) }}</strong>,
+                              confirm that the laws of the foreign jurisdiction to which the continued corporation
+                              will be subject provide, in effect, for the following:
+                            </p>
+                            <ul class="ml-4">
                               <li class="mb-2">
                                 the property, rights and interest of the company continue to be the property, rights
                                 and interests of the continued corporation,
