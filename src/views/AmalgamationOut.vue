@@ -61,6 +61,20 @@
               </h1>
             </header>
 
+            <!-- Expired Consent to Amalgamate Out Warning -->
+            <v-alert
+              v-if="isConsentExpired"
+              type="warning"
+              outlined
+              icon="mdi-alert"
+              class="expired-consent-alert"
+            >
+              <p class="alertMsg">
+                <strong>Expired Consent to Amalgamate Out:</strong> The consent to Amalgamate Out you have chosen
+                is expired. Manager Approval is required to submit this Amalgamation Out.
+              </p>
+            </v-alert>
+
             <!-- Ledger Detail -->
             <section>
               <header>
@@ -113,20 +127,58 @@
               </header>
               <div
                 id="effective-date-section"
-                :class="{ 'invalid-section': !effectiveDateValid && showErrors }"
+                :class="{ 'invalid-section': (!effectiveDateValid || !dateAuthorizationValid) && showErrors }"
               >
-                <EffectiveDate
-                  ref="effectiveDateRef"
-                  :class="{ 'invalid-component': !effectiveDateValid && showErrors }"
-                  class="pt-6 px-4"
-                  effectiveDateLabel="Effective Date of Amalgamation Out"
-                  dateLabel="Date of Amalgamation Out"
-                  dateRequiredMsg="A Date of Amalgamation Out is required"
-                  :initialEffectiveDate="initialEffectiveDate"
-                  :validateForm="showErrors"
-                  @update:effectiveDate="effectiveDate=$event"
-                  @valid="effectiveDateValid=$event"
-                />
+                <v-card flat>
+                  <EffectiveDate
+                    ref="effectiveDateRef"
+                    :class="{ 'invalid-component': !effectiveDateValid && showErrors }"
+                    class="pt-6 px-4"
+                    effectiveDateLabel="Effective Date of Amalgamation Out"
+                    dateLabel="Date of Amalgamation Out"
+                    dateRequiredMsg="A Date of Amalgamation Out is required"
+                    :initialEffectiveDate="initialEffectiveDate"
+                    :validateForm="showErrors"
+                    :showAuthorizationError="!dateAuthorizationValid && showErrors"
+                    @update:effectiveDate="effectiveDate=$event"
+                    @valid="effectiveDateValid=$event"
+                  />
+
+                  <!-- shown when effective date doesn't fall within the consent filing's valid date range -->
+                  <v-row
+                    v-if="showDateAuthorization"
+                    no-gutters
+                    class="px-4"
+                  >
+                    <v-col
+                      cols="12"
+                      sm="3"
+                    />
+                    <v-col
+                      cols="12"
+                      sm="8"
+                    >
+                      <v-alert
+                        type="warning"
+                        text
+                        icon="mdi-alert"
+                        class="mismatch-alert"
+                      >
+                        <span class="alertMsg">
+                          This date does not match the dates in the Consent to Amalgamate Out and requires manager
+                          approval.
+                        </span>
+                      </v-alert>
+                      <v-checkbox
+                        v-model="dateAuthorizationCheckbox"
+                        :error="!dateAuthorizationValid && showErrors"
+                        class="checkbox-error"
+                        hide-details
+                        label="I have manager approval for this Amalgamation Out effective date"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card>
               </div>
             </section>
 
@@ -137,19 +189,58 @@
               </header>
               <div
                 id="jurisdiction-information-section"
-                :class="{ 'invalid-section': !foreignJurisdictionValid && showErrors }"
+                :class="{ 'invalid-section':
+                  (!foreignJurisdictionValid || !jurisdictionAuthorizationValid) && showErrors }"
               >
-                <ForeignJurisdiction
-                  ref="foreignJurisdictionRef"
-                  :class="{ 'invalid-component': !foreignJurisdictionValid && showErrors }"
-                  class="pt-6 px-4"
-                  :draftCountry="initialCountry"
-                  :draftRegion="initialRegion"
-                  :validateForm="showErrors"
-                  @update:country="selectedCountry=$event"
-                  @update:region="selectedRegion=$event"
-                  @valid="foreignJurisdictionValid=$event"
-                />
+                <v-card flat>
+                  <ForeignJurisdiction
+                    ref="foreignJurisdictionRef"
+                    :class="{ 'invalid-component': !foreignJurisdictionValid && showErrors }"
+                    class="pt-6 px-4"
+                    :draftCountry="initialCountry"
+                    :draftRegion="initialRegion"
+                    :validateForm="showErrors"
+                    :showAuthorizationError="!jurisdictionAuthorizationValid && showErrors"
+                    @update:country="selectedCountry=$event"
+                    @update:region="selectedRegion=$event"
+                    @valid="foreignJurisdictionValid=$event"
+                  />
+
+                  <!-- shown when selected jurisdiction doesn't match the consent filing's jurisdiction -->
+                  <v-row
+                    v-if="showJurisdictionAuthorization"
+                    no-gutters
+                    class="px-4"
+                  >
+                    <v-col
+                      cols="12"
+                      sm="3"
+                    />
+                    <v-col
+                      cols="12"
+                      sm="8"
+                    >
+                      <v-alert
+                        type="warning"
+                        text
+                        icon="mdi-alert"
+                        class="mismatch-alert"
+                      >
+                        <span class="alertMsg">
+                          This jurisdiction does not match the jurisdiction in the Consent to Amalgamate Out and
+                          requires manager approval.
+                        </span>
+                      </v-alert>
+                      <v-checkbox
+                        v-model="jurisdictionAuthorizationCheckbox"
+                        :error="!jurisdictionAuthorizationValid && showErrors"
+                        class="checkbox-error"
+                        hide-details
+                        label="I have manager approval for this Amalgamation Out jurisdiction"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card>
               </div>
             </section>
 
@@ -453,6 +544,20 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
   resumeErrorDialog = false
   saveErrorReason: SaveErrorReasons = null
 
+  // variables for the source Consent to Amalgamate Out filing (used to prepopulate
+  // jurisdiction and to validate the effective date/jurisdiction against its consent)
+  consentAmalgamationOutFilingId = 0
+  isConsentExpired = false
+  consentValidFromDate = ''
+  consentValidToDate = ''
+  consentJurisdictionCountry = ''
+  consentJurisdictionRegion = ''
+
+  // variables for manager-approval authorization checkboxes (required when the
+  // effective date or jurisdiction don't match the Consent to Amalgamate Out filing)
+  dateAuthorizationCheckbox = false
+  jurisdictionAuthorizationCheckbox = false
+
   // other variables
   totalFee = 0
   dataLoaded = false
@@ -490,12 +595,53 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
     return sessionStorage.getItem('BASE_URL')
   }
 
+  /** True if the effective date doesn't fall within the consent filing's valid date range. */
+  get isDateMismatch (): boolean {
+    if (!this.effectiveDate || !this.consentValidFromDate || !this.consentValidToDate) {
+      return false
+    }
+
+    return (this.effectiveDate < this.consentValidFromDate || this.effectiveDate > this.consentValidToDate)
+  }
+
+  /** True if the selected jurisdiction doesn't match the consent filing's jurisdiction. */
+  get isJurisdictionMismatch (): boolean {
+    if (!this.selectedCountry || !this.consentJurisdictionCountry) {
+      return false
+    }
+    if (this.selectedCountry !== this.consentJurisdictionCountry) {
+      return true
+    }
+    return !!this.consentJurisdictionRegion && this.selectedRegion !== this.consentJurisdictionRegion
+  }
+
+  /** True if the date authorization alert should be shown. */
+  get showDateAuthorization (): boolean {
+    return this.isDateMismatch
+  }
+
+  /** True if the jurisdiction authorization alert should be shown. */
+  get showJurisdictionAuthorization (): boolean {
+    return this.isJurisdictionMismatch
+  }
+
+  /** True if date authorization isn't required, or is required and checked. */
+  get dateAuthorizationValid (): boolean {
+    return !this.showDateAuthorization || this.dateAuthorizationCheckbox
+  }
+
+  /** True if jurisdiction authorization isn't required, or is required and checked. */
+  get jurisdictionAuthorizationValid (): boolean {
+    return !this.showJurisdictionAuthorization || this.jurisdictionAuthorizationCheckbox
+  }
+
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
     return (this.detailCommentValid && this.effectiveDateValid &&
       this.foreignJurisdictionValid && this.businessNameValid &&
       this.documentDeliveryValid && this.courtOrderValid &&
-      this.certifyFormValid)
+      this.certifyFormValid &&
+      this.dateAuthorizationValid && this.jurisdictionAuthorizationValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -534,6 +680,9 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
     // otherwise it's a draft filing
     this.filingId = +this.$route.query.filingId // number or NaN
 
+    // id of the Consent to Amalgamate Out filing that authorized this Amalgamation Out
+    this.consentAmalgamationOutFilingId = +this.$route.query.consentAmalgamationOutFilingId || 0
+
     // if required data isn't set, go back to dashboard
     if (isNaN(this.filingId)) {
       this.navigateToBusinessDashboard(this.getIdentifier)
@@ -556,6 +705,9 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
     // fetch draft (which may overwrite some properties)
     if (this.filingId > 0) {
       await this.fetchDraftFiling()
+    } else if (this.consentAmalgamationOutFilingId > 0) {
+      // only prepopulate from the consent filing on a fresh filing
+      await this.fetchConsentAmalgamationOutFiling()
     }
 
     this.dataLoaded = true
@@ -623,6 +775,49 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
       // eslint-disable-next-line no-console
       console.log('fetchDraftFiling() error =', error)
       this.resumeErrorDialog = true
+    })
+  }
+
+  /**
+   * Fetches the source Consent to Amalgamate Out filing to prepopulate jurisdiction and to
+   * determine the valid effective-date range.
+   */
+  async fetchConsentAmalgamationOutFiling (): Promise<void> {
+    const businessUrl = `${this.getBusinessApiUrl}businesses/${this.getIdentifier}`
+    const url = `${businessUrl}/filings/${this.consentAmalgamationOutFilingId}`
+    await BusinessServices.fetchFiling(url).then(filing => {
+      const consentData = filing?.consentAmalgamationOut
+      const header = filing?.header
+
+      if (!consentData || !header) {
+        // eslint-disable-next-line no-console
+        console.log('fetchConsentAmalgamationOutFiling(): missing consentAmalgamationOut data')
+        return
+      }
+
+      const foreignJurisdiction = consentData.foreignJurisdiction
+      if (foreignJurisdiction?.country) {
+        this.initialCountry = foreignJurisdiction.country
+        this.consentJurisdictionCountry = foreignJurisdiction.country
+        if (foreignJurisdiction.region) {
+          this.initialRegion = foreignJurisdiction.region
+          this.consentJurisdictionRegion = foreignJurisdiction.region
+        }
+      }
+
+      if (header.effectiveDate) {
+        const effectiveDate = this.apiToYyyyMmDd(header.effectiveDate)
+        this.consentValidFromDate = effectiveDate
+
+        const expiryDateObj = this.yyyyMmDdToDate(effectiveDate)
+        expiryDateObj.setMonth(expiryDateObj.getMonth() + 6)
+        this.consentValidToDate = this.apiToYyyyMmDd(this.dateToApi(expiryDateObj))
+
+        this.isConsentExpired = (this.consentValidToDate < this.getCurrentDate)
+      }
+    }).catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('fetchConsentAmalgamationOutFiling() error =', error)
     })
   }
 
@@ -969,8 +1164,8 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
   get validFlags (): object {
     return {
       detailComment: this.detailCommentValid,
-      effectiveDate: this.effectiveDateValid,
-      foreignJurisdiction: this.foreignJurisdictionValid,
+      effectiveDate: this.effectiveDateValid && this.dateAuthorizationValid,
+      foreignJurisdiction: this.foreignJurisdictionValid && this.jurisdictionAuthorizationValid,
       businessInformation: this.businessNameValid,
       documentDelivery: this.documentDeliveryValid,
       certifyForm: this.certifyFormValid,
@@ -978,10 +1173,23 @@ export default class AmalgamationOut extends Mixins(CommonMixin, DateMixin, Fili
     }
   }
 
+  @Watch('effectiveDate')
+  onEffectiveDateChanged (): void {
+    this.dateAuthorizationCheckbox = false
+  }
+
+  @Watch('selectedCountry')
+  @Watch('selectedRegion')
+  onJurisdictionChanged (): void {
+    this.jurisdictionAuthorizationCheckbox = false
+  }
+
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
   @Watch('detailCommentValid')
   @Watch('documentDeliveryValid')
+  @Watch('dateAuthorizationCheckbox')
+  @Watch('jurisdictionAuthorizationCheckbox')
   onHaveChanges (): void {
     this.haveChanges = true
   }
@@ -1048,6 +1256,12 @@ h2 {
   }
 }
 
+.alertMsg {
+  font-size: $px-14;
+  color: $gray7;
+  margin-bottom: 0;
+}
+
 // Fix font size and color to stay consistent.
 :deep() {
   #document-delivery, #court-order-label, #poa-label {
@@ -1061,6 +1275,46 @@ h2 {
   .invalid-component:not(.prevent-red-text) {
     .certify-stmt, .title-label {
       color: $app-red;
+    }
+  }
+
+  .expired-consent-alert.v-alert {
+    background-color: $BCgovGold0 !important;
+    border-radius: 0 !important;
+    padding: 22px 30px !important;
+
+    .v-icon {
+      font-size: 18px;
+    }
+
+    .v-alert__icon {
+      margin-right: 8px;
+    }
+  }
+
+  .mismatch-alert.v-alert {
+    background-color: #FAF9F8 !important;
+    border: none !important;
+    padding: 22px 30px !important;
+
+    &::before {
+      opacity: 0 !important;
+    }
+
+    .v-icon {
+      font-size: 18px;
+    }
+
+    .v-alert__icon {
+      margin-right: 8px;
+    }
+  }
+
+  .checkbox-error {
+    margin-bottom: 2rem;
+
+    label.v-label.error--text {
+      color: $gray7 !important;
     }
   }
 }
