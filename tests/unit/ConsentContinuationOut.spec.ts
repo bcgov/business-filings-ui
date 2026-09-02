@@ -111,7 +111,7 @@ describe('Consent to Continuation Out view', () => {
     expect(wrapper.find('#confirm-completion-party-section').exists()).toBe(true)
 
     // staff (BLANK_CERTIFY_STATE) sees the legal name text field in section 7
-    expect(wrapper.find('v-text-field-stub[placeholder="Legal name of completing party"]').exists()).toBe(true)
+    expect(wrapper.find('v-text-field-stub[label="Legal name of completing party"]').exists()).toBe(true)
 
     // Certify section is also rendered
     expect(wrapper.find('#certify-form-section').exists()).toBe(true)

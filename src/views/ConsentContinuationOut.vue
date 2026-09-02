@@ -201,7 +201,7 @@
               <header>
                 <h2>Completing Party Confirmation</h2>
                 <p class="grey-text">
-                  The following information must be completed and confirmed before submitting this filing.
+                  The following information must be confirmed before submitting this filing.
                 </p>
               </header>
               <div
@@ -240,9 +240,11 @@
                         v-model="certifiedBy"
                         class="mb-4"
                         filled
-                        placeholder="Legal name of completing party"
-                        :rules="[v => !!v || '']"
+                        label="Legal name of completing party"
+                        :rules="[v => !!v || 'Please enter the full legal name of the completing party']"
                         :error="showErrors && !certifiedBy"
+                        :error-messages="showErrors && !certifiedBy
+                          ? ['Please enter the full legal name of the completing party'] : []"
                       />
                       <v-checkbox
                         v-model="isCertified"
@@ -311,6 +313,7 @@
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                   :showLegalName="false"
                   :validateForm="showErrors"
+                  authorizationMode="completing-party"
                   @valid="certifyFormValid=$event"
                 />
               </div>
