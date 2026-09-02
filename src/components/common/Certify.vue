@@ -63,6 +63,15 @@
               I, <strong>{{ displayName }}</strong>, certify that I have relevant
               knowledge of the {{ displayEntity }} and I am authorized to make this filing.
             </div>
+            <!-- Completing Party Variant (third-person) -->
+            <div
+              v-else-if="authorizationMode === 'completing-party'"
+              class="certify-stmt"
+            >
+              <strong>{{ trimmedCertifiedBy || '[Completing Party]' }}</strong> certifies that the information
+              provided is correct and that they are authorized to submit this filing on behalf of the
+              {{ displayEntity }}.
+            </div>
             <!-- Corporation Variant with Authorization Statement -->
             <div
               v-else
