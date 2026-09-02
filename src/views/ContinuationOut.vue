@@ -340,22 +340,109 @@
               </div>
             </section>
 
+            <!-- Completing Party Confirmation -->
+            <section>
+              <header>
+                <h2>Completing Party Confirmation</h2>
+                <p class="grey-text">
+                  The following information must be confirmed before submitting this filing.
+                </p>
+              </header>
+              <div
+                id="confirm-completion-party-section"
+                :class="{ 'invalid-section': (!isCertified ||
+                  (IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && !certifiedBy)) && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
+                  <v-row no-gutters>
+                    <v-col
+                      cols="12"
+                      sm="3"
+                      class="pr-4"
+                    >
+                      <div class="title-label">
+                        Confirm
+                      </div>
+                      <p
+                        v-if="!isCertified && showErrors"
+                        class="app-red mt-1"
+                        style="font-size: 0.875rem"
+                      >
+                        Check this box to continue
+                      </p>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="9"
+                    >
+                      <!-- Staff name input (above the checkbox) -->
+                      <v-text-field
+                        v-if="IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE)"
+                        v-model="certifiedBy"
+                        class="mb-4"
+                        filled
+                        label="Legal name of completing party"
+                        :rules="[v => !!v || 'Please enter the full legal name of the completing party']"
+                        :error="showErrors && !certifiedBy"
+                        :error-messages="showErrors && !certifiedBy
+                          ? ['Please enter the full legal name of the completing party'] : []"
+                      />
+                      <v-checkbox
+                        v-model="isCertified"
+                        class="mt-0 pa-5 bg-certify"
+                        hide-details
+                        :rules="[v => !!v || '']"
+                        :error="!isCertified && showErrors"
+                      >
+                        <template #label>
+                          <span>
+                            <p class="mb-3">
+                              I, <strong>{{ certifiedBy || (IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE)
+                                ? '[Legal name of completing party]' : getUserFullName) }}</strong>,
+                              confirm that the laws of the foreign jurisdiction to which the continued corporation
+                              will be subject provide, in effect, for the following:
+                            </p>
+                            <ul class="ml-4">
+                              <li class="mb-2">
+                                the property, rights and interest of the company continue to be the property, rights
+                                and interests of the continued corporation,
+                              </li>
+                              <li class="mb-2">
+                                the continued corporation continues to be liable for the obligations of the company,
+                              </li>
+                              <li class="mb-2">
+                                an existing cause of action, claim or liability to prosecution is unaffected,
+                              </li>
+                              <li class="mb-2">
+                                a legal proceeding being prosecuted or pending by or against the company may be
+                                prosecuted or its prosecution may be continued, as the case may be, by or against the
+                                continued corporation, and
+                              </li>
+                              <li>
+                                a conviction against, or a ruling, or judgment in favour of or against, the company
+                                may be enforced by or against the continued corporation.
+                              </li>
+                            </ul>
+                          </span>
+                        </template>
+                      </v-checkbox>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </div>
+            </section>
+
             <!-- Certify -->
             <section>
               <header>
                 <h2>Certify</h2>
-                <p
-                  v-if="isBaseCompany"
-                  class="grey-text"
-                >
-                  Certify your authorization to complete and submit this application. The name of the person submitting
-                  this filing will be displayed in the history of filings for this {{ displayName() }}.
-                </p>
-                <p
-                  v-else
-                  class="grey-text"
-                >
-                  Enter the legal name of the person authorized to complete and submit this filing.
+                <p class="grey-text">
+                  Certify the completing party's authorization to complete and submit this filing. The name of
+                  the person submitting this filing will be displayed in the history of filings for this
+                  {{ displayName() }}.
                 </p>
               </header>
               <div
@@ -364,13 +451,13 @@
               >
                 <Certify
                   ref="certifyRef"
-                  :isCertified.sync="isCertified"
+                  :isCertified.sync="isCertifyChecked"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-component': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.CONTINUATION_OUT)"
-                  :showLegalName="!isBaseCompany"
-                  :authorizationMode="authorizationMode(FilingCodes.CONTINUATION_OUT)"
+                  :showLegalName="false"
+                  authorizationMode="completing-party"
                   :validateForm="showErrors"
                   @valid="certifyFormValid=$event"
                 />
@@ -587,9 +674,12 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
   detail = ''
   detailValid = true
 
+  // variables for Completing Party Confirmation checkbox (maps to authorizationReceived)
+  isCertified = false
+
   // variables for Certify component
   certifiedBy = ''
-  isCertified = false
+  isCertifyChecked = false
   certifyFormValid = false
 
   // variables for Courder Order POA component
@@ -687,11 +777,26 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.effectiveDateValid && this.certifyFormValid &&
-      this.foreignJurisdictionValid && this.businessNameValid &&
-      this.documentUploadValid && this.detailValid &&
-      this.documentDeliveryValid && this.courtOrderValid &&
-      this.dateAuthorizationValid && this.jurisdictionAuthorizationValid)
+    const staffNameValid = !IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) || !!this.certifiedBy
+    return (
+      this.isCertified &&
+      staffNameValid &&
+      this.certifyFormValid &&
+      this.effectiveDateValid &&
+      this.foreignJurisdictionValid &&
+      this.businessNameValid &&
+      this.documentUploadValid &&
+      this.detailValid &&
+      this.documentDeliveryValid &&
+      this.courtOrderValid &&
+      this.dateAuthorizationValid &&
+      this.jurisdictionAuthorizationValid
+    )
+  }
+
+  /** Returns the logged-in user's full name for non-staff users. */
+  get getUserFullName (): string {
+    return this.getUserInfo ? `${this.getUserInfo.firstname} ${this.getUserInfo.lastname}` : ''
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -760,6 +865,11 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     }
 
     this.dataLoaded = true
+
+    // Pre-populate certifiedBy with the logged in user's name if no permission for blank certificate.
+    if (!IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) && this.getUserInfo && !this.certifiedBy) {
+      this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
+    }
 
     // always include continue out code
     // clear Priority flag and set the Waive Fees flag to true
@@ -1228,6 +1338,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     'document-upload-section',
     'detail-section',
     'document-delivery-section',
+    'confirm-completion-party-section',
     'certify-form-section',
     'court-order-section'
   ]
@@ -1241,6 +1352,8 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
       documentUpload: this.documentUploadValid,
       detail: this.detailValid,
       documentDelivery: this.documentDeliveryValid,
+      confirmCompletionParty: this.isCertified &&
+        (!IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE) || !!this.certifiedBy),
       certifyForm: this.certifyFormValid,
       courtOrder: this.courtOrderValid
     }
@@ -1263,6 +1376,8 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin, Fili
     this.jurisdictionAuthorizationCheckbox = false
   }
 
+  @Watch('isCertified')
+  @Watch('isCertifyChecked')
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
   @Watch('detail')
@@ -1342,6 +1457,16 @@ h2 {
   margin-bottom: 0;
 }
 
+.bg-certify {
+  background-color: $gray1;
+}
+
+.title-label {
+  color: $gray9;
+  font-weight: bold;
+  font-size: $px-16;
+}
+
 // Fix font size and color to stay consistent.
 :deep() {
   #document-delivery, #court-order-label, #poa-label {
@@ -1355,6 +1480,25 @@ h2 {
   .invalid-component:not(.prevent-red-text) {
     .certify-stmt, .title-label {
       color: $app-red;
+    }
+  }
+
+  #confirm-completion-party-section {
+    .v-input--checkbox {
+      align-items: flex-start;
+
+      .v-input__slot {
+        align-items: flex-start;
+      }
+
+      .v-input--selection-controls__input {
+        margin-top: 2px;
+      }
+
+      // Only the checkbox square turns red on error, not the label text
+      &.error--text .v-label {
+        color: $gray9 !important;
+      }
     }
   }
 

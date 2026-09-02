@@ -127,6 +127,8 @@ describe('Continuation Out view', () => {
     expect(!!vm.isPayRequired).toBe(true)
 
     // verify "validated" - all true
+    vm.isCertified = true
+    vm.certifiedBy = 'Test Staff User' // required for staff (BLANK_CERTIFY_STATE)
     vm.businessNameValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = true
@@ -136,6 +138,22 @@ describe('Continuation Out view', () => {
     vm.effectiveDateValid = true
     vm.foreignJurisdictionValid = true
     expect(!!vm.isPageValid).toBe(true)
+
+    // verify "validated" - Confirm Completion not checked
+    vm.isCertified = false
+    vm.certifiedBy = 'Test Staff User'
+    vm.businessNameValid = true
+    vm.certifyFormValid = true
+    vm.courtOrderValid = true
+    vm.documentUploadValid = true
+    vm.documentDeliveryValid = true
+    vm.effectiveDateValid = true
+    vm.foreignJurisdictionValid = true
+    expect(!!vm.isPageValid).toBe(false)
+
+    // reset for remaining tests
+    vm.isCertified = true
+    vm.certifiedBy = 'Test Staff User'
 
     // verify "validated" - invalid Certify form
     vm.businessNameValid = true
@@ -225,6 +243,8 @@ describe('Continuation Out view', () => {
     const wrapper = shallowMount(ContinuationOut, { mocks: { $route, $router } })
     const vm: any = wrapper.vm
 
+    vm.isCertified = true
+    vm.certifiedBy = 'Test Staff User'
     vm.businessNameValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = true
@@ -422,6 +442,48 @@ describe('Continuation Out view', () => {
     expect(vm.consentJurisdictionRegion).toBe('NY')
     expect(vm.consentValidFromDate).toBe('2024-01-10')
     expect(vm.showJurisdictionAuthorization).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('shows the Completing Party Confirmation section for staff with name field', async () => {
+    const $route = { query: { filingId: '0' } }
+    const $router = mockRouter.mock()
+
+    const wrapper = shallowMount(ContinuationOut, { mocks: { $route, $router } })
+    wrapper.vm.$data.dataLoaded = true
+    await Vue.nextTick()
+
+    // Completing Party Confirmation section is rendered
+    expect(wrapper.find('#confirm-completion-party-section').exists()).toBe(true)
+
+    // staff (BLANK_CERTIFY_STATE) sees the legal name text field
+    expect(wrapper.find('v-text-field-stub[label="Legal name of completing party"]').exists()).toBe(true)
+
+    // Certify section is also rendered
+    expect(wrapper.find('#certify-form-section').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('isPageValid is false when staff name is empty', () => {
+    const $route = { query: { filingId: '0' } }
+    const $router = mockRouter.mock()
+
+    const wrapper = shallowMount(ContinuationOut, { mocks: { $route, $router } })
+    const vm: any = wrapper.vm
+
+    vm.isCertified = true
+    vm.certifiedBy = '' // staff name empty
+    vm.certifyFormValid = true
+    vm.businessNameValid = true
+    vm.courtOrderValid = true
+    vm.documentUploadValid = true
+    vm.documentDeliveryValid = true
+    vm.effectiveDateValid = true
+    vm.foreignJurisdictionValid = true
+
+    expect(vm.isPageValid).toBe(false)
 
     wrapper.destroy()
   })
