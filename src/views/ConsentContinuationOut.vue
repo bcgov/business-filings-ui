@@ -1247,9 +1247,9 @@ h2 {
   padding: 16px 20px !important;
 
   ::v-deep .v-alert__icon.v-icon {
-    font-size: 16px !important;
+    font-size: 18px !important;
     margin-right: 6px;
-    transform: translateY(-2px);
+    transform: translateY(-3px);
   }
 }
 
