@@ -85,6 +85,18 @@
               </h1>
             </header>
 
+            <v-alert
+              type="warning"
+              outlined
+              icon="mdi-alert"
+              class="correction-alert"
+            >
+              <p class="alertMsg">
+                <strong>Important:</strong> Make sure the information you are providing is correct.
+                Corrections cannot be made after submission. You will need to resubmit if there are any errors.
+              </p>
+            </v-alert>
+
             <!-- Detail (staff only) -->
             <section v-if="IsAuthorized(AuthorizedActions.STAFF_FILINGS)">
               <header class="pb-4">
@@ -1227,6 +1239,24 @@ h2 {
   color: $gray9;
   font-weight: bold;
   font-size: $px-16;
+}
+
+.correction-alert.v-alert {
+  background-color: $BCgovGold0 !important;
+  border-radius: 4px !important;
+  padding: 16px 20px !important;
+
+  ::v-deep .v-alert__icon.v-icon {
+    font-size: 16px !important;
+    margin-right: 6px;
+    transform: translateY(-2px);
+  }
+}
+
+.alertMsg {
+  font-size: $px-14;
+  color: $gray7;
+  margin-bottom: 0;
 }
 
 // Fix font size and color to stay consistent.
