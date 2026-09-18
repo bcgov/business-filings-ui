@@ -995,13 +995,22 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
   }
 
   /**
-   * Returns a list of directors with future-ceased directors removed (as API would reject this).
+   * Returns a list of directors with future-ceased directors removed (as API would reject this)
+   * and with null first names converted to empty strings (API rejects this too).
    * Use this for final submission only (not draft saving).
    */
   fixDirectors (directors: DirectorIF[]): DirectorIF[] {
     // directors with a cease date but no cease action are future-ceased
     // return directors with no cease date or with a cease action
-    return directors.filter(director => !director.cessationDate || this.hasAction(director, Actions.CEASED))
+    return directors
+      .filter(director => !director.cessationDate || this.hasAction(director, Actions.CEASED))
+      .map(director => {
+        const officer = { ...director.officer, firstName: director.officer.firstName || '' }
+        if ('prevFirstName' in director.officer) {
+          officer.prevFirstName = director.officer.prevFirstName || ''
+        }
+        return { ...director, officer }
+      })
   }
 
   /**

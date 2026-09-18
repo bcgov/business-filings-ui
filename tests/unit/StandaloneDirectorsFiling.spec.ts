@@ -2068,4 +2068,38 @@ describe('Standalone Directors Filing - future-ceased directors', () => {
       { changeOfDirectors: { directors: [UNCHANGED_DIRECTOR, CEASED_DIRECTOR] } }
     ), false)
   })
+
+  it('Converts null first names to empty strings in submitted data', async () => {
+    // simulate a legacy (eg, COLIN) director with no first name
+    const NULL_NAME_DIRECTOR = {
+      ...UNCHANGED_DIRECTOR,
+      actions: ['addressChanged'],
+      officer: {
+        firstName: null,
+        lastName: 'Lastname',
+        prevFirstName: null,
+        prevLastName: 'Lastname'
+      }
+    }
+    await wrapper.setData({ updatedDirectors: [NULL_NAME_DIRECTOR] })
+
+    // trigger "submit filing" action
+    await vm.onClickFilePay()
+
+    // verify filing body - null first name and prev first name should be empty strings
+    expect(BusinessServices.createFiling).toHaveBeenCalledWith('BC1234567', expect.objectContaining(
+      {
+        changeOfDirectors: {
+          directors: [expect.objectContaining({
+            officer: {
+              firstName: '',
+              lastName: 'Lastname',
+              prevFirstName: '',
+              prevLastName: 'Lastname'
+            }
+          })]
+        }
+      }
+    ), false)
+  })
 })
