@@ -340,21 +340,21 @@
                       filled
                       class="item edit-director__first-name"
                       label="First Name"
-                      :rules="directorFirstNameRules"
+                      :rules="editFormShowHide.showName ? directorFirstNameRules : []"
                     />
                     <v-text-field
                       v-model="dir.officer.middleInitial"
                       filled
                       class="item edit-director__middle-initial"
                       label="Middle Name (Optional)"
-                      :rules="directorMiddleInitialRules"
+                      :rules="editFormShowHide.showName ? directorMiddleInitialRules : []"
                     />
                     <v-text-field
                       v-model="dir.officer.lastName"
                       filled
                       class="item edit-director__last-name"
                       label="Last Name"
-                      :rules="directorLastNameRules"
+                      :rules="editFormShowHide.showName ? directorLastNameRules : []"
                     />
                   </div>
                   <div
