@@ -584,9 +584,60 @@ describe('Directors as a COOP (no sync)', () => {
     expect(vm.allDirectors[0].actions[0]).toBeUndefined()
   })
 
-  // FUTURE: implement this
-  // it('can change a director\'s address', () => {
-  // })
+  it('saves an address-only change for a director with no first name', async () => {
+    // simulate a legacy (eg, COLIN) director with no first name
+    // NB: update both copies so the officer diff sees no name change
+    vm.original[0].officer.firstName = null
+    vm.allDirectors[0].officer.firstName = null
+
+    // open the Change Address form
+    await vm.editDirectorAddress(0)
+    await flushPromises()
+
+    // verify that only the address section is shown
+    expect(vm.editFormShowHide.showAddress).toEqual(true)
+    expect(vm.editFormShowHide.showName).toEqual(false)
+    expect(vm.editFormShowHide.showDates).toEqual(false)
+
+    // simulate an address change from the BaseAddress component
+    vm.updateDeliveryAddress({
+      streetAddress: 'new street',
+      streetAddressAdditional: '',
+      addressCity: 'city-2',
+      addressCountry: 'CA',
+      postalCode: 'CAN ADA',
+      addressRegion: 'BC',
+      deliveryInstructions: ''
+    })
+
+    vm.$refs.baseAddressEdit = [{ validate: () => Promise.resolve(true) }]
+
+    await wrapper.findAll('.done-edit-btn').at(0).trigger('click')
+    await flushPromises()
+
+    // verify the save succeeded despite the missing first name
+    expect(vm.activeIndex).toBe(-1)
+    expect(vm.allDirectors[0].deliveryAddress.streetAddress).toBe('new street')
+    expect(vm.allDirectors[0].actions).toContain('addressChanged')
+    expect(vm.allDirectors[0].actions).not.toContain('nameChanged')
+  })
+
+  it('still blocks a name change save for a director with no first name', async () => {
+    vm.original[0].officer.firstName = null
+    vm.allDirectors[0].officer.firstName = null
+
+    // open the Change Legal Name form
+    await vm.editDirectorName(0)
+    await flushPromises()
+
+    vm.$refs.baseAddressEdit = [{ validate: () => Promise.resolve(true) }]
+
+    await wrapper.findAll('.done-edit-btn').at(0).trigger('click')
+    await flushPromises()
+
+    // edit form should still be open (first name is required in name-change mode)
+    expect(vm.activeIndex).toBe(0)
+  })
 
   // FUTURE: implement this
   // it('can reset a director\'s address change', () => {
