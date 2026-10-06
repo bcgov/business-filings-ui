@@ -76,6 +76,7 @@
     "eslint-plugin-vuetify": "^1.1.0",
     "flush-promises": "^1.0.2",
     "jsdom": "^22.1.0",
+    "lefthook": "^1.11.3",
     "sass": "^1.55.0",
     "sinon": "^14.0.2",
     "typescript": "4.5.5",
