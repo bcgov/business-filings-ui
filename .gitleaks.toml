@@ -1,0 +1,15 @@
+title = "business-filings-ui gitleaks config"
+
+# Start from gitleaks' maintained default ruleset and layer allowlists
+# on top for this repo's known false positives, per the Git Hooks RFC:
+# https://github.com/bcgov/connect/discussions/23
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Lockfiles and this config"
+paths = [
+  '''pnpm-lock\.yaml''',
+  '''package-lock\.json''',
+  '''\.gitleaks\.toml''',
+]
