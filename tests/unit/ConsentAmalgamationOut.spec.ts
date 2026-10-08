@@ -70,6 +70,7 @@ describe('Consent to Amalgamation Out view', () => {
     expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
     expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
+    expect(wrapper.findComponent(DocumentDelivery).props('editableCompletingParty')).toBe(true)
     expect(wrapper.findComponent(PaymentErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
