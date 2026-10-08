@@ -268,7 +268,7 @@
             <!-- Documents Delivery -->
             <section>
               <header>
-                <h2>Documents Delivery</h2>
+                <h2>Document Delivery</h2>
                 <p class="grey-text">
                   Copies of the amalgamate out documents will be sent to the email addresses listed below.
                 </p>
