@@ -68,6 +68,12 @@ describe('Continuation Out view', () => {
     expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
 
+    // verify the date section wording (no "Effective", the filing only asks for a date)
+    const headings = wrapper.findAll('h2').wrappers.map(h => h.text())
+    expect(headings).toContain('Date of Continuation Out')
+    expect(headings).not.toContain('Effective Date of Continuation Out')
+    expect(wrapper.findComponent(EffectiveDate).props('effectiveDateLabel')).toBe('Date')
+
     wrapper.destroy()
   })
 

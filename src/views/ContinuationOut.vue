@@ -75,10 +75,10 @@
               </p>
             </v-alert>
 
-            <!-- Effective Date of Continuation -->
+            <!-- Date of Continuation Out -->
             <section>
               <header>
-                <h2>Effective Date of Continuation Out</h2>
+                <h2>Date of Continuation Out</h2>
               </header>
               <div
                 id="effective-date-section"
@@ -89,6 +89,7 @@
                     ref="effectiveDateRef"
                     :class="{ 'invalid-component': !effectiveDateValid && showErrors }"
                     class="pt-6 px-4"
+                    effectiveDateLabel="Date"
                     :initialEffectiveDate="initialEffectiveDate"
                     :validateForm="showErrors"
                     :showAuthorizationError="!dateAuthorizationValid && showErrors"
