@@ -99,7 +99,6 @@
                               :isRequired="enableValidation && isCourtOrder && !notation"
                               :customErrorMSg="courtOrderCustomValidationMsg"
                               :maxSize="MAX_FILE_SIZE"
-                              :pageSize="PageSizes.LETTER_PORTRAIT"
                               :userId="getUserInfo?.keycloakGuid"
                               :filingType="FilingTypes.COURT_ORDER"
                               :entityType="getLegalType"
@@ -239,7 +238,7 @@ import { ConfirmDialog, ResumeErrorDialog } from '@/components/dialogs'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { ConfirmDialogType, FormIF, StaffPaymentIF, UserInfoIF } from '@/interfaces'
-import { AuthorizedActions, DocumentTypes, EffectOfOrderTypes, PageSizes } from '@/enums'
+import { AuthorizedActions, DocumentTypes, EffectOfOrderTypes } from '@/enums'
 import { FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { BusinessServices, EnumUtilities } from '@/services'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -269,7 +268,6 @@ export default class CourtOrderView extends Mixins(DateMixin, FilingMixin, Commo
   readonly NOTATION_MAX_LENGTH = 2000 // characters
 
   // For template
-  readonly PageSizes = PageSizes
   readonly AuthorizedActions = AuthorizedActions
   readonly IsAuthorized = IsAuthorized
   readonly FilingCodes = FilingCodes
