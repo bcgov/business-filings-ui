@@ -13,20 +13,28 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 const localVue = createLocalVue()
 localVue.use(VueRouter)
-setActivePinia(createPinia())
 
 describe('AmalgamationSelection', () => {
   let wrapper: any
 
-  beforeEach(() => {
+  const mountComponent = (legalType: CorpTypeCd = CorpTypeCd.BC_COMPANY) => {
+    setActivePinia(createPinia())
+    const businessStore = useBusinessStore()
+    businessStore.setLegalType(legalType)
+
     const router = mockRouter.mock()
     router.push({ name: 'amalgamation-selection' })
+
     wrapper = mount(AmalgamationSelection,
       {
         localVue,
         router,
         vuetify
       })
+  }
+
+  beforeEach(() => {
+    mountComponent()
   })
 
   afterEach(() => {
@@ -42,8 +50,6 @@ describe('AmalgamationSelection', () => {
   })
 
   it('content of horizontal short form card is correct', () => {
-    useBusinessStore().setLegalType(CorpTypeCd.BC_COMPANY)
-
     expect(wrapper.find('#start-horizontal-short-form-card > h2').text()).toBe('Horizontal short-form amalgamation')
     expect(wrapper.find('#start-horizontal-short-form-card > p').text()).toContain(
       'A horizontal short-form amalgamation can be used if the amalgamating corporations')
@@ -54,8 +60,6 @@ describe('AmalgamationSelection', () => {
   })
 
   it('content of vertical short form card is correct', () => {
-    useBusinessStore().setLegalType(CorpTypeCd.BC_COMPANY)
-
     expect(wrapper.find('#start-vertical-short-form-card > h2').text()).toBe('Vertical short-form amalgamation')
     expect(wrapper.find('#start-vertical-short-form-card > p').text()).toContain(
       'A vertical short-form amalgamation can be used if the subsidiary')
@@ -67,7 +71,6 @@ describe('AmalgamationSelection', () => {
 
   it('content of regular long form card is correct', () => {
     const vm = wrapper.vm as any
-    useBusinessStore().setLegalType(CorpTypeCd.BC_COMPANY)
 
     expect(wrapper.find('#start-regular-long-form-card > h2').text()).toBe('Regular long-form amalgamation')
     expect(wrapper.find('#start-regular-long-form-card > p').text()).toContain(
@@ -75,13 +78,71 @@ describe('AmalgamationSelection', () => {
     expect(wrapper.find('#start-regular-long-form-card > p').text()).toContain(
       'need to complete the following steps to amalgamate:')
     expect(wrapper.find('#regular-long-form-btn').text()).toBe('Start Regular Long-form')
-    expect(wrapper.find('#regular-long-form-btn').classes()).not.toContain('v-btn--disabled') // enabled
+    expect(wrapper.find('#regular-long-form-btn').classes()).not.toContain('v-btn--disabled')
 
-    expect(vm.getRegularAmalgamationText()).toBe('BC limited company')
+    expect(vm.isBcLimitedOrBenefitCompany).toBe(true)
+
+    const result = wrapper.find('#start-regular-long-form-card p:last-of-type')
+
+    expect(result.text()).toBe(
+      'When the amalgamation is complete, your company will be a BC Limited Company or a BC Benefit Company.'
+    )
+    expect(result.findAll('strong').wrappers.map((element: any) => element.text())).toEqual([
+      'BC Limited Company',
+      'BC Benefit Company'
+    ])
+  })
+
+  it('displays both limited company and benefit company for a benefit company', () => {
+    mountComponent(CorpTypeCd.BENEFIT_COMPANY)
+
+    const vm = wrapper.vm as any
+    const result = wrapper.find('#start-regular-long-form-card p:last-of-type')
+
+    expect(vm.isBcLimitedOrBenefitCompany).toBe(true)
+    expect(result.text()).toBe(
+      'When the amalgamation is complete, your company will be a BC Limited Company or a BC Benefit Company.'
+    )
+    expect(result.findAll('strong').wrappers.map((element: any) => element.text())).toEqual([
+      'BC Limited Company',
+      'BC Benefit Company'
+    ])
+  })
+
+  it('displays community contribution company for CCC', () => {
+    mountComponent(CorpTypeCd.BC_CCC)
+
+    const vm = wrapper.vm as any
+    const result = wrapper.find('#start-regular-long-form-card p:last-of-type')
+
+    expect(vm.isBcLimitedOrBenefitCompany).toBe(false)
+    expect(result.text()).toBe(
+      'When the amalgamation is complete, your company will be a BC Community Contribution Company.'
+    )
+    expect(result.findAll('strong').wrappers.map((element: any) => element.text())).toEqual([
+      'BC Community Contribution Company'
+    ])
+  })
+
+  it('displays unlimited liability company for ULC', () => {
+    mountComponent(CorpTypeCd.BC_ULC_COMPANY)
+
+    const vm = wrapper.vm as any
+    const result = wrapper.find('#start-regular-long-form-card p:last-of-type')
+
+    expect(vm.isBcLimitedOrBenefitCompany).toBe(false)
+    expect(result.text()).toBe(
+      'When the amalgamation is complete, your company will be a BC Unlimited Liability Company.'
+    )
+    expect(result.findAll('strong').wrappers.map((element: any) => element.text())).toEqual([
+      'BC Unlimited Liability Company'
+    ])
   })
 
   it('start regular long-form button clicked', async () => {
-    const createFiling = vi.spyOn((BusinessServices as any), 'createDraftBusiness')
+    const createFiling = vi.spyOn(BusinessServices as any, 'createDraftBusiness')
+      .mockResolvedValue({ business: { identifier: 'BC1234567' } })
+
     const button = wrapper.find('#regular-long-form-btn')
     await button.trigger('click')
 
@@ -89,7 +150,9 @@ describe('AmalgamationSelection', () => {
   })
 
   it('start horizontal short-form button clicked', async () => {
-    const createFiling = vi.spyOn((BusinessServices as any), 'createDraftBusiness')
+    const createFiling = vi.spyOn(BusinessServices as any, 'createDraftBusiness')
+      .mockResolvedValue({ business: { identifier: 'BC1234567' } })
+
     const button = wrapper.find('#horizontal-short-form-btn')
     await button.trigger('click')
 
@@ -97,7 +160,9 @@ describe('AmalgamationSelection', () => {
   })
 
   it('start vertical short-form button clicked', async () => {
-    const createFiling = vi.spyOn((BusinessServices as any), 'createDraftBusiness')
+    const createFiling = vi.spyOn(BusinessServices as any, 'createDraftBusiness')
+      .mockResolvedValue({ business: { identifier: 'BC1234567' } })
+
     const button = wrapper.find('#vertical-short-form-btn')
     await button.trigger('click')
 
