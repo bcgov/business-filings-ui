@@ -124,7 +124,12 @@
             <br>
             <p>
               When the amalgamation is complete, your company will be a
-              <strong>{{ getRegularAmalgamationText() }}.</strong>
+              <template v-if="isBcLimitedOrBenefitCompany">
+                <strong>BC Limited Company</strong> or a <strong>BC Benefit Company</strong>.
+              </template>
+              <template v-else>
+                <strong>{{ getRegularAmalgamationText() }}</strong>.
+              </template>
             </p>
             <div class="btn-div">
               <v-btn
@@ -195,19 +200,13 @@ export default class AmalgamationSelection extends Mixins(CommonMixin) {
   /** The amalmagated company result name depending on the type. */
   getRegularAmalgamationText (): string {
     switch (true) {
-      case this.isEntityBcCompany:
-      case this.isEntityBenContinueIn:
-      case this.isEntityBenefitCompany:
-      case this.isEntityContinueIn:
-        return 'BC limited company'
-
       case this.isEntityBcCcc:
       case this.isEntityCccContinueIn:
-        return 'BC community contribution company'
+        return 'BC Community Contribution Company'
 
       case this.isEntityBcUlcCompany:
       case this.isEntityUlcContinueIn:
-        return 'BC unlimited liability company'
+        return 'BC Unlimited Liability Company'
     }
     return 'Unknown' // should never happen
   }
@@ -230,6 +229,15 @@ export default class AmalgamationSelection extends Mixins(CommonMixin) {
       this.setStartingAmalgamationSpinner(false)
       this.showErrorDialog = true
     }
+  }
+
+  get isBcLimitedOrBenefitCompany (): boolean {
+    return (
+      this.isEntityBcCompany ||
+      this.isEntityBenContinueIn ||
+      this.isEntityBenefitCompany ||
+      this.isEntityContinueIn
+    )
   }
 
   /** The legal type of the new amalgamation filing. */
